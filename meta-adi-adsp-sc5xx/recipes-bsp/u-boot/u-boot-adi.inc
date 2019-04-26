@@ -2,12 +2,11 @@ SUMMARY = "U-Boot For ADSP-SC5xx Products"
 
 require ${COREBASE}/meta/recipes-bsp/u-boot/u-boot.inc
 
-LICENSE = "GPLv2+"
-LIC_FILES_CHKSUM = "file://Licenses/README;md5=..."
+UBOOT_GIT_URI = "git://git@src.timesys.com/services/analog-devices/analog-devices-yocto-bsp-porting/uboot.git"
+UBOOT_GIT_PROTOCOL = "ssh"
 
-BRANCH ?= "master"
-SRC_URI = " \
-	git://... \
+SRC_URI += " \
+	${UBOOT_GIT_URI};protocol=${UBOOT_GIT_PROTOCOL};branch=${BRANCH} \
 "
 
 FILES_${PN} = " \

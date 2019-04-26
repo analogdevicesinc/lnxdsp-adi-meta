@@ -3,8 +3,7 @@ inherit adsp-sc57x-minimal
 SUMMARY = "Full image for Analog Devices ADSP-SC57x boards"
 LICENSE = "MIT"
 
-IMAGE_INSTALL = ""
-
+IMAGE_INSTALL += ""
 
 #BR2_PACKAGE_ALSA_UTILS=y
 #BR2_PACKAGE_ALSA_UTILS_AMIXER=y

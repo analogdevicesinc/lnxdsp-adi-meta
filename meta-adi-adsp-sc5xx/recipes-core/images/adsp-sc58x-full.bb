@@ -3,7 +3,7 @@ inherit adsp-sc58x-minimal
 SUMMARY = "Full image for Analog Devices ADSP-SC58x boards"
 LICENSE = "MIT"
 
-IMAGE_INSTALL = " \
+IMAGE_INSTALL += " \
 	alsa-utils \
 "
 
