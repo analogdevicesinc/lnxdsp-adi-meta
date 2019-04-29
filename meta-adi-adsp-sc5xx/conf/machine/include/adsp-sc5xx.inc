@@ -14,6 +14,9 @@ PREFERRED_PROVIDER_virtual/kernel = "linux-adi"
 PREFERRED_PROVIDER_virtual/bootloader = "u-boot-adi"
 PREFERRED_PROVIDER_u-boot = "u-boot-adi"
 
+PREFERRED_VERSION_diffutils = "3.3%"
+#PREFERRED_VERSION_gobject-introspection = "1.46%"
+
 EXTRA_IMAGEDEPENDS += "u-boot"
 
 MACHINE_FEATURES = "kernel26 serial ethernet usbhost usbgadget mmc alsa"

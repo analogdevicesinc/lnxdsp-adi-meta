@@ -108,7 +108,7 @@ GCC_VERSION_allarch = ""
 GCC_VERSION[vardepvalue] = "${GCC_VERSION}"
 
 # macro-prefix-map was introduced in gcc 8
-REMOVE_MACRO_PREFIX_MAP = "-fmacro-prefix-map=${WORKDIR}=/usr/src/debug/${PN}/${EXTENDPE}${PV}-${PR}"
-DEBUG_PREFIX_MAP_remove = "${@'${REMOVE_MACRO_PREFIX_MAP}' if '${GCC_VERSION}' and [int(v) for v in '${GCC_VERSION}'.split('.')] < [8,0] else ''}"
+# REMOVE_MACRO_PREFIX_MAP = "-fmacro-prefix-map=${WORKDIR}=/usr/src/debug/${PN}/${EXTENDPE}${PV}-${PR}"
+# DEBUG_PREFIX_MAP_remove = "${@'${REMOVE_MACRO_PREFIX_MAP}' if '${GCC_VERSION}' and [int(v) for v in '${GCC_VERSION}'.split('.')] < [8,0] else ''}"
 
 BUILDCFG_VARS += "EXTERNAL_TOOLCHAIN EXTERNAL_TARGET_SYS GCC_VERSION"

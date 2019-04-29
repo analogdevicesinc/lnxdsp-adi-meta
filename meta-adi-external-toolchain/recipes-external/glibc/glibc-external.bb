@@ -18,7 +18,8 @@ PROVIDES += "glibc \
              virtual/libc \
              virtual/libintl \
              virtual/libiconv \
-             virtual/crypt"
+             virtual/crypt \
+"
 
 def get_external_libc_license(d):
     errnosearch = os.path.join(d.getVar('includedir', True), 'errno.h')
@@ -44,7 +45,7 @@ LICENSE := "${@get_external_libc_license(d)}"
 require recipes-external/glibc/glibc-sysroot-setup.inc
 require recipes-external/glibc/glibc-package-adjusted.inc
 
-libc_baselibs += "${base_libdir}/libcrypt*.so.* ${base_libdir}/libcrypt-*.so"
+libc_baselibs += "${base_libdir}/*.so.*"
 
 FILES_MIRRORS .= "\
     ${base_sbindir}/|/usr/bin/ \n\
@@ -187,6 +188,8 @@ FILES_${PN} += "\
     ${libdir}/locale \
     ${datadir}/locale \
     ${datadir}/i18n \
+    /usr/include/fpu_control-32.h \
+    /usr/include/ieee754-32.h \
 "
 
 FILES_${PN}-dev_remove := "${datadir}/aclocal"
