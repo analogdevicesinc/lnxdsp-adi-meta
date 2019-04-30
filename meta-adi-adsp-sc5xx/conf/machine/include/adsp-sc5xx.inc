@@ -15,7 +15,6 @@ PREFERRED_PROVIDER_virtual/bootloader = "u-boot-adi"
 PREFERRED_PROVIDER_u-boot = "u-boot-adi"
 
 PREFERRED_VERSION_diffutils = "3.3%"
-#PREFERRED_VERSION_gobject-introspection = "1.46%"
 
 EXTRA_IMAGEDEPENDS += "u-boot"
 
