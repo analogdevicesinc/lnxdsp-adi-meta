@@ -71,12 +71,8 @@ FILES_LIST = " \
 "
 
 FILES_${PN} = " \
- ${FILES_LIST} \
-"
-
-FILES_${PN}-dev = " \
     ${FILES_LIST} \
     ${libdir}/${EXTERNAL_TARGET_SYS}/${BINV}* \
 "
 
-INSANE_SKIP_${PN}-dev += "staticdev"
+INSANE_SKIP_${PN} += "staticdev host-user-contaminated"

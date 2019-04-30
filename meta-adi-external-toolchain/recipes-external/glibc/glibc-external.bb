@@ -190,17 +190,14 @@ FILES_${PN} += "\
     ${datadir}/i18n \
     /usr/include/fpu_control-32.h \
     /usr/include/ieee754-32.h \
+    ${libc_baselibs_dev} \
 "
 
-FILES_${PN}-dev_remove := "${datadir}/aclocal"
-
-FILES_${PN}-dev_remove = "/lib/*.o"
-FILES_${PN}-dev += "${libdir}/*crt*.o"
+FILES_${PN} += "${libdir}/*crt*.o"
 
 linux_include_subdirs = "asm asm-generic bits drm linux mtd rdma sound sys video"
-FILES_${PN}-dev += "${@' '.join('${includedir}/%s' % d for d in '${linux_include_subdirs}'.split())}"
+FILES_${PN} += "${@' '.join('${includedir}/%s' % d for d in '${linux_include_subdirs}'.split())}"
 
-libc_baselibs_dev += "${@' '.join('${libdir}/' + os.path.basename(l.replace('${SOLIBS}', '${SOLIBSDEV}')) for l in '${libc_baselibs}'.replace('${base_libdir}/ld*${SOLIBS}', '').split() if l.endswith('${SOLIBS}'))}"
 FILES_${PN}-staticdev = "\
     ${@'${libc_baselibs_dev}'.replace('${SOLIBSDEV}', '.a')} \
     ${libdir}/libg.a \
@@ -208,14 +205,16 @@ FILES_${PN}-staticdev = "\
     ${libdir}/libmcheck.a \
 "
 
-FILES_${PN}-dev += "\
+libc_baselibs_dev += "${@' '.join('${libdir}/' + os.path.basename(l.replace('${SOLIBS}', '${SOLIBSDEV}')) for l in '${libc_baselibs}'.replace('${base_libdir}/ld*${SOLIBS}', '').split() if l.endswith('${SOLIBS}'))}"
+
+FILES_${PN} += "\
     ${libc_baselibs_dev} \
     ${libdir}/libcidn${SOLIBSDEV} \
     ${libdir}/libthread_db${SOLIBSDEV} \
     ${libdir}/libpthread${SOLIBSDEV} \
 "
 libc_headers_file = "${@bb.utils.which('${FILESPATH}', 'libc.headers')}"
-FILES_${PN}-dev += "\
+FILES_${PN} += "\
     ${@' '.join('${includedir}/' + f.rstrip() for f in oe.utils.read_file('${libc_headers_file}').splitlines())} \
     ${includedir}/fpu_control.h \
     ${includedir}/stdc-predef.h \
@@ -229,5 +228,4 @@ do_package_write_ipk[depends] += "${MLPREFIX}libgcc:do_packagedata"
 do_package_write_deb[depends] += "${MLPREFIX}libgcc:do_packagedata"
 do_package_write_rpm[depends] += "${MLPREFIX}libgcc:do_packagedata"
 
-FILES_${PN}-dev_remove = "${base_libdir}/*_nonshared.a ${libdir}/*_nonshared.a"
-FILES_${PN}-dev += "${libdir}/libc_nonshared.a ${libdir}/libpthread_nonshared.a ${libdir}/libmvec_nonshared.a"
+FILES_${PN} += "${libdir}/libc_nonshared.a ${libdir}/libpthread_nonshared.a ${libdir}/libmvec_nonshared.a"
