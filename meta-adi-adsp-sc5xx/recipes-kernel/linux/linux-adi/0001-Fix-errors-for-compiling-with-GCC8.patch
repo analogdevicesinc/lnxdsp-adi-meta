@@ -1,0 +1,81 @@
+From ad46b41cd0f0b13540de62ed2082222096fde070 Mon Sep 17 00:00:00 2001
+From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
+Date: Mon, 6 May 2019 09:20:50 -0400
+Subject: [PATCH] Fix errors for compiling with GCC8
+
+---
+ arch/arm/mach-sc57x/include/mach/clkdev.h | 2 +-
+ arch/arm/mach-sc58x/clock.c               | 2 +-
+ arch/arm/mach-sc58x/include/mach/clkdev.h | 2 +-
+ drivers/mmc/host/dw_mmc-pltfm.h           | 2 ++
+ drivers/net/can/sc5xx_can.c               | 2 +-
+ 5 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/mach-sc57x/include/mach/clkdev.h b/arch/arm/mach-sc57x/include/mach/clkdev.h
+index 977c9fd974e0..2d5e52ca7b1d 100644
+--- a/arch/arm/mach-sc57x/include/mach/clkdev.h
++++ b/arch/arm/mach-sc57x/include/mach/clkdev.h
+@@ -28,7 +28,7 @@ struct clk_ops {
+ 	void                    (*enable)(struct clk *);
+ 	void                    (*disable)(struct clk *);
+ 	unsigned long           (*get_rate)(struct clk *);
+-	int                     (*set_rate)(struct clk *, unsigned long);
++	unsigned long           (*set_rate)(struct clk *, unsigned long);
+ };
+ 
+ struct clk {
+diff --git a/arch/arm/mach-sc58x/clock.c b/arch/arm/mach-sc58x/clock.c
+index bf44ed229644..e4926905ba0a 100644
+--- a/arch/arm/mach-sc58x/clock.c
++++ b/arch/arm/mach-sc58x/clock.c
+@@ -172,7 +172,7 @@ unsigned long pll_round_rate(struct clk *clk, unsigned long rate)
+ 	return clk->parent->rate * div;
+ }
+ 
+-int pll_set_rate(struct clk *clk, unsigned long rate)
++unsigned long pll_set_rate(struct clk *clk, unsigned long rate)
+ {
+ 	u32 msel;
+ 	u32 stat = readl(__io_address(REG_CGU0_STAT));
+diff --git a/arch/arm/mach-sc58x/include/mach/clkdev.h b/arch/arm/mach-sc58x/include/mach/clkdev.h
+index 3db49a733a32..ca3c6ed0a497 100644
+--- a/arch/arm/mach-sc58x/include/mach/clkdev.h
++++ b/arch/arm/mach-sc58x/include/mach/clkdev.h
+@@ -28,7 +28,7 @@ struct clk_ops {
+ 	void                    (*enable)(struct clk *);
+ 	void                    (*disable)(struct clk *);
+ 	unsigned long           (*get_rate)(struct clk *);
+-	int                     (*set_rate)(struct clk *, unsigned long);
++	unsigned long           (*set_rate)(struct clk *, unsigned long);
+ };
+ 
+ struct clk {
+diff --git a/drivers/mmc/host/dw_mmc-pltfm.h b/drivers/mmc/host/dw_mmc-pltfm.h
+index 68e7fd2f6148..ae0efe901c80 100644
+--- a/drivers/mmc/host/dw_mmc-pltfm.h
++++ b/drivers/mmc/host/dw_mmc-pltfm.h
+@@ -12,6 +12,8 @@
+ #ifndef _DW_MMC_PLTFM_H_
+ #define _DW_MMC_PLTFM_H_
+ 
++#include <dw_mmc.h>
++
+ extern int dw_mci_pltfm_register(struct platform_device *pdev,
+ 				const struct dw_mci_drv_data *drv_data);
+ extern int dw_mci_pltfm_remove(struct platform_device *pdev);
+diff --git a/drivers/net/can/sc5xx_can.c b/drivers/net/can/sc5xx_can.c
+index 395f265b8740..93e91a3e05e4 100644
+--- a/drivers/net/can/sc5xx_can.c
++++ b/drivers/net/can/sc5xx_can.c
+@@ -672,7 +672,7 @@ static int sc5xx_can_probe(struct platform_device *pdev)
+ 
+ 	clk_source = devm_clk_get(&pdev->dev, "can");
+ 	if (IS_ERR(clk_source)) {
+-		dev_err(dev, "can not get can clock\n");
++		dev_err(&pdev->dev, "can not get can clock\n");
+ 		return PTR_ERR(clk_source);
+ 	}
+ 	priv->can.clock.freq = clk_get_rate(clk_source);
+-- 
+2.11.0
+

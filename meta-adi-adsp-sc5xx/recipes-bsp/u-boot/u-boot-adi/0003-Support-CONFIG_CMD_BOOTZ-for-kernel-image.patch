@@ -1,0 +1,66 @@
+From fadede7a6b2d0b95416d029f6c2e24c9fc5a8dec Mon Sep 17 00:00:00 2001
+From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
+Date: Mon, 6 May 2019 13:28:50 -0400
+Subject: [PATCH] Support CONFIG_CMD_BOOTZ for kernel image
+
+---
+ include/configs/sc573-ezkit.h | 1 +
+ include/configs/sc584-ezkit.h | 2 +-
+ include/configs/sc589-ezkit.h | 2 +-
+ include/configs/sc589-mini.h  | 2 +-
+ 4 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/include/configs/sc573-ezkit.h b/include/configs/sc573-ezkit.h
+index 0c7f9b02e..9e7bcc4b2 100644
+--- a/include/configs/sc573-ezkit.h
++++ b/include/configs/sc573-ezkit.h
+@@ -156,6 +156,7 @@
+ #define CONFIG_BAUDRATE		57600
+ #define CONFIG_UART4_SERIAL
+ #define CONFIG_LINUX_MEMSIZE	"224M"
++#define CONFIG_CMD_BOOTZ
+ 
+ /*
+  * SDH Settings
+diff --git a/include/configs/sc584-ezkit.h b/include/configs/sc584-ezkit.h
+index 79eccbb7b..81a86cf27 100644
+--- a/include/configs/sc584-ezkit.h
++++ b/include/configs/sc584-ezkit.h
+@@ -156,7 +156,7 @@
+ #define CONFIG_BAUDRATE		57600
+ #define CONFIG_UART4_SERIAL
+ #define CONFIG_LINUX_MEMSIZE	"112M"
+-
++#define CONFIG_CMD_BOOTZ
+ 
+ #include <configs/sc_adi_common.h>
+ 
+diff --git a/include/configs/sc589-ezkit.h b/include/configs/sc589-ezkit.h
+index adde83a27..dbbec029d 100644
+--- a/include/configs/sc589-ezkit.h
++++ b/include/configs/sc589-ezkit.h
+@@ -184,7 +184,7 @@
+ #define CONFIG_BAUDRATE		57600
+ #define CONFIG_UART4_SERIAL
+ #define CONFIG_LINUX_MEMSIZE	"224M"
+-
++#define CONFIG_CMD_BOOTZ
+ 
+ #include <configs/sc_adi_common.h>
+ 
+diff --git a/include/configs/sc589-mini.h b/include/configs/sc589-mini.h
+index 3af09b68d..ab349b164 100644
+--- a/include/configs/sc589-mini.h
++++ b/include/configs/sc589-mini.h
+@@ -183,7 +183,7 @@
+ #define CONFIG_BAUDRATE		57600
+ #define CONFIG_UART4_SERIAL
+ #define CONFIG_LINUX_MEMSIZE	"224M"
+-
++#define CONFIG_CMD_BOOTZ
+ 
+ #include <configs/sc_adi_common.h>
+ 
+-- 
+2.11.0
+

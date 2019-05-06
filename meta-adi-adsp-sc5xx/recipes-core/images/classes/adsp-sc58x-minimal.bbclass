@@ -1,5 +1,4 @@
-inherit core-image
-
+inherit core-image extrausers
 SUMMARY = "Minimal image for Analog Devices ADSP-SC58x boards"
 LICENSE = "MIT"
 
@@ -10,6 +9,8 @@ IMAGE_INSTALL = " \
 "
 
 COMPATIBLE_MACHINE = "(adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini)"
+
+EXTRA_USERS_PARAMS = "usermod -P adi root;"
 
 #BR2_PACKAGE_BUSYBOX_CONFIG="board/AnalogDevices/arm/busybox.config"
 #BR2_PACKAGE_BUSYBOX_WATCHDOG=y

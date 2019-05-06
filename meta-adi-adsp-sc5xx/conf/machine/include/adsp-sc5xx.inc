@@ -11,8 +11,8 @@ MACHINE_KERNEL_PR = "r0"
 KERNEL_IMAGETYPE = "zImage"
 
 PREFERRED_PROVIDER_virtual/kernel = "linux-adi"
-PREFERRED_PROVIDER_virtual/bootloader = "u-boot-adi"
-PREFERRED_PROVIDER_u-boot = "u-boot-adi"
+PREFERRED_PROVIDER_virtual/bootloader = "${@ 'u-boot-adi-external' if "external" in d.getVar('TCMODE') else 'u-boot-adi'}"
+PREFERRED_PROVIDER_u-boot = "${@ 'u-boot-adi-external' if "external" in d.getVar('TCMODE') else 'u-boot-adi'}"
 
 PREFERRED_VERSION_diffutils = "3.3%"
 

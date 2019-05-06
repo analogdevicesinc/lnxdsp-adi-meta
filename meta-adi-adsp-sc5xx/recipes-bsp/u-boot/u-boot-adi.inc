@@ -4,24 +4,25 @@ inherit analog-devices-baremetal autotools
 
 require ${COREBASE}/meta/recipes-bsp/u-boot/u-boot.inc
 
+FILESEXTRAPATHS_prepend := "${THISDIR}/u-boot-adi:"
+
 UBOOT_GIT_URI = "git://git@src.timesys.com/services/analog-devices/analog-devices-yocto-bsp-porting/uboot.git"
 UBOOT_GIT_PROTOCOL = "ssh"
 
+ETHERNET_PATCH = "${@ 'file://sc589-ezkit-2.0-eth-uboot.patch' if d.getVar('ANALOG_DEVICES_VERSION2_ETHERNET') else ''}"
+
 SRC_URI += " \
 	${UBOOT_GIT_URI};protocol=${UBOOT_GIT_PROTOCOL};branch=${BRANCH} \
-        file://0001-drop-configh-from-tools.patch \
-        file://uboot-tools-nommu.patch \
-"
-
-FILES_${PN} = " \
-	u-boot.ldr \
+    file://0001-drop-configh-from-tools.patch \
+    file://0002-uboot-tools-nommu.patch \
+    file://0003-Support-CONFIG_CMD_BOOTZ-for-kernel-image.patch \
+    file://0004-Change-u-boot-environment-to-use-zImage-Yocto-s-defa.patch \
+    ${ETHERNET_PATCH} \
 "
 
 PV_append = "+git${SRCPV}"
 
 DEPENDS += "dtc-native bc-native lzop-native"
-
-UBOOT_SUFFIX ?= "img"
 
 PROVIDES += "u-boot"
 PKG_${PN} = "u-boot"
@@ -29,24 +30,3 @@ PKG_${PN}-dev = "u-boot-dev"
 PKG_${PN}-dbg = "u-boot-dbg"
 
 S = "${WORKDIR}/git"
-
-do_configure () {
-	setup_analog_devices_baremetal
-	cd ${S}
-	make distclean
-	make ${UBOOT_MACHINE}
-}
-
-do_compile () {
-	setup_analog_devices_baremetal
-	cd ${S}
-	make
-}
-
-do_install () {
-	install ${S}/u-boot.ldr ${D}/u-boot.ldr
-}
-
-do_deploy() {
-	install ${S}/u-boot.ldr ${DEPLOYDIR}/u-boot.ldr
-}

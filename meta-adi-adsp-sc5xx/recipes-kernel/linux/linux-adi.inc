@@ -25,3 +25,5 @@ SRC_URI += " \
 do_configure_append(){
 	make ${KERNEL_MACHINE}
 }
+
+COMPATIBLE_MACHINE = "adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini|adsp-sc573-ezkit"

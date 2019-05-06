@@ -1,0 +1,39 @@
+From 6189656031dac2650f0e047b3e7d77da19a42c92 Mon Sep 17 00:00:00 2001
+From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
+Date: Tue, 7 May 2019 12:19:37 -0400
+Subject: [PATCH] Pack some structures to work properly with GCC8
+
+---
+ include/net.h | 2 +-
+ net/bootp.h   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/net.h b/include/net.h
+index 18d279ebe..66c3ecb7e 100644
+--- a/include/net.h
++++ b/include/net.h
+@@ -271,7 +271,7 @@ struct ip_udp_hdr {
+ 	ushort		udp_dst;	/* UDP destination port		*/
+ 	ushort		udp_len;	/* Length of UDP packet		*/
+ 	ushort		udp_xsum;	/* Checksum			*/
+-};
++} __attribute__((packed));
+ 
+ #define IP_UDP_HDR_SIZE		(sizeof(struct ip_udp_hdr))
+ #define UDP_HDR_SIZE		(IP_UDP_HDR_SIZE - IP_HDR_SIZE)
+diff --git a/net/bootp.h b/net/bootp.h
+index 3b95a0a2d..86b48363e 100644
+--- a/net/bootp.h
++++ b/net/bootp.h
+@@ -49,7 +49,7 @@ struct Bootp_t {
+ 	char		bp_sname[64];	/* Server host name		*/
+ 	char		bp_file[128];	/* Boot file name		*/
+ 	char		bp_vend[OPT_FIELD_SIZE]; /* Vendor information	*/
+-};
++} __attribute__((packed));
+ 
+ #define BOOTP_HDR_SIZE	sizeof(struct Bootp_t)
+ 
+-- 
+2.11.0
+
