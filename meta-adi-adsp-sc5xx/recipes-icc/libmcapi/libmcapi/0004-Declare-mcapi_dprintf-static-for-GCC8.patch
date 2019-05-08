@@ -1,0 +1,25 @@
+From 1a5b0bf8f41a8e144a7b8cdd3cd958596a477753 Mon Sep 17 00:00:00 2001
+From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
+Date: Wed, 8 May 2019 13:19:22 -0400
+Subject: [PATCH] Declare mcapi_dprintf static for GCC8
+
+---
+ mcapi_trans_stub.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mcapi_trans_stub.c b/mcapi_trans_stub.c
+index 79293a7..074398a 100644
+--- a/mcapi_trans_stub.c
++++ b/mcapi_trans_stub.c
+@@ -71,7 +71,7 @@ mcapi_domain_t mcapi_domain_id = 0;
+ int mcapi_debug = 0;
+ /* debug printing */
+ /* Inline this (and define in header) so that it can be compiled out if WITH_DEBUG is 0 */
+-inline void mcapi_dprintf(int level,const char *format, ...) {
++static inline void mcapi_dprintf(int level,const char *format, ...) {
+ 	if (WITH_DEBUG) {
+ 		va_list ap;
+ 		va_start(ap,format);
+-- 
+2.11.0
+

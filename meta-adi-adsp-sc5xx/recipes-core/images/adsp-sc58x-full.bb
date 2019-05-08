@@ -5,6 +5,8 @@ LICENSE = "MIT"
 
 IMAGE_INSTALL += " \
 	alsa-utils \
+	libmcapi \
+	sc5xx-corecontrol \
 "
 
 TODO = " \
@@ -13,7 +15,6 @@ TODO = " \
 	mtd \
 	pciutils \
 	freetype \
-	libmcapi \
 	pound \
 	version \
 	v4l2_video_test \
