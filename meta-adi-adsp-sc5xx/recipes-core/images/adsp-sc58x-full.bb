@@ -3,10 +3,24 @@ inherit adsp-sc58x-minimal
 SUMMARY = "Full image for Analog Devices ADSP-SC58x boards"
 LICENSE = "MIT"
 
-IMAGE_INSTALL += " \
-	alsa-utils \
+MCC = " \
 	libmcapi \
 	sc5xx-corecontrol \
+"
+
+BLUETOOTH_AND_HEADSET = " \
+	alsa-utils \
+	alsa-lib \
+	dbus \
+	bluez5 \
+	packagegroup-tools-bluetooth \
+	expat \
+	play \
+"
+
+IMAGE_INSTALL += " \
+	${MCC} \
+	${BLUETOOTH_AND_HEADSET} \
 "
 
 TODO = " \
@@ -19,7 +33,6 @@ TODO = " \
 	version \
 	v4l2_video_test \
 	video_test \ 
-	bluez_utils \
 	can-utils \
 "
 
