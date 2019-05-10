@@ -3,10 +3,17 @@ inherit core-image extrausers
 SUMMARY = "Minimal image for Analog Devices ADSP-SC57x boards"
 LICENSE = "MIT"
 
+OPROFILE_PERFORMANCE_BENCHMARK = "\
+	oprofile  \
+	dhrystone \
+	whetstone-adi \
+"
+
 IMAGE_INSTALL = " \
     packagegroup-core-boot \
     packagegroup-base \
     ${CORE_IMAGE_EXTRA_INSTALL} \
+    ${OPROFILE_PERFORMANCE_BENCHMARK} \
 "
 
 COMPATIBLE_MACHINE = "(adsp-sc573-ezkit)"

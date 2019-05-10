@@ -18,13 +18,17 @@ BLUETOOTH_AND_HEADSET = " \
 	play \
 "
 
+OPROFILE = " \
+	oprofile \
+"
+
 IMAGE_INSTALL += " \
 	${MCC} \
 	${BLUETOOTH_AND_HEADSET} \
+	${OPROFILE} \
 "
 
 TODO = " \
-	oprofile \
 	e2fsprogs \
 	mtd \
 	pciutils \
