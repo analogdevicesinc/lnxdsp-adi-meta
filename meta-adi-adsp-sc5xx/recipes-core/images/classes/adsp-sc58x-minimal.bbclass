@@ -26,6 +26,7 @@ IMAGE_INSTALL = " \
     ${SQLITE} \
     linuxptp \
     openssh \
+    openssl \
     cpufrequtils \
 "
 
@@ -35,7 +36,6 @@ EXTRA_USERS_PARAMS = "usermod -P adi root;"
 
 #BR2_PACKAGE_BUSYBOX_CONFIG="board/AnalogDevices/arm/busybox.config"
 #BR2_PACKAGE_BUSYBOX_WATCHDOG=y
-#BR2_PACKAGE_OPENSSL_BIN=y
 #BR2_PACKAGE_JPEG=y
 #BR2_PACKAGE_LIBPNG=y
 #BR2_PACKAGE_LIBUNGIF=y
