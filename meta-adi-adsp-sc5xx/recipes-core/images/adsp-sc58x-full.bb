@@ -22,10 +22,18 @@ OPROFILE = " \
 	oprofile \
 "
 
+MPLAYER = " \
+	mplayer-common \
+	mpv \
+	video-test \
+	v4l2-video-test \
+"
+
 IMAGE_INSTALL += " \
 	${MCC} \
 	${BLUETOOTH_AND_HEADSET} \
 	${OPROFILE} \
+	${MPLAYER} \
 "
 
 TODO = " \
@@ -35,8 +43,6 @@ TODO = " \
 	freetype \
 	pound \
 	version \
-	v4l2_video_test \
-	video_test \ 
 	can-utils \
 "
 
