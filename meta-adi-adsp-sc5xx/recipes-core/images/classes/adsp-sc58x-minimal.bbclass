@@ -41,11 +41,9 @@ IMAGE_INSTALL = " \
     ncurses \
     iw \
     lrzsz \
+    busybox-watchdog-init \
 "
 
 COMPATIBLE_MACHINE = "(adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini)"
 
 EXTRA_USERS_PARAMS = "usermod -P adi root;"
-
-#BR2_PACKAGE_BUSYBOX_CONFIG="board/AnalogDevices/arm/busybox.config"
-#BR2_PACKAGE_BUSYBOX_WATCHDOG=y
