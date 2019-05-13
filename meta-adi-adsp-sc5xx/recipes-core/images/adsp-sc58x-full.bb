@@ -34,6 +34,7 @@ IMAGE_INSTALL += " \
 	${BLUETOOTH_AND_HEADSET} \
 	${OPROFILE} \
 	${MPLAYER} \
+	can-utils \
 "
 
 TODO = " \
@@ -43,7 +44,6 @@ TODO = " \
 	freetype \
 	pound \
 	version \
-	can-utils \
 "
 
 #BR2_TARGET_ROOTFS_JFFS2=y
