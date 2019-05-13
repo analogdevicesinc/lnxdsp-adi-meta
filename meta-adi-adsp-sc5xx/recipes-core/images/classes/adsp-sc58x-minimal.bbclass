@@ -17,6 +17,11 @@ SQLITE = "\
 	sqlite-test \
 "
 
+FILE_SYSTEM_TOOLS = "\
+	dosfstools \
+	e2fsprogs \
+"
+
 IMAGE_INSTALL = " \
     packagegroup-core-boot \
     packagegroup-base \
@@ -24,6 +29,7 @@ IMAGE_INSTALL = " \
     ${OPROFILE_PERFORMANCE_BENCHMARK} \
     ${TOUCHSCREEN} \
     ${SQLITE} \
+    ${FILE_SYSTEM_TOOLS} \
     linuxptp \
     openssh \
     openssl \
@@ -43,6 +49,3 @@ EXTRA_USERS_PARAMS = "usermod -P adi root;"
 
 #BR2_PACKAGE_BUSYBOX_CONFIG="board/AnalogDevices/arm/busybox.config"
 #BR2_PACKAGE_BUSYBOX_WATCHDOG=y
-#BR2_TARGET_ROOTFS_EXT2=y
-#BR2_TARGET_ROOTFS_EXT2_3=y
-#BR2_TARGET_ROOTFS_INITRAMFS=y
