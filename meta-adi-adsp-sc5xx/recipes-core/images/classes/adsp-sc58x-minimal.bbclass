@@ -34,6 +34,7 @@ IMAGE_INSTALL = " \
     libtirpc \
     ncurses \
     iw \
+    lrzsz \
 "
 
 COMPATIBLE_MACHINE = "(adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini)"
@@ -42,7 +43,6 @@ EXTRA_USERS_PARAMS = "usermod -P adi root;"
 
 #BR2_PACKAGE_BUSYBOX_CONFIG="board/AnalogDevices/arm/busybox.config"
 #BR2_PACKAGE_BUSYBOX_WATCHDOG=y
-#BR2_PACKAGE_LRZSZ=y
 #BR2_TARGET_ROOTFS_EXT2=y
 #BR2_TARGET_ROOTFS_EXT2_3=y
 #BR2_TARGET_ROOTFS_INITRAMFS=y
