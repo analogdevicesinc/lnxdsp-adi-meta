@@ -23,9 +23,10 @@ IMAGE_INSTALL = " \
     ${CORE_IMAGE_EXTRA_INSTALL} \
     ${OPROFILE_PERFORMANCE_BENCHMARK} \
     ${TOUCHSCREEN} \
+    ${SQLITE} \
     linuxptp \
     openssh \
-    ${SQLITE} \
+    cpufrequtils \
 "
 
 COMPATIBLE_MACHINE = "(adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini)"
@@ -44,7 +45,6 @@ EXTRA_USERS_PARAMS = "usermod -P adi root;"
 #BR2_PACKAGE_NCURSES_TARGET_MENU=y
 #BR2_PACKAGE_IW=y
 #BR2_PACKAGE_LRZSZ=y
-#BR2_PACKAGE_CPUFREQUTILS=y
 #BR2_TARGET_ROOTFS_EXT2=y
 #BR2_TARGET_ROOTFS_EXT2_3=y
 #BR2_TARGET_ROOTFS_INITRAMFS=y
