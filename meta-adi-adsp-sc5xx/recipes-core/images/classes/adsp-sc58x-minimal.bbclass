@@ -31,6 +31,7 @@ IMAGE_INSTALL = " \
     jpeg \
     libpng \
     giflib \
+    libtirpc \
 "
 
 COMPATIBLE_MACHINE = "(adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini)"
@@ -39,7 +40,6 @@ EXTRA_USERS_PARAMS = "usermod -P adi root;"
 
 #BR2_PACKAGE_BUSYBOX_CONFIG="board/AnalogDevices/arm/busybox.config"
 #BR2_PACKAGE_BUSYBOX_WATCHDOG=y
-#BR2_PACKAGE_LIBTIRPC=y
 #BR2_PACKAGE_NCURSES_TARGET_PANEL=y
 #BR2_PACKAGE_NCURSES_TARGET_FORM=y
 #BR2_PACKAGE_NCURSES_TARGET_MENU=y
