@@ -12,6 +12,11 @@ TOUCHSCREEN = "\
 	evtest \
 "
 
+SQLITE = "\
+	sqlite3 \
+	sqlite-test \
+"
+
 IMAGE_INSTALL = " \
     packagegroup-core-boot \
     packagegroup-base \
@@ -19,6 +24,7 @@ IMAGE_INSTALL = " \
     ${OPROFILE_PERFORMANCE_BENCHMARK} \
     ${TOUCHSCREEN} \
     linuxptp \
+    ${SQLITE} \
 "
 
 COMPATIBLE_MACHINE = "(adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini)"
@@ -28,8 +34,6 @@ EXTRA_USERS_PARAMS = "usermod -P adi root;"
 #BR2_PACKAGE_BUSYBOX_CONFIG="board/AnalogDevices/arm/busybox.config"
 #BR2_PACKAGE_BUSYBOX_WATCHDOG=y
 #BR2_PACKAGE_OPENSSL_BIN=y
-#BR2_PACKAGE_SQLITE=y
-#BR2_PACKAGE_SQLITE_READLINE=y
 #BR2_PACKAGE_JPEG=y
 #BR2_PACKAGE_LIBPNG=y
 #BR2_PACKAGE_LIBUNGIF=y
