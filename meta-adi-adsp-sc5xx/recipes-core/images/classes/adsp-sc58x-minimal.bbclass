@@ -7,11 +7,17 @@ OPROFILE_PERFORMANCE_BENCHMARK = "\
 	whetstone-adi \
 "
 
+TOUCHSCREEN = "\
+	tslib \
+	evtest \
+"
+
 IMAGE_INSTALL = " \
     packagegroup-core-boot \
     packagegroup-base \
     ${CORE_IMAGE_EXTRA_INSTALL} \
     ${OPROFILE_PERFORMANCE_BENCHMARK} \
+    ${TOUCHSCREEN} \
 "
 
 COMPATIBLE_MACHINE = "(adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini)"
@@ -26,7 +32,6 @@ EXTRA_USERS_PARAMS = "usermod -P adi root;"
 #BR2_PACKAGE_JPEG=y
 #BR2_PACKAGE_LIBPNG=y
 #BR2_PACKAGE_LIBUNGIF=y
-#BR2_PACKAGE_TSLIB=y
 #BR2_PACKAGE_LIBTIRPC=y
 #BR2_PACKAGE_NCURSES_TARGET_PANEL=y
 #BR2_PACKAGE_NCURSES_TARGET_FORM=y
