@@ -35,10 +35,10 @@ IMAGE_INSTALL += " \
 	${OPROFILE} \
 	${MPLAYER} \
 	can-utils \
+	netperf \
 "
 
 TODO = " \
-	e2fsprogs \
 	mtd \
 	pciutils \
 	freetype \
