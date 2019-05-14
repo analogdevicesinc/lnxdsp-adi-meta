@@ -13,5 +13,6 @@ SRC_URI += " \
 	file://0001-Fix-errors-for-compiling-with-GCC8.patch \
 	file://0002-Add-NFS-client-file-system-support-in-to-4.16-kernel.patch \
 	file://0003-Add-in-SC58x-SC57x-CPU-freq-driver.patch \
+	file://0004-Add-in-Blackfin-Hardware-CRC-crypto-driver.patch \
 "
 

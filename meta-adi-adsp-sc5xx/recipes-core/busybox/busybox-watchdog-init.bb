@@ -3,7 +3,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/busybox:"
 LICENSE = "CLOSED"
 
 INITSCRIPT_NAME = "watchdog.sh"
-INITSCRIPT_PARAMS = "start 15 1 2 3 4 5 ."
+INITSCRIPT_PARAMS = "start 05 1 2 3 4 5 ."
 
 SRC_URI += " \
 	file://${INITSCRIPT_NAME} \
