@@ -1,0 +1,63 @@
+From d52373b7cc787533e9460965f4c0374f6d52aacb Mon Sep 17 00:00:00 2001
+From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
+Date: Fri, 31 May 2019 13:24:35 -0400
+Subject: [PATCH] Pull ADAU1962-enable low with a gpio-hog, so that it is
+ properly enabled upon boot from Linux
+
+---
+ arch/arm/boot/dts/sc573-ezkit.dts | 5 +++++
+ arch/arm/boot/dts/sc584-ezkit.dts | 5 +++++
+ arch/arm/boot/dts/sc589-ezkit.dts | 5 +++++
+ 3 files changed, 15 insertions(+)
+
+diff --git a/arch/arm/boot/dts/sc573-ezkit.dts b/arch/arm/boot/dts/sc573-ezkit.dts
+index 2c4c06cff0cb..5295fb5d82c4 100644
+--- a/arch/arm/boot/dts/sc573-ezkit.dts
++++ b/arch/arm/boot/dts/sc573-ezkit.dts
+@@ -110,6 +110,11 @@
+ 		gpio-controller;
+ 		#gpio-cells = <2>;
+ 		reg = <0x21>;
++		adau1962-rst {
++			gpio-hog;
++			gpios = <8 0>;
++			output-low;
++		};
+ 	};
+ 	ssw1: gpio@0x22 {
+ 		compatible = "microchip,mcp23017";
+diff --git a/arch/arm/boot/dts/sc584-ezkit.dts b/arch/arm/boot/dts/sc584-ezkit.dts
+index 5a18d009d87b..93df1e896685 100644
+--- a/arch/arm/boot/dts/sc584-ezkit.dts
++++ b/arch/arm/boot/dts/sc584-ezkit.dts
+@@ -140,6 +140,11 @@
+ 		gpio-controller;
+ 		#gpio-cells = <2>;
+ 		reg = <0x21>;
++		adau1962-rst {
++			gpio-hog;
++			gpios = <8 0>;
++			output-low;
++		};
+ 	};
+ 	ssw1: gpio@0x22 {
+ 		compatible = "microchip,mcp23017";
+diff --git a/arch/arm/boot/dts/sc589-ezkit.dts b/arch/arm/boot/dts/sc589-ezkit.dts
+index 13dc3bd30293..7eec07ce4ba9 100644
+--- a/arch/arm/boot/dts/sc589-ezkit.dts
++++ b/arch/arm/boot/dts/sc589-ezkit.dts
+@@ -139,6 +139,11 @@
+ 		gpio-controller;
+ 		#gpio-cells = <2>;
+ 		reg = <0x21>;
++		adau1962-rst {
++			gpio-hog;
++			gpios = <8 0>;
++			output-low;
++		};
+ 	};
+ 	ssw1: gpio@0x22 {
+ 		compatible = "microchip,mcp23017";
+-- 
+2.11.0
+

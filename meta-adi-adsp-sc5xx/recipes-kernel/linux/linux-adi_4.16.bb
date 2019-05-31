@@ -14,5 +14,7 @@ SRC_URI += " \
 	file://0002-Add-NFS-client-file-system-support-in-to-4.16-kernel.patch \
 	file://0003-Add-in-SC58x-SC57x-CPU-freq-driver.patch \
 	file://0004-Add-in-Blackfin-Hardware-CRC-crypto-driver.patch \
+	file://0005-Add-in-ADAU1962-ADAU1979-as-built-ins-instead-of-mod.patch \
+	file://0006-Pull-ADAU1962-enable-low-with-a-gpio-hog-so-that-it-.patch \
 "
 
