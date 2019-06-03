@@ -41,6 +41,8 @@ IMAGE_INSTALL = " \
     ncurses \
     iw \
     lrzsz \
+    linuxptp \
+    linux-adi-selftests \
     busybox-watchdog-init \
     dmacopy-module \
     gptimer-module \
