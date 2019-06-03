@@ -1,0 +1,58 @@
+From c85acca5bc7926c01bfaa3c3afa8b6cef37dcb07 Mon Sep 17 00:00:00 2001
+From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
+Date: Mon, 3 Jun 2019 13:11:07 -0400
+Subject: [PATCH] alsa-lib-05-add-adi-audio-codec-configs-to-cfg_files.patch
+
+---
+ src/conf/cards/Makefile.am | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/src/conf/cards/Makefile.am b/src/conf/cards/Makefile.am
+index 00999f0..da9d0b0 100644
+--- a/src/conf/cards/Makefile.am
++++ b/src/conf/cards/Makefile.am
+@@ -2,6 +2,12 @@ alsaconfigdir = @ALSA_CONFIG_DIR@
+ alsadir = $(alsaconfigdir)/cards
+ cfg_files = aliases.conf \
+ 	AACI.conf \
++	AD1980.conf \
++	AD1980-no-mmap.conf \
++	AD73322.asound.conf \
++	AD73322.conf \
++	ADAU1371.conf \
++	ADAU1373.conf \	
+ 	ATIIXP.conf \
+ 	ATIIXP-SPDMA.conf \
+ 	ATIIXP-MODEM.conf \
+@@ -12,6 +18,10 @@ cfg_files = aliases.conf \
+ 	Audigy2.conf \
+ 	Aureon51.conf \
+ 	Aureon71.conf \
++	bfin-ad1836.conf \
++	bfin-ad193x.conf \
++	bfin-ad73311.conf \
++	bfin-ssm2602.conf \
+ 	CA0106.conf \
+ 	CMI8338.conf \
+ 	CMI8338-SWIEC.conf \
+@@ -25,6 +35,7 @@ cfg_files = aliases.conf \
+ 	ENS1370.conf \
+ 	ENS1371.conf \
+ 	ES1968.conf \
++	eval-adau1x61.conf \
+ 	FM801.conf \
+ 	FWSpeakers.conf \
+ 	FireWave.conf \
+@@ -57,6 +68,9 @@ cfg_files = aliases.conf \
+ 	VIA8233A.conf \
+ 	VIA8237.conf \
+ 	VX222.conf \
++	AD1980.conf AD1980-no-mmap.conf AD73322.asound.conf \
++	AD73322.conf ADAU1371.conf ADAU1373.conf eval-adau1x61.conf \
++	bfin-ad1836.conf bfin-ad193x.conf bfin-ad73311.conf bfin-ssm2602.conf \
+ 	VXPocket.conf \
+ 	VXPocket440.conf
+ 
+-- 
+2.11.0
+
