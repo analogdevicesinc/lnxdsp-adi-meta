@@ -16,5 +16,10 @@ SRC_URI += " \
 	file://0004-Add-in-Blackfin-Hardware-CRC-crypto-driver.patch \
 	file://0005-Add-in-ADAU1962-ADAU1979-as-built-ins-instead-of-mod.patch \
 	file://0006-Pull-ADAU1962-enable-low-with-a-gpio-hog-so-that-it-.patch \
+	file://0007-Add-in-machine-specific-SRAM-files-for-SC57x-SC58x-b.patch \
 "
 
+#If running DMA tests, then include the following patch as well (this disables CONFIG_ICC and enables CONFIG_ARCH_SRAM_ALLOC):
+#SRC_URI += " \
+#	file://Remove-CONFIG_ICC-and-use-CONFIG_ARCH_SRAM_ALLOC-for.patch \
+#"

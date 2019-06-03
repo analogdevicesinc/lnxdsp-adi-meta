@@ -42,6 +42,7 @@ IMAGE_INSTALL = " \
     iw \
     lrzsz \
     busybox-watchdog-init \
+    dmacopy-module \
 "
 
 COMPATIBLE_MACHINE = "(adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini)"
