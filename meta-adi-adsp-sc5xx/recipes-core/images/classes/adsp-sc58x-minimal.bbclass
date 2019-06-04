@@ -22,6 +22,13 @@ FILE_SYSTEM_TOOLS = "\
 	e2fsprogs \
 "
 
+TEST_MODULES = "\
+    dmacopy-module \
+    gptimer-module \
+    l2-alloc-module \
+    l2-module \
+"
+
 IMAGE_INSTALL = " \
     packagegroup-core-boot \
     packagegroup-base \
@@ -30,7 +37,7 @@ IMAGE_INSTALL = " \
     ${TOUCHSCREEN} \
     ${SQLITE} \
     ${FILE_SYSTEM_TOOLS} \
-    linuxptp \
+    ${TEST_MODULES} \
     openssh \
     openssl \
     cpufrequtils \
@@ -44,8 +51,6 @@ IMAGE_INSTALL = " \
     linuxptp \
     linux-adi-selftests \
     busybox-watchdog-init \
-    dmacopy-module \
-    gptimer-module \
 "
 
 COMPATIBLE_MACHINE = "(adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini)"
