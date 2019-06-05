@@ -19,6 +19,7 @@ SRC_URI += " \
     file://0002-uboot-tools-nommu.patch \
     file://0003-Support-CONFIG_CMD_BOOTZ-for-kernel-image.patch \
     file://0004-Change-u-boot-environment-to-use-zImage-Yocto-s-defa.patch \
+    file://0005-Update-initramfs-boot-sequence-for-Yocto.patch \
     ${ETHERNET_PATCH} \
     ${WATCHDOG_PATCH} \
 "
