@@ -33,6 +33,7 @@ TESTING = "\
     ${TEST_MODULES} \
     linux-adi-selftests \
     linkport-test \
+    rtc-test \
 "
 
 IMAGE_INSTALL = " \
