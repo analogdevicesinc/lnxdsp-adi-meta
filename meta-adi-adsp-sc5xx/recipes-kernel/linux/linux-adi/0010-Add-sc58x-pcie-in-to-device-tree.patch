@@ -1,0 +1,40 @@
+From ec6d54173cb732479a87bc6311ec35ac573e7f88 Mon Sep 17 00:00:00 2001
+From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
+Date: Wed, 5 Jun 2019 09:02:05 -0400
+Subject: [PATCH] Add sc58x,pcie in to device tree
+
+---
+ arch/arm/boot/dts/sc589-ezkit.dts | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+diff --git a/arch/arm/boot/dts/sc589-ezkit.dts b/arch/arm/boot/dts/sc589-ezkit.dts
+index 7eec07ce4ba9..788d9848251c 100644
+--- a/arch/arm/boot/dts/sc589-ezkit.dts
++++ b/arch/arm/boot/dts/sc589-ezkit.dts
+@@ -42,6 +42,23 @@
+ 			adi,codec = <&adau1962>, <&adau1979>;
+ 		};
+ 
++		pcie@0x310B8000 {
++			compatible = "sc58x,pcie";
++			reg = <0x310B8000 0x4000>;
++			#address-cells = <3>;
++			#size-cells = <2>;
++			device_type = "pci";
++
++			interrupt-parent = <&gic>;
++			interrupts = <0 244 0>;	/* status interrupt */
++			#interrupt-cells = <1>;
++
++			bus-range = <0x00 0xff>;
++			ranges = <0x00000000 0 0x5f000000 0x5f000000 0 0x01000000   /* configuration space */
++				  0x82000000 0 0x5e000000 0x5e000000 0 0x01000000   /* non-prefetchable memory */
++				  0xc2000000 0 0x50000000 0x50000000 0 0x0e000000>; /* prefetchable memory */
++		};
++
+ 		lcd@0 {
+ 			compatible = "sc58x,lcd";
+ 			reg = <0x31040000 0xFF>;
+-- 
+2.11.0
+

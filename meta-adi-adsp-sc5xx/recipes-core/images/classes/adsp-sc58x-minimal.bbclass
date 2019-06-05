@@ -29,6 +29,12 @@ TEST_MODULES = "\
     l2-module \
 "
 
+TESTING = "\
+    ${TEST_MODULES} \
+    linux-adi-selftests \
+    linkport-test \
+"
+
 IMAGE_INSTALL = " \
     packagegroup-core-boot \
     packagegroup-base \
@@ -37,7 +43,7 @@ IMAGE_INSTALL = " \
     ${TOUCHSCREEN} \
     ${SQLITE} \
     ${FILE_SYSTEM_TOOLS} \
-    ${TEST_MODULES} \
+    ${TESTING} \
     openssh \
     openssl \
     cpufrequtils \
@@ -49,8 +55,8 @@ IMAGE_INSTALL = " \
     iw \
     lrzsz \
     linuxptp \
-    linux-adi-selftests \
     busybox-watchdog-init \
+    pciutils \
 "
 
 COMPATIBLE_MACHINE = "(adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini)"
