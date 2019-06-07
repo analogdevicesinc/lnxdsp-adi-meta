@@ -38,19 +38,8 @@ IMAGE_INSTALL += " \
 	netperf \
 	pound \
 	lighttpd \
-"
-
-TODO = " \
-	mtd \
+	mtd-utils \
 	pciutils \
 	freetype \
 	version \
 "
-
-#BR2_TARGET_ROOTFS_JFFS2=y
-#BR2_TARGET_ROOTFS_JFFS2_CUSTOM=y
-#BR2_TARGET_ROOTFS_JFFS2_CUSTOM_PAGESIZE=0x100
-#BR2_TARGET_ROOTFS_JFFS2_CUSTOM_EBSIZE=0x1000
-#BR2_TARGET_ROOTFS_UBIFS=y
-
-

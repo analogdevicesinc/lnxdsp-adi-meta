@@ -57,7 +57,6 @@ IMAGE_INSTALL = " \
     lrzsz \
     linuxptp \
     busybox-watchdog-init \
-    pciutils \
 "
 
 COMPATIBLE_MACHINE = "(adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini)"
