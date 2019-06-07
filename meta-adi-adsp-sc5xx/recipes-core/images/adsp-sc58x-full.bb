@@ -36,13 +36,14 @@ IMAGE_INSTALL += " \
 	${MPLAYER} \
 	can-utils \
 	netperf \
+	pound \
+	lighttpd \
 "
 
 TODO = " \
 	mtd \
 	pciutils \
 	freetype \
-	pound \
 	version \
 "
 
