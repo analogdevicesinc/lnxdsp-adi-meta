@@ -42,4 +42,5 @@ IMAGE_INSTALL += " \
 	pciutils \
 	freetype \
 	version \
+	bonnie++ \
 "
