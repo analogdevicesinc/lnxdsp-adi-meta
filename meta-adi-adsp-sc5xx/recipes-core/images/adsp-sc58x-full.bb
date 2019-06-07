@@ -39,6 +39,7 @@ IMAGE_INSTALL += " \
 	pound \
 	lighttpd \
 	mtd-utils \
+	mtd-utils-ubifs \
 	pciutils \
 	freetype \
 	version \
