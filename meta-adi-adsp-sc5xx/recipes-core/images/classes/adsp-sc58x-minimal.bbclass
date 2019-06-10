@@ -53,7 +53,7 @@ IMAGE_INSTALL = " \
     giflib \
     libtirpc \
     ncurses \
-    iw \
+    wireless-tools \
     lrzsz \
     linuxptp \
     busybox-watchdog-init \

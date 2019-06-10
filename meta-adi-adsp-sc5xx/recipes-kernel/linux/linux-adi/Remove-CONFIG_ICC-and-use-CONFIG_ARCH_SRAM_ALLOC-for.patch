@@ -3,7 +3,7 @@ From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
 Date: Mon, 3 Jun 2019 09:44:35 -0400
 Subject: [PATCH] Remove CONFIG_ICC and use CONFIG_ARCH_SRAM_ALLOC, for running
  DMA testing
-
+ 
 ---
  arch/arm/configs/sc573-ezkit_defconfig | 3 +--
  arch/arm/configs/sc584-ezkit_defconfig | 3 +--
@@ -12,7 +12,7 @@ Subject: [PATCH] Remove CONFIG_ICC and use CONFIG_ARCH_SRAM_ALLOC, for running
  4 files changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/arch/arm/configs/sc573-ezkit_defconfig b/arch/arm/configs/sc573-ezkit_defconfig
-index 70ffc4ef3660..ef32a386c4a8 100644
+index 613f96ac1b5b..854a63d733f1 100644
 --- a/arch/arm/configs/sc573-ezkit_defconfig
 +++ b/arch/arm/configs/sc573-ezkit_defconfig
 @@ -21,6 +21,7 @@ CONFIG_MODULE_UNLOAD=y
@@ -23,17 +23,17 @@ index 70ffc4ef3660..ef32a386c4a8 100644
  CONFIG_ARM_THUMBEE=y
  CONFIG_PREEMPT_VOLUNTARY=y
  CONFIG_HZ_250=y
-@@ -105,8 +106,6 @@ CONFIG_SND_SC5XX_PCM=y
- CONFIG_SND_SC5XX_ADAU1979=y
+@@ -109,8 +110,6 @@ CONFIG_SND_SC5XX_ADAU1979=y
  CONFIG_SND_SC5XX_ADAU1962=y
  CONFIG_STAGING=y
+ CONFIG_R8712U=y
 -CONFIG_ICC_DRIVER=y
 -CONFIG_ICC=y
  # CONFIG_IOMMU_SUPPORT is not set
  CONFIG_EXT4_FS=y
  # CONFIG_DNOTIFY is not set
 diff --git a/arch/arm/configs/sc584-ezkit_defconfig b/arch/arm/configs/sc584-ezkit_defconfig
-index 96de252f71e8..5a5a07396bd9 100644
+index 46888dc1a6de..79a8f585e448 100644
 --- a/arch/arm/configs/sc584-ezkit_defconfig
 +++ b/arch/arm/configs/sc584-ezkit_defconfig
 @@ -21,6 +21,7 @@ CONFIG_MODULE_UNLOAD=y
@@ -44,17 +44,17 @@ index 96de252f71e8..5a5a07396bd9 100644
  CONFIG_ARM_THUMBEE=y
  CONFIG_PREEMPT_VOLUNTARY=y
  CONFIG_HZ_250=y
-@@ -106,8 +107,6 @@ CONFIG_SND_SC5XX_PCM=y
- CONFIG_SND_SC5XX_ADAU1979=y
+@@ -110,8 +111,6 @@ CONFIG_SND_SC5XX_ADAU1979=y
  CONFIG_SND_SC5XX_ADAU1962=y
  CONFIG_STAGING=y
+ CONFIG_R8712U=y
 -CONFIG_ICC_DRIVER=y
 -CONFIG_ICC=y
  # CONFIG_VIRTIO_MENU is not set
  # CONFIG_IOMMU_SUPPORT is not set
  CONFIG_EXT4_FS=y
 diff --git a/arch/arm/configs/sc589-ezkit_defconfig b/arch/arm/configs/sc589-ezkit_defconfig
-index 19f1821b6b0d..b2e5c9cd6f92 100644
+index e322093e63a3..00b573e8bf28 100644
 --- a/arch/arm/configs/sc589-ezkit_defconfig
 +++ b/arch/arm/configs/sc589-ezkit_defconfig
 @@ -23,6 +23,7 @@ CONFIG_MODULE_UNLOAD=y
@@ -65,17 +65,17 @@ index 19f1821b6b0d..b2e5c9cd6f92 100644
  CONFIG_ARM_THUMBEE=y
  CONFIG_PCI=y
  CONFIG_PCI_MSI=y
-@@ -120,8 +121,6 @@ CONFIG_MMC_DW_ADI=y
- CONFIG_RTC_CLASS=y
+@@ -125,8 +126,6 @@ CONFIG_RTC_CLASS=y
  CONFIG_RTC_DRV_ADI2=y
  CONFIG_STAGING=y
+ CONFIG_R8712U=y
 -CONFIG_ICC_DRIVER=y
 -CONFIG_ICC=y
  # CONFIG_IOMMU_SUPPORT is not set
  CONFIG_EXT4_FS=y
  # CONFIG_DNOTIFY is not set
 diff --git a/arch/arm/configs/sc589-mini_defconfig b/arch/arm/configs/sc589-mini_defconfig
-index 66084aa8ef48..372aaccfea7d 100644
+index 5c8e28cc1081..6937cc83ff2b 100644
 --- a/arch/arm/configs/sc589-mini_defconfig
 +++ b/arch/arm/configs/sc589-mini_defconfig
 @@ -23,6 +23,7 @@ CONFIG_MODULE_UNLOAD=y
@@ -88,4 +88,3 @@ index 66084aa8ef48..372aaccfea7d 100644
  CONFIG_PCI_MSI=y
 -- 
 2.11.0
-
