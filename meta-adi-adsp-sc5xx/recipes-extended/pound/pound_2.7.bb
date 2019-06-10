@@ -19,9 +19,15 @@ DEPENDS = "kernel-devsrc linux-adi openssl10 openssl10-native"
 TARGET_CFLAGS += " -I${STAGING_KERNEL_DIR}/include -DHAVE_SYSLOG_H=1 -DVERSION=${PV} -pthread -DNEED_STACK -DEMBED -D_REENTRANT -D_THREAD_SAFE -DUPER"
 
 do_configure_append(){
+
+	#Make sure we use OpenSSL 1.0.x to build these, otherwise compilation errors will be thrown
+	#May need to modify OPENSSL path below to make this more portable
+
 	cd ${B}
-	openssl dhparam -5 -C -noout 512 > ${B}/dh512.h
-	openssl dhparam -5 -C -noout 2048 > ${B}/dh2048.h
+	OPENSSL=${BASE_WORKDIR}/${SDKMACHINE}-linux/openssl10-native/*/*/apps/openssl
+	${OPENSSL} version > /home/nathan/opensslver
+	${OPENSSL} dhparam -5 -C -noout 512 > ${B}/dh512.h
+	${OPENSSL} dhparam -5 -C -noout 2048 > ${B}/dh2048.h
 }
 
 do_compile(){
