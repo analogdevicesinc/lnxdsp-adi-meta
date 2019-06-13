@@ -7,6 +7,8 @@ SRC_URI = " \
 	http://www.apsis.ch/pound/Pound-${PV}.tgz \
 	file://pound.cfg \
 	file://mycert.pem \
+	file://dh512.h \
+	file://dh2048.h \
 "
 
 SRC_URI[md5sum] = "ec8298aa3e4aee3ffbecdc0639d7f14a"
@@ -14,20 +16,13 @@ SRC_URI[sha256sum] = "cdfbf5a7e8dc8fbbe0d6c1e83cd3bd3f2472160aac65684bb01ef661c6
 
 S = "${WORKDIR}/Pound-${PV}"
 
-DEPENDS = "kernel-devsrc linux-adi openssl10 openssl10-native"
+DEPENDS = "kernel-devsrc linux-adi openssl10"
 
 TARGET_CFLAGS += " -I${STAGING_KERNEL_DIR}/include -DHAVE_SYSLOG_H=1 -DVERSION=${PV} -pthread -DNEED_STACK -DEMBED -D_REENTRANT -D_THREAD_SAFE -DUPER"
 
 do_configure_append(){
-
-	#Make sure we use OpenSSL 1.0.x to build these, otherwise compilation errors will be thrown
-	#May need to modify OPENSSL path below to make this more portable
-
-	cd ${B}
-	OPENSSL=${BASE_WORKDIR}/${SDKMACHINE}-linux/openssl10-native/*/*/apps/openssl
-	${OPENSSL} version > /home/nathan/opensslver
-	${OPENSSL} dhparam -5 -C -noout 512 > ${B}/dh512.h
-	${OPENSSL} dhparam -5 -C -noout 2048 > ${B}/dh2048.h
+	cp ${WORKDIR}/dh512.h ${B}/dh512.h
+	cp ${WORKDIR}/dh2048.h ${B}/dh2048.h
 }
 
 do_compile(){
