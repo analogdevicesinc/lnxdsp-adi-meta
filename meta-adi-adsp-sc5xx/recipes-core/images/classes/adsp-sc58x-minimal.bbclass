@@ -34,6 +34,7 @@ TESTING = "\
     linux-adi-selftests \
     linkport-test \
     rtc-test \
+    gadgetfs-test \
 "
 
 IMAGE_INSTALL = " \

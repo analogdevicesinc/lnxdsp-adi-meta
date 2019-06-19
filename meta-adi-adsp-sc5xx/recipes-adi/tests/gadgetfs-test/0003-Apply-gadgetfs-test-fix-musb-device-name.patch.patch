@@ -1,0 +1,34 @@
+From b985cd3cb59b3ca919c79667025ae962ca30ca47 Mon Sep 17 00:00:00 2001
+From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
+Date: Wed, 19 Jun 2019 09:01:39 -0400
+Subject: [PATCH 3/4] Apply gadgetfs-test-fix-musb-device-name.patch
+
+---
+ usb.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/gadgetfs-test/usb.c b/gadgetfs-test/usb.c
+index 24a443d..4b4bfe3 100644
+--- a/gadgetfs-test/usb.c
++++ b/gadgetfs-test/usb.c
+@@ -356,7 +356,7 @@ static int autoconfig ()
+ 		EP_STATUS_NAME = "ep3in-int";
+ 
+ 	/* Something based on Mentor USB Highspeed Dual-Role Controller */
+-	} else if (stat (DEVNAME = "musb_hdrc", &statb) == 0) {
++	} else if (stat (DEVNAME = "musb-hdrc", &statb) == 0) {
+ 		HIGHSPEED = 1;
+ 		device_desc.bcdDevice = __constant_cpu_to_le16 (0x0107),
+ 
+@@ -537,7 +537,7 @@ static int iso_autoconfig ()
+ 	/* Something based on Mentor USB Highspeed Dual-Role Controller;
+ 	 * assumes a core that doesn't include high bandwidth support.
+ 	 */
+-	} else if (stat (DEVNAME = "musb_hdrc", &statb) == 0) {
++	} else if (stat (DEVNAME = "musb-hdrc", &statb) == 0) {
+ 		unsigned	bInterval, wMaxPacketSize;
+ 
+ 		HIGHSPEED = 1;
+-- 
+2.11.0
+

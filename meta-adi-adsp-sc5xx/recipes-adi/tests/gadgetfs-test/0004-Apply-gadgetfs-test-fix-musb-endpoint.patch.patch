@@ -1,0 +1,70 @@
+From dd33f6bcf667ea8e24cad313be662e4653f40238 Mon Sep 17 00:00:00 2001
+From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
+Date: Wed, 19 Jun 2019 09:01:52 -0400
+Subject: [PATCH 4/4] Apply gadgetfs-test-fix-musb-endpoint.patch
+
+---
+ usb.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/gadgetfs-test/usb.c b/gadgetfs-test/usb.c
+index 4b4bfe3..e2ac43f 100644
+--- a/gadgetfs-test/usb.c
++++ b/gadgetfs-test/usb.c
+@@ -362,11 +362,11 @@ static int autoconfig ()
+ 
+ 		fs_source_desc.bEndpointAddress
+ 			= hs_source_desc.bEndpointAddress
+-			= USB_DIR_IN | 1;
+-		EP_IN_NAME = "ep1in";
++			= USB_DIR_IN | 5;
++		EP_IN_NAME = "ep5in";
+ 		fs_sink_desc.bEndpointAddress = hs_sink_desc.bEndpointAddress
+-			= USB_DIR_OUT | 1;
+-		EP_OUT_NAME = "ep1out";
++			= USB_DIR_OUT | 6;
++		EP_OUT_NAME = "ep6out";
+ 
+ 		source_sink_intf.bNumEndpoints = 3;
+ 		fs_status_desc.bEndpointAddress
+@@ -548,7 +548,7 @@ static int iso_autoconfig ()
+ 
+ 		fs_source_desc.bEndpointAddress
+ 			= hs_source_desc.bEndpointAddress
+-			= USB_DIR_IN | 1;
++			= USB_DIR_IN | 5;
+ 		fs_source_desc.bmAttributes
+ 			= hs_source_desc.bmAttributes
+ 			= USB_ENDPOINT_XFER_ISOC;
+@@ -556,11 +556,11 @@ static int iso_autoconfig ()
+ 		hs_source_desc.wMaxPacketSize = wMaxPacketSize;
+ 		fs_source_desc.bInterval = interval + 1;
+ 		hs_source_desc.bInterval = bInterval;
+-		EP_IN_NAME = "ep1in";
++		EP_IN_NAME = "ep5in";
+ 
+ 		fs_sink_desc.bEndpointAddress
+ 			= hs_sink_desc.bEndpointAddress
+-			= USB_DIR_OUT | 1;
++			= USB_DIR_OUT | 6;
+ 		fs_sink_desc.bmAttributes
+ 			= hs_sink_desc.bmAttributes
+ 			= USB_ENDPOINT_XFER_ISOC;
+@@ -568,12 +568,12 @@ static int iso_autoconfig ()
+ 		hs_sink_desc.wMaxPacketSize = wMaxPacketSize;
+ 		fs_sink_desc.bInterval = interval + 1;
+ 		hs_sink_desc.bInterval = bInterval;
+-		EP_OUT_NAME = "ep1out";
++		EP_OUT_NAME = "ep6out";
+ 
+ 		source_sink_intf.bNumEndpoints = 3;
+ 		fs_status_desc.bEndpointAddress
+ 			= hs_status_desc.bEndpointAddress
+-			= USB_DIR_IN | 11;
++			= USB_DIR_IN | 3;
+ 		EP_STATUS_NAME = "ep3";
+ 
+ 	/* Atmel AT91 processors, full speed only */
+-- 
+2.11.0
+

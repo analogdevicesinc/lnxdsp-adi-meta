@@ -21,6 +21,7 @@ SRC_URI += " \
 	file://0010-Add-sc58x-pcie-in-to-device-tree.patch \
 	file://0011-Add-in-wireless-support.patch \	
 	file://0012-Add-in-video-encoder-decoders-ADV7842-ADV7343-ADV751.patch \
+	file://0013-Add-in-Gadget-Audio-and-Gadget-Zero-drivers.patch \
 	${SRAM_ALLOC_PATCH} \
 "
 
