@@ -27,6 +27,7 @@ MPLAYER = " \
 	mpv \
 	video-test \
 	v4l2-video-test \
+	ffmpeg \
 "
 
 IMAGE_INSTALL += " \

@@ -1,0 +1,61 @@
+From 701908bfa04dc47b78eab8b39d948aa48e52e2f3 Mon Sep 17 00:00:00 2001
+From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
+Date: Tue, 18 Jun 2019 14:32:22 -0400
+Subject: [PATCH] Add in video encoder/decoders (ADV7842, ADV7343, ADV7511)
+
+---
+ arch/arm/configs/sc573-ezkit_defconfig | 13 +++++++++++++
+ arch/arm/configs/sc589-ezkit_defconfig | 13 +++++++++++++
+ 2 files changed, 26 insertions(+)
+
+diff --git a/arch/arm/configs/sc573-ezkit_defconfig b/arch/arm/configs/sc573-ezkit_defconfig
+index 854a63d733f1..7ad1a31f1658 100644
+--- a/arch/arm/configs/sc573-ezkit_defconfig
++++ b/arch/arm/configs/sc573-ezkit_defconfig
+@@ -86,6 +86,19 @@ CONFIG_PINCTRL_MCP23S08=y
+ # CONFIG_HWMON is not set
+ CONFIG_WATCHDOG=y
+ CONFIG_ADI_WATCHDOG=y
++CONFIG_MEDIA_SUPPORT=y
++CONFIG_MEDIA_CAMERA_SUPPORT=y
++CONFIG_MEDIA_CONTROLLER=y
++CONFIG_VIDEO_V4L2_SUBDEV_API=y
++CONFIG_V4L_PLATFORM_DRIVERS=y
++CONFIG_VIDEO_ADI_CAPTURE=y
++CONFIG_VIDEO_ADI_DISPLAY=y
++# CONFIG_MEDIA_SUBDRV_AUTOSELECT is not set
++CONFIG_VIDEO_ADV7842=y
++CONFIG_VIDEO_ADV7842_CEC=y
++CONFIG_VIDEO_ADV7343=y
++CONFIG_VIDEO_ADV7511=y
++CONFIG_VIDEO_ADV7511_CEC=y
+ CONFIG_USB=y
+ CONFIG_USB_STORAGE=y
+ CONFIG_USB_MUSB_HDRC=y
+diff --git a/arch/arm/configs/sc589-ezkit_defconfig b/arch/arm/configs/sc589-ezkit_defconfig
+index 00b573e8bf28..b97dccf4d7bb 100644
+--- a/arch/arm/configs/sc589-ezkit_defconfig
++++ b/arch/arm/configs/sc589-ezkit_defconfig
+@@ -96,6 +96,19 @@ CONFIG_PINCTRL_MCP23S08=y
+ CONFIG_WATCHDOG=y
+ CONFIG_ADI_WATCHDOG=y
+ CONFIG_MFD_SYSCON=y
++CONFIG_MEDIA_SUPPORT=y
++CONFIG_MEDIA_CAMERA_SUPPORT=y
++CONFIG_MEDIA_CONTROLLER=y
++CONFIG_VIDEO_V4L2_SUBDEV_API=y
++CONFIG_V4L_PLATFORM_DRIVERS=y
++CONFIG_VIDEO_ADI_CAPTURE=y
++CONFIG_VIDEO_ADI_DISPLAY=y
++# CONFIG_MEDIA_SUBDRV_AUTOSELECT is not set
++CONFIG_VIDEO_ADV7842=y
++CONFIG_VIDEO_ADV7842_CEC=y
++CONFIG_VIDEO_ADV7343=y
++CONFIG_VIDEO_ADV7511=y
++CONFIG_VIDEO_ADV7511_CEC=y
+ # CONFIG_VGA_ARB is not set
+ CONFIG_FB=m
+ CONFIG_FB_ADI_NL8048=m
+-- 
+2.11.0
+
