@@ -35,6 +35,7 @@ TESTING = "\
     linkport-test \
     rtc-test \
     gadgetfs-test \
+    ltp \
 "
 
 IMAGE_INSTALL = " \
@@ -58,6 +59,7 @@ IMAGE_INSTALL = " \
     lrzsz \
     linuxptp \
     busybox-watchdog-init \
+    util-linux \
 "
 
 COMPATIBLE_MACHINE = "(adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini)"
