@@ -1,4 +1,4 @@
-From c37133ecf61413dd70c139f36ad686c4b4026736 Mon Sep 17 00:00:00 2001
+From 843f44ec95c128751c28471639c68d6bacabb2ea Mon Sep 17 00:00:00 2001
 From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
 Date: Wed, 5 Jun 2019 08:24:32 -0400
 Subject: [PATCH] Add in SC58X PCI driver
@@ -44,7 +44,7 @@ index 3b1059190867..552f10bd16c8 100644
  obj-$(CONFIG_PCI_HOST_COMMON) += pci-host-common.o
 diff --git a/drivers/pci/host/pci-sc58x.c b/drivers/pci/host/pci-sc58x.c
 new file mode 100644
-index 000000000000..daf2475205fc
+index 000000000000..7a8bac1cc883
 --- /dev/null
 +++ b/drivers/pci/host/pci-sc58x.c
 @@ -0,0 +1,754 @@
@@ -802,6 +802,3 @@ index 000000000000..daf2475205fc
 +MODULE_DESCRIPTION("Analog Devices PCIE controller driver");
 +MODULE_AUTHOR("Scott Jiang <Scott.Jiang.Linux@gmail.com>");
 +MODULE_LICENSE("GPL v2");
--- 
-2.11.0
-

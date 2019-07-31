@@ -48,7 +48,7 @@ static void *xmalloc(size_t size, char *alloc_type)
 	if (!strncmp(alloc_type, "SDRAM", 5)) {
 		ret = kmalloc(size + (canary_size * 2) + sizeof(size), GFP_KERNEL);
 	} else if (!strncmp(alloc_type, "SRAM", 4)) {
-		ret = sram_alloc(size + (canary_size * 2) + sizeof(size));
+		ret = 0;//sram_alloc(size + (canary_size * 2) + sizeof(size));
 	} else {
 		printk(KERN_ALERT "FAIL: wrong alloc_type %s for xmalloc\n", alloc_type);
 		return NULL;
@@ -87,7 +87,7 @@ static void xfree(void *ptr, char *alloc_type)
 	if (!strncmp(alloc_type, "SDRAM", 5)) {
 		kfree(ret);
 	} else if (!strncmp(alloc_type, "SRAM", 4)) {
-		sram_free(ret);
+		//sram_free(ret);
 	} else {
 		printk(KERN_ALERT "FAIL: wrong alloc_type %s for xfree\n", alloc_type);
 		return;
@@ -163,7 +163,7 @@ int sram_test(int size)
 	int ret = 0;
 	char *src = xmalloc(size, "SDRAM");
 	char *dst = xmalloc(size, "SDRAM");
-        char *sram = sram_alloc(size);
+    char *sram = 0;//sram_alloc(size);
 
 	printk(KERN_ALERT "TEST:  --- SRAM (L2) <-> SDRAM w/%i bytes ---\n", size);
 
@@ -187,7 +187,7 @@ int sram_test(int size)
 
 	xfree(src, "SDRAM");
 	xfree(dst, "SDRAM");
-	sram_free(sram);
+	//sram_free(sram);
 
 	return ret;
 }
@@ -236,7 +236,7 @@ int insram_test(int size)
 	int ret = 0;
 	char *src = xmalloc(size, "SRAM");
 	char *dst = xmalloc(size, "SRAM");
-	char *sram = sram_alloc(size);
+	char *sram = 0;//sram_alloc(size);
 
 	printk(KERN_ALERT "TEST:  --- SRAM (L2) <-> SRAM (L2) w/%i bytes ---\n", size);
 
@@ -260,7 +260,7 @@ int insram_test(int size)
 
 	xfree(src, "SRAM");
 	xfree(dst, "SRAM");
-	sram_free(sram);
+	//sram_free(sram);
 
 	return ret;
 }

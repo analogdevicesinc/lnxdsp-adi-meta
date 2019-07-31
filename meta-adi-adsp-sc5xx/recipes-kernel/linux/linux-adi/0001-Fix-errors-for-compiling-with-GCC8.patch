@@ -1,4 +1,4 @@
-From ad46b41cd0f0b13540de62ed2082222096fde070 Mon Sep 17 00:00:00 2001
+From 1a8473e55b2d481303adc7bd7860e385303c62fe Mon Sep 17 00:00:00 2001
 From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
 Date: Mon, 6 May 2019 09:20:50 -0400
 Subject: [PATCH] Fix errors for compiling with GCC8
@@ -8,8 +8,7 @@ Subject: [PATCH] Fix errors for compiling with GCC8
  arch/arm/mach-sc58x/clock.c               | 2 +-
  arch/arm/mach-sc58x/include/mach/clkdev.h | 2 +-
  drivers/mmc/host/dw_mmc-pltfm.h           | 2 ++
- drivers/net/can/sc5xx_can.c               | 2 +-
- 5 files changed, 6 insertions(+), 4 deletions(-)
+ 4 files changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/arch/arm/mach-sc57x/include/mach/clkdev.h b/arch/arm/mach-sc57x/include/mach/clkdev.h
 index 977c9fd974e0..2d5e52ca7b1d 100644
@@ -63,19 +62,3 @@ index 68e7fd2f6148..ae0efe901c80 100644
  extern int dw_mci_pltfm_register(struct platform_device *pdev,
  				const struct dw_mci_drv_data *drv_data);
  extern int dw_mci_pltfm_remove(struct platform_device *pdev);
-diff --git a/drivers/net/can/sc5xx_can.c b/drivers/net/can/sc5xx_can.c
-index 395f265b8740..93e91a3e05e4 100644
---- a/drivers/net/can/sc5xx_can.c
-+++ b/drivers/net/can/sc5xx_can.c
-@@ -672,7 +672,7 @@ static int sc5xx_can_probe(struct platform_device *pdev)
- 
- 	clk_source = devm_clk_get(&pdev->dev, "can");
- 	if (IS_ERR(clk_source)) {
--		dev_err(dev, "can not get can clock\n");
-+		dev_err(&pdev->dev, "can not get can clock\n");
- 		return PTR_ERR(clk_source);
- 	}
- 	priv->can.clock.freq = clk_get_rate(clk_source);
--- 
-2.11.0
-

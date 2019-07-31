@@ -1,4 +1,4 @@
-From ec6d54173cb732479a87bc6311ec35ac573e7f88 Mon Sep 17 00:00:00 2001
+From 537f5e3c06bf97be353f2ff5852656b2a8d411d9 Mon Sep 17 00:00:00 2001
 From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
 Date: Wed, 5 Jun 2019 09:02:05 -0400
 Subject: [PATCH] Add sc58x,pcie in to device tree
@@ -8,10 +8,10 @@ Subject: [PATCH] Add sc58x,pcie in to device tree
  1 file changed, 17 insertions(+)
 
 diff --git a/arch/arm/boot/dts/sc589-ezkit.dts b/arch/arm/boot/dts/sc589-ezkit.dts
-index 7eec07ce4ba9..788d9848251c 100644
+index 45e2a0181a9b..909b9822fd0f 100644
 --- a/arch/arm/boot/dts/sc589-ezkit.dts
 +++ b/arch/arm/boot/dts/sc589-ezkit.dts
-@@ -42,6 +42,23 @@
+@@ -72,6 +72,23 @@
  			adi,codec = <&adau1962>, <&adau1979>;
  		};
  
@@ -35,6 +35,3 @@ index 7eec07ce4ba9..788d9848251c 100644
  		lcd@0 {
  			compatible = "sc58x,lcd";
  			reg = <0x31040000 0xFF>;
--- 
-2.11.0
-

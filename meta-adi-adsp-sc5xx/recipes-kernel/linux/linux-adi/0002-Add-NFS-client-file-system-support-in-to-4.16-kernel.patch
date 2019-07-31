@@ -1,4 +1,4 @@
-From 17327307bfddff768f3172bcfaea8de0bba20e4f Mon Sep 17 00:00:00 2001
+From efbf9395c67eef62b7a4b80ffbaaa2534dcee898 Mon Sep 17 00:00:00 2001
 From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
 Date: Tue, 7 May 2019 13:56:27 -0400
 Subject: [PATCH] Add NFS client / file system support in to 4.16 kernel
@@ -90,6 +90,3 @@ index e8d3aeaabc62..bbbcaa9c1a44 100644
  CONFIG_NLS_CODEPAGE_437=y
  CONFIG_NLS_CODEPAGE_936=y
  CONFIG_NLS_CODEPAGE_950=y
--- 
-2.11.0
-

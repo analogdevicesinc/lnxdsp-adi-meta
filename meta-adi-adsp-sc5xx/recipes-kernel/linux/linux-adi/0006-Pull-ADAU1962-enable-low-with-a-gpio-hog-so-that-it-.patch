@@ -1,63 +1,88 @@
-From d52373b7cc787533e9460965f4c0374f6d52aacb Mon Sep 17 00:00:00 2001
+From cb5c0c5c7aa7f156988ef7043b8fb0da67379d1a Mon Sep 17 00:00:00 2001
 From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
 Date: Fri, 31 May 2019 13:24:35 -0400
 Subject: [PATCH] Pull ADAU1962-enable low with a gpio-hog, so that it is
  properly enabled upon boot from Linux
 
 ---
- arch/arm/boot/dts/sc573-ezkit.dts | 5 +++++
- arch/arm/boot/dts/sc584-ezkit.dts | 5 +++++
+ arch/arm/boot/dts/sc573-ezkit.dts | 7 +++++--
+ arch/arm/boot/dts/sc584-ezkit.dts | 7 +++++--
  arch/arm/boot/dts/sc589-ezkit.dts | 5 +++++
- 3 files changed, 15 insertions(+)
+ 3 files changed, 15 insertions(+), 4 deletions(-)
 
 diff --git a/arch/arm/boot/dts/sc573-ezkit.dts b/arch/arm/boot/dts/sc573-ezkit.dts
-index 2c4c06cff0cb..5295fb5d82c4 100644
+index ec1699711b95..eac1516e792c 100644
 --- a/arch/arm/boot/dts/sc573-ezkit.dts
 +++ b/arch/arm/boot/dts/sc573-ezkit.dts
-@@ -110,6 +110,11 @@
+@@ -151,6 +151,11 @@
  		gpio-controller;
  		#gpio-cells = <2>;
  		reg = <0x21>;
 +		adau1962-rst {
 +			gpio-hog;
-+			gpios = <8 0>;
++			gpios = <8 0>, <9 0>;
 +			output-low;
 +		};
  	};
  	ssw1: gpio@0x22 {
  		compatible = "microchip,mcp23017";
+@@ -161,13 +166,11 @@
+ 	adau1979: adau1979@0x11 {
+ 		compatible = "adi,adau1977";
+ 		reg = <0x11>;
+-		enable-pin = <&ssw0 9 GPIO_ACTIVE_LOW>;	/* ADAU1979_EN */
+ 		reset-gpio = <&gpa 7 0>;
+ 	};
+ 	adau1962: adau1962@0x4 {
+ 		compatible = "adi,adau1962";
+ 		reg = <0x4>;
+-		enable-pin = <&ssw0 8 GPIO_ACTIVE_LOW>;	/* ADAU1962_EN */
+ 		reset-gpio = <&gpa 6 0>;
+ 	};
+ };
 diff --git a/arch/arm/boot/dts/sc584-ezkit.dts b/arch/arm/boot/dts/sc584-ezkit.dts
-index 5a18d009d87b..93df1e896685 100644
+index 004ff126513f..ba1b8f1ebb09 100644
 --- a/arch/arm/boot/dts/sc584-ezkit.dts
 +++ b/arch/arm/boot/dts/sc584-ezkit.dts
-@@ -140,6 +140,11 @@
+@@ -182,6 +182,11 @@
  		gpio-controller;
  		#gpio-cells = <2>;
  		reg = <0x21>;
 +		adau1962-rst {
 +			gpio-hog;
-+			gpios = <8 0>;
++			gpios = <8 0>, <9 0>;
 +			output-low;
 +		};
  	};
  	ssw1: gpio@0x22 {
  		compatible = "microchip,mcp23017";
+@@ -192,13 +197,11 @@
+ 	adau1979: adau1979@0x11 {
+ 		compatible = "adi,adau1977";
+ 		reg = <0x11>;
+-		enable-pin = <&ssw0 9 GPIO_ACTIVE_LOW>;	/* ADAU1979_EN */
+ 		reset-gpio = <&gpa 14 0>;
+ 	};
+ 	adau1962: adau1962@0x4 {
+ 		compatible = "adi,adau1962";
+ 		reg = <0x4>;
+-		enable-pin = <&ssw0 8 GPIO_ACTIVE_LOW>;	/* ADAU1962_EN */
+ 		reset-gpio = <&gpa 14 0>;
+ 	};
+ };
 diff --git a/arch/arm/boot/dts/sc589-ezkit.dts b/arch/arm/boot/dts/sc589-ezkit.dts
-index 13dc3bd30293..7eec07ce4ba9 100644
+index 7b4d6398ea89..45e2a0181a9b 100644
 --- a/arch/arm/boot/dts/sc589-ezkit.dts
 +++ b/arch/arm/boot/dts/sc589-ezkit.dts
-@@ -139,6 +139,11 @@
+@@ -173,6 +173,11 @@
  		gpio-controller;
  		#gpio-cells = <2>;
  		reg = <0x21>;
 +		adau1962-rst {
 +			gpio-hog;
-+			gpios = <8 0>;
++			gpios = <8 0>, <9 0>;
 +			output-low;
 +		};
  	};
  	ssw1: gpio@0x22 {
  		compatible = "microchip,mcp23017";
--- 
-2.11.0
-

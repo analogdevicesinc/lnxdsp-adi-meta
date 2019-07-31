@@ -1,0 +1,66 @@
+From 5410a32345367de81475fa272c342a53050f242b Mon Sep 17 00:00:00 2001
+From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
+Date: Mon, 13 May 2019 15:10:05 -0400
+Subject: [PATCH] Add in ADI Hardware CRC crypto driver
+
+---
+ arch/arm/configs/sc573-ezkit_defconfig | 4 ++++
+ arch/arm/configs/sc584-ezkit_defconfig | 5 +++--
+ arch/arm/configs/sc589-ezkit_defconfig | 3 +++
+ arch/arm/configs/sc589-mini_defconfig  | 3 +++
+ 4 files changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/configs/sc573-ezkit_defconfig b/arch/arm/configs/sc573-ezkit_defconfig
+index e26fa4608fd3..a501ee7bdcd2 100644
+--- a/arch/arm/configs/sc573-ezkit_defconfig
++++ b/arch/arm/configs/sc573-ezkit_defconfig
+@@ -133,4 +133,8 @@ CONFIG_DEBUG_PAGEALLOC=y
+ # CONFIG_FTRACE is not set
+ CONFIG_DEBUG_LL=y
+ CONFIG_EARLY_PRINTK=y
++CONFIG_CRYPTO_TEST=m
++CONFIG_CRYPTO_HMAC=y
++CONFIG_CRYPTO_ANSI_CPRNG=y
++CONFIG_CRYPTO_DEV_ADI_CRC=y
+ CONFIG_CRC_CCITT=y
+diff --git a/arch/arm/configs/sc584-ezkit_defconfig b/arch/arm/configs/sc584-ezkit_defconfig
+index 2983dbd3d6b8..1f889bc335bb 100644
+--- a/arch/arm/configs/sc584-ezkit_defconfig
++++ b/arch/arm/configs/sc584-ezkit_defconfig
+@@ -134,7 +134,8 @@ CONFIG_DEBUG_PAGEALLOC=y
+ # CONFIG_FTRACE is not set
+ CONFIG_DEBUG_LL=y
+ CONFIG_EARLY_PRINTK=y
+-CONFIG_CRYPTO_DEFLATE=y
+-CONFIG_CRYPTO_LZO=y
++CONFIG_CRYPTO_TEST=m
++CONFIG_CRYPTO_HMAC=y
+ CONFIG_CRYPTO_ANSI_CPRNG=y
++CONFIG_CRYPTO_DEV_ADI_CRC=y
+ CONFIG_CRC_CCITT=y
+diff --git a/arch/arm/configs/sc589-ezkit_defconfig b/arch/arm/configs/sc589-ezkit_defconfig
+index 7db20c820c9a..21b8bfe5ffd8 100644
+--- a/arch/arm/configs/sc589-ezkit_defconfig
++++ b/arch/arm/configs/sc589-ezkit_defconfig
+@@ -147,5 +147,8 @@ CONFIG_DEBUG_PAGEALLOC=y
+ # CONFIG_FTRACE is not set
+ CONFIG_DEBUG_LL=y
+ CONFIG_EARLY_PRINTK=y
++CONFIG_CRYPTO_TEST=m
++CONFIG_CRYPTO_HMAC=y
+ CONFIG_CRYPTO_ANSI_CPRNG=y
++CONFIG_CRYPTO_DEV_ADI_CRC=y
+ CONFIG_CRC_CCITT=y
+diff --git a/arch/arm/configs/sc589-mini_defconfig b/arch/arm/configs/sc589-mini_defconfig
+index b95d11410b1d..8c2b09fae3df 100644
+--- a/arch/arm/configs/sc589-mini_defconfig
++++ b/arch/arm/configs/sc589-mini_defconfig
+@@ -123,5 +123,8 @@ CONFIG_DEBUG_PAGEALLOC=y
+ # CONFIG_FTRACE is not set
+ CONFIG_DEBUG_LL=y
+ CONFIG_EARLY_PRINTK=y
++CONFIG_CRYPTO_TEST=m
++CONFIG_CRYPTO_HMAC=y
+ CONFIG_CRYPTO_ANSI_CPRNG=y
++CONFIG_CRYPTO_DEV_ADI_CRC=y
+ CONFIG_CRC_CCITT=y

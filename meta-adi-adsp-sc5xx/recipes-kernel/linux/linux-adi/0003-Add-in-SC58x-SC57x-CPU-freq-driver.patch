@@ -1,4 +1,4 @@
-From 2f0ef4fbfb60884af0cdc692bbdc4752ae3417a9 Mon Sep 17 00:00:00 2001
+From 677e9c25a3031de00b7c646615243f33121515fb Mon Sep 17 00:00:00 2001
 From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
 Date: Mon, 13 May 2019 13:51:32 -0400
 Subject: [PATCH] Add in SC58x/SC57x CPU freq driver
@@ -294,6 +294,3 @@ index 000000000000..3baa3a1a5607
 +
 +module_init(sc5xx_cpufreq_init);
 +module_exit(sc5xx_cpufreq_exit);
--- 
-2.11.0
-

@@ -1,4 +1,4 @@
-From efd6535383de0b4f20fa1db0e7c65ac376884118 Mon Sep 17 00:00:00 2001
+From fe216ff9607e8513e7faa3ef3236410f3a78c0cd Mon Sep 17 00:00:00 2001
 From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
 Date: Wed, 5 Jun 2019 08:26:51 -0400
 Subject: [PATCH] Enable CONFIG_PCI_SC58X=y
@@ -8,10 +8,10 @@ Subject: [PATCH] Enable CONFIG_PCI_SC58X=y
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/arm/configs/sc589-ezkit_defconfig b/arch/arm/configs/sc589-ezkit_defconfig
-index b2e5c9cd6f92..264b6911e51a 100644
+index ea8d4d0163e4..069ef0aa23e2 100644
 --- a/arch/arm/configs/sc589-ezkit_defconfig
 +++ b/arch/arm/configs/sc589-ezkit_defconfig
-@@ -27,6 +27,7 @@ CONFIG_ARCH_SRAM_ALLOC=y
+@@ -26,6 +26,7 @@ CONFIG_MACH_SC589_EZKIT=y
  CONFIG_ARM_THUMBEE=y
  CONFIG_PCI=y
  CONFIG_PCI_MSI=y
@@ -19,6 +19,3 @@ index b2e5c9cd6f92..264b6911e51a 100644
  CONFIG_PREEMPT_VOLUNTARY=y
  CONFIG_HZ_250=y
  # CONFIG_COMPACTION is not set
--- 
-2.11.0
-

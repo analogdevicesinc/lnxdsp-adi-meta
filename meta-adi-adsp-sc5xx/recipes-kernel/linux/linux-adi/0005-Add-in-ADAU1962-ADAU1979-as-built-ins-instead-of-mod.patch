@@ -1,4 +1,4 @@
-From 218ad37000712037ed380abddc77ee57d7dd3623 Mon Sep 17 00:00:00 2001
+From 08bc4aab029aa8c1241766da7a1470041dc624b1 Mon Sep 17 00:00:00 2001
 From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
 Date: Fri, 31 May 2019 08:28:18 -0400
 Subject: [PATCH] Add in ADAU1962/ADAU1979 as built ins instead of modules
@@ -10,7 +10,7 @@ Subject: [PATCH] Add in ADAU1962/ADAU1979 as built ins instead of modules
  3 files changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/arch/arm/configs/sc573-ezkit_defconfig b/arch/arm/configs/sc573-ezkit_defconfig
-index ffbcc7fce2dd..70ffc4ef3660 100644
+index a501ee7bdcd2..462dcc534c63 100644
 --- a/arch/arm/configs/sc573-ezkit_defconfig
 +++ b/arch/arm/configs/sc573-ezkit_defconfig
 @@ -101,9 +101,9 @@ CONFIG_MMC_DW_ADI=y
@@ -27,7 +27,7 @@ index ffbcc7fce2dd..70ffc4ef3660 100644
  CONFIG_ICC_DRIVER=y
  CONFIG_ICC=y
 diff --git a/arch/arm/configs/sc584-ezkit_defconfig b/arch/arm/configs/sc584-ezkit_defconfig
-index 40b2f433bc86..96de252f71e8 100644
+index 1f889bc335bb..fa4e9b8a19e3 100644
 --- a/arch/arm/configs/sc584-ezkit_defconfig
 +++ b/arch/arm/configs/sc584-ezkit_defconfig
 @@ -102,9 +102,9 @@ CONFIG_USB_G_HID=m
@@ -44,7 +44,7 @@ index 40b2f433bc86..96de252f71e8 100644
  CONFIG_ICC_DRIVER=y
  CONFIG_ICC=y
 diff --git a/arch/arm/configs/sc589-ezkit_defconfig b/arch/arm/configs/sc589-ezkit_defconfig
-index d0cc7c52a350..19f1821b6b0d 100644
+index 21b8bfe5ffd8..ea8d4d0163e4 100644
 --- a/arch/arm/configs/sc589-ezkit_defconfig
 +++ b/arch/arm/configs/sc589-ezkit_defconfig
 @@ -110,9 +110,9 @@ CONFIG_USB_G_HID=m
@@ -60,6 +60,3 @@ index d0cc7c52a350..19f1821b6b0d 100644
  CONFIG_MMC=y
  CONFIG_MMC_DW=y
  CONFIG_MMC_DW_ADI=y
--- 
-2.11.0
-

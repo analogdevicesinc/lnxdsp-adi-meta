@@ -1,29 +1,30 @@
-From c80b8e651741c1b3677bb9664609d5a048238aee Mon Sep 17 00:00:00 2001
+From 354262420ed3d1b6d94adb200dd6268c4f8ec967 Mon Sep 17 00:00:00 2001
 From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
 Date: Mon, 3 Jun 2019 09:44:35 -0400
-Subject: [PATCH] Remove CONFIG_ICC and use CONFIG_ARCH_SRAM_ALLOC, for running
- DMA testing
- 
+Subject: [PATCH] Remove CONFIG_ICC and use
+ CONFIG_ADI_SRAM_MMAP/CONFIG_ADI_SRAM_CONTROLLER, for running DMA testing
+
 ---
- arch/arm/configs/sc573-ezkit_defconfig | 3 +--
- arch/arm/configs/sc584-ezkit_defconfig | 3 +--
- arch/arm/configs/sc589-ezkit_defconfig | 3 +--
- arch/arm/configs/sc589-mini_defconfig  | 1 +
- 4 files changed, 4 insertions(+), 6 deletions(-)
+ arch/arm/configs/sc573-ezkit_defconfig | 4 ++--
+ arch/arm/configs/sc584-ezkit_defconfig | 4 ++--
+ arch/arm/configs/sc589-ezkit_defconfig | 4 ++--
+ arch/arm/configs/sc589-mini_defconfig  | 2 ++
+ 4 files changed, 8 insertions(+), 6 deletions(-)
 
 diff --git a/arch/arm/configs/sc573-ezkit_defconfig b/arch/arm/configs/sc573-ezkit_defconfig
-index 613f96ac1b5b..854a63d733f1 100644
+index c633154dcb51..8c2fe2c27315 100644
 --- a/arch/arm/configs/sc573-ezkit_defconfig
 +++ b/arch/arm/configs/sc573-ezkit_defconfig
-@@ -21,6 +21,7 @@ CONFIG_MODULE_UNLOAD=y
+@@ -21,6 +21,8 @@ CONFIG_MODULE_UNLOAD=y
  # CONFIG_IOSCHED_CFQ is not set
  CONFIG_ARCH_SC57X=y
  CONFIG_MACH_SC573_EZKIT=y
-+CONFIG_ARCH_SRAM_ALLOC=y
++CONFIG_ADI_SRAM_CONTROLLER=y
++CONFIG_ADI_SRAM_MMAP=y
  CONFIG_ARM_THUMBEE=y
  CONFIG_PREEMPT_VOLUNTARY=y
  CONFIG_HZ_250=y
-@@ -109,8 +110,6 @@ CONFIG_SND_SC5XX_ADAU1979=y
+@@ -125,8 +127,6 @@ CONFIG_SND_SC5XX_ADAU1979=y
  CONFIG_SND_SC5XX_ADAU1962=y
  CONFIG_STAGING=y
  CONFIG_R8712U=y
@@ -33,18 +34,19 @@ index 613f96ac1b5b..854a63d733f1 100644
  CONFIG_EXT4_FS=y
  # CONFIG_DNOTIFY is not set
 diff --git a/arch/arm/configs/sc584-ezkit_defconfig b/arch/arm/configs/sc584-ezkit_defconfig
-index 46888dc1a6de..79a8f585e448 100644
+index 2066971629d5..61845cc9b82b 100644
 --- a/arch/arm/configs/sc584-ezkit_defconfig
 +++ b/arch/arm/configs/sc584-ezkit_defconfig
-@@ -21,6 +21,7 @@ CONFIG_MODULE_UNLOAD=y
+@@ -21,6 +21,8 @@ CONFIG_MODULE_UNLOAD=y
  # CONFIG_IOSCHED_CFQ is not set
  CONFIG_ARCH_SC58X=y
  CONFIG_MACH_SC584_EZKIT=y
-+CONFIG_ARCH_SRAM_ALLOC=y
++CONFIG_ADI_SRAM_CONTROLLER=y
++CONFIG_ADI_SRAM_MMAP=y
  CONFIG_ARM_THUMBEE=y
  CONFIG_PREEMPT_VOLUNTARY=y
  CONFIG_HZ_250=y
-@@ -110,8 +111,6 @@ CONFIG_SND_SC5XX_ADAU1979=y
+@@ -113,8 +115,6 @@ CONFIG_SND_SC5XX_ADAU1979=y
  CONFIG_SND_SC5XX_ADAU1962=y
  CONFIG_STAGING=y
  CONFIG_R8712U=y
@@ -54,18 +56,19 @@ index 46888dc1a6de..79a8f585e448 100644
  # CONFIG_IOMMU_SUPPORT is not set
  CONFIG_EXT4_FS=y
 diff --git a/arch/arm/configs/sc589-ezkit_defconfig b/arch/arm/configs/sc589-ezkit_defconfig
-index e322093e63a3..00b573e8bf28 100644
+index f9835d89dafd..ed0d40cb2c08 100644
 --- a/arch/arm/configs/sc589-ezkit_defconfig
 +++ b/arch/arm/configs/sc589-ezkit_defconfig
-@@ -23,6 +23,7 @@ CONFIG_MODULE_UNLOAD=y
+@@ -23,6 +23,8 @@ CONFIG_MODULE_UNLOAD=y
  # CONFIG_IOSCHED_CFQ is not set
  CONFIG_ARCH_SC58X=y
  CONFIG_MACH_SC589_EZKIT=y
-+CONFIG_ARCH_SRAM_ALLOC=y
++CONFIG_ADI_SRAM_CONTROLLER=y
++CONFIG_ADI_SRAM_MMAP=y
  CONFIG_ARM_THUMBEE=y
  CONFIG_PCI=y
  CONFIG_PCI_MSI=y
-@@ -125,8 +126,6 @@ CONFIG_RTC_CLASS=y
+@@ -141,8 +143,6 @@ CONFIG_RTC_CLASS=y
  CONFIG_RTC_DRV_ADI2=y
  CONFIG_STAGING=y
  CONFIG_R8712U=y
@@ -75,16 +78,15 @@ index e322093e63a3..00b573e8bf28 100644
  CONFIG_EXT4_FS=y
  # CONFIG_DNOTIFY is not set
 diff --git a/arch/arm/configs/sc589-mini_defconfig b/arch/arm/configs/sc589-mini_defconfig
-index 5c8e28cc1081..6937cc83ff2b 100644
+index 4deb19e2d3cb..a840e43ac221 100644
 --- a/arch/arm/configs/sc589-mini_defconfig
 +++ b/arch/arm/configs/sc589-mini_defconfig
-@@ -23,6 +23,7 @@ CONFIG_MODULE_UNLOAD=y
+@@ -23,6 +23,8 @@ CONFIG_MODULE_UNLOAD=y
  # CONFIG_IOSCHED_CFQ is not set
  CONFIG_ARCH_SC58X=y
  CONFIG_MACH_SC589_MINI=y
-+CONFIG_ARCH_SRAM_ALLOC=y
++CONFIG_ADI_SRAM_CONTROLLER=y
++CONFIG_ADI_SRAM_MMAP=y
  CONFIG_ARM_THUMBEE=y
  CONFIG_PCI=y
  CONFIG_PCI_MSI=y
--- 
-2.11.0

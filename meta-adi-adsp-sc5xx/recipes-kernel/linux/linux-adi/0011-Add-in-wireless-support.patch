@@ -1,4 +1,4 @@
-From 3ac02219355401975bb5ac0d6f275d276bc37a15 Mon Sep 17 00:00:00 2001
+From 05c33f67e8a7c26ba553c5c639a57283645542f1 Mon Sep 17 00:00:00 2001
 From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
 Date: Mon, 10 Jun 2019 11:14:19 -0400
 Subject: [PATCH] Add in wireless support
@@ -11,7 +11,7 @@ Subject: [PATCH] Add in wireless support
  4 files changed, 17 insertions(+)
 
 diff --git a/arch/arm/configs/sc573-ezkit_defconfig b/arch/arm/configs/sc573-ezkit_defconfig
-index 70ffc4ef3660..613f96ac1b5b 100644
+index 462dcc534c63..f2cc4a68ac6a 100644
 --- a/arch/arm/configs/sc573-ezkit_defconfig
 +++ b/arch/arm/configs/sc573-ezkit_defconfig
 @@ -47,6 +47,9 @@ CONFIG_NETWORK_PHY_TIMESTAMPING=y
@@ -33,7 +33,7 @@ index 70ffc4ef3660..613f96ac1b5b 100644
  CONFIG_ICC=y
  # CONFIG_IOMMU_SUPPORT is not set
 diff --git a/arch/arm/configs/sc584-ezkit_defconfig b/arch/arm/configs/sc584-ezkit_defconfig
-index 96de252f71e8..46888dc1a6de 100644
+index fa4e9b8a19e3..f05323c14f1d 100644
 --- a/arch/arm/configs/sc584-ezkit_defconfig
 +++ b/arch/arm/configs/sc584-ezkit_defconfig
 @@ -47,6 +47,9 @@ CONFIG_NETWORK_PHY_TIMESTAMPING=y
@@ -55,7 +55,7 @@ index 96de252f71e8..46888dc1a6de 100644
  CONFIG_ICC=y
  # CONFIG_VIRTIO_MENU is not set
 diff --git a/arch/arm/configs/sc589-ezkit_defconfig b/arch/arm/configs/sc589-ezkit_defconfig
-index e37e1a9f2b8a..e322093e63a3 100644
+index 069ef0aa23e2..466cdc4ef62d 100644
 --- a/arch/arm/configs/sc589-ezkit_defconfig
 +++ b/arch/arm/configs/sc589-ezkit_defconfig
 @@ -54,6 +54,9 @@ CONFIG_NETWORK_PHY_TIMESTAMPING=y
@@ -77,7 +77,7 @@ index e37e1a9f2b8a..e322093e63a3 100644
  CONFIG_ICC=y
  # CONFIG_IOMMU_SUPPORT is not set
 diff --git a/arch/arm/configs/sc589-mini_defconfig b/arch/arm/configs/sc589-mini_defconfig
-index 66084aa8ef48..5c8e28cc1081 100644
+index 8c2b09fae3df..4deb19e2d3cb 100644
 --- a/arch/arm/configs/sc589-mini_defconfig
 +++ b/arch/arm/configs/sc589-mini_defconfig
 @@ -50,6 +50,9 @@ CONFIG_IP_PNP_BOOTP=y
@@ -99,5 +99,3 @@ index 66084aa8ef48..5c8e28cc1081 100644
  # CONFIG_VIRTIO_MENU is not set
  # CONFIG_IOMMU_SUPPORT is not set
  CONFIG_EXT4_FS=y
--- 
-2.11.0

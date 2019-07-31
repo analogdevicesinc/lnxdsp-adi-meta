@@ -1,4 +1,4 @@
-From ef831a1b999e1f2a249b6985cfbb81229e5beb14 Mon Sep 17 00:00:00 2001
+From eadfbe502f019c5d9f77f65e8cf8ea14208ee1c2 Mon Sep 17 00:00:00 2001
 From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
 Date: Wed, 19 Jun 2019 08:37:10 -0400
 Subject: [PATCH] Add in Gadget Audio and Gadget Zero drivers
@@ -10,10 +10,10 @@ Subject: [PATCH] Add in Gadget Audio and Gadget Zero drivers
  3 files changed, 9 insertions(+)
 
 diff --git a/arch/arm/configs/sc573-ezkit_defconfig b/arch/arm/configs/sc573-ezkit_defconfig
-index 7ad1a31f1658..f14febcf2b9d 100644
+index e9882afd4690..c633154dcb51 100644
 --- a/arch/arm/configs/sc573-ezkit_defconfig
 +++ b/arch/arm/configs/sc573-ezkit_defconfig
-@@ -106,6 +106,9 @@ CONFIG_USB_MUSB_ADI=y
+@@ -105,6 +105,9 @@ CONFIG_USB_MUSB_ADI=y
  CONFIG_USB_INVENTRA_DMA=y
  CONFIG_NOP_USB_XCEIV=y
  CONFIG_USB_GADGET=y
@@ -24,10 +24,10 @@ index 7ad1a31f1658..f14febcf2b9d 100644
  CONFIG_USB_GADGETFS=m
  CONFIG_USB_MASS_STORAGE=m
 diff --git a/arch/arm/configs/sc584-ezkit_defconfig b/arch/arm/configs/sc584-ezkit_defconfig
-index 79a8f585e448..f4c79c05254f 100644
+index f05323c14f1d..0922872c7cd5 100644
 --- a/arch/arm/configs/sc584-ezkit_defconfig
 +++ b/arch/arm/configs/sc584-ezkit_defconfig
-@@ -98,6 +98,9 @@ CONFIG_USB_MUSB_ADI=y
+@@ -97,6 +97,9 @@ CONFIG_USB_MUSB_ADI=y
  CONFIG_USB_INVENTRA_DMA=y
  CONFIG_NOP_USB_XCEIV=y
  CONFIG_USB_GADGET=y
@@ -38,10 +38,10 @@ index 79a8f585e448..f4c79c05254f 100644
  CONFIG_USB_GADGETFS=m
  CONFIG_USB_MASS_STORAGE=m
 diff --git a/arch/arm/configs/sc589-ezkit_defconfig b/arch/arm/configs/sc589-ezkit_defconfig
-index b97dccf4d7bb..c4b35544cec0 100644
+index 0cc6aa61da83..c9a2f148b2e6 100644
 --- a/arch/arm/configs/sc589-ezkit_defconfig
 +++ b/arch/arm/configs/sc589-ezkit_defconfig
-@@ -120,6 +120,9 @@ CONFIG_USB_MUSB_ADI=y
+@@ -119,6 +119,9 @@ CONFIG_USB_MUSB_ADI=y
  CONFIG_USB_INVENTRA_DMA=y
  CONFIG_NOP_USB_XCEIV=y
  CONFIG_USB_GADGET=y
@@ -51,6 +51,3 @@ index b97dccf4d7bb..c4b35544cec0 100644
  CONFIG_USB_ETH=m
  CONFIG_USB_GADGETFS=m
  CONFIG_USB_MASS_STORAGE=m
--- 
-2.11.0
-

@@ -24,22 +24,22 @@ static size_t size[10]={2,4,6,8,10,12,14,16,18,20};
 
 static int hello_l2_alloc_init(void)
 {
-        int i;
-        void *p;
-        for(i=0;i<10;i++) { 
-        p=sram_alloc(size[i]);
-	printk(KERN_ALERT "=====alloc address is %p =======\n",p);
-	}
-	printk(KERN_ALERT "======== hello_l2_alloc module finished. =======\n");
-	return 0;
+    int i;
+    void *p;
+    //for(i=0;i<10;i++) { 
+    //p=sram_alloc(size[i]);
+        printk(KERN_ALERT "=====alloc address is %p =======\n",p);
+    //}
+    printk(KERN_ALERT "======== hello_l2_alloc module finished. =======\n");
+    return 0;
 }
 
 static void hello_l2_alloc_exit(void)
 {
-    int ret;
-        ret=sram_free(&size);
-	printk(KERN_ALERT "Goodbye, cruel world\n");
-        return;
+    //int ret;
+    //ret=sram_free(&size);
+    printk(KERN_ALERT "Goodbye, cruel world\n");
+    return;
 }
 
 module_init(hello_l2_alloc_init);
