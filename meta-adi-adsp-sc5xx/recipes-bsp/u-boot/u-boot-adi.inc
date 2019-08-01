@@ -6,8 +6,8 @@ require ${COREBASE}/meta/recipes-bsp/u-boot/u-boot.inc
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/u-boot-adi:"
 
-UBOOT_GIT_URI = "git://git@src.timesys.com/services/analog-devices/analog-devices-yocto-bsp-porting/uboot.git"
-UBOOT_GIT_PROTOCOL = "ssh"
+UBOOT_GIT_URI = "git://bitbucket.analog.com/scm/dte/u-boot.git"
+UBOOT_GIT_PROTOCOL = "https"
 
 #No longer used, automatic detection
 #ETHERNET_PATCH = "${@ 'file://sc589-ezkit-2.0-eth-uboot.patch' if d.getVar('ANALOG_DEVICES_VERSION2_ETHERNET') else ''}"
