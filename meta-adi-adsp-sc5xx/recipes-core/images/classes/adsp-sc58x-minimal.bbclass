@@ -56,6 +56,7 @@ IMAGE_INSTALL = " \
     libtirpc \
     ncurses \
     wireless-tools \
+    linux-firmware-rtl8192su \
     lrzsz \
     linuxptp \
     busybox-watchdog-init \
