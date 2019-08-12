@@ -9,7 +9,9 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/u-boot-adi:"
 UBOOT_GIT_URI = "git://git@src.timesys.com/services/analog-devices/analog-devices-yocto-bsp-porting/uboot.git"
 UBOOT_GIT_PROTOCOL = "ssh"
 
-ETHERNET_PATCH = "${@ 'file://sc589-ezkit-2.0-eth-uboot.patch' if d.getVar('ANALOG_DEVICES_VERSION2_ETHERNET') else ''}"
+#No longer used, automatic detection
+#ETHERNET_PATCH = "${@ 'file://sc589-ezkit-2.0-eth-uboot.patch' if d.getVar('ANALOG_DEVICES_VERSION2_ETHERNET') else ''}"
+#SRC_URI += "${ETHERNET_PATCH}""
 
 WATCHDOG_PATCH = "${@ 'file://enable-ADI-watchdog.patch' if d.getVar('ANALOG_DEVICES_WATCHDOG') else ''}"
 
@@ -20,7 +22,6 @@ SRC_URI += " \
     file://0003-Support-CONFIG_CMD_BOOTZ-for-kernel-image.patch \
     file://0004-Change-u-boot-environment-to-use-zImage-Yocto-s-defa.patch \
     file://0005-Update-initramfs-boot-sequence-for-Yocto.patch \
-    ${ETHERNET_PATCH} \
     ${WATCHDOG_PATCH} \
 "
 
