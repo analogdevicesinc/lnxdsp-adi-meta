@@ -4,12 +4,12 @@ Date: Mon, 6 May 2019 10:05:28 -0400
 Subject: [PATCH] Remove mproc selection for Analog Devices processors
 
 ---
- arch/arm/cpu/armv7/sc57x/config.mk | 2 +-
- arch/arm/cpu/armv7/sc58x/config.mk | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/cpu/armv7/sc57x/config.mk |  2 +-
+ arch/arm/cpu/armv7/sc58x/config.mk | 13 +++++++++----
+ 2 files changed, 10 insertions(+), 5 deletions(-)
 
 diff --git a/arch/arm/cpu/armv7/sc57x/config.mk b/arch/arm/cpu/armv7/sc57x/config.mk
-index 0cd76a1f0..0f3a4d8c5 100644
+index 0cd76a1f0..bed5ebdd1 100644
 --- a/arch/arm/cpu/armv7/sc57x/config.mk
 +++ b/arch/arm/cpu/armv7/sc57x/config.mk
 @@ -40,5 +40,5 @@ LDR_FLAGS += $(LDR_FLAGS-$(CONFIG_SC_BOOT_MODE))
@@ -20,20 +20,29 @@ index 0cd76a1f0..0f3a4d8c5 100644
 +PLATFORM_RELFLAGS += -fno-stack-protector -std=gnu89 -mfpu=neon-vfpv4 -march=armv7-a
  endif
 diff --git a/arch/arm/cpu/armv7/sc58x/config.mk b/arch/arm/cpu/armv7/sc58x/config.mk
-index 2717269ac..01d986dfc 100644
+index 2717269ac..6eead2cc0 100644
 --- a/arch/arm/cpu/armv7/sc58x/config.mk
 +++ b/arch/arm/cpu/armv7/sc58x/config.mk
-@@ -40,9 +40,9 @@ LDR_FLAGS += $(LDR_FLAGS-$(CONFIG_SC_BOOT_MODE))
+@@ -38,11 +38,16 @@ LDR_FLAGS += $(LDR_FLAGS-y)
+ # Set some default LDR flags based on boot mode.
+ LDR_FLAGS += $(LDR_FLAGS-$(CONFIG_SC_BOOT_MODE))
  endif
++
  # Select the Analog Devices processor.
  ifeq ($(CONFIG_TARGET_SC589_EZKIT),y)
 -PLATFORM_RELFLAGS += -mproc=ADSP-SC589
-+PLATFORM_RELFLAGS +=  -fno-stack-protector -std=gnu89 -mfpu=neon-vfpv4 -march=armv7-a
- else
- ifeq ($(CONFIG_TARGET_SC584_EZKIT),y)
+-else
+-ifeq ($(CONFIG_TARGET_SC584_EZKIT),y)
 -PLATFORM_RELFLAGS += -mproc=ADSP-SC584
-+PLATFORM_RELFLAGS += -fno-stack-protector -std=gnu89 -mfpu=neon-vfpv4 -march=armv7-a
++PLATFORM_RELFLAGS +=  -fno-stack-protector -std=gnu89 -mfpu=neon-vfpv4 -march=armv7-a
  endif
++
++ifeq ($(CONFIG_TARGET_SC589_MINI),y)
++PLATFORM_RELFLAGS +=  -fno-stack-protector -std=gnu89 -mfpu=neon-vfpv4 -march=armv7-a
++endif
++
++ifeq ($(CONFIG_TARGET_SC584_EZKIT),y)
++PLATFORM_RELFLAGS += -fno-stack-protector -std=gnu89 -mfpu=neon-vfpv4 -march=armv7-a
  endif
 -- 
 2.11.0
