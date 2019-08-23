@@ -7,7 +7,7 @@ PR = "r0"
 
 BRANCH = "release/linuxaddin-1.3.0"
 
-SRCREV = "157419d06c78d01d3f61b4cadab83d2c535c0b96"
+SRCREV = "${AUTOREV}"
 
 SRC_URI += " \
 	file://0001-Remove-mproc-selection-for-Analog-Devices-processors.patch \
