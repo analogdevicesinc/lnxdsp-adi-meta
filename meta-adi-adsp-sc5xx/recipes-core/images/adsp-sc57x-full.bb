@@ -3,22 +3,37 @@ inherit adsp-sc57x-minimal
 SUMMARY = "Full image for Analog Devices ADSP-SC57x boards"
 LICENSE = "MIT"
 
-IMAGE_INSTALL += ""
+MCC = " \
+	libmcapi \
+	sc5xx-corecontrol \
+"
 
-#BR2_PACKAGE_ALSA_UTILS=y
-#BR2_PACKAGE_ALSA_UTILS_AMIXER=y
-#BR2_PACKAGE_ALSA_UTILS_APLAY=y
-#BR2_PACKAGE_ALSA_UTILS_SPEAKER_TEST=y
-#BR2_PACKAGE_OPROFILE=y
-#BR2_PACKAGE_WHETSTONE=y
-#BR2_PACKAGE_E2FSPROGS=y
-#BR2_PACKAGE_MTD=y
-#BR2_PACKAGE_FREETYPE=y
-#BR2_PACKAGE_VERSION=y
-#BR2_TARGET_ROOTFS_JFFS2=y
-#BR2_TARGET_ROOTFS_JFFS2_CUSTOM=y
-#BR2_TARGET_ROOTFS_JFFS2_CUSTOM_PAGESIZE=0x100
-#BR2_TARGET_ROOTFS_JFFS2_CUSTOM_EBSIZE=0x1000
+BLUETOOTH_AND_HEADSET = " \
+	alsa-utils \
+	alsa-lib \
+	dbus \
+	bluez5 \
+	packagegroup-tools-bluetooth \
+	expat \
+	play \
+"
 
+OPROFILE = " \
+	oprofile \
+"
 
-
+IMAGE_INSTALL += " \
+	${MCC} \
+	${BLUETOOTH_AND_HEADSET} \
+	${OPROFILE} \
+	can-utils \
+	netperf \
+	pound \
+	lighttpd \
+	mtd-utils \
+	mtd-utils-ubifs \
+	pciutils \
+	freetype \
+	version \
+	bonnie++ \
+"

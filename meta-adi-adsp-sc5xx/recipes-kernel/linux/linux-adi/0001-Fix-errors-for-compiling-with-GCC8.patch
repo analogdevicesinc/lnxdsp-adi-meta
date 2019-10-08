@@ -4,12 +4,49 @@ Date: Mon, 6 May 2019 09:20:50 -0400
 Subject: [PATCH] Fix errors for compiling with GCC8
 
 ---
+ arch/arm/mach-sc57x/clock.c               | 4 ++--
+ arch/arm/mach-sc57x/dma.c                 | 2 +-
  arch/arm/mach-sc57x/include/mach/clkdev.h | 2 +-
  arch/arm/mach-sc58x/clock.c               | 2 +-
  arch/arm/mach-sc58x/include/mach/clkdev.h | 2 +-
  drivers/mmc/host/dw_mmc-pltfm.h           | 2 ++
- 4 files changed, 5 insertions(+), 3 deletions(-)
+ 6 files changed, 8 insertions(+), 6 deletions(-)
 
+diff --git a/arch/arm/mach-sc57x/clock.c b/arch/arm/mach-sc57x/clock.c
+index e5277ed7884e..e589ba3f558b 100644
+--- a/arch/arm/mach-sc57x/clock.c
++++ b/arch/arm/mach-sc57x/clock.c
+@@ -172,7 +172,7 @@ unsigned long pll_round_rate(struct clk *clk, unsigned long rate)
+ 	return clk->parent->rate * div;
+ }
+ 
+-int pll_set_rate(struct clk *clk, unsigned long rate)
++unsigned long pll_set_rate(struct clk *clk, unsigned long rate)
+ {
+ 	u32 msel;
+ 	u32 stat = readl(__io_address(REG_CGU0_STAT));
+@@ -202,7 +202,7 @@ unsigned long sys_clk_get_rate(struct clk *clk)
+ 	return clk_get_rate(clk->parent) / div;
+ }
+ 
+-int sys_clk_set_rate(struct clk *clk, unsigned long rate)
++unsigned long sys_clk_set_rate(struct clk *clk, unsigned long rate)
+ {
+ 	u32 csel;
+ 	u32 stat = readl(__io_address(REG_CGU0_STAT));
+diff --git a/arch/arm/mach-sc57x/dma.c b/arch/arm/mach-sc57x/dma.c
+index 460c12bca087..91063249c22a 100644
+--- a/arch/arm/mach-sc57x/dma.c
++++ b/arch/arm/mach-sc57x/dma.c
+@@ -437,7 +437,7 @@ static int adi_dma_probe(struct platform_device *pdev)
+ 	struct dma_channel *dma = NULL;
+ 	int spu_securep_id, ret = 0;
+ 	char *id_str;
+-	int id;
++	unsigned long id;
+ 
+ 	id_str = strchr(node->full_name, '@');
+ 	if (id_str != NULL && (++id_str) != NULL)
 diff --git a/arch/arm/mach-sc57x/include/mach/clkdev.h b/arch/arm/mach-sc57x/include/mach/clkdev.h
 index 977c9fd974e0..2d5e52ca7b1d 100644
 --- a/arch/arm/mach-sc57x/include/mach/clkdev.h
@@ -62,3 +99,5 @@ index 68e7fd2f6148..ae0efe901c80 100644
  extern int dw_mci_pltfm_register(struct platform_device *pdev,
  				const struct dw_mci_drv_data *drv_data);
  extern int dw_mci_pltfm_remove(struct platform_device *pdev);
+-- 
+2.11.0
