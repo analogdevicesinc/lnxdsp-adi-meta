@@ -4,9 +4,39 @@ SUMMARY = "Minimal image for Analog Devices ADSP-SC57x boards"
 LICENSE = "MIT"
 
 OPROFILE_PERFORMANCE_BENCHMARK = "\
-	oprofile  \
 	dhrystone \
 	whetstone-adi \
+"
+
+TOUCHSCREEN = "\
+	tslib \
+	evtest \
+"
+
+SQLITE = "\
+	sqlite3 \
+	sqlite-test \
+"
+
+FILE_SYSTEM_TOOLS = "\
+	dosfstools \
+	e2fsprogs \
+"
+
+TEST_MODULES = "\
+    dmacopy-module \
+    gptimer-module \
+    l2-alloc-module \
+    l2-module \
+"
+
+TESTING = "\
+    ${TEST_MODULES} \
+    linux-adi-selftests \
+    linkport-test \
+    rtc-test \
+    gadgetfs-test \
+    ltp \
 "
 
 IMAGE_INSTALL = " \
@@ -14,21 +44,26 @@ IMAGE_INSTALL = " \
     packagegroup-base \
     ${CORE_IMAGE_EXTRA_INSTALL} \
     ${OPROFILE_PERFORMANCE_BENCHMARK} \
+    ${TOUCHSCREEN} \
+    ${SQLITE} \
+    ${FILE_SYSTEM_TOOLS} \
+    ${TESTING} \
+    openssh \
+    openssl \
+    cpufrequtils \
+    jpeg \
+    libpng \
+    giflib \
+    libtirpc \
+    ncurses \
+    wireless-tools \
+    linux-firmware-rtl8192su \
+    lrzsz \
+    linuxptp \
+    busybox-watchdog-init \
+    util-linux \
 "
 
 COMPATIBLE_MACHINE = "(adsp-sc573-ezkit)"
 
 EXTRA_USERS_PARAMS = "usermod -P adi root;"
-
-#BR2_PACKAGE_BUSYBOX_CONFIG="board/AnalogDevices/arm/busybox.config"
-#BR2_PACKAGE_BUSYBOX_WATCHDOG=y
-#BR2_PACKAGE_OPENSSL_BIN=y
-#BR2_PACKAGE_LIBTIRPC=y
-#BR2_PACKAGE_OPENSSH=y
-#BR2_TARGET_ROOTFS_EXT2=y
-#BR2_TARGET_ROOTFS_EXT2_3=y
-#BR2_TARGET_ROOTFS_INITRAMFS=y
-
-
-
-
