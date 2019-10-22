@@ -16,10 +16,10 @@ do_adi_ramdisk(){
     MKIMAGE=${BASE_WORKDIR}/${MULTIMACH_TARGET_SYS}/u-boot-adi/*/build/tools/mkimage
 
     #Format the cpio image for u-boot
-    ${MKIMAGE} -n 'Analog Devices Ram Disk Image'  -A arm -O linux -T ramdisk -C gzip -d ${DEPLOY_DIR_IMAGE}/adsp-sc57x-ramdisk-${MACHINE}.cpio.xz ${DEPLOY_DIR_IMAGE}/adsp-sc57x-ramdisk-${MACHINE}.cpio.xz.u-boot
+    ${MKIMAGE} -n 'Analog Devices Ram Disk Image'  -A arm -O linux -T ramdisk -C gzip -d ${WORKDIR}/deploy-${PN}-image-complete/${PN}-${MACHINE}.cpio.xz ${DEPLOY_DIR_IMAGE}/${PN}-${MACHINE}.cpio.xz.u-boot
 }
 
-addtask adi_ramdisk after do_deploy
+addtask adi_ramdisk after do_image_cpio before do_image_complete
 
 COMPATIBLE_MACHINE = "(adsp-sc573-ezkit)"
 
