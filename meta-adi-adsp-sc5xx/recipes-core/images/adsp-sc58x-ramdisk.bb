@@ -6,6 +6,7 @@ IMAGE_INSTALL = " \
     packagegroup-core-boot \
     packagegroup-base \
     busybox-watchdog-init \
+    initramfs-init \
 "
 
 DISTRO_FEATURES = " ram"

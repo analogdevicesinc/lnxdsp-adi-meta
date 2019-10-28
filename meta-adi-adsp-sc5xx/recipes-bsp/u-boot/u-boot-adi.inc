@@ -19,9 +19,7 @@ SRC_URI += " \
 	${UBOOT_GIT_URI};protocol=${UBOOT_GIT_PROTOCOL};branch=${BRANCH} \
     file://0001-drop-configh-from-tools.patch \
     file://0002-uboot-tools-nommu.patch \
-    file://0003-Support-CONFIG_CMD_BOOTZ-for-kernel-image.patch \
-    file://0004-Change-u-boot-environment-to-use-zImage-Yocto-s-defa.patch \
-    file://0005-Update-initramfs-boot-sequence-for-Yocto.patch \
+    file://0003-Boot-Sequence-Changes.patch \
     ${WATCHDOG_PATCH} \
 "
 
