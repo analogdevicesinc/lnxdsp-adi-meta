@@ -1,0 +1,201 @@
+From a158303cae6a816fa0334d947c103ffbb2434cc3 Mon Sep 17 00:10:10 2001
+From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
+Date: Mon, 28 Oct 2019 12:01:27 -0400
+Subject: [PATCH] Boot Sequence Changes
+
+---
+ include/configs/sc573-ezkit.h   |  4 ++
+ include/configs/sc584-ezkit.h   |  3 ++
+ include/configs/sc589-ezkit.h   |  3 ++
+ include/configs/sc589-mini.h    |  3 ++
+ include/configs/sc_adi_common.h | 84 +++++++++++++++++++++++++++++++++--------
+ 5 files changed, 81 insertions(+), 16 deletions(-)
+
+diff --git a/include/configs/sc573-ezkit.h b/include/configs/sc573-ezkit.h
+index 0c7f9b02e..9737dfd4f 100644
+--- a/include/configs/sc573-ezkit.h
++++ b/include/configs/sc573-ezkit.h
+@@ -156,6 +156,7 @@
+ #define CONFIG_BAUDRATE		57600
+ #define CONFIG_UART4_SERIAL
+ #define CONFIG_LINUX_MEMSIZE	"224M"
++#define CONFIG_CMD_BOOTZ
+ 
+ /*
+  * SDH Settings
+@@ -166,6 +167,9 @@
+ #define CONFIG_DWMMC
+ #define CONFIG_BOUNCE_BUFFER
+ 
++#define CONFIG_BOOTCOMMAND	"run sdcardboot"
++#define INITRAMADDR "0x85000000"
++
+ #include <configs/sc_adi_common.h>
+ 
+ #endif
+diff --git a/include/configs/sc584-ezkit.h b/include/configs/sc584-ezkit.h
+index 609e15b7c..e41765496 100644
+--- a/include/configs/sc584-ezkit.h
++++ b/include/configs/sc584-ezkit.h
+@@ -156,7 +156,10 @@
+ #define CONFIG_BAUDRATE		57600
+ #define CONFIG_UART4_SERIAL
+ #define CONFIG_LINUX_MEMSIZE	"112M"
++#define CONFIG_CMD_BOOTZ
+ 
++#define CONFIG_BOOTCOMMAND	"run norboot"
++#define INITRAMADDR "0x8C000000"
+ 
+ #include <configs/sc_adi_common.h>
+ 
+diff --git a/include/configs/sc589-ezkit.h b/include/configs/sc589-ezkit.h
+index 098864421..53b32a7fe 100644
+--- a/include/configs/sc589-ezkit.h
++++ b/include/configs/sc589-ezkit.h
+@@ -184,7 +184,10 @@
+ #define CONFIG_BAUDRATE		57600
+ #define CONFIG_UART4_SERIAL
+ #define CONFIG_LINUX_MEMSIZE	"224M"
++#define CONFIG_CMD_BOOTZ
+ 
++#define CONFIG_BOOTCOMMAND	"run sdcardboot"
++#define INITRAMADDR "0xC5000000"
+ 
+ #include <configs/sc_adi_common.h>
+ 
+diff --git a/include/configs/sc589-mini.h b/include/configs/sc589-mini.h
+index 3af09b68d..c5d356771 100644
+--- a/include/configs/sc589-mini.h
++++ b/include/configs/sc589-mini.h
+@@ -183,7 +183,10 @@
+ #define CONFIG_BAUDRATE		57600
+ #define CONFIG_UART4_SERIAL
+ #define CONFIG_LINUX_MEMSIZE	"224M"
++#define CONFIG_CMD_BOOTZ
+ 
++#define CONFIG_BOOTCOMMAND	"run sdcardboot"
++#define INITRAMADDR "0xC5000000"
+ 
+ #include <configs/sc_adi_common.h>
+ 
+diff --git a/include/configs/sc_adi_common.h b/include/configs/sc_adi_common.h
+index da3599c1a..554d82667 100644
+--- a/include/configs/sc_adi_common.h
++++ b/include/configs/sc_adi_common.h
+@@ -103,18 +103,48 @@
+ # define CONFIG_BOOTARGS_VIDEO ""
+ #endif
+ 
+-#define CONFIG_BOOTCOMMAND	"run ramboot"
+-#define CONFIG_BOOTARGS_ROOT "/dev/mtdblock2 rw"
++#define CONFIG_BOOTARGS_ROOT_NAND "/dev/mtdblock2 rw"
++#define CONFIG_BOOTARGS_ROOT_SDCARD    "/dev/mmcblk0p1 rw"
+ 
+-#define CONFIG_BOOTARGS	\
+-	"root=" CONFIG_BOOTARGS_ROOT " " \
++#define CONFIG_BOOTARGS_SDCARD	\
++	"root=" CONFIG_BOOTARGS_ROOT_SDCARD " " \
++	"rootfstype=ext2 " \
++	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
++	CONFIG_BOOTARGS_VIDEO \
++	"earlyprintk=serial,uart0,57600 " \
++	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
++			__stringify(CONFIG_BAUDRATE) " "\
++	"mem=" CONFIG_LINUX_MEMSIZE
++
++#define CONFIG_BOOTARGS_NAND	\
++	"root=" CONFIG_BOOTARGS_ROOT_NAND " " \
+ 	"rootfstype=jffs2 " \
+ 	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
+ 	CONFIG_BOOTARGS_VIDEO \
+ 	"earlyprintk=serial,uart0,57600 " \
+ 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
+ 			__stringify(CONFIG_BAUDRATE) " "\
+-		"mem=" CONFIG_LINUX_MEMSIZE
++	"mem=" CONFIG_LINUX_MEMSIZE
++
++#define CONFIG_BOOTARGS_RAMFS	\
++	"root=" CONFIG_BOOTARGS_ROOT_SDCARD " " \
++	"rootfstype=ext2 " \
++	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
++	CONFIG_BOOTARGS_VIDEO \
++	"earlyprintk=serial,uart0,57600 " \
++	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
++			__stringify(CONFIG_BAUDRATE) " "\
++	"mem=" CONFIG_LINUX_MEMSIZE
++
++#define CONFIG_BOOTARGS_NFS	\
++	"root=/dev/nfs rw " \
++	"nfsroot=${serverip}:${rootpath},tcp,nfsvers=3 " \
++	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
++	CONFIG_BOOTARGS_VIDEO \
++	"earlyprintk=serial,uart0,57600 " \
++	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
++			__stringify(CONFIG_BAUDRATE) " "\
++	"mem=" CONFIG_LINUX_MEMSIZE
+ 
+ #if defined(CONFIG_CMD_NET)
+ # define UBOOT_ENV_FILE "u-boot.ldr"
+@@ -154,28 +184,50 @@
+ 		   "${hostname}:eth0:off" \
+ 		"\0" \
+ 	\
+-	"ramfile=uImage\0" \
++	"ramfile=zImage\0" \
++	"initramfile=ramdisk.cpio.xz.u-boot\0" \
++	"initramaddr=" INITRAMADDR "\0" \
+ 	"dtbfile=" CONFIG_DTBNAME "\0" \
+ 	"dtbaddr=" CONFIG_DTBLOADADDR "\0" \
+-	"ramargs=set bootargs " CONFIG_BOOTARGS "\0" \
++	"ramargs=set bootargs " CONFIG_BOOTARGS_RAMFS "\0" \
+ 	"ramboot=" \
++		"mmc rescan;" \
++		"mmc dev 0 0;" \
++		"ext2load mmc 0:1 ${loadaddr} /boot/zImage;" \
++		"ext2load mmc 0:1 ${dtbaddr} /boot/${dtbfile};" \
++		"ext2load mmc 0:1 ${initramaddr} /boot/${initramfile};" \
++		"run ramargs;" \
++		"run addip;" \
++		"bootz ${loadaddr} ${initramaddr} ${dtbaddr}" \
++		"\0" \
++	\
++	"norargs=set bootargs " CONFIG_BOOTARGS_NAND "\0" \
++	"norboot=" \
+ 		"tftp ${loadaddr} ${ramfile};" \
+ 		"tftp ${dtbaddr} ${dtbfile};" \
+-		"run ramargs;" \
++		"run norargs;" \
+ 		"run addip;" \
+-		"bootm ${loadaddr} - ${dtbaddr}" \
++		"bootz ${loadaddr} - ${dtbaddr}" \
+ 		"\0" \
+ 	\
+-	"nfsfile=vmImage\0" \
+-	"nfsargs=set bootargs " \
+-		"root=/dev/nfs rw " \
+-		"nfsroot=${serverip}:${rootpath},tcp,nfsvers=3" \
++	"sdcardargs=set bootargs " CONFIG_BOOTARGS_SDCARD "\0" \
++	"sdcardboot=" \
++		"mmc rescan;" \
++		"mmc dev 0 0;" \
++		"ext2load mmc 0:1 ${loadaddr} /boot/zImage;" \
++		"ext2load mmc 0:1 ${dtbaddr} /boot/${dtbfile};" \
++		"run sdcardargs;" \
++		"bootz ${loadaddr} - ${dtbaddr}" \
+ 		"\0" \
++	\
++	"nfsfile=zImage\0" \
++	"nfsargs=set bootargs " CONFIG_BOOTARGS_NFS "\0" \
+ 	"nfsboot=" \
+ 		"tftp ${loadaddr} ${nfsfile};" \
++		"tftp ${dtbaddr} ${dtbfile};" \
+ 		"run nfsargs;" \
+ 		"run addip;" \
+-		"bootm" \
++		"bootz ${loadaddr} - ${dtbaddr}" \
+ 		"\0"
+ #else
+ # define NETWORK_ENV_SETTINGS
+-- 
+2.11.0
+

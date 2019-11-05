@@ -10,6 +10,7 @@ OPROFILE_PERFORMANCE_BENCHMARK = "\
 
 TOUCHSCREEN = "\
 	tslib \
+	tslib-calibrate \
 	evtest \
 "
 
