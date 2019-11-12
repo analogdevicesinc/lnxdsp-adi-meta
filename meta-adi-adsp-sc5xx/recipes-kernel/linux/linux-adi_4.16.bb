@@ -14,7 +14,6 @@ SRC_URI += " \
 	file://0003-Add-in-SC58x-SC57x-CPU-freq-driver.patch \
 	file://0004-Add-in-ADI-Hardware-CRC-crypto-driver.patch \
 	file://0005-Add-in-ADAU1962-ADAU1979-as-built-ins-instead-of-mod.patch \
-	file://0006-Pull-ADAU1962-enable-low-with-a-gpio-hog-so-that-it-.patch \
 	file://0008-Add-in-SC58X-PCI-driver.patch \
 	file://0009-Enable-CONFIG_PCI_SC58X-y.patch \
 	file://0010-Add-sc58x-pcie-in-to-device-tree.patch \
