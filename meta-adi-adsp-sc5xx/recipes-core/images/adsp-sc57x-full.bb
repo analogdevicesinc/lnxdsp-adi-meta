@@ -22,10 +22,19 @@ OPROFILE = " \
 	oprofile \
 "
 
+MPLAYER = " \
+	mplayer-common \
+	mpv \
+	video-test \
+	v4l2-video-test \
+	ffmpeg \
+"
+
 IMAGE_INSTALL += " \
 	${MCC} \
 	${BLUETOOTH_AND_HEADSET} \
 	${OPROFILE} \
+	${MPLAYER} \
 	can-utils \
 	netperf \
 	pound \
