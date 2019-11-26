@@ -45,4 +45,5 @@ IMAGE_INSTALL += " \
 	freetype \
 	version \
 	bonnie++ \
+	rtscts-test \
 "
