@@ -6,8 +6,10 @@ IMAGE_INSTALL = " \
     packagegroup-core-boot \
     packagegroup-base \
     busybox-watchdog-init \
-    initramfs-init \
 "
+
+#Add this back in to IMAGE_INSTALL if you want to perform a switch_root
+# initramfs-init
 
 DISTRO_FEATURES = " ram"
 IMAGE_FSTYPES = " cpio.xz"
