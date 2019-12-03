@@ -1,6 +1,6 @@
-From 3bbf04dd21fd71a63395999f9e26811e3e035b56 Mon Sep 17 00:00:00 2001
+From 611d4190245e2ccdd26c9028cd620451f15acdc8 Mon Sep 17 00:00:00 2001
 From: jian chen <jian.chen@analog.com>
-Date: Thu, 28 Nov 2019 13:02:44 +0800
+Date: Tue, 3 Dec 2019 14:32:17 +0800
 Subject: [PATCH] [PATCH] Boot Sequence Changes
 
 Signed-off-by: jian chen <jian.chen@analog.com>
@@ -9,8 +9,8 @@ Signed-off-by: jian chen <jian.chen@analog.com>
  include/configs/sc584-ezkit.h   |  3 ++
  include/configs/sc589-ezkit.h   |  3 ++
  include/configs/sc589-mini.h    |  3 ++
- include/configs/sc_adi_common.h | 76 +++++++++++++++++++++++++++------
- 5 files changed, 76 insertions(+), 13 deletions(-)
+ include/configs/sc_adi_common.h | 70 ++++++++++++++++++++++++++++-----
+ 5 files changed, 73 insertions(+), 10 deletions(-)
 
 diff --git a/include/configs/sc573-ezkit.h b/include/configs/sc573-ezkit.h
 index 0c7f9b02e..13e6a9dc3 100644
@@ -80,10 +80,10 @@ index 70f446bf2..304012f80 100644
  #include <configs/sc_adi_common.h>
  
 diff --git a/include/configs/sc_adi_common.h b/include/configs/sc_adi_common.h
-index da3599c1a..9f3cea431 100644
+index da3599c1a..1035845aa 100644
 --- a/include/configs/sc_adi_common.h
 +++ b/include/configs/sc_adi_common.h
-@@ -103,18 +103,38 @@
+@@ -103,11 +103,31 @@
  # define CONFIG_BOOTARGS_VIDEO ""
  #endif
  
@@ -91,9 +91,7 @@ index da3599c1a..9f3cea431 100644
 -#define CONFIG_BOOTARGS_ROOT "/dev/mtdblock2 rw"
 +#define CONFIG_BOOTARGS_ROOT_NAND "/dev/mtdblock2 rw"
 +#define CONFIG_BOOTARGS_ROOT_SDCARD    "/dev/mmcblk0p1 rw"
- 
--#define CONFIG_BOOTARGS	\
--	"root=" CONFIG_BOOTARGS_ROOT " " \
++
 +#define CONFIG_BOOTARGS_SDCARD	\
 +	"root=" CONFIG_BOOTARGS_ROOT_SDCARD " " \
 +	"rootfstype=ext2 " \
@@ -102,17 +100,6 @@ index da3599c1a..9f3cea431 100644
 +	"earlyprintk=serial,uart0,57600 " \
 +	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
 +			__stringify(CONFIG_BAUDRATE) " "\
-+	"mem=" CONFIG_LINUX_MEMSIZE
-+
-+#define CONFIG_BOOTARGS_RAMFS	\
-+	"root=" CONFIG_BOOTARGS_ROOT_NAND " " \
- 	"rootfstype=jffs2 " \
- 	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
- 	CONFIG_BOOTARGS_VIDEO \
- 	"earlyprintk=serial,uart0,57600 " \
- 	"console=ttySC" __stringify(CONFIG_UART_CONSOLE) "," \
- 			__stringify(CONFIG_BAUDRATE) " "\
--		"mem=" CONFIG_LINUX_MEMSIZE
 +	"mem=" CONFIG_LINUX_MEMSIZE
 +
 +#define CONFIG_BOOTARGS_NFS	\
@@ -125,8 +112,12 @@ index da3599c1a..9f3cea431 100644
 +			__stringify(CONFIG_BAUDRATE) " "\
 +	"mem=" CONFIG_LINUX_MEMSIZE
  
- #if defined(CONFIG_CMD_NET)
- # define UBOOT_ENV_FILE "u-boot.ldr"
+ #define CONFIG_BOOTARGS	\
+-	"root=" CONFIG_BOOTARGS_ROOT " " \
++	"root=" CONFIG_BOOTARGS_ROOT_NAND " " \
+ 	"rootfstype=jffs2 " \
+ 	"clkin_hz=" __stringify(CONFIG_CLKIN_HZ) " " \
+ 	CONFIG_BOOTARGS_VIDEO \
 @@ -154,28 +174,58 @@
  		   "${hostname}:eth0:off" \
  		"\0" \
@@ -137,14 +128,13 @@ index da3599c1a..9f3cea431 100644
 +	"initramaddr=" INITRAMADDR "\0" \
  	"dtbfile=" CONFIG_DTBNAME "\0" \
  	"dtbaddr=" CONFIG_DTBLOADADDR "\0" \
--	"ramargs=set bootargs " CONFIG_BOOTARGS "\0" \
 +	"sdcardargs=set bootargs " CONFIG_BOOTARGS_SDCARD "\0" \
-+	"ramargs=set bootargs " CONFIG_BOOTARGS_RAMFS "\0" \
+ 	"ramargs=set bootargs " CONFIG_BOOTARGS "\0" \
 +	"nfsargs=set bootargs " CONFIG_BOOTARGS_NFS "\0" \
 +	"ramboot_emmc=" \
 +		"mmc rescan;" \
 +		"mmc dev 0 0;" \
-+		"ext2load mmc 0:1 ${loadaddr} /boot/zImage;" \
++		"ext2load mmc 0:1 ${loadaddr} /boot/${ramfile};" \
 +		"ext2load mmc 0:1 ${dtbaddr} /boot/${dtbfile};" \
 +		"ext2load mmc 0:1 ${initramaddr} /boot/${initramfile};" \
 +		"run sdcardargs;" \
@@ -177,7 +167,7 @@ index da3599c1a..9f3cea431 100644
 +	"sdcardboot=" \
 +		"mmc rescan;" \
 +		"mmc dev 0 0;" \
-+		"ext2load mmc 0:1 ${loadaddr} /boot/zImage;" \
++		"ext2load mmc 0:1 ${loadaddr} /boot/${ramfile};" \
 +		"ext2load mmc 0:1 ${dtbaddr} /boot/${dtbfile};" \
 +		"run sdcardargs;" \
 +		"bootz ${loadaddr} - ${dtbaddr}" \
