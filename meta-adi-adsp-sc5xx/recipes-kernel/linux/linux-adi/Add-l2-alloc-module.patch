@@ -1,0 +1,90 @@
+diff --git a/arch/arm/boot/dts/sc57x.dtsi b/arch/arm/boot/dts/sc57x.dtsi
+index 0004d55..12020cf 100644
+--- a/arch/arm/boot/dts/sc57x.dtsi
++++ b/arch/arm/boot/dts/sc57x.dtsi
+@@ -113,6 +113,12 @@
+ 			status = "disabled";
+ 		};
+ 
++		hello_l2_alloc: hello_l2_alloc@0 { /* l2 alloc test from sram1 pool */
++			compatible = "adi,hello_l2_alloc";
++			adi,sram = <&sram1>;
++			status = "okay";
++		};
++
+ 		uart0: uart@0x31003000 {
+ 			compatible = "arm,adi-uart4";
+ 			reg = <0x31003000 0x40>;
+diff --git a/arch/arm/boot/dts/sc58x.dtsi b/arch/arm/boot/dts/sc58x.dtsi
+index 2e21c11..35289f2 100644
+--- a/arch/arm/boot/dts/sc58x.dtsi
++++ b/arch/arm/boot/dts/sc58x.dtsi
+@@ -115,6 +115,12 @@
+ 			status = "disabled";
+ 		};
+ 
++		hello_l2_alloc: hello_l2_alloc@0 { /* l2 alloc test from sram1 pool */
++			compatible = "adi,hello_l2_alloc";
++			adi,sram = <&sram1>;
++			status = "okay";
++		};
++
+ 		rtc0: rtc@0x310C8000 {
+ 			compatible = "adi,rtc2";
+ 			reg = <0x310C8000 0x100>;
+diff --git a/arch/arm/configs/sc573-ezkit_defconfig b/arch/arm/configs/sc573-ezkit_defconfig
+index 131ea53..961995f 100644
+--- a/arch/arm/configs/sc573-ezkit_defconfig
++++ b/arch/arm/configs/sc573-ezkit_defconfig
+@@ -21,6 +21,9 @@ CONFIG_MODULE_UNLOAD=y
+ # CONFIG_IOSCHED_CFQ is not set
+ CONFIG_ARCH_SC57X=y
+ CONFIG_MACH_SC573_EZKIT=y
++CONFIG_SRAM=y
++CONFIG_ADI_SRAM_CONTROLLER=y
++CONFIG_ADI_SRAM_MMAP=y
+ CONFIG_ARM_THUMBEE=y
+ CONFIG_PREEMPT_VOLUNTARY=y
+ CONFIG_HZ_250=y
+diff --git a/arch/arm/configs/sc584-ezkit_defconfig b/arch/arm/configs/sc584-ezkit_defconfig
+index fc47295..4282804 100644
+--- a/arch/arm/configs/sc584-ezkit_defconfig
++++ b/arch/arm/configs/sc584-ezkit_defconfig
+@@ -21,6 +21,9 @@ CONFIG_MODULE_UNLOAD=y
+ # CONFIG_IOSCHED_CFQ is not set
+ CONFIG_ARCH_SC58X=y
+ CONFIG_MACH_SC584_EZKIT=y
++CONFIG_SRAM=y
++CONFIG_ADI_SRAM_CONTROLLER=y
++CONFIG_ADI_SRAM_MMAP=y
+ CONFIG_ARM_THUMBEE=y
+ CONFIG_PREEMPT_VOLUNTARY=y
+ CONFIG_HZ_250=y
+diff --git a/arch/arm/configs/sc589-ezkit_defconfig b/arch/arm/configs/sc589-ezkit_defconfig
+index b792967..78f7cc4 100644
+--- a/arch/arm/configs/sc589-ezkit_defconfig
++++ b/arch/arm/configs/sc589-ezkit_defconfig
+@@ -23,6 +23,9 @@ CONFIG_MODULE_UNLOAD=y
+ # CONFIG_IOSCHED_CFQ is not set
+ CONFIG_ARCH_SC58X=y
+ CONFIG_MACH_SC589_EZKIT=y
++CONFIG_SRAM=y
++CONFIG_ADI_SRAM_CONTROLLER=y
++CONFIG_ADI_SRAM_MMAP=y
+ CONFIG_ARM_THUMBEE=y
+ CONFIG_PCI=y
+ CONFIG_PCI_MSI=y
+diff --git a/arch/arm/configs/sc589-mini_defconfig b/arch/arm/configs/sc589-mini_defconfig
+index e8d3aea..6a0b6f0 100644
+--- a/arch/arm/configs/sc589-mini_defconfig
++++ b/arch/arm/configs/sc589-mini_defconfig
+@@ -23,6 +23,9 @@ CONFIG_MODULE_UNLOAD=y
+ # CONFIG_IOSCHED_CFQ is not set
+ CONFIG_ARCH_SC58X=y
+ CONFIG_MACH_SC589_MINI=y
++CONFIG_SRAM=y
++CONFIG_ADI_SRAM_CONTROLLER=y
++CONFIG_ADI_SRAM_MMAP=y
+ CONFIG_ARM_THUMBEE=y
+ CONFIG_PCI=y
+ CONFIG_PCI_MSI=y

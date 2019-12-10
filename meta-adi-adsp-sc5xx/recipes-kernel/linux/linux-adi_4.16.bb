@@ -5,8 +5,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=d7810fab7487fb0aad327b76f1be7cd7"
 
 PR = "r0"
 
-#If running tests which use sram_alloc(), then include the following patch as well (this disables CONFIG_ICC and enables CONFIG_ADI_SRAM_MMAP/CONFIG_ADI_SRAM_CONTROLLER):
-SRAM_ALLOC_PATCH = "${@ 'file://Remove-CONFIG_ICC-and-use-CONFIG_ARCH_SRAM_ALLOC-for.patch' if d.getVar('ANALOG_DEVICES_SRAM_ALLOC') else ''}"
+SRAM_ALLOC_PATCH = "${@ 'file://Add-l2-alloc-module.patch' if d.getVar('ANALOG_DEVICES_SRAM_ALLOC') else ''}"
 
 SRC_URI += " \
 	file://0001-Fix-errors-for-compiling-with-GCC8.patch \
