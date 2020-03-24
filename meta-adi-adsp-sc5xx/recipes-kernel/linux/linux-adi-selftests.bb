@@ -3,6 +3,9 @@ LICENSE = "CLOSED"
 
 require linux-adi-src.inc
 
+SRCBRANCH = "develop/yocto-1.0.0"
+SRCREV = "${AUTOREV}"
+
 S = "${WORKDIR}/git"
 
 do_compile(){
