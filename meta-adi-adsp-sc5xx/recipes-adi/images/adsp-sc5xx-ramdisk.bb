@@ -1,5 +1,5 @@
 inherit core-image extrausers
-SUMMARY = "Minimal ramdisk image for Analog Devices ADSP-SC57x boards"
+SUMMARY = "Minimal ramdisk image for Analog Devices ADSP-SC5xx boards"
 LICENSE = "MIT"
 
 IMAGE_INSTALL = " \
@@ -24,6 +24,6 @@ do_adi_ramdisk(){
 
 addtask adi_ramdisk after do_image_cpio before do_image_complete
 
-COMPATIBLE_MACHINE = "(adsp-sc573-ezkit)"
+COMPATIBLE_MACHINE = "(adsp-sc573-ezkit|adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini)"
 
 EXTRA_USERS_PARAMS = "usermod -P adi root;"
