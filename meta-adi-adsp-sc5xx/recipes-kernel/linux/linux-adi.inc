@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for Analog Devices ADSP-5xx processors"
 
-inherit kernel
+require recipes-kernel/linux/linux-yocto.inc
 
 KERNEL_GIT_URI = "git://bitbucket.analog.com/scm/dte/linux.git"
 KERNEL_GIT_PROTOCOL = "https"
@@ -24,8 +24,11 @@ S = "${WORKDIR}/git"
 MACHINE_KERNEL_PR_append = "a"
 PR = "${MACHINE_KERNEL_PR}"
 
-do_configure_append(){
-	make ${KERNEL_MACHINE}
-}
+# Use DEFCONFIGs for configuring linux-adi kernels
+KCONFIG_MODE ?= "alldefconfig"
+KBUILD_DEFCONFIG_adsp-sc589-ezkit = "sc589-ezkit_defconfig"
+KBUILD_DEFCONFIG_adsp-sc584-ezkit = "sc584-ezkit_defconfig"
+KBUILD_DEFCONFIG_adsp-sc573-ezkit = "sc573-ezkit_defconfig"
+KBUILD_DEFCONFIG_adsp-sc589-mini = "sc589-mini_defconfig"
 
 COMPATIBLE_MACHINE = "adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini|adsp-sc573-ezkit"

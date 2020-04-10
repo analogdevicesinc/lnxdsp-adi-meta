@@ -9,14 +9,7 @@ IMAGE_INSTALL = " \
     ${CORE_IMAGE_EXTRA_INSTALL} \
     openssh \
     openssl \
-    cpufrequtils \
-    jpeg \
-    libpng \
-    giflib \
-    libtirpc \
     ncurses \
-    linux-firmware-rtl8192su \
-    lrzsz \
     busybox-watchdog-init \
     util-linux \
 "
