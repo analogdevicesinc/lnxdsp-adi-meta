@@ -79,6 +79,13 @@ IMAGE_INSTALL += " \
 	${BLUETOOTH_AND_HEADSET} \
 	${OPROFILE} \
 	${MPLAYER} \
+	cpufrequtils \
+	jpeg \
+	libpng \
+	giflib \
+	libtirpc \
+	linux-firmware-rtl8192su \
+	lrzsz \
 	wireless-tools \
 	can-utils \
 	netperf \

@@ -1,0 +1,6 @@
+define KFEATURE_DESCRIPTION "Sound Card Kernel Support"
+define KFEATURE_COMPATIBILITY board
+
+kconf hardware cfg/sound/sc5xx_snd.cfg
+kconf hardware cfg/sound/codec1979.cfg
+kconf hardware cfg/sound/codec1962.cfg
