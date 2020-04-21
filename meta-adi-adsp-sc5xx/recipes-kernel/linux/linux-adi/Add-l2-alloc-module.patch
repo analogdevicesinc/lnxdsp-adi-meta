@@ -33,7 +33,7 @@ index 2e21c11..35289f2 100644
  			compatible = "adi,rtc2";
  			reg = <0x310C8000 0x100>;
 diff --git a/arch/arm/configs/sc573-ezkit_defconfig b/arch/arm/configs/sc573-ezkit_defconfig
-index 131ea53..961995f 100644
+index 87dec50..be46634 100644
 --- a/arch/arm/configs/sc573-ezkit_defconfig
 +++ b/arch/arm/configs/sc573-ezkit_defconfig
 @@ -21,6 +21,9 @@ CONFIG_MODULE_UNLOAD=y
@@ -46,8 +46,17 @@ index 131ea53..961995f 100644
  CONFIG_ARM_THUMBEE=y
  CONFIG_PREEMPT_VOLUNTARY=y
  CONFIG_HZ_250=y
+@@ -125,8 +128,6 @@ CONFIG_SND_SC5XX_ADAU1979=y
+ CONFIG_SND_SC5XX_ADAU1962=y
+ CONFIG_STAGING=y
+ CONFIG_R8712U=y
+-CONFIG_ICC_DRIVER=y
+-CONFIG_ICC=y
+ # CONFIG_IOMMU_SUPPORT is not set
+ CONFIG_EXT4_FS=y
+ # CONFIG_DNOTIFY is not set
 diff --git a/arch/arm/configs/sc584-ezkit_defconfig b/arch/arm/configs/sc584-ezkit_defconfig
-index fc47295..4282804 100644
+index 0922872..c48b589 100644
 --- a/arch/arm/configs/sc584-ezkit_defconfig
 +++ b/arch/arm/configs/sc584-ezkit_defconfig
 @@ -21,6 +21,9 @@ CONFIG_MODULE_UNLOAD=y
@@ -60,8 +69,17 @@ index fc47295..4282804 100644
  CONFIG_ARM_THUMBEE=y
  CONFIG_PREEMPT_VOLUNTARY=y
  CONFIG_HZ_250=y
+@@ -113,8 +116,6 @@ CONFIG_SND_SC5XX_ADAU1979=y
+ CONFIG_SND_SC5XX_ADAU1962=y
+ CONFIG_STAGING=y
+ CONFIG_R8712U=y
+-CONFIG_ICC_DRIVER=y
+-CONFIG_ICC=y
+ # CONFIG_VIRTIO_MENU is not set
+ # CONFIG_IOMMU_SUPPORT is not set
+ CONFIG_EXT4_FS=y
 diff --git a/arch/arm/configs/sc589-ezkit_defconfig b/arch/arm/configs/sc589-ezkit_defconfig
-index b792967..78f7cc4 100644
+index f3e48f8..a98e1f8 100644
 --- a/arch/arm/configs/sc589-ezkit_defconfig
 +++ b/arch/arm/configs/sc589-ezkit_defconfig
 @@ -23,6 +23,9 @@ CONFIG_MODULE_UNLOAD=y
@@ -74,8 +92,17 @@ index b792967..78f7cc4 100644
  CONFIG_ARM_THUMBEE=y
  CONFIG_PCI=y
  CONFIG_PCI_MSI=y
+@@ -141,8 +144,6 @@ CONFIG_RTC_CLASS=y
+ CONFIG_RTC_DRV_ADI2=y
+ CONFIG_STAGING=y
+ CONFIG_R8712U=y
+-CONFIG_ICC_DRIVER=y
+-CONFIG_ICC=y
+ # CONFIG_IOMMU_SUPPORT is not set
+ CONFIG_EXT4_FS=y
+ # CONFIG_DNOTIFY is not set
 diff --git a/arch/arm/configs/sc589-mini_defconfig b/arch/arm/configs/sc589-mini_defconfig
-index e8d3aea..6a0b6f0 100644
+index 4deb19e..8025b82 100644
 --- a/arch/arm/configs/sc589-mini_defconfig
 +++ b/arch/arm/configs/sc589-mini_defconfig
 @@ -23,6 +23,9 @@ CONFIG_MODULE_UNLOAD=y
