@@ -26,6 +26,7 @@ PR = "${MACHINE_KERNEL_PR}"
 
 # Use DEFCONFIGs for configuring linux-adi kernels
 KCONFIG_MODE ?= "alldefconfig"
+
 KBUILD_DEFCONFIG_adsp-sc589-ezkit = "sc589-ezkit_defconfig"
 KBUILD_DEFCONFIG_adsp-sc584-ezkit = "sc584-ezkit_defconfig"
 KBUILD_DEFCONFIG_adsp-sc573-ezkit = "sc573-ezkit_defconfig"
