@@ -6,7 +6,7 @@ require ${COREBASE}/meta/recipes-bsp/u-boot/u-boot.inc
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/u-boot-adi:"
 
-UBOOT_GIT_URI = "https://github.com/analogdevicesinc/u-boot-sharc.git"
+UBOOT_GIT_URI = "git://github.com/analogdevicesinc/u-boot-sharc.git"
 UBOOT_GIT_PROTOCOL = "https"
 
 #No longer used, automatic detection

@@ -3,7 +3,7 @@ DESCRIPTION = "Linux kernel for Analog Devices ADSP-5xx processors"
 
 require recipes-kernel/linux/linux-yocto.inc
 
-KERNEL_GIT_URI = "https://github.com/analogdevicesinc/lnxdsp-linux.git"
+KERNEL_GIT_URI = "git://github.com/analogdevicesinc/lnxdsp-linux.git"
 KERNEL_GIT_PROTOCOL = "https"
 
 # Put a local version until we have a true SRCREV to point to
