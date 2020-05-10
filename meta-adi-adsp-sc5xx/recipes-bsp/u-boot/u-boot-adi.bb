@@ -19,7 +19,10 @@ SRC_URI += " \
 FILES_${PN} = " \
 	u-boot.ldr \
 	u-boot \
+	init.elf \
 "
+
+INIT_PATH = "${@ 'arch/arm/cpu/armv7/%s' %('sc57x' if MACHINE == 'adsp-sc573-ezkit' else 'sc58x')}"
 
 do_compile_prepend(){
 	#Use U-boot's FDT header files, not Linux's (in case they are different)
@@ -33,9 +36,11 @@ do_compile_prepend(){
 do_install () {
 	install ${B}/u-boot.ldr ${D}/u-boot.ldr
 	install ${B}/u-boot ${D}/u-boot
+	install ${B}/${INIT_PATH}/init.elf ${D}/init.elf
 }
 
 do_deploy() {
 	install ${B}/u-boot.ldr ${DEPLOYDIR}/u-boot.ldr
 	install ${B}/u-boot ${DEPLOYDIR}/u-boot
+	install ${B}/${INIT_PATH}/init.elf ${DEPLOYDIR}/init.elf
 }
