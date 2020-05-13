@@ -17,9 +17,9 @@ SRC_URI += " \
 "
 
 FILES_${PN} = " \
-	u-boot.ldr \
-	u-boot \
-	init.elf \
+	u-boot-${BOARD}.ldr \
+	u-boot-${BOARD} \
+	init-${BOARD}.elf \
 "
 
 INIT_PATH = "${@ 'arch/arm/cpu/armv7/%s' %('sc57x' if MACHINE == 'adsp-sc573-ezkit' else 'sc58x')}"
@@ -34,13 +34,13 @@ do_compile_prepend(){
 }
 
 do_install () {
-	install ${B}/u-boot.ldr ${D}/u-boot.ldr
-	install ${B}/u-boot ${D}/u-boot
-	install ${B}/${INIT_PATH}/init.elf ${D}/init.elf
+	install ${B}/u-boot-${BOARD}.ldr ${D}/
+	install ${B}/u-boot-${BOARD} ${D}/
+	install ${B}/${INIT_PATH}/init-${BOARD}.elf ${D}/
 }
 
 do_deploy() {
-	install ${B}/u-boot.ldr ${DEPLOYDIR}/u-boot.ldr
-	install ${B}/u-boot ${DEPLOYDIR}/u-boot
-	install ${B}/${INIT_PATH}/init.elf ${DEPLOYDIR}/init.elf
+	install ${B}/u-boot-${BOARD}.ldr ${DEPLOYDIR}/
+	install ${B}/u-boot-${BOARD} ${DEPLOYDIR}/
+	install ${B}/${INIT_PATH}/init-${BOARD}.elf ${DEPLOYDIR}/
 }
