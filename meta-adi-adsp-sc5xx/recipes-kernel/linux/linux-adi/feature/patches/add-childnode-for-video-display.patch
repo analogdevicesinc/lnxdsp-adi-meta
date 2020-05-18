@@ -1,0 +1,34 @@
+diff --git a/arch/arm/boot/dts/sc573-ezkit.dts b/arch/arm/boot/dts/sc573-ezkit.dts
+index ec1699711b95..10c0c3e70e6b 100644
+--- a/arch/arm/boot/dts/sc573-ezkit.dts
++++ b/arch/arm/boot/dts/sc573-ezkit.dts
+@@ -158,6 +158,12 @@
+ 		#gpio-cells = <2>;
+ 		reg = <0x22>;
+ 	};
++    ssw2: gpio@0x25 {
++        compatible = "microchip,mcp23017";
++        gpio-controller;
++        #gpio-cells = <2>;
++        reg = <0x25>;
++    };
+ 	adau1979: adau1979@0x11 {
+ 		compatible = "adi,adau1977";
+ 		reg = <0x11>;
+diff --git a/arch/arm/boot/dts/sc589-ezkit.dts b/arch/arm/boot/dts/sc589-ezkit.dts
+index 971fe80bd324..44142e0674fa 100644
+--- a/arch/arm/boot/dts/sc589-ezkit.dts
++++ b/arch/arm/boot/dts/sc589-ezkit.dts
+@@ -180,6 +180,12 @@
+ 		#gpio-cells = <2>;
+ 		reg = <0x22>;
+ 	};
++    ssw2: gpio@0x25 {
++        compatible = "microchip,mcp23017";
++        gpio-controller;
++        #gpio-cells = <2>;
++        reg = <0x25>;
++    };
+ 	adau1979: adau1979@0x11 {
+ 		compatible = "adi,adau1977";
+ 		reg = <0x11>;
