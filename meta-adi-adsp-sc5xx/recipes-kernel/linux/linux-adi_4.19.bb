@@ -10,9 +10,7 @@ SRCREV  = "${AUTOREV}"
 
 SRAM_ALLOC_PATCH = "${@ 'file://Add-l2-alloc-module.patch' if d.getVar('ANALOG_DEVICES_SRAM_ALLOC') else ''}"
 
-SRC_URI += " \
-	file://0001-Fix-errors-for-compiling-with-GCC8.patch \
-"
+SRC_URI += "file://feature/"
 
 # Include kernel configuration fragment
 KERNEL_EXTRA_FEATURES ?= "feature/cfg/nfs.cfg \
