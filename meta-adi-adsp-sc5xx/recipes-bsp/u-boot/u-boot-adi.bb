@@ -5,7 +5,7 @@ LIC_FILES_CHKSUM = "file://Licenses/README;md5=c7383a594871c03da76b3707929d2919"
 
 PR = "r0"
 
-BRANCH = "develop/yocto-1.0.0"
+UBOOT_BRANCH ?= "develop/yocto-1.0.0"
 
 SRCREV = "${AUTOREV}"
 

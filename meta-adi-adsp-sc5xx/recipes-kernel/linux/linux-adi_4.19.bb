@@ -5,7 +5,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
 
 PR = "r0"
 
-SRCBRANCH = "develop/yocto-1.0.0"
+KERNEL_BRANCH ?= "develop/yocto-1.0.0"
 SRCREV  = "${AUTOREV}"
 
 SRAM_ALLOC_PATCH = "${@ 'file://Add-l2-alloc-module.patch' if d.getVar('ANALOG_DEVICES_SRAM_ALLOC') else ''}"
