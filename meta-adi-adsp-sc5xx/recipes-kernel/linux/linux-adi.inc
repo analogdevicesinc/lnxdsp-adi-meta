@@ -3,14 +3,11 @@ DESCRIPTION = "Linux kernel for Analog Devices ADSP-5xx processors"
 
 require recipes-kernel/linux/linux-yocto.inc
 
-KERNEL_GIT_URI = "git://github.com/analogdevicesinc/lnxdsp-linux.git"
+KERNEL_GIT_URI ?= "git://github.com/analogdevicesinc/lnxdsp-linux.git"
 KERNEL_GIT_PROTOCOL = "https"
 
-# Put a local version until we have a true SRCREV to point to
-SRCBRANCH ?= ""
-
 SRC_URI += " \
-	${KERNEL_GIT_URI};protocol=${KERNEL_GIT_PROTOCOL};branch=${SRCBRANCH} \
+	${KERNEL_GIT_URI};protocol=${KERNEL_GIT_PROTOCOL};branch=${KERNEL_BRANCH} \
 "
 
 # Pull in the devicetree files into the rootfs

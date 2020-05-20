@@ -1,13 +1,13 @@
 DESCRIPTION = "Kernel Self Tests"
 LICENSE = "CLOSED"
 
-KERNEL_GIT_URI = "git://github.com/analogdevicesinc/lnxdsp-linux.git"
+KERNEL_GIT_URI ?= "git://github.com/analogdevicesinc/lnxdsp-linux.git"
 KERNEL_GIT_PROTOCOL = "https"
-SRCBRANCH = "develop/yocto-1.0.0"
+KERNEL_BRANCH ?= "develop/yocto-1.0.0"
 SRCREV = "${AUTOREV}"
 
 SRC_URI += " \
-	${KERNEL_GIT_URI};protocol=${KERNEL_GIT_PROTOCOL};branch=${SRCBRANCH} \
+	${KERNEL_GIT_URI};protocol=${KERNEL_GIT_PROTOCOL};branch=${KERNEL_BRANCH} \
 "
 
 S = "${WORKDIR}/git"

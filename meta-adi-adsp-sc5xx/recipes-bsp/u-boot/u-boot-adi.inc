@@ -6,7 +6,7 @@ require ${COREBASE}/meta/recipes-bsp/u-boot/u-boot.inc
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/u-boot-adi:"
 
-UBOOT_GIT_URI = "git://github.com/analogdevicesinc/u-boot-sharc.git"
+UBOOT_GIT_URI ?= "git://github.com/analogdevicesinc/u-boot-sharc.git"
 UBOOT_GIT_PROTOCOL = "https"
 
 #No longer used, automatic detection
@@ -16,7 +16,7 @@ UBOOT_GIT_PROTOCOL = "https"
 WATCHDOG_PATCH = "${@ 'file://enable-ADI-watchdog.patch' if d.getVar('ANALOG_DEVICES_WATCHDOG') else ''}"
 
 SRC_URI += " \
-	${UBOOT_GIT_URI};protocol=${UBOOT_GIT_PROTOCOL};branch=${BRANCH} \
+	${UBOOT_GIT_URI};protocol=${UBOOT_GIT_PROTOCOL};branch=${UBOOT_BRANCH} \
     file://0001-drop-configh-from-tools.patch \
     file://0002-uboot-tools-nommu.patch \
     file://0003-Boot-Sequence-Changes.patch \
