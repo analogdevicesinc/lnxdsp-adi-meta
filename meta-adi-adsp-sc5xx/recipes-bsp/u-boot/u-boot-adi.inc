@@ -9,17 +9,10 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/u-boot-adi:"
 UBOOT_GIT_URI ?= "git://github.com/analogdevicesinc/u-boot-sharc.git"
 UBOOT_GIT_PROTOCOL = "https"
 
-#No longer used, automatic detection
-#ETHERNET_PATCH = "${@ 'file://sc589-ezkit-2.0-eth-uboot.patch' if d.getVar('ANALOG_DEVICES_VERSION2_ETHERNET') else ''}"
-#SRC_URI += "${ETHERNET_PATCH}""
-
 WATCHDOG_PATCH = "${@ 'file://enable-ADI-watchdog.patch' if d.getVar('ANALOG_DEVICES_WATCHDOG') else ''}"
 
 SRC_URI += " \
 	${UBOOT_GIT_URI};protocol=${UBOOT_GIT_PROTOCOL};branch=${UBOOT_BRANCH} \
-    file://0001-drop-configh-from-tools.patch \
-    file://0002-uboot-tools-nommu.patch \
-    file://0003-Boot-Sequence-Changes.patch \
     ${WATCHDOG_PATCH} \
 "
 

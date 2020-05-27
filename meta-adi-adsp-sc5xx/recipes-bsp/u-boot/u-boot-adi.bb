@@ -10,9 +10,6 @@ UBOOT_BRANCH ?= "develop/yocto-1.0.0"
 SRCREV = "${AUTOREV}"
 
 SRC_URI += " \
-	file://0001-Remove-mproc-selection-for-Analog-Devices-processors.patch \
-	file://0002-Add-compiler-support-for-GCC8.patch \
-	file://0003-Pack-some-structures-to-work-properly-with-GCC8.patch \
 	file://arm-poky-linux-gnueabi-ldr \
 "
 
