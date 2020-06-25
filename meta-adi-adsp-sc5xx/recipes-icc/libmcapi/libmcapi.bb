@@ -3,15 +3,17 @@ LICENSE = "CLOSED"
 
 inherit autotools
 
-SRC_URI = " \
-	svn://svn.code.sf.net/p/adi-openapp/code/trunk/libs;module=libmcapi;protocol=http;rev=HEAD \
-	file://0001-Applied-0001-add_wait_block_function_for_MCAPI.patch.patch \
-	file://0002-Applied-0002-add_msg_transaction_demo_and_test_for_M.patch \
-	file://0003-Applied-0003_cover_cache_check_for_MultiCore_MCAPI_d.patch \
-	file://0004-Declare-mcapi_dprintf-static-for-GCC8.patch \
-"
+MCAPI_GIT_URI ?= "git://github.com/analogdevicesinc/lnxdsp-mcapi.git"
+MCAPI_GIT_PROTOCOL ?= "https"
+MCAPI_GIT_BRANCH ?= "develop/yocto-1.0.0"
 
-S = "${WORKDIR}/libmcapi/libmcapi-2.0"
+PR = "r0"
+SRCREV= "${AUTOREV}"
+
+SRC_URI = " \
+${MCAPI_GIT_URI};protocol=${MCAPI_GIT_PROTOCOL};branch=${MCAPI_GIT_BRANCH}"
+
+S = "${WORKDIR}/git"
 
 DEPENDS = "kernel-devsrc linux-adi"
 
