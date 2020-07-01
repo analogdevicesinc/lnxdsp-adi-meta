@@ -14,6 +14,7 @@ IMAGE_INSTALL = " \
 DISTRO_FEATURES = " ram"
 IMAGE_FSTYPES = " cpio.xz"
 
+do_adi_ramdisk[depends] = "u-boot:do_compile"
 do_adi_ramdisk(){
     #Find mkimage utility inside u-boot source directory
     MKIMAGE=${BASE_WORKDIR}/${MULTIMACH_TARGET_SYS}/u-boot-adi/*/build/tools/mkimage
