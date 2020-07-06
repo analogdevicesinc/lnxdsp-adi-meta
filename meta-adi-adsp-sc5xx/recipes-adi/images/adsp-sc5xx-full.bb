@@ -28,6 +28,7 @@ TEST_MODULES = "\
     dmacopy-module \
     gptimer-module \
     l2-alloc-module \
+    malloc-perf-test \
 "
 
 TESTING = "\
