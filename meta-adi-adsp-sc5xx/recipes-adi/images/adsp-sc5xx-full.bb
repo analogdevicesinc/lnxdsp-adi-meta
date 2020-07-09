@@ -40,6 +40,7 @@ TESTING = "\
     ltp \
 	linuxptp \
 	rtscts-test \
+	sram-mmap-test \
 "
 
 ICC = " \
