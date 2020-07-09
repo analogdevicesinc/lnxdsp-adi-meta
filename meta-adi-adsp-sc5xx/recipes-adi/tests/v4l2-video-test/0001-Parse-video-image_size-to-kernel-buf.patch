@@ -1,0 +1,21 @@
+From 535514c1e044dfd60727df7d48f006ed1749d0cb Mon Sep 17 00:00:00 2001
+From: huanhuan feng <huanhuan.feng@analog.com>
+Date: Thu, 9 Jul 2020 14:29:59 +0800
+Subject: [PATCH] Parse video image_size to kernel buf
+
+---
+ v4l2_video_display.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/v4l2_video_display.c b/v4l2_video_display.c
+index d33a608..964ec29 100644
+--- a/v4l2_video_display.c
++++ b/v4l2_video_display.c
+@@ -419,6 +419,7 @@ int main(int argc, char *argv[])
+ 		}
+ 		rewind(fp);
+ 		fread(pbuffer[i].start, 1, image_size, fp);
++		buf.bytesused = image_size;
+ 		ret = ioctl(fd, VIDIOC_QBUF, &buf);
+ 		if (ret < 0) {
+ 			printf("ioctl VIDIOC_QBUF error\n");
