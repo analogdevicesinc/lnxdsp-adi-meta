@@ -33,7 +33,6 @@ TEST_MODULES = "\
 
 TESTING = "\
     ${TEST_MODULES} \
-    linux-adi-selftests \
     linkport-test \
     rtc-test \
     gadgetfs-test \
