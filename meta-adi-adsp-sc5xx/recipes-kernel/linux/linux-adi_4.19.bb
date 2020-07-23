@@ -5,7 +5,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
 
 PR = "r0"
 
-KERNEL_BRANCH ?= "develop/yocto-1.0.0"
+KERNEL_BRANCH ?= "release/yocto-1.0.0"
 SRCREV  = "${AUTOREV}"
 
 SRC_URI += "file://feature/"
