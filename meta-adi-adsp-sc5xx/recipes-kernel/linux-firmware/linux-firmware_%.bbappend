@@ -2,22 +2,19 @@ SUMMARY = "Linux kernel firmware files from ADI distribution"
 DESCRIPTION = "These binaries provide kernel support for ADI sc5xx boards"
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/linux-firmware:"
-SRC_URI += "file://adau1761.bin \
-			file://LICENSE.adau1761 \
+SRC_URI += " \
+			file://sharc_core0.ldr \
+			file://LICENSE.adi \
 			"
-
-LIC_FILES_CHKSUM = "file://${WORKDIR}/LICENSE.adau1761;md5=dff5777c9526c7f6db0a0571f066e818"
-
-FILEPATH = "/lib/firmware"
+SRC_URI[LICENSE.adi.md5sum] = "e2bfd7246b6d241634f71dfdbfef3d41"
 
 do_install_append() {
-	install -m 0644 ${WORKDIR}/LICENSE.adau1761 ${D}${FILEPATH}
-	install -m 0644 ${WORKDIR}/adau1761.bin ${D}${FILEPATH}
+	install -m 0644 ${WORKDIR}/sharc_core0.ldr ${D}/lib/firmware/
 }
 
-PACKAGES =+ "${PN}-adau1761"
-
-FILES_${PN}-adau1761 = " \
-		${FILEPATH}/LICENSE.adau1761 \
-		${FILEPATH}/adau1761.bin \
+PACKAGES =+ " \
+			${PN}-fastboot \
+			"
+FILES_${PN}-fastboot = " \
+		/lib/firmware/sharc_core0.ldr \
 		"
