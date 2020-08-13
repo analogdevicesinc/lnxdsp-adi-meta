@@ -5,6 +5,7 @@ LICENSE = "MIT"
 IMAGE_INSTALL = " \
     packagegroup-core-boot \
 	linux-firmware-fastboot \
+    fastboot-listener \
 "
 
 DISTRO_FEATURES = " ram"
