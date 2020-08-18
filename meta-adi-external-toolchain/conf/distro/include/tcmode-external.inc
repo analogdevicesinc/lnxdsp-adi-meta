@@ -70,6 +70,10 @@ BB_HASHBASE_WHITELIST_remove = "EXTERNAL_TOOLCHAIN"
 # well, and --no-sysroot-suffix only works for gcc, not binutils.
 HOST_CC_ARCH += "--no-sysroot-suffix"
 
+# When using a 32-bit external toolchain, we need 32 bit pseudo
+HAS_64BIT_TOOLCHAIN = "${@'1' if '${BUILD_ARCH}' == 'x86_64' and os.path.exists('${EXTERNAL_TOOLCHAIN}/${BUILD_SYS}-gnu') else '0'}"
+NO32LIBS ?= "${HAS_64BIT_TOOLCHAIN}"
+
 # Certain recipes call ld directly, so ensure the correct emulation is used,
 # particularly for multilib toolchains, since we can't rely on the default
 LDEMULATION = ""
@@ -110,5 +114,8 @@ GCC_VERSION[vardepvalue] = "${GCC_VERSION}"
 # macro-prefix-map was introduced in gcc 8
 # REMOVE_MACRO_PREFIX_MAP = "-fmacro-prefix-map=${WORKDIR}=/usr/src/debug/${PN}/${EXTENDPE}${PV}-${PR}"
 # DEBUG_PREFIX_MAP_remove = "${@'${REMOVE_MACRO_PREFIX_MAP}' if '${GCC_VERSION}' and [int(v) for v in '${GCC_VERSION}'.split('.')] < [8,0] else ''}"
+GLIBC_GENERATE_LOCALES = "en_US.UTF-8"
+SECURITY_STACK_PROTECTOR_remove = "-fstack-protector-strong"
+OLDEST_KERNEL = "4.4.0"
 
 BUILDCFG_VARS += "EXTERNAL_TOOLCHAIN EXTERNAL_TARGET_SYS GCC_VERSION"
