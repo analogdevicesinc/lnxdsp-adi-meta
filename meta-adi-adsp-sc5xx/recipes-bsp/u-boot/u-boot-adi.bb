@@ -14,9 +14,7 @@ SRC_URI += " \
 "
 
 FILES_${PN} = " \
-	u-boot-spl.ldr \
-	u-boot-spl \
-	u-boot-${BOARD}.bin \
+	u-boot-${BOARD}.ldr \
 	u-boot-${BOARD} \
 	init-${BOARD}.elf \
 "
@@ -33,17 +31,13 @@ do_compile_prepend(){
 }
 
 do_install () {
-	install ${B}/u-boot-spl.ldr ${D}/
-	install ${B}/spl/u-boot-spl ${D}/
-	install ${B}/u-boot-${BOARD}.bin ${D}/
+	install ${B}/u-boot-${BOARD}.ldr ${D}/
 	install ${B}/u-boot-${BOARD} ${D}/
 	install ${B}/${INIT_PATH}/init-${BOARD}.elf ${D}/
 }
 
 do_deploy() {
-	install ${B}/u-boot-spl.ldr ${DEPLOYDIR}/
-	install ${B}/spl/u-boot-spl ${DEPLOYDIR}/
-	install ${B}/u-boot-${BOARD}.bin ${DEPLOYDIR}/
+	install ${B}/u-boot-${BOARD}.ldr ${DEPLOYDIR}/
 	install ${B}/u-boot-${BOARD} ${DEPLOYDIR}/
 	install ${B}/${INIT_PATH}/init-${BOARD}.elf ${DEPLOYDIR}/
 }
