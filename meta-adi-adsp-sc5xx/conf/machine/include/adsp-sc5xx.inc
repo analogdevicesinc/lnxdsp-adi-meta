@@ -8,7 +8,7 @@ require conf/machine/include/tune-cortexa5.inc
 # Increase this everytime you change something in the kernel
 MACHINE_KERNEL_PR = "r0"
 
-KERNEL_IMAGETYPE = "zImage"
+KERNEL_IMAGETYPE = "uImage"
 
 PREFERRED_PROVIDER_virtual/kernel = "linux-adi"
 PREFERRED_PROVIDER_virtual/bootloader = "${@ 'u-boot-adi-external' if "external" in d.getVar('TCMODE') else 'u-boot-adi'}"

@@ -70,6 +70,10 @@ BB_HASHBASE_WHITELIST_remove = "EXTERNAL_TOOLCHAIN"
 # well, and --no-sysroot-suffix only works for gcc, not binutils.
 HOST_CC_ARCH += "--no-sysroot-suffix"
 
+# When using a 32-bit external toolchain, we need 32 bit pseudo
+HAS_64BIT_TOOLCHAIN = "${@'1' if '${BUILD_ARCH}' == 'x86_64' and os.path.exists('${EXTERNAL_TOOLCHAIN}/${BUILD_SYS}-gnu') else '0'}"
+NO32LIBS ?= "${HAS_64BIT_TOOLCHAIN}"
+
 # Certain recipes call ld directly, so ensure the correct emulation is used,
 # particularly for multilib toolchains, since we can't rely on the default
 LDEMULATION = ""
