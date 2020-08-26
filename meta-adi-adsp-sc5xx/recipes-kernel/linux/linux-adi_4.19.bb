@@ -22,3 +22,13 @@ KERNEL_FEATURES_append_adsp-sc589-ezkit = " feature/snd_ezkit.scc"
 KERNEL_FEATURES_append_adsp-sc584-ezkit = " feature/snd_ezkit.scc"
 KERNEL_FEATURES_append_adsp-sc573-ezkit = " feature/snd_ezkit.scc"
 #KERNEL_FEATURES_append_adsp-sc589-mini = " feature/snd_mini.scc"
+
+kernel_do_deploy_append() {
+	if [ ! -z "${INITRAMFS_IMAGE}" -a x"${INITRAMFS_IMAGE_BUNDLE}" = x1 ]; then
+		for imageType in ${KERNEL_IMAGETYPES} ; do
+			initramfs_base_name=${imageType}-${INITRAMFS_NAME}
+			ln -sf ${initramfs_base_name}.bin $deployDir/${imageType}
+		done
+	fi
+}
+INITRAMFS_IMAGE = "adsp-sc5xx-ramdisk"

@@ -9,7 +9,7 @@ IMAGE_INSTALL = " \
 "
 
 DISTRO_FEATURES = " ram"
-IMAGE_FSTYPES = "cpio.gz"
+IMAGE_FSTYPES = "cpio"
 
 do_adi_ramdisk[depends] = "u-boot:do_compile"
 do_adi_ramdisk(){
@@ -17,7 +17,7 @@ do_adi_ramdisk(){
     MKIMAGE=${BASE_WORKDIR}/${MULTIMACH_TARGET_SYS}/u-boot-adi/*/build/tools/mkimage
 
     #Format the cpio image for u-boot
-    ${MKIMAGE} -n 'Analog Devices Ram Disk Image'  -A arm -O linux -T ramdisk -C gzip -d ${WORKDIR}/deploy-${PN}-image-complete/${PN}-${MACHINE}.${IMAGE_FSTYPES} ${DEPLOY_DIR_IMAGE}/${PN}-${MACHINE}.${IMAGE_FSTYPES}.u-boot
+    ${MKIMAGE} -n 'Analog Devices Ram Disk Image' -A arm -O linux -T ramdisk -C gzip -d ${WORKDIR}/deploy-${PN}-image-complete/${PN}-${MACHINE}.${IMAGE_FSTYPES} ${DEPLOY_DIR_IMAGE}/${PN}-${MACHINE}.${IMAGE_FSTYPES}.u-boot
 }
 
 addtask adi_ramdisk after do_image_cpio before do_image_complete
