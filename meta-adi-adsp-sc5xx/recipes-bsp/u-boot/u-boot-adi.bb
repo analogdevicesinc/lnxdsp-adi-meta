@@ -41,9 +41,5 @@ do_install () {
 }
 
 do_deploy() {
-	install ${B}/u-boot-spl.ldr ${DEPLOYDIR}/
-	install ${B}/spl/u-boot-spl ${DEPLOYDIR}/
-	install ${B}/u-boot-${BOARD}.bin ${DEPLOYDIR}/
-	install ${B}/u-boot-${BOARD} ${DEPLOYDIR}/
-	install ${B}/${INIT_PATH}/init-${BOARD}.elf ${DEPLOYDIR}/
+	echo "uboot do_deploy"
 }
