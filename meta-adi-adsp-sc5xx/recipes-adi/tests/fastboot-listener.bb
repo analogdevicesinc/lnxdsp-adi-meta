@@ -16,8 +16,7 @@ SRCREV = "${AUTOREV}"
 
 do_compile(){
 	cd ${S}
-	${CC} ${CFLAGS} ${LDFLAGS} fastboot_server.c -o fastboot-listener
-	gcc ${CFLAGS} fastboot_client.c -o fastboot_client
+	${CC} ${CFLAGS} -DBUILD_FOR_TARGET ${LDFLAGS} fastboot_server.c -o fastboot-listener
 }
 
 do_install(){
