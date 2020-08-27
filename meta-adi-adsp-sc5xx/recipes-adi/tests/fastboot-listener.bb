@@ -1,15 +1,18 @@
 DESCRIPTION = "Analog Devices Fastboot Listener Application"
 LICENSE = "CLOSED"
 
+FASTBOOT_GIT_URI ?= "git://github.com/analogdevicesinc/lnxdsp-examples.git"
+FASTBOOT_GIT_PROTOCOL = "https"
+FASTBOOT_BRANCH ?= "develop/yocto-1.0.0-fastboot"
+
+SRC_URI += " \
+	${FASTBOOT_GIT_URI};protocol=${FASTBOOT_GIT_PROTOCOL};branch=${FASTBOOT_BRANCH}"
+
 PR = "r0"
 
-SRC_URI = " \
-	file://source/fastboot_server.c \
-	file://source/fastboot_client.c \
-	file://source/fastboot.h \
-	"
+S = "${WORKDIR}/git/fastboot"
 
-S = "${WORKDIR}/source"
+SRCREV = "${AUTOREV}"
 
 do_compile(){
 	cd ${S}
