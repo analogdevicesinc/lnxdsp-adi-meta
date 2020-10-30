@@ -18,4 +18,4 @@ do_install () {
 	install -Dm 0755 whetstone ${D}${bindir}/whetstone
 }
 
-COMPATIBLE_MACHINE = "adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini|adsp-sc573-ezkit"
+COMPATIBLE_MACHINE = "(adsp-sc573-ezkit|adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini|adsp-sc594-som-ezkit)"

@@ -19,7 +19,20 @@ FILES_${PN} = " \
 	init-${BOARD}.elf \
 "
 
-INIT_PATH = "${@ 'arch/arm/cpu/armv7/%s' %('sc57x' if MACHINE == 'adsp-sc573-ezkit' else 'sc58x')}"
+python () {
+	MACHINE = d.getVar('MACHINE')
+	if MACHINE == 'adsp-sc573-ezkit':
+		PATH = "sc57x"
+	elif MACHINE == 'adsp-sc584-ezkit':
+		PATH = "sc58x"
+	elif MACHINE == 'adsp-sc589-ezkit':
+		PATH = "sc58x"
+	elif MACHINE == 'adsp-sc589-mini':
+		PATH = "sc58x"
+	elif MACHINE == 'adsp-sc594-som-ezkit':
+		PATH = "sc59x"
+	d.setVar('INIT_PATH', "arch/arm/cpu/armv7/" + PATH)
+}
 
 do_compile_prepend(){
 	#Use U-boot's FDT header files, not Linux's (in case they are different)
