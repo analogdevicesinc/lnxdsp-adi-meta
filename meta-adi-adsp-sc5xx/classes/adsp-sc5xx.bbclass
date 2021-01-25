@@ -3,6 +3,11 @@ inherit core-image extrausers
 SUMMARY = "Minimal image for Analog Devices ADSP-SC5xx boards"
 LICENSE = "MIT"
 
+ICC = " \
+    libmcapi \
+    sc5xx-corecontrol \
+"
+
 IMAGE_INSTALL = " \
     packagegroup-core-boot \
     packagegroup-base \
@@ -13,6 +18,7 @@ IMAGE_INSTALL = " \
     busybox-watchdog-init \
     util-linux \
     rng-tools \
+    ${ICC} \
 "
 
 IMAGE_INSTALL_append_adsp-sc594-som-ezkit = " \

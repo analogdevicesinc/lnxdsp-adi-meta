@@ -42,11 +42,6 @@ TESTING = "\
 	sram-mmap-test \
 "
 
-ICC = " \
-	libmcapi \
-	sc5xx-corecontrol \
-"
-
 BLUETOOTH_AND_HEADSET = " \
 	alsa-utils \
 	alsa-lib \
@@ -75,7 +70,6 @@ IMAGE_INSTALL += " \
    	${SQLITE} \
    	${FILE_SYSTEM_TOOLS} \
    	${TESTING} \
-	${ICC} \
 	${BLUETOOTH_AND_HEADSET} \
 	${OPROFILE} \
 	${MPLAYER} \
