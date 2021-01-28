@@ -13,11 +13,19 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/u-boot-adi:"
 UBOOT_GIT_URI = "git://git@src.timesys.com/services/analog-devices/analog-devices-new-board-bringup-1/u-boot-sharc.git"
 UBOOT_GIT_PROTOCOL = "ssh"
 
-WATCHDOG_PATCH = "${@ 'file://enable-ADI-watchdog.patch' if d.getVar('ANALOG_DEVICES_WATCHDOG') else ''}"
+def get_wdt_patch (d):
+  WDT_FILE = ""
+  if d.getVar('ANALOG_DEVICES_WATCHDOG'):
+    MACHINE = d.getVar('MACHINE')
+    if MACHINE == 'adsp-sc594-som-ezkit':
+      WDT_FILE = "file://enable-ADI-watchdog-sc594.patch"
+    else:
+      WDT_FILE = "file://enable-ADI-watchdog.patch"
+  return WDT_FILE
 
 SRC_URI += " \
 	${UBOOT_GIT_URI};protocol=${UBOOT_GIT_PROTOCOL};branch=${UBOOT_BRANCH} \
-	${WATCHDOG_PATCH} \
+	${@get_wdt_patch(d)} \
 "
 
 PV_append = "+git${SRCPV}"
