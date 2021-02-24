@@ -28,6 +28,9 @@ do_compile_prepend(){
 
 	#Add arm-poky-linux-gnueabi-ldr in to path
 	export PATH=$PATH:${WORKDIR}
+	if [ ! -e ${WORKDIR}/${HOST_PREFIX}ldr ]; then
+		cp ${WORKDIR}/arm-poky-linux-gnueabi-ldr ${WORKDIR}/${HOST_PREFIX}ldr
+	fi
 }
 
 do_install () {
