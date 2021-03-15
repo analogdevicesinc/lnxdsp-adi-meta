@@ -37,6 +37,10 @@ do_install () {
 }
 
 do_deploy() {
+	#The default ELF file contains dynamic and gnu hash sections which the CCES elfloader cannot parse.  
+	#Using objcopy to remove those sections did not seem to have the intended effect
+	# so instead we keep only sections that we are interested in.
+	${OBJCOPY} -j .text -j .rodata -j .hash -j .dtb.init.rodata -j .data -j .got -j .got.plt -j .u_boot_list -j .rel.dyn ${B}/u-boot-${BOARD}
 	install ${B}/u-boot-${BOARD}.ldr ${DEPLOYDIR}/
 	install ${B}/u-boot-${BOARD} ${DEPLOYDIR}/
 	install ${B}/${INIT_PATH}/init-${BOARD}.elf ${DEPLOYDIR}/
