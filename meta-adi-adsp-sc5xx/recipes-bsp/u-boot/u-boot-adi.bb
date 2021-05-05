@@ -1,11 +1,6 @@
 require u-boot-adi.inc
 
-LICENSE = "GPLv2+"
-LIC_FILES_CHKSUM = "file://Licenses/README;md5=c7383a594871c03da76b3707929d2919"
-
 PR = "r0"
-
-UBOOT_BRANCH ?= "release/yocto-1.0.0"
 
 SRCREV = "${AUTOREV}"
 
@@ -32,12 +27,19 @@ python () {
 	elif MACHINE == 'adsp-sc594-som-ezkit':
 		PATH = "sc59x"
 	d.setVar('INIT_PATH', "arch/arm/cpu/armv7/" + PATH)
+
+	if MACHINE == 'adsp-sc589-ezkit':
+		d.setVar('LIBFDT_ENV_H_FILE', "${WORKDIR}/git/include/linux/libfdt_env.h")
+		d.setVar('LIBFDT_H_FILE', "${WORKDIR}/git/include/linux/libfdt.h")
+	else:
+		d.setVar('LIBFDT_ENV_H_FILE', "${WORKDIR}/git/include/libfdt_env.h")
+		d.setVar('LIBFDT_H_FILE', "${WORKDIR}/git/include/libfdt.h")
 }
 
 do_compile_prepend(){
 	#Use U-boot's FDT header files, not Linux's (in case they are different)
-	cp ${WORKDIR}/git/include/libfdt_env.h ${WORKDIR}/recipe-sysroot-native/usr/include/libfdt_env.h
-	cp ${WORKDIR}/git/include/libfdt.h ${WORKDIR}/recipe-sysroot-native/usr/include/libfdt.h
+	cp ${LIBFDT_ENV_H_FILE} ${WORKDIR}/recipe-sysroot-native/usr/include/libfdt_env.h
+	cp ${LIBFDT_H_FILE} ${WORKDIR}/recipe-sysroot-native/usr/include/libfdt.h
 
 	#Add arm-poky-linux-gnueabi-ldr in to path
 	export PATH=$PATH:${WORKDIR}
