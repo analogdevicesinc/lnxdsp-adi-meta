@@ -8,7 +8,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/u-boot-adi:"
 
 def get_lic_files_chksum (d):
   MACHINE = d.getVar('MACHINE')
-  if MACHINE == 'adsp-sc589-ezkit':
+  if MACHINE == 'adsp-sc589-ezkit' or MACHINE == 'adsp-sc573-ezkit':
     LIC_FILES_CHKSUM = "file://Licenses/README;md5=5a7450c57ffe5ae63fd732446b988025"
   else:
     LIC_FILES_CHKSUM = "file://Licenses/README;md5=c7383a594871c03da76b3707929d2919"
@@ -16,10 +16,10 @@ def get_lic_files_chksum (d):
 
 def get_uboot_branch (d):
   MACHINE = d.getVar('MACHINE')
-  if MACHINE != 'adsp-sc589-ezkit':
-    UBOOT_BRANCH = "release/yocto-1.0.0"
-  else:
+  if MACHINE == 'adsp-sc589-ezkit' or MACHINE == 'adsp-sc573-ezkit':
     UBOOT_BRANCH = "master"
+  else:
+    UBOOT_BRANCH = "release/yocto-1.0.0"
   return UBOOT_BRANCH
 
 #UBOOT_GIT_URI ?= "git://github.com/analogdevicesinc/u-boot-sharc.git"
@@ -28,8 +28,8 @@ def get_uboot_branch (d):
 def get_git_uri (d):
   #Pull in from Timesys repository for now.  Change this when releasing SC594 board to public
   MACHINE = d.getVar('MACHINE')
-  if MACHINE != 'adsp-sc589-ezkit':
-    UBOOT_GIT_URI = "git://git@src.timesys.com/services/analog-devices/analog-devices-new-board-bringup-1/u-boot-sharc.git"
+  if MACHINE == 'adsp-sc589-ezkit' or MACHINE == 'adsp-sc573-ezkit':
+    UBOOT_GIT_URI = "git://git@src.timesys.com/services/analog-devices/analog-devices-new-board-bringup-1/u-boot-sharc-2020.10.git"
   else:
     UBOOT_GIT_URI = "git://git@src.timesys.com/services/analog-devices/u-boot-2020.10"
   return UBOOT_GIT_URI
@@ -41,8 +41,8 @@ def get_wdt_patch (d):
     MACHINE = d.getVar('MACHINE')
     if MACHINE == 'adsp-sc594-som-ezkit':
       WDT_FILE = "file://enable-ADI-watchdog-sc594.patch"
-    elif MACHINE == 'adsp-sc589-ezkit':
-      WDT_FILE = "file://enable-ADI-watchdog-sc589ezkit.patch"
+    elif MACHINE == 'adsp-sc589-ezkit' or MACHINE == 'adsp-sc573-ezkit':
+      WDT_FILE = "file://enable-ADI-watchdog-2020.10.patch"
     else:
       WDT_FILE = "file://enable-ADI-watchdog.patch"
   return WDT_FILE
