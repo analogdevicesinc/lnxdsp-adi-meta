@@ -15,5 +15,5 @@ do_install_append() {
 	install -d ${D}/usr/bin
 	install -d ${D}${sysconfdir}
 	install -m 755 ${S}/testptp ${D}/usr/bin/
-	install -m 755 ${S}/default.cfg ${D}${sysconfdir}/ptp4l.cfg
+	install -m 755 ${S}/configs/default.cfg ${D}${sysconfdir}/ptp4l.cfg
 }
