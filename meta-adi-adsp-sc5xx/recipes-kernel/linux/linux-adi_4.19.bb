@@ -11,15 +11,15 @@ SRCREV  = "${AUTOREV}"
 SRC_URI += "file://feature/"
 
 # Include kernel configuration fragment
-KERNEL_EXTRA_FEATURES ?= "feature/cfg/nfs.cfg \
-						  feature/cfg/wireless.cfg \
-						  feature/cfg/cpufreq.cfg \
-						  feature/cfg/crypto.cfg \
+KERNEL_EXTRA_FEATURES ?= "${WORKDIR}/feature/cfg/nfs.cfg \
+						  ${WORKDIR}/feature/cfg/wireless.cfg \
+						  ${WORKDIR}/feature/cfg/cpufreq.cfg \
+						  ${WORKDIR}/feature/cfg/crypto.cfg \
 						  "
 KERNEL_FEATURES_append = " ${KERNEL_EXTRA_FEATURES}"
 
-KERNEL_FEATURES_append_adsp-sc594_som_ezkit = " feature/snd_ezkit.scc"
-KERNEL_FEATURES_append_adsp-sc589-ezkit = " feature/snd_ezkit.scc"
-KERNEL_FEATURES_append_adsp-sc584-ezkit = " feature/snd_ezkit.scc"
-KERNEL_FEATURES_append_adsp-sc573-ezkit = " feature/snd_ezkit.scc"
-KERNEL_FEATURES_append_adsp-sc589-mini = " feature/snd_mini.scc"
+KERNEL_FEATURES_append_adsp-sc594_som_ezkit = " ${WORKDIR}/feature/snd_ezkit.scc"
+KERNEL_FEATURES_append_adsp-sc589-ezkit = " ${WORKDIR}/feature/snd_ezkit.scc"
+KERNEL_FEATURES_append_adsp-sc584-ezkit = " ${WORKDIR}/feature/snd_ezkit.scc"
+KERNEL_FEATURES_append_adsp-sc573-ezkit = " ${WORKDIR}/feature/snd_ezkit.scc"
+KERNEL_FEATURES_append_adsp-sc589-mini = " ${WORKDIR}/feature/snd_mini.scc"
