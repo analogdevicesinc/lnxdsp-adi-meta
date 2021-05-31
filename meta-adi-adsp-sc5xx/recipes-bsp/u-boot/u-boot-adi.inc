@@ -31,12 +31,13 @@ def get_git_uri (d):
   if MACHINE == 'adsp-sc589-ezkit' or MACHINE == 'adsp-sc573-ezkit':
     UBOOT_GIT_URI = "git://git@src.timesys.com/services/analog-devices/analog-devices-new-board-bringup-1/u-boot-sharc-2020.10.git"
   else:
-    UBOOT_GIT_URI = "git://git@src.timesys.com/services/analog-devices/u-boot-2020.10"
+    UBOOT_GIT_URI = "git://git@src.timesys.com/services/analog-devices/analog-devices-new-board-bringup-1/u-boot-sharc.git"
   return UBOOT_GIT_URI
 
 UBOOT_GIT_PROTOCOL = "ssh"
 
 def get_wdt_patch (d):
+  WDT_FILE = ""
   if d.getVar('ANALOG_DEVICES_WATCHDOG'):
     MACHINE = d.getVar('MACHINE')
     if MACHINE == 'adsp-sc594-som-ezkit':

@@ -4,6 +4,8 @@ PR = "r0"
 
 SRCREV = "${AUTOREV}"
 
+UBOOT_INITIAL_ENV = ""
+
 SRC_URI += " \
 	file://arm-poky-linux-gnueabi-ldr \
 "
