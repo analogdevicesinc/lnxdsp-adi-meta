@@ -24,9 +24,10 @@ FILE_SYSTEM_TOOLS = "\
 	e2fsprogs \
 "
 
+#Removed (not building under Dunfell):
+# gptimer-module
 TEST_MODULES = "\
     dmacopy-module \
-    gptimer-module \
     l2-alloc-module \
     malloc-perf-test \
 "
@@ -63,6 +64,8 @@ MPLAYER = " \
 	v4l2-video-test \
 	ffmpeg \
 "
+#Removed for Dunfell:
+# pound
 
 IMAGE_INSTALL += " \
     ${OPROFILE_PERFORMANCE_BENCHMARK} \
@@ -84,7 +87,6 @@ IMAGE_INSTALL += " \
 	wireless-tools \
 	can-utils \
 	netperf \
-	pound \
 	lighttpd \
 	mtd-utils \
 	mtd-utils-ubifs \
