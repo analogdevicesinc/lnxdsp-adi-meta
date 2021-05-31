@@ -1,0 +1,26 @@
+From c9e6ea5d2f5cc25f534bc3c4928b56f4f2599e0d Mon Sep 17 00:00:00 2001
+From: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+Date: Mon, 31 May 2021 08:05:38 -0400
+Subject: [PATCH] The NIS module does not build properly.  Disabling for now. 
+ We may want to revisit this later
+
+---
+ setup.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/setup.py b/setup.py
+index c0bd0ad..e96d78d 100644
+--- a/setup.py
++++ b/setup.py
+@@ -1701,7 +1701,7 @@ class PyBuildExt(build_ext):
+         self.detect_dbm_gdbm()
+         self.detect_sqlite()
+         self.detect_platform_specific_exts()
+-        self.detect_nis()
++#        self.detect_nis()
+         self.detect_compress_exts()
+         self.detect_expat_elementtree()
+         self.detect_multibytecodecs()
+-- 
+2.21.0
+
