@@ -48,9 +48,16 @@ def get_wdt_patch (d):
       WDT_FILE = "file://enable-ADI-watchdog.patch"
   return WDT_FILE
 
+def get_ramdisk_patch (d):
+  MACHINE = d.getVar('MACHINE')
+  if MACHINE == 'adsp-sc594-som-ezkit':
+    return " file://disable-relocation-of-ramdisk-to-top-of-memory.patch"
+  else:
+    return ""
+
 SRC_URI += " \
 	${@get_git_uri(d)};protocol=${UBOOT_GIT_PROTOCOL};branch=${@get_uboot_branch(d)} \
-	${@get_wdt_patch(d)} \
+	${@get_wdt_patch(d)} ${@get_ramdisk_patch(d)} \
 "
 
 LICENSE = "GPLv2+"
