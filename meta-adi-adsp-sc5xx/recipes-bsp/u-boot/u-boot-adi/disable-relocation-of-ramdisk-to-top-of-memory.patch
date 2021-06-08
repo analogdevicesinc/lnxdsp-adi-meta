@@ -1,0 +1,24 @@
+From ed236e6b4bd05d1ab5bc6b431dfcbe1ddb3c3458 Mon Sep 17 00:00:00 2001
+From: David Brunecz <david.brunecz@timesys.com>
+Date: Fri, 28 May 2021 13:25:23 -0400
+Subject: [PATCH] disable relocation of ramdisk to top of memory
+
+---
+ include/configs/sc_adi_common.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/configs/sc_adi_common.h b/include/configs/sc_adi_common.h
+index 9e7c136..b603321 100644
+--- a/include/configs/sc_adi_common.h
++++ b/include/configs/sc_adi_common.h
+@@ -175,6 +175,7 @@
+ 		"\0" \
+ 	\
+ 	"ramfile=zImage\0" \
++	"initrd_high=0xffffffff\0" \
+ 	"initramfile=ramdisk.cpio.xz.u-boot\0" \
+ 	"initramaddr=" INITRAMADDR "\0" \
+ 	"dtbfile=" CONFIG_DTBNAME "\0" \
+-- 
+2.25.1
+
