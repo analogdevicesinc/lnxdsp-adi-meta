@@ -1,0 +1,10 @@
+[Unit]
+Description=Watchdog
+After=local-fs.target
+
+[Service]
+Type=forking
+ExecStart=/bin/sh /usr/libexec/watchdog.sh start
+
+[Install]
+WantedBy=multi-user.target
