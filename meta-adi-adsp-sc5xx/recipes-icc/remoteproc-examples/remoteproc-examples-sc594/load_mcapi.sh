@@ -1,5 +1,7 @@
 #!/bin/sh
 
+mkdir -p /lib/firmware
+
 if [ ! -f /lib/firmware/mcapi_send_recv_Core1_sc594.ldr ]; then
 	ln -s /remoteproc/mcapi_send_recv_Core1_sc594.ldr /lib/firmware/mcapi_send_recv_Core1_sc594.ldr
 fi
