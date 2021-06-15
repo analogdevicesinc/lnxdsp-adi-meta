@@ -1,5 +1,7 @@
 #!/bin/sh
 
+mkdir -p /lib/firmware
+
 if [ ! -f /lib/firmware/LED_Blink_SC594_SHARC_Core1.ldr ]; then
 	ln -s /remoteproc/LED_Blink_SC594_SHARC_Core1.ldr /lib/firmware/LED_Blink_SC594_SHARC_Core1.ldr
 fi
