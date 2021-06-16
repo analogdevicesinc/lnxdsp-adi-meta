@@ -67,8 +67,18 @@ MPLAYER = " \
 #Removed for Dunfell:
 # pound
 
+EXTRA_IMAGE_FEATURES += "debug-tweaks dbg-pkgs tools-profile"
+
+DEBUG = " \
+    perf \
+    uftrace \
+    ltrace \
+    strace \
+"
+
 IMAGE_INSTALL += " \
     ${OPROFILE_PERFORMANCE_BENCHMARK} \
+    ${DEBUG} \
    	${TOUCHSCREEN} \
    	${SQLITE} \
    	${FILE_SYSTEM_TOOLS} \
