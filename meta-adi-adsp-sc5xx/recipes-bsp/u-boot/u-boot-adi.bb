@@ -17,25 +17,25 @@ FILES_${PN} = " \
 "
 
 python () {
-	MACHINE = d.getVar('MACHINE')
-	if MACHINE == 'adsp-sc573-ezkit':
-		PATH = "sc57x"
-	elif MACHINE == 'adsp-sc584-ezkit':
-		PATH = "sc58x"
-	elif MACHINE == 'adsp-sc589-ezkit':
-		PATH = "sc58x"
-	elif MACHINE == 'adsp-sc589-mini':
-		PATH = "sc58x"
-	elif MACHINE == 'adsp-sc594-som-ezkit':
-		PATH = "sc59x"
-	d.setVar('INIT_PATH', "arch/arm/cpu/armv7/" + PATH)
+  MACHINE = d.getVar('MACHINE')
+  if MACHINE == 'adsp-sc573-ezkit':
+    PATH = "sc57x"
+  elif MACHINE == 'adsp-sc584-ezkit':
+    PATH = "sc58x"
+  elif MACHINE == 'adsp-sc589-ezkit':
+    PATH = "sc58x"
+  elif MACHINE == 'adsp-sc589-mini':
+    PATH = "sc58x"
+  elif MACHINE == 'adsp-sc594-som-ezkit':
+    PATH = "sc59x"
+  d.setVar('INIT_PATH', "arch/arm/cpu/armv7/" + PATH)
 
-	if MACHINE == 'adsp-sc589-ezkit' or MACHINE == 'adsp-sc573-ezkit':
-		d.setVar('LIBFDT_ENV_H_FILE', "${WORKDIR}/git/include/linux/libfdt_env.h")
-		d.setVar('LIBFDT_H_FILE', "${WORKDIR}/git/include/linux/libfdt.h")
-	else:
-		d.setVar('LIBFDT_ENV_H_FILE', "${WORKDIR}/git/include/libfdt_env.h")
-		d.setVar('LIBFDT_H_FILE', "${WORKDIR}/git/include/libfdt.h")
+  if MACHINE == 'adsp-sc589-ezkit' or MACHINE == 'adsp-sc573-ezkit':
+    d.setVar('LIBFDT_ENV_H_FILE', "${WORKDIR}/git/include/linux/libfdt_env.h")
+    d.setVar('LIBFDT_H_FILE', "${WORKDIR}/git/include/linux/libfdt.h")
+  else:
+    d.setVar('LIBFDT_ENV_H_FILE', "${WORKDIR}/git/include/libfdt_env.h")
+    d.setVar('LIBFDT_H_FILE', "${WORKDIR}/git/include/libfdt.h")
 }
 
 do_compile_prepend(){
