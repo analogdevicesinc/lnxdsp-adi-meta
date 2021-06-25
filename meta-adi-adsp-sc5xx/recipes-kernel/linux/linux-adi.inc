@@ -6,10 +6,6 @@ require recipes-kernel/linux/linux-yocto.inc
 KERNEL_GIT_URI ?= "git://github.com/analogdevicesinc/lnxdsp-linux.git"
 KERNEL_GIT_PROTOCOL ?= "https"
 
-#Pull in from Timesys repository for now.  Change this when releasing SC594 board to public
-KERNEL_GIT_URI = "git://git@src.timesys.com/services/analog-devices/analog-devices-new-board-bringup-1/lnxdsp-linux.git;branch=release/yocto-1.0.0"
-KERNEL_GIT_PROTOCOL = "ssh"
-
 SRC_URI += " \
 	${KERNEL_GIT_URI};protocol=${KERNEL_GIT_PROTOCOL};branch=${KERNEL_BRANCH} \
 "
