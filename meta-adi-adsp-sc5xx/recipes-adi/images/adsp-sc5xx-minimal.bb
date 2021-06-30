@@ -4,9 +4,8 @@ SUMMARY = "Minimal image for Analog Devices ADSP-SC5xx boards"
 LICENSE = "MIT"
 
 #We do not need these files in the rootfs -- remove them to reduce the minimal rootfs size
-do_rootfs_cleanup(){
+fakeroot do_rootfs_cleanup(){
 	rm -rf ${IMAGE_ROOTFS}/boot
-
 	rm -rf ${IMAGE_ROOTFS}/etc/udev/hwdb.bin
 	rm -rf ${IMAGE_ROOTFS}/etc/udev/hwdb.d
 
