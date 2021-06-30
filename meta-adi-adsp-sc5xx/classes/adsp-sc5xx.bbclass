@@ -8,6 +8,13 @@ ICC = " \
     sc5xx-corecontrol \
 "
 
+CRYPTO = " \
+	openssl \
+	openssl-bin \
+	cryptodev-linux \
+	cryptodev-module \
+"
+
 IMAGE_INSTALL = " \
     packagegroup-core-boot \
     packagegroup-base \
@@ -19,6 +26,7 @@ IMAGE_INSTALL = " \
     util-linux \
     rng-tools \
     ${ICC} \
+    ${CRYPTO} \
 "
 
 IMAGE_INSTALL_append_adsp-sc594-som-ezkit = " \
