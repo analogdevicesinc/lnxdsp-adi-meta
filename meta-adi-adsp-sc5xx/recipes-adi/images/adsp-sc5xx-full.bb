@@ -104,4 +104,5 @@ IMAGE_INSTALL += " \
 	freetype \
 	version \
 	bonnie++ \
+	linux-firmware-sharc-alsa \
 "
