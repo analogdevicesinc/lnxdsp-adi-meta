@@ -16,6 +16,15 @@ KERNEL_EXTRA_FEATURES ?= "${WORKDIR}/feature/cfg/nfs.cfg \
 						  ${WORKDIR}/feature/cfg/cpufreq.cfg \
 						  ${WORKDIR}/feature/cfg/crypto.cfg \
 						  "
+
+def get_sharc_alsa (d):
+    if d.getVar('ANALOG_DEVICES_SHARC_ALSA'):
+        return " ${WORKDIR}/feature/cfg/sound/sc5xx_sharc_alsa.cfg"
+    else:
+        return ""
+
+KERNEL_EXTRA_FEATURES += "${@get_sharc_alsa(d)}"
+
 KERNEL_FEATURES_append = " ${KERNEL_EXTRA_FEATURES}"
 
 KERNEL_FEATURES_append_adsp-sc594_som_ezkit = " ${WORKDIR}/feature/snd_ezkit.scc"
