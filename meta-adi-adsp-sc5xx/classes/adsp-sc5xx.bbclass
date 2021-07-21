@@ -13,6 +13,7 @@ CRYPTO = " \
 	openssl-bin \
 	cryptodev-linux \
 	cryptodev-module \
+	crypto-tests \
 "
 
 IMAGE_INSTALL = " \
