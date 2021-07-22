@@ -1,6 +1,6 @@
 SUMMARY = "U-Boot For ADSP-SC5xx Products"
 
-inherit analog-devices-baremetal autotools
+inherit autotools
 
 require ${COREBASE}/meta/recipes-bsp/u-boot/u-boot.inc
 
