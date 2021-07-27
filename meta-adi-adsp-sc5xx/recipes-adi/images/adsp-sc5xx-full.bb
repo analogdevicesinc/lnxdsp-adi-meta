@@ -32,8 +32,9 @@ TEST_MODULES = "\
     malloc-perf-test \
 "
 
+#Removed (not building under Dunfell):
+# ${TEST_MODULES}
 TESTING = "\
-    ${TEST_MODULES} \
     linkport-test \
     rtc-test \
     gadgetfs-test \
@@ -64,6 +65,7 @@ MPLAYER = " \
 	v4l2-video-test \
 	ffmpeg \
 "
+
 #Removed for Dunfell:
 # pound
 
@@ -104,4 +106,6 @@ IMAGE_INSTALL += " \
 	freetype \
 	version \
 	bonnie++ \
+	libopus \
+	opus-tools \
 "
