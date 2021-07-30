@@ -11,7 +11,7 @@ def get_lic_files_chksum (d):
   return LIC_FILES_CHKSUM
 
 def get_uboot_branch (d):
-  UBOOT_BRANCH = "develop/g-xp"
+  UBOOT_BRANCH = "develop/a2b-linux"
   return UBOOT_BRANCH
 
 UBOOT_GIT_URI ?= "git://github.com/analogdevicesinc/u-boot-sharc.git"
