@@ -30,12 +30,8 @@ python () {
 		PATH = "sc59x"
 	d.setVar('INIT_PATH', "arch/arm/cpu/armv7/" + PATH)
 
-	if MACHINE == 'adsp-sc589-ezkit' or MACHINE == 'adsp-sc573-ezkit':
-		d.setVar('LIBFDT_ENV_H_FILE', "${WORKDIR}/git/include/linux/libfdt_env.h")
-		d.setVar('LIBFDT_H_FILE', "${WORKDIR}/git/include/linux/libfdt.h")
-	else:
-		d.setVar('LIBFDT_ENV_H_FILE', "${WORKDIR}/git/include/libfdt_env.h")
-		d.setVar('LIBFDT_H_FILE', "${WORKDIR}/git/include/libfdt.h")
+	d.setVar('LIBFDT_ENV_H_FILE', "${WORKDIR}/git/include/linux/libfdt_env.h")
+	d.setVar('LIBFDT_H_FILE', "${WORKDIR}/git/include/linux/libfdt.h")
 }
 
 do_compile_prepend(){

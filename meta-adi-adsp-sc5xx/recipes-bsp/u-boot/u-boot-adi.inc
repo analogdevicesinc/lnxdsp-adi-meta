@@ -6,34 +6,17 @@ require ${COREBASE}/meta/recipes-bsp/u-boot/u-boot.inc
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/u-boot-adi:"
 
-def get_lic_files_chksum (d):
-  MACHINE = d.getVar('MACHINE')
-  if MACHINE == 'adsp-sc589-ezkit' or MACHINE == 'adsp-sc573-ezkit':
-    LIC_FILES_CHKSUM = "file://Licenses/README;md5=5a7450c57ffe5ae63fd732446b988025"
-  else:
-    LIC_FILES_CHKSUM = "file://Licenses/README;md5=c7383a594871c03da76b3707929d2919"
-  return LIC_FILES_CHKSUM
-
 def get_uboot_branch (d):
-  MACHINE = d.getVar('MACHINE')
-  if MACHINE == 'adsp-sc589-ezkit' or MACHINE == 'adsp-sc573-ezkit':
-    UBOOT_BRANCH = "master"
-  else:
-    UBOOT_BRANCH = "release/yocto-1.0.0"
+  UBOOT_BRANCH = "master"
   return UBOOT_BRANCH
-
-#UBOOT_GIT_URI ?= "git://github.com/analogdevicesinc/u-boot-sharc.git"
-#UBOOT_GIT_PROTOCOL ?= "https"
 
 def get_git_uri (d):
   #Pull in from Timesys repository for now.  Change this when releasing SC594 board to public
-  MACHINE = d.getVar('MACHINE')
-  if MACHINE == 'adsp-sc589-ezkit' or MACHINE == 'adsp-sc573-ezkit':
-    UBOOT_GIT_URI = "git://git@src.timesys.com/services/analog-devices/analog-devices-new-board-bringup-1/u-boot-sharc-2020.10.git"
-  else:
-    UBOOT_GIT_URI = "git://git@src.timesys.com/services/analog-devices/analog-devices-new-board-bringup-1/u-boot-sharc.git"
+  #UBOOT_GIT_URI ?= "git://github.com/analogdevicesinc/u-boot-sharc.git"
+  UBOOT_GIT_URI = "git://git@src.timesys.com/services/analog-devices/analog-devices-new-board-bringup-1/u-boot-sharc-2020.10.git"
   return UBOOT_GIT_URI
 
+#UBOOT_GIT_PROTOCOL ?= "https"
 UBOOT_GIT_PROTOCOL = "ssh"
 
 def get_wdt_patch (d):
@@ -61,7 +44,7 @@ SRC_URI += " \
 "
 
 LICENSE = "GPLv2+"
-LIC_FILES_CHKSUM = "${@get_lic_files_chksum(d)}"
+LIC_FILES_CHKSUM = "file://Licenses/README;md5=5a7450c57ffe5ae63fd732446b988025"
 
 PV_append = "+git${SRCPV}"
 
