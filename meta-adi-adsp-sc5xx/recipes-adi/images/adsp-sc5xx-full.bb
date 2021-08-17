@@ -3,9 +3,18 @@ inherit adsp-sc5xx
 SUMMARY = "Full image for Analog Devices ADSP-SC5xx boards"
 LICENSE = "MIT"
 
+def get_whetstone (d):
+  WHETSTONE = ""
+  MACHINE = d.getVar('MACHINE')
+  if MACHINE == 'adsp-sc598-som-ezkit':
+    WHETSTONE = "whetstone"
+  else:
+    WHETSTONE = "whetstone-adi"
+  return WHETSTONE
+
 OPROFILE_PERFORMANCE_BENCHMARK = "\
 	dhrystone \
-	whetstone-adi \
+	${@get_whetstone(d)} \
 "
 
 TOUCHSCREEN = "\

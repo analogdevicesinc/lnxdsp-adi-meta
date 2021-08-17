@@ -5,7 +5,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
 
 PR = "r0"
 
-KERNEL_BRANCH ?= "v5.4-rebase-wip"
+KERNEL_BRANCH ?= "develop/a55-fpga"
 SRCREV  = "${AUTOREV}"
 
 SRC_URI += "file://feature/"

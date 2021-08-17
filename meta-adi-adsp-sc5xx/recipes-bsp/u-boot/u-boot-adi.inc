@@ -7,7 +7,11 @@ require ${COREBASE}/meta/recipes-bsp/u-boot/u-boot.inc
 FILESEXTRAPATHS_prepend := "${THISDIR}/u-boot-adi:"
 
 def get_uboot_branch (d):
-  UBOOT_BRANCH = "master"
+  MACHINE = d.getVar('MACHINE')
+  if MACHINE == 'adsp-sc598-som-ezkit':
+    UBOOT_BRANCH = "develop/a55-fpga"
+  else:
+    UBOOT_BRANCH = "master"
   return UBOOT_BRANCH
 
 def get_git_uri (d):

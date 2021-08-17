@@ -7,7 +7,7 @@ KERNEL_GIT_URI ?= "git://github.com/analogdevicesinc/lnxdsp-linux.git"
 KERNEL_GIT_PROTOCOL ?= "https"
 
 #Pull in from Timesys repository for now.  Change this when releasing SC594 board to public
-KERNEL_GIT_URI = "git://git@src.timesys.com/services/analog-devices/analog-devices-new-board-bringup-1/lnxdsp-linux.git;branch=release/yocto-1.0.0"
+KERNEL_GIT_URI = "git://git@src.timesys.com/services/analog-devices/analog-devices-new-board-bringup-1/lnxdsp-linux.git;branch=develop/a55-fpga"
 KERNEL_GIT_PROTOCOL = "ssh"
 
 SRC_URI += " \
@@ -33,5 +33,6 @@ KBUILD_DEFCONFIG_adsp-sc584-ezkit = "sc584-ezkit_defconfig"
 KBUILD_DEFCONFIG_adsp-sc573-ezkit = "sc573-ezkit_defconfig"
 KBUILD_DEFCONFIG_adsp-sc589-mini = "sc589-mini_defconfig"
 KBUILD_DEFCONFIG_adsp-sc594-som-ezkit = "sc594-som-ezkit_defconfig"
+KBUILD_DEFCONFIG_adsp-sc598-som-ezkit = "sc598-som-ezkit_defconfig"
 
-COMPATIBLE_MACHINE = "(adsp-sc573-ezkit|adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini|adsp-sc594-som-ezkit)"
+COMPATIBLE_MACHINE = "(adsp-sc573-ezkit|adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini|adsp-sc594-som-ezkit|adsp-sc598-som-ezkit)"

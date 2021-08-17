@@ -34,7 +34,7 @@ IMAGE_INSTALL_append_adsp-sc594-som-ezkit = " \
 	remoteproc-examples-sc594 \
 "
 
-COMPATIBLE_MACHINE = "(adsp-sc573-ezkit|adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini|adsp-sc594-som-ezkit)"
+COMPATIBLE_MACHINE = "(adsp-sc573-ezkit|adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini|adsp-sc594-som-ezkit|adsp-sc598-som-ezkit)"
 
 EXTRA_USERS_PARAMS = " \
 	usermod -P adi root; \

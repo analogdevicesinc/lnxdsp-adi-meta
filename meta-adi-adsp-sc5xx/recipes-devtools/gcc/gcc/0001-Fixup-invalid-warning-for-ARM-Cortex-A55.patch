@@ -1,0 +1,29 @@
+From c26e688d3688116989e20b47cfaea7139d4c8c1c Mon Sep 17 00:00:00 2001
+From: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+Date: Mon, 31 May 2021 10:41:24 -0400
+Subject: [PATCH] Fixup invalid warning for ARM Cortex-A55
+
+---
+ gcc/config/aarch64/aarch64.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/gcc/config/aarch64/aarch64.c b/gcc/config/aarch64/aarch64.c
+index bc6c02c3a..6abe3c813 100644
+--- a/gcc/config/aarch64/aarch64.c
++++ b/gcc/config/aarch64/aarch64.c
+@@ -12119,9 +12119,9 @@ aarch64_override_options (void)
+     {
+       if (selected_arch->arch != selected_cpu->arch)
+ 	{
+-	  warning (0, "switch %<-mcpu=%s%> conflicts with %<-march=%s%> switch",
+-		       all_architectures[selected_cpu->arch].name,
+-		       selected_arch->name);
++//	  warning (0, "switch %<-mcpu=%s%> conflicts with %<-march=%s%> switch",
++//		       all_architectures[selected_cpu->arch].name,
++//		       selected_arch->name);
+ 	}
+       aarch64_isa_flags = arch_isa;
+       explicit_arch = selected_arch->arch;
+-- 
+2.21.0
+
