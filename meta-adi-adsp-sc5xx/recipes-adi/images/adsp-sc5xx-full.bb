@@ -56,6 +56,7 @@ TESTING = "\
 BLUETOOTH_AND_HEADSET = " \
 	alsa-utils \
 	alsa-lib \
+	sharc-alsa-lib \
 	dbus \
 	bluez5 \
 	packagegroup-tools-bluetooth \
