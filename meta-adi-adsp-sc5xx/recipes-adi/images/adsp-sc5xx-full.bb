@@ -57,6 +57,7 @@ BLUETOOTH_AND_HEADSET = " \
 	alsa-utils \
 	alsa-lib \
 	sharc-alsa-lib \
+	rpmsg-utils \
 	dbus \
 	bluez5 \
 	packagegroup-tools-bluetooth \
