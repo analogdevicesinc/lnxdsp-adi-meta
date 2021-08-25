@@ -1,3 +1,8 @@
+UBOOT_GIT_URI ?= "git://github.com/analogdevicesinc/lnxdsp-u-boot.git"
+UBOOT_GIT_PROTOCOL ?= "https"
+UBOOT_BRANCH = "develop/g-xp"
+LIC_FILES_CHKSUM = "file://Licenses/README;md5=5a7450c57ffe5ae63fd732446b988025"
+
 require u-boot-adi.inc
 
 PR = "r0"
@@ -17,25 +22,23 @@ FILES_${PN} = " \
 "
 
 python () {
-  MACHINE = d.getVar('MACHINE')
-  if MACHINE == 'adsp-sc573-ezkit':
-    PATH = "sc57x"
-  elif MACHINE == 'adsp-sc584-ezkit':
-    PATH = "sc58x"
-  elif MACHINE == 'adsp-sc589-ezkit':
-    PATH = "sc58x"
-  elif MACHINE == 'adsp-sc589-mini':
-    PATH = "sc58x"
-  elif MACHINE == 'adsp-sc594-som-ezkit':
-    PATH = "sc59x"
-  d.setVar('INIT_PATH', "arch/arm/cpu/armv7/" + PATH)
+    MACHINE = d.getVar('MACHINE')
+    if MACHINE == 'adsp-sc573-ezkit':
+        PATH = "sc57x"
+    elif MACHINE == 'adsp-sc584-ezkit':
+        PATH = "sc58x"
+    elif MACHINE == 'adsp-sc589-ezkit':
+        PATH = "sc58x"
+    elif MACHINE == 'adsp-sc589-mini':
+        PATH = "sc58x"
+    elif MACHINE == 'adsp-sc594-som-ezkit':
+        PATH = "sc59x"
+    elif MACHINE == 'adsp-sc598':
+        PATH = "unknown"
+    d.setVar('INIT_PATH', "arch/arm/cpu/armv7/" + PATH)
 
-  if MACHINE == 'adsp-sc589-ezkit' or MACHINE == 'adsp-sc573-ezkit':
     d.setVar('LIBFDT_ENV_H_FILE', "${WORKDIR}/git/include/linux/libfdt_env.h")
     d.setVar('LIBFDT_H_FILE', "${WORKDIR}/git/include/linux/libfdt.h")
-  else:
-    d.setVar('LIBFDT_ENV_H_FILE', "${WORKDIR}/git/include/libfdt_env.h")
-    d.setVar('LIBFDT_H_FILE', "${WORKDIR}/git/include/libfdt.h")
 }
 
 do_compile_prepend(){

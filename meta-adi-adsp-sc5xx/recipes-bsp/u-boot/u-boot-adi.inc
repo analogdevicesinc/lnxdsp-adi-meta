@@ -6,23 +6,14 @@ require ${COREBASE}/meta/recipes-bsp/u-boot/u-boot.inc
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/u-boot-adi:"
 
-def get_lic_files_chksum (d):
-  LIC_FILES_CHKSUM = "file://Licenses/README;md5=c7383a594871c03da76b3707929d2919"
-  return LIC_FILES_CHKSUM
-
-def get_uboot_branch (d):
-  UBOOT_BRANCH = "develop/g-xp"
-  return UBOOT_BRANCH
-
-UBOOT_GIT_URI ?= "git://github.com/analogdevicesinc/u-boot-sharc.git"
-UBOOT_GIT_PROTOCOL ?= "https"
-
 def get_wdt_patch (d):
   WDT_FILE = ""
   if d.getVar('ANALOG_DEVICES_WATCHDOG'):
     MACHINE = d.getVar('MACHINE')
     if MACHINE == 'adsp-sc594-som-ezkit':
       WDT_FILE = "file://enable-ADI-watchdog-sc594.patch"
+    elif MACHINE == 'adsp-sc589-ezkit' or MACHINE == 'adsp-sc573-ezkit':
+      WDT_FILE = "file://enable-ADI-watchdog-2020.10.patch"
     else:
       WDT_FILE = "file://enable-ADI-watchdog.patch"
   return WDT_FILE
@@ -35,12 +26,11 @@ def get_ramdisk_patch (d):
     return ""
 
 SRC_URI += " \
-	${UBOOT_GIT_URI};protocol=${UBOOT_GIT_PROTOCOL};branch=${@get_uboot_branch(d)} \
+	${UBOOT_GIT_URI};protocol=${UBOOT_GIT_PROTOCOL};branch=${UBOOT_BRANCH} \
 	${@get_wdt_patch(d)} ${@get_ramdisk_patch(d)} \
 "
 
 LICENSE = "GPLv2+"
-LIC_FILES_CHKSUM = "${@get_lic_files_chksum(d)}"
 
 PV_append = "+git${SRCPV}"
 
