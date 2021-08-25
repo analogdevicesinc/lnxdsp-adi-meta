@@ -16,7 +16,7 @@
 #define RPMSG_CHARDEV_CTRL "rpmsg_ctrl"
 
 
-int rpmsg_bind(char *device)
+int rpmsg_bind(char *device, unsigned int addr)
 {
 	int fd;
 	int ret;
@@ -81,8 +81,8 @@ int rpmsg_bind(char *device)
 
 	/* Create endpoint for rpmsg char device */
 	snprintf(ept_info.name, sizeof(ept_info.name), "chrdev_%s", device);
-	ept_info.src = 0;
-	ept_info.dst = 0xFFFFFFFF;
+	ept_info.src = addr;
+	ept_info.dst = addr;
 	ret = ioctl(fd, RPMSG_CREATE_EPT_IOCTL, &ept_info);
 	if (ret){
 		fprintf(stderr, "Can't create endpoint %s: %s\n", ept_info.name, strerror(errno));
@@ -120,9 +120,10 @@ int rpmsg_unbind(char *device)
 }
 
 void usage(void){
-	printf("Usage: rpmsg-bind-chardev [-u] -d rpmsg_device_path\n"
+	printf("Usage: rpmsg-bind-chardev [-u] -d rpmsg_device_path -a addr\n"
 				 "		-u	unbind specified device\n"
 				 "		-d	path to the rpmsg device\n"
+				 "		-a	address of endpoint created for the chardev\n"
 				 "		-h	usage\n"
 	);
 	exit(1);
@@ -133,9 +134,11 @@ int main(int argc, char *argv[]){
 
 	int opt;
 	int bind = 1;
+	int addr = -1;
+	char *end;
 	char *rpmsg_device=NULL;
 	
-	while ((opt = getopt(argc, argv, "ud:h?")) != -1) {
+	while ((opt = getopt(argc, argv, "ud:a:h?")) != -1) {
 		switch (opt) {
 		case 'u':
 			bind = 0;
@@ -143,6 +146,17 @@ int main(int argc, char *argv[]){
 		case 'd':
 			rpmsg_device = optarg;
 			break;
+		case 'a':
+				addr = strtol(optarg, &end, 10);
+				if (*end !=0 ){
+					fprintf(stderr, "Wrong format: addr must be decimal\n");
+					usage();
+				}
+				if (addr < 0){
+					fprintf(stderr, "Wrong format: addr must be positive\n");
+					usage();
+				}
+				break;
 		default:
 			usage();
 			break;
@@ -153,8 +167,13 @@ int main(int argc, char *argv[]){
 		usage();
 	}
 
+	if(bind && addr < 0){
+		fprintf(stderr, "addr must be set to bind chardev\n");
+		usage();
+	}
+
 	if(bind){
-		ret = rpmsg_bind(rpmsg_device);
+		ret = rpmsg_bind(rpmsg_device, (unsigned int)addr);
 	}else{
 		ret = rpmsg_unbind(rpmsg_device);
 	}
