@@ -52,7 +52,7 @@ LIC_FILES_CHKSUM = "file://Licenses/README;md5=5a7450c57ffe5ae63fd732446b988025"
 
 PV_append = "+git${SRCPV}"
 
-DEPENDS += "dtc-native bc-native lzop-native bison-native"
+DEPENDS += "dtc-native bc-native lzop-native bison-native ldr-adi-native"
 
 PROVIDES += "u-boot"
 PKG_${PN} = "u-boot"

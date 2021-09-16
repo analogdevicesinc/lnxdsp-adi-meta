@@ -6,11 +6,6 @@ SRCREV = "${AUTOREV}"
 
 UBOOT_INITIAL_ENV = ""
 
-SRC_URI += " \
-    file://arm-poky-linux-gnueabi-ldr \
-    file://elfloader.tar.gz \
-"
-
 FILES_${PN} = " \
     u-boot-${BOARD}.ldr \
     u-boot-${BOARD} \
@@ -44,26 +39,14 @@ python () {
     d.setVar('LIBFDT_H_FILE', "${WORKDIR}/git/include/linux/libfdt.h")
 }
 
-do_elfloader_agree_sla(){
-	if [ "${ADI_ELFLOADER_AGREE_SLA}" != "1" ]; then
-		bbfatal "You must agree to the Analog Devices Incorporated Software License Agreement (elfloader-sla.pdf) to use elfloader.  Please set ADI_ELFLOADER_AGREE_SLA=\"1\" in your local.conf if you agree"
-	fi
-}
-
-addtask elfloader_agree_sla before do_unpack
-
-#do_unpack_elfloader(){
-#	cd ${WORKDIR}
-#	tar -xf 
-#}
-
 do_compile_prepend(){
     #Use U-boot's FDT header files, not Linux's (in case they are different)
     #cp ${LIBFDT_ENV_H_FILE} ${WORKDIR}/recipe-sysroot-native/usr/include/libfdt_env.h
     #cp ${LIBFDT_H_FILE} ${WORKDIR}/recipe-sysroot-native/usr/include/libfdt.h
 
-    #Add arm-poky-linux-gnueabi-ldr/elfloader in to path
-    export PATH=$PATH:${WORKDIR}
+    #Add arm-poky-linux-gnueabi-ldr in to path
+    #(This is probably unnecessary now -- leaving just in case)
+    export PATH=$PATH:${WORKDIR}/recipe-sysroot-native/usr/bin
 }
 
 do_install () {
