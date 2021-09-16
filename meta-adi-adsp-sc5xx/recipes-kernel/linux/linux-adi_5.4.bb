@@ -5,7 +5,16 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
 
 PR = "r0"
 
-KERNEL_BRANCH ?= "develop/a55-fpga"
+def get_kernel_branch(d):
+  BRANCH = ""
+  MACHINE = d.getVar('MACHINE')
+  if MACHINE == 'adsp-sc598-som-ezkit':
+    BRANCH = "develop/a55-fpga"
+  else:
+    BRANCH = "v5.4-rebase-wip"
+  return BRANCH
+
+KERNEL_BRANCH ?= "${@get_kernel_branch(d)}"
 SRCREV  = "${AUTOREV}"
 
 SRC_URI += "file://feature/"
