@@ -8,12 +8,21 @@ ICC = " \
     sc5xx-corecontrol \
 "
 
+#Not currently compiling for 64 bit -- skip for now
+def crypto(d):
+  CRYPTO = ""
+  MACHINE = d.getVar('MACHINE')
+  if MACHINE == 'adsp-sc598-som-ezkit':
+    CRYPTO = ""
+  else:
+    CRYPTO = "cryptodev-module crypto-tests"
+  return CRYPTO
+
 CRYPTO = " \
 	openssl \
 	openssl-bin \
 	cryptodev-linux \
-	cryptodev-module \
-	crypto-tests \
+	${@crypto(d)} \
 "
 
 IMAGE_INSTALL = " \
