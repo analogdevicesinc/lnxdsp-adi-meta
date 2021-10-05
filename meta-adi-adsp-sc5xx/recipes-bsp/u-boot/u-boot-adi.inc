@@ -9,7 +9,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/u-boot-adi:"
 def get_uboot_branch (d):
   MACHINE = d.getVar('MACHINE')
   if MACHINE == 'adsp-sc598-som-ezkit':
-    UBOOT_BRANCH = "develop/a55-fpga"
+    UBOOT_BRANCH = "develop/sc598"
   else:
     UBOOT_BRANCH = "master"
   return UBOOT_BRANCH

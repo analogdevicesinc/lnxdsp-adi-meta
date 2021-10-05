@@ -9,7 +9,7 @@ def get_kernel_branch(d):
   BRANCH = ""
   MACHINE = d.getVar('MACHINE')
   if MACHINE == 'adsp-sc598-som-ezkit':
-    BRANCH = "develop/a55-fpga"
+    BRANCH = "develop/sc598"
   else:
     BRANCH = "v5.4-rebase-wip"
   return BRANCH
