@@ -10,6 +10,7 @@ MACHINE_KERNEL_PR = "r0"
 KERNEL_IMAGETYPE = "Image"
 
 PREFERRED_PROVIDER_virtual/kernel = "linux-adi"
+PREFERRED_PROVIDER_virtual/bootloader = "u-boot-adi"
 
 EXTRA_IMAGEDEPENDS += "u-boot-adi"
 
