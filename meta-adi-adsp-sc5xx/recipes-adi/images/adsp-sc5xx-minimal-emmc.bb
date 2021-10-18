@@ -1,8 +1,12 @@
 inherit adsp-sc5xx-minimal
 
+IMAGE_INSTALL += "kernel kernel-devicetree"
+
 #We do not need these files in the rootfs -- remove them to reduce the minimal rootfs size
 fakeroot do_rootfs_cleanup(){
-	rm -rf ${IMAGE_ROOTFS}/boot
+
+	#We need this for eMMC boot -- do not delete
+	#rm -rf ${IMAGE_ROOTFS}/boot
 
 	rm -rf ${IMAGE_ROOTFS}/etc/udev/hwdb.bin
 	rm -rf ${IMAGE_ROOTFS}/etc/udev/hwdb.d

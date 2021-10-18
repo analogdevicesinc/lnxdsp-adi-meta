@@ -3,6 +3,10 @@ inherit adsp-sc5xx
 SUMMARY = "Full image for Analog Devices ADSP-SC5xx boards"
 LICENSE = "MIT"
 
+do_image_wic[depends] += " \
+        ${IMAGE_BASENAME}:do_image_ext4 \
+"
+
 def get_whetstone (d):
   WHETSTONE = ""
   MACHINE = d.getVar('MACHINE')

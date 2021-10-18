@@ -1,0 +1,6 @@
+#LBA-34
+part bootloader --source rawcopy --sourceparams="file=u-boot-sc598-som-ezkit.ldr" --ondisk mmcblk --no-table --align 17
+
+part / --source rawcopy --sourceparams="file=${IMGDEPLOYDIR}/${IMAGE_BASENAME}-${MACHINE}.ext4" --ondisk mmcblk --fstype=ext4 --align 4096
+
+bootloader --ptable msdos

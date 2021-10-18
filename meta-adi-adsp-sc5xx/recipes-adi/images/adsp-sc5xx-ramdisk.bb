@@ -8,6 +8,14 @@ IMAGE_INSTALL = " \
     busybox-watchdog-init \
 "
 
+#For transferring data to flash eMMC via ramdisk
+IMAGE_INSTALL += " \
+    openssh \
+    e2fsprogs-resize2fs \
+    gzip \
+    adi-flash-emmc \
+"
+
 #Add this back in to IMAGE_INSTALL if you want to perform a switch_root
 # initramfs-init
 
