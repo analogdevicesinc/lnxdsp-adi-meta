@@ -25,6 +25,8 @@ IMAGE_INSTALL = " \
     busybox-watchdog-init \
     util-linux \
     rng-tools \
+    spidev-test \
+    spitools \
     ${ICC} \
     ${CRYPTO} \
 "
