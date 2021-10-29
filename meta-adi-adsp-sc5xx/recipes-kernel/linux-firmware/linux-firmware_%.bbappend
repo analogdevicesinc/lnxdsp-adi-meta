@@ -5,7 +5,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/linux-firmware:"
 SRC_URI += "file://adau1761.bin \
 			file://LICENSE.adau1761 \
 			file://sharc-alsa/2Channel-SC594.ldr \
-			file://sharc-alsa/2Ch_L440_R200_48kHz_32bit_6s.wav \
+			file://sharc-alsa/2Ch_L440_R200_48kHz_16bit_6s.wav \
 			file://sharc-alsa/LICENSE.md \
 			"
 
@@ -21,7 +21,7 @@ do_install_append() {
 	install -m 0644 ${WORKDIR}/sharc-alsa/LICENSE.md ${D}${FILEPATH}
 	install -m 0644 ${WORKDIR}/sharc-alsa/2Channel-SC594.ldr ${D}${FILEPATH}
 	install -d ${D}/usr/share/sounds/alsa/	
-	install -m 0644 ${WORKDIR}/sharc-alsa/2Ch_L440_R200_48kHz_32bit_6s.wav ${D}/usr/share/sounds/alsa/
+	install -m 0644 ${WORKDIR}/sharc-alsa/2Ch_L440_R200_48kHz_16bit_6s.wav ${D}/usr/share/sounds/alsa/
 }
 
 PACKAGES =+ "${PN}-adau1761"
@@ -36,5 +36,5 @@ PACKAGES =+ "${PN}-sharc-alsa"
 FILES_${PN}-sharc-alsa = " \
 		${FILEPATH}/LICENSE.md \
 		${FILEPATH}/2Channel-SC594.ldr \
-		/usr/share/sounds/alsa/2Ch_L440_R200_48kHz_32bit_6s.wav \
+		/usr/share/sounds/alsa/2Ch_L440_R200_48kHz_16bit_6s.wav \
 		"
