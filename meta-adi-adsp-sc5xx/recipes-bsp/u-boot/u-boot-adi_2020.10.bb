@@ -1,13 +1,13 @@
 UBOOT_GIT_URI ?= "git://github.com/analogdevicesinc/lnxdsp-u-boot.git"
 UBOOT_GIT_PROTOCOL ?= "https"
-UBOOT_BRANCH = "develop/g-xp"
+UBOOT_BRANCH = "release/sc594"
 LIC_FILES_CHKSUM = "file://Licenses/README;md5=5a7450c57ffe5ae63fd732446b988025"
 
 require u-boot-adi.inc
 
 PR = "r0"
 
-SRCREV = "${AUTOREV}"
+SRCREV = "fe6ddadbe091f7c7b07b7b5069030223061976f3"
 
 UBOOT_INITIAL_ENV = ""
 
