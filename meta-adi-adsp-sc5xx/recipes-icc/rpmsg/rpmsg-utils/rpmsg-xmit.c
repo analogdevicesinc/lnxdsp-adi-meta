@@ -8,7 +8,8 @@
 #define MAX_MSG_LEN (512-16) /* The default size of rpmsg buffer is 512B with 16B header */
 
 int fd = 0;
-char *msg = NULL;
+char msg_to_send[MAX_MSG_LEN];
+char msg_received[MAX_MSG_LEN];
 ssize_t msglen = DEFAULT_MSG_LEN;
 
 void signal_handler(__attribute__((unused)) const int signum) {
@@ -17,7 +18,6 @@ void signal_handler(__attribute__((unused)) const int signum) {
 
 void exit_cleanup(void){
 	if(fd) close(fd);
-	if(msg != NULL) free(msg);
 }
 
 void print_help(void){
@@ -67,12 +67,6 @@ int main (int argc, char **argv)
 		exit(EXIT_FAILURE);
 	}
 
-	msg = malloc(msglen);
-	if (msg == NULL){
-		perror("Can't allocate message buffer");
-		exit(EXIT_FAILURE);
-	}
-
 	fd = open(argv[optind], O_RDWR);
 	if(fd < 0){
 		perror(argv[optind]);
@@ -80,7 +74,7 @@ int main (int argc, char **argv)
 	}
 
 	while(1){
-		len = fread(msg, msglen, 1, stdin);
+		len = fread(msg_to_send, msglen, 1, stdin);
 		if(len == 0){
 			if(feof(stdin)){
 				exit(EXIT_SUCCESS);
@@ -93,10 +87,10 @@ int main (int argc, char **argv)
 			exit(EXIT_FAILURE);
 		}
 
-		len = write(fd, msg, msglen);
-		len = read(fd, msg, MAX_MSG_LEN);
+		len = write(fd, msg_to_send, msglen);
+		len = read(fd, msg_received, MAX_MSG_LEN);
 
-		len = fwrite(msg, len, 1, stdout);
+		len = fwrite(msg_received, len, 1, stdout);
 		if(len == 0 ){
 			if(feof(stdout)){
 				exit(EXIT_SUCCESS);
