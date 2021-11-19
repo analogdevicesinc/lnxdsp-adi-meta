@@ -1,5 +1,8 @@
-#LBA-34
-part bootloader --source rawcopy --sourceparams="file=u-boot-sc598-som-ezkit.ldr" --ondisk mmcblk --no-table --align 17
+#LBA-34 (17KB)
+part bootloader --source rawcopy --sourceparams="file=u-boot-sc598-som-ezkit.ldr.emmc_boot_stage1" --ondisk mmcblk --no-table --align 17
+
+#LBA-512 (256KB)
+part bootloader --source rawcopy --sourceparams="file=u-boot-sc598-som-ezkit.ldr.emmc_boot_stage2" --ondisk mmcblk --no-table --align 256
 
 part / --source rawcopy --sourceparams="file=${IMGDEPLOYDIR}/${IMAGE_BASENAME}-${MACHINE}.ext4" --ondisk mmcblk --fstype=ext4 --align 4096
 

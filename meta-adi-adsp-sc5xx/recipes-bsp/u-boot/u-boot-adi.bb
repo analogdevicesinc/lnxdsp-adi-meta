@@ -6,8 +6,15 @@ SRCREV = "${AUTOREV}"
 
 UBOOT_INITIAL_ENV = ""
 
+def emmc_boot_stages(d):
+  MACHINE = d.getVar('MACHINE')
+  if MACHINE == 'adsp-sc598-som-ezkit':
+    return "u-boot-${BOARD}.ldr.emmc_boot_stage1 u-boot-${BOARD}.ldr.emmc_boot_stage2"
+  return ""
+
 FILES_${PN} = " \
     u-boot-${BOARD}.ldr \
+    ${@emmc_boot_stages(d)} \
     u-boot-${BOARD} \
     init-${BOARD}.elf \
 "
@@ -51,12 +58,20 @@ do_compile_prepend(){
 
 do_install () {
     install ${B}/u-boot-${BOARD}.ldr ${D}/
+    if [ "${MACHINE}" = "adsp-sc598-som-ezkit" ]; then
+        install ${B}/u-boot-${BOARD}.ldr.emmc_boot_stage1 ${D}/
+        install ${B}/u-boot-${BOARD}.ldr.emmc_boot_stage2 ${D}/
+    fi
     install ${B}/u-boot-${BOARD} ${D}/
     install ${B}/${INIT_PATH}/init-${BOARD}.elf ${D}/
 }
 
 do_deploy() {
     install ${B}/u-boot-${BOARD}.ldr ${DEPLOYDIR}/
+    if [ "${MACHINE}" = "adsp-sc598-som-ezkit" ]; then
+        install ${B}/u-boot-${BOARD}.ldr.emmc_boot_stage1 ${DEPLOYDIR}/
+        install ${B}/u-boot-${BOARD}.ldr.emmc_boot_stage2 ${DEPLOYDIR}/
+    fi
     install ${B}/u-boot-${BOARD} ${DEPLOYDIR}/
     install ${B}/${INIT_PATH}/init-${BOARD}.elf ${DEPLOYDIR}/
 }
