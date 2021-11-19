@@ -31,6 +31,8 @@ IMAGE_INSTALL = " \
     ${CORE_IMAGE_EXTRA_INSTALL} \
     openssh \
     openssl \
+    iproute2 \
+    iproute2-tc \
     ncurses \
     busybox-watchdog-init \
     util-linux \
