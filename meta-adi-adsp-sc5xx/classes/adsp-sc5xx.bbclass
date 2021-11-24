@@ -4,8 +4,8 @@ SUMMARY = "Minimal image for Analog Devices ADSP-SC5xx boards"
 LICENSE = "MIT"
 
 ICC = " \
-    libmcapi \
-    sc5xx-corecontrol \
+	rpmsg-echo-example \
+	rpmsg-utils \
 "
 
 #Not currently compiling for 64 bit -- skip for now
