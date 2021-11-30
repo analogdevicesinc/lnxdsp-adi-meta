@@ -9,11 +9,21 @@ def get_kernel_branch(d):
   BRANCH = ""
   MACHINE = d.getVar('MACHINE')
   if MACHINE == 'adsp-sc598-som-ezkit':
-    BRANCH = "develop/sc598"
+    BRANCH = "develop/5.4.162/sc598"
   else:
     BRANCH = "v5.4-rebase-wip"
   return BRANCH
 
+def get_pv(d):
+  PV = ""
+  MACHINE = d.getVar('MACHINE')
+  if MACHINE == 'adsp-sc598-som-ezkit':
+    PV = "5.4.162"
+  else:
+    PV = "5.4"
+  return PV
+
+PV = "${@get_pv(d)}"
 KERNEL_BRANCH ?= "${@get_kernel_branch(d)}"
 SRCREV  = "${AUTOREV}"
 
