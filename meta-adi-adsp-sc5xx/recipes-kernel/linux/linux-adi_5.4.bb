@@ -8,6 +8,9 @@ PR = "r0"
 KERNEL_BRANCH ?= "release/sc594"
 SRCREV  = "c8e097d11302640b1a8b94e04f38a29ec2338021"
 
+PV = "5.4.162"
+LINUX_VERSION = "5.4.162"
+
 SRC_URI += "file://feature/"
 
 # Include kernel configuration fragment
