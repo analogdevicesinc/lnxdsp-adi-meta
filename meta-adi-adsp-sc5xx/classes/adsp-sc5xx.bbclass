@@ -46,6 +46,10 @@ IMAGE_INSTALL = " \
     ${CRYPTO} \
 "
 
+IMAGE_INSTALL_append_adsp-sc589-ezkit = " \
+    remoteproc-examples-sc589 \
+"
+
 IMAGE_INSTALL_append_adsp-sc594-som-ezkit = " \
 	remoteproc-examples-sc594 \
 "
