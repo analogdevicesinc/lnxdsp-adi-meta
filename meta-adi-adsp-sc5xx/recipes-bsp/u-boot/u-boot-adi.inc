@@ -60,3 +60,13 @@ PKG_${PN}-dev = "u-boot-dev"
 PKG_${PN}-dbg = "u-boot-dbg"
 
 S = "${WORKDIR}/git"
+
+# overwrite with another signature type in local.conf if you prefer
+# valid options are:
+# BLp - plaintext with authentication
+# BLw - encrypted in wrapped key format
+# BLx - encrypted in keyless format
+ADI_SIGNATURE_TYPE ?= "BLp"
+
+SIGNTOOL_PROC = "ADSP-SC594"
+SIGNTOOL_PROC_adsp-sc598-som-ezkit = "ADSP-SC598"
