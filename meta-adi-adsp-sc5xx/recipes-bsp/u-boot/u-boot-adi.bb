@@ -12,12 +12,22 @@ def emmc_boot_stages(d):
     return "u-boot-${BOARD}.ldr.emmc_boot_stage1 u-boot-${BOARD}.ldr.emmc_boot_stage2"
   return ""
 
-FILES_${PN} = " \
+FILES-SPL = " \
+    u-boot-proper-${BOARD}.elf \
+    u-boot-spl-${BOARD}.elf \
+    u-boot-proper-${BOARD}.img \
+    u-boot-spl-${BOARD}.ldr \
+    u-boot-uart-${BOARD}.ldr \
+"
+
+FILES-NO-SPL = " \
     u-boot-${BOARD}.ldr \
     ${@emmc_boot_stages(d)} \
     u-boot-${BOARD} \
     init-${BOARD}.elf \
 "
+
+FILES_${PN} = "${@ '${FILES-SPL}' if d.getVar('SPL_BINARY') else '${FILES-NO-SPL}'}"
 
 python () {
     MACHINE = d.getVar('MACHINE')
@@ -57,21 +67,37 @@ do_compile_prepend(){
 }
 
 do_install () {
-    install ${B}/u-boot-${BOARD}.ldr ${D}/
-    if [ "${MACHINE}" = "adsp-sc598-som-ezkit" ]; then
-        install ${B}/u-boot-${BOARD}.ldr.emmc_boot_stage1 ${D}/
-        install ${B}/u-boot-${BOARD}.ldr.emmc_boot_stage2 ${D}/
+    if [ "${SPL_BINARY}" == "" ]; then
+        install ${B}/u-boot-${BOARD}.ldr ${D}/
+        if [ "${MACHINE}" = "adsp-sc598-som-ezkit" ]; then
+            install ${B}/u-boot-${BOARD}.ldr.emmc_boot_stage1 ${D}/
+            install ${B}/u-boot-${BOARD}.ldr.emmc_boot_stage2 ${D}/
+        fi
+        install ${B}/u-boot-${BOARD} ${D}/
+        install ${B}/${INIT_PATH}/init-${BOARD}.elf ${D}/
+    else
+        install ${B}/u-boot-proper-${BOARD}.elf ${D}/
+        install ${B}/u-boot-spl-${BOARD}.elf ${D}/
+        install ${B}/u-boot-proper-${BOARD}.img ${D}/
+        install ${B}/u-boot-spl-${BOARD}.ldr ${D}/
+        install ${B}/u-boot-uart-${BOARD}.ldr ${D}/
     fi
-    install ${B}/u-boot-${BOARD} ${D}/
-    install ${B}/${INIT_PATH}/init-${BOARD}.elf ${D}/
 }
 
 do_deploy() {
-    install ${B}/u-boot-${BOARD}.ldr ${DEPLOYDIR}/
-    if [ "${MACHINE}" = "adsp-sc598-som-ezkit" ]; then
-        install ${B}/u-boot-${BOARD}.ldr.emmc_boot_stage1 ${DEPLOYDIR}/
-        install ${B}/u-boot-${BOARD}.ldr.emmc_boot_stage2 ${DEPLOYDIR}/
+    if [ "${SPL_BINARY}" == "" ]; then
+        install ${B}/u-boot-${BOARD}.ldr ${DEPLOYDIR}/
+        if [ "${MACHINE}" = "adsp-sc598-som-ezkit" ]; then
+            install ${B}/u-boot-${BOARD}.ldr.emmc_boot_stage1 ${DEPLOYDIR}/
+            install ${B}/u-boot-${BOARD}.ldr.emmc_boot_stage2 ${DEPLOYDIR}/
+        fi
+        install ${B}/u-boot-${BOARD} ${DEPLOYDIR}/
+        install ${B}/${INIT_PATH}/init-${BOARD}.elf ${DEPLOYDIR}/
+    else
+        install ${B}/u-boot-proper-${BOARD}.elf ${DEPLOYDIR}/
+        install ${B}/u-boot-spl-${BOARD}.elf ${DEPLOYDIR}/
+        install ${B}/u-boot-proper-${BOARD}.img ${DEPLOYDIR}/
+        install ${B}/u-boot-spl-${BOARD}.ldr ${DEPLOYDIR}/
+        install ${B}/u-boot-uart-${BOARD}.ldr ${DEPLOYDIR}/
     fi
-    install ${B}/u-boot-${BOARD} ${DEPLOYDIR}/
-    install ${B}/${INIT_PATH}/init-${BOARD}.elf ${DEPLOYDIR}/
 }
