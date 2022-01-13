@@ -14,6 +14,8 @@ IMAGE_INSTALL += " \
     e2fsprogs-resize2fs \
     gzip \
     adi-flash-emmc \
+    mtd-utils \
+    mtd-utils-ubifs \
 "
 
 #Add this back in to IMAGE_INSTALL if you want to perform a switch_root
