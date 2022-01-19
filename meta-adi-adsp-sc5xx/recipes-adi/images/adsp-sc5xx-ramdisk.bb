@@ -25,7 +25,7 @@ DISTRO_FEATURES = " ram"
 IMAGE_FSTYPES = " cpio.xz"
 
 DEPENDS += "u-boot-tools-native"
-do_adi_ramdisk[depends] = "u-boot-adi:do_compile"
+do_adi_ramdisk[depends] = "virtual/bootloader:do_compile"
 do_adi_ramdisk(){
     #Format the cpio image for u-boot
     mkimage -n 'Analog Devices Ram Disk Image'  -A ${UBOOT_ARCH} -O linux -T ramdisk -C gzip -d ${WORKDIR}/deploy-${PN}-image-complete/${PN}-${MACHINE}.cpio.xz ${DEPLOY_DIR_IMAGE}/${PN}-${MACHINE}.cpio.xz.u-boot

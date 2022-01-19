@@ -12,6 +12,6 @@ KERNEL_IMAGETYPE = "Image"
 PREFERRED_PROVIDER_virtual/kernel = "linux-adi"
 PREFERRED_PROVIDER_virtual/bootloader = "u-boot-adi"
 
-EXTRA_IMAGEDEPENDS += "u-boot-adi"
+EXTRA_IMAGEDEPENDS += "virtual/bootloader"
 
 MACHINE_FEATURES = "kernel26 serial ethernet usbhost usbgadget mmc alsa"
