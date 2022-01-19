@@ -8,7 +8,7 @@ MCAPI_GIT_PROTOCOL ?= "https"
 MCAPI_GIT_BRANCH ?= "release/yocto-1.0.0"
 
 PR = "r0"
-SRCREV= "${AUTOREV}"
+SRCREV= "b590f47b9c43ce4cef394a5bdad49576ea91f858"
 
 SRC_URI = " \
 ${MCAPI_GIT_URI};protocol=${MCAPI_GIT_PROTOCOL};branch=${MCAPI_GIT_BRANCH}"

@@ -8,7 +8,7 @@ LDR_GIT_PROTOCOL ?= "ssh"
 LDR_GIT_BRANCH ?= "master"
 
 PR = "r0"
-SRCREV= "${AUTOREV}"
+SRCREV= "ddf8478e20c3ba3fcb232467c430ecb9294ec879"
 
 SRC_URI = " \
 ${LDR_GIT_URI};protocol=${LDR_GIT_PROTOCOL};branch=${LDR_GIT_BRANCH}"
