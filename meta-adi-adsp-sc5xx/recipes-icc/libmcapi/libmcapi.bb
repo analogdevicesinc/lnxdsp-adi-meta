@@ -15,7 +15,7 @@ ${MCAPI_GIT_URI};protocol=${MCAPI_GIT_PROTOCOL};branch=${MCAPI_GIT_BRANCH}"
 
 S = "${WORKDIR}/git"
 
-DEPENDS = "kernel-devsrc linux-adi"
+DEPENDS = "kernel-devsrc virtual/kernel"
 
 EXTRA_OEMAKE += ' CFLAGS="${CFLAGS} -I${STAGING_KERNEL_DIR}/arch/blackfin/include -I${STAGING_KERNEL_DIR}/drivers/staging/icc/include"'
 

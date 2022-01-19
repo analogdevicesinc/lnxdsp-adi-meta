@@ -7,7 +7,7 @@ SRC_URI = " \
 
 S = "${WORKDIR}/source"
 
-DEPENDS = "kernel-devsrc linux-adi"
+DEPENDS = "kernel-devsrc virtual/kernel"
 
 TARGET_CFLAGS += "-D __ADSPSC5xx__ -I${STAGING_KERNEL_DIR}/drivers/staging/icc/include"
 

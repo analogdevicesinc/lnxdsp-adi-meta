@@ -16,7 +16,7 @@ SRC_URI[sha256sum] = "cdfbf5a7e8dc8fbbe0d6c1e83cd3bd3f2472160aac65684bb01ef661c6
 
 S = "${WORKDIR}/Pound-${PV}"
 
-DEPENDS = "kernel-devsrc linux-adi openssl10"
+DEPENDS = "kernel-devsrc virtual/kernel openssl10"
 
 TARGET_CFLAGS += " -I${STAGING_KERNEL_DIR}/include -DHAVE_SYSLOG_H=1 -DVERSION=${PV} -pthread -DNEED_STACK -DEMBED -D_REENTRANT -D_THREAD_SAFE -DUPER"
 
