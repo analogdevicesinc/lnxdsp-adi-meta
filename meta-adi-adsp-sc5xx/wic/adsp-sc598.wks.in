@@ -4,6 +4,13 @@ part bootloader --source rawcopy --sourceparams="file=${MMC_BOOT_STAGE1}" --ondi
 #LBA-512 (256KB)
 part bootloader --source rawcopy --sourceparams="file=${MMC_BOOT_STAGE2}" --ondisk mmcblk --no-table --align 256
 
-part / --source rawcopy --sourceparams="file=${IMGDEPLOYDIR}/${IMAGE_BASENAME}-${MACHINE}.ext4" --ondisk mmcblk --fstype=ext4 --align 4096
+# LBA-2048 (1024KB) - DTB for raw mode falcon boot
+part bootloader --source rawcopy --sourceparams="file=sc598-som-ezkit.dtb" --ondisk mmcblk --no-table --align 1024
+
+# LBA-4096 (2048KB) - Kernel Image for raw mode falcon boot
+part bootloader --source rawcopy --sourceparams="file=Image" --ondisk mmcblk --no-table --align 2048
+
+# (32M) - RFS
+part / --source rawcopy --sourceparams="file=${IMGDEPLOYDIR}/${IMAGE_BASENAME}-${MACHINE}.ext4" --ondisk mmcblk --fstype=ext4 --align 32768
 
 bootloader --ptable msdos

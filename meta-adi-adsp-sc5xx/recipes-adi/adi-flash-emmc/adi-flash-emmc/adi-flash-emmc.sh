@@ -19,7 +19,7 @@ echo d     # Delete
 echo n     # New Partition (Recreate Partition 1)
 echo p     # Partition
 echo 1     # 1
-echo 8192  # Starting Sector
+echo 65536 # Starting Sector
 echo       # Ending Sector (fill empty space)
 echo w     # Write the table
 echo q     # Quit
