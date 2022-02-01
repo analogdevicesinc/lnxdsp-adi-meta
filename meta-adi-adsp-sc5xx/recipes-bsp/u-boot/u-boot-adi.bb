@@ -199,7 +199,7 @@ do_compile_secureboot() {
 	fi
 
 	# Until adi_signtool has absolute paths fixed, things need to be done in deploydir
-	pushd ${B}
+	cd ${B}
 
 	${ADI_SIGNTOOL_PATH} -proc ${SIGNTOOL_PROC} sign -type ${ADI_SIGNATURE_TYPE} -algo ecdsa256 \
 		-infile u-boot-spl-${BOARD}.ldr -outfile u-boot-spl-signed-${BOARD}.ldr \
@@ -208,8 +208,6 @@ do_compile_secureboot() {
 	${ADI_SIGNTOOL_PATH} -proc ${SIGNTOOL_PROC} sign -type ${ADI_SIGNATURE_TYPE} -algo ecdsa256 \
 		-infile u-boot-proper-${BOARD}.ldr -outfile u-boot-proper-signed-${BOARD}.ldr \
 		-prikey ${ADI_SIGNTOOL_KEY}
-
-	popd
 }
 
 do_install () {
