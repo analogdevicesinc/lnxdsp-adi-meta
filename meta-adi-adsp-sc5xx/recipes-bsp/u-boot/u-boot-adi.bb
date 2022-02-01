@@ -8,11 +8,8 @@ SRCREV = "${AUTOREV}"
 
 UBOOT_INITIAL_ENV = ""
 
-def emmc_boot_stages(d):
-  MACHINE = d.getVar('MACHINE')
-  if MACHINE == 'adsp-sc598-som-ezkit':
-    return "u-boot-${BOARD}.ldr.emmc_boot_stage1 u-boot-${BOARD}.ldr.emmc_boot_stage2"
-  return ""
+EMMC_BOOT_STAGES = ""
+EMMC_BOOT_STAGES_adsp-sc598-som-ezkit = "u-boot-${BOARD}.ldr.emmc_boot_stage1 u-boot-${BOARD}.ldr.emmc_boot_stage2"
 
 FILES-SPL = " \
     u-boot-proper-${BOARD}.elf \
@@ -24,54 +21,25 @@ FILES-SPL = " \
 
 FILES-NO-SPL = " \
     u-boot-${BOARD}.ldr \
-    ${@emmc_boot_stages(d)} \
+    ${EMMC_BOOT_STAGES} \
     u-boot-${BOARD} \
     init-${BOARD}.elf \
 "
 
-FILES_${PN} = "${@ '${FILES-SPL}' if d.getVar('SPL_BINARY') else '${FILES-NO-SPL}'}"
+FILES_${PN} = "${@bb.utils.contains_any('MACHINE_FEATURES', 'spl falcon', '${FILES-SPL}', '${FILES-NO-SPL}', d)}"
 
 FILES_${PN}_append_secureboot = " \
 	unsigned-u-boot-spl-${BOARD}.ldr \
 	unsigned-u-boot-proper-${BOARD}.ldr \
 "
 
-python () {
-    MACHINE = d.getVar('MACHINE')
-    if MACHINE == 'adsp-sc573-ezkit':
-        PATH = "sc57x"
-        ARCH = "armv7"
-    elif MACHINE == 'adsp-sc584-ezkit':
-        PATH = "sc58x"
-        ARCH = "armv7"
-    elif MACHINE == 'adsp-sc589-ezkit':
-        PATH = "sc58x"
-        ARCH = "armv7"
-    elif MACHINE == 'adsp-sc589-mini':
-        PATH = "sc58x"
-        ARCH = "armv7"
-    elif MACHINE == 'adsp-sc594-som-ezkit':
-        PATH = "sc59x"
-        ARCH = "armv7"
-    elif MACHINE == 'adsp-sc598-som-ezkit':
-        PATH = "sc59x-64"
-        ARCH = "armv8"
-
-    d.setVar('INIT_PATH', "arch/arm/cpu/" + ARCH + "/" + PATH)
-
-    d.setVar('LIBFDT_ENV_H_FILE', "${WORKDIR}/git/include/linux/libfdt_env.h")
-    d.setVar('LIBFDT_H_FILE', "${WORKDIR}/git/include/linux/libfdt.h")
-}
-
-do_compile_prepend(){
-    #Use U-boot's FDT header files, not Linux's (in case they are different)
-    #cp ${LIBFDT_ENV_H_FILE} ${WORKDIR}/recipe-sysroot-native/usr/include/libfdt_env.h
-    #cp ${LIBFDT_H_FILE} ${WORKDIR}/recipe-sysroot-native/usr/include/libfdt.h
-
-    #Add arm-poky-linux-gnueabi-ldr in to path
-    #(This is probably unnecessary now -- leaving just in case)
-    export PATH=$PATH:${WORKDIR}/recipe-sysroot-native/usr/bin
-}
+INIT_PATH = ""
+INIT_PATH_adsp-sc573-ezkit = "arch/arm/cpu/armv7/sc57x"
+INIT_PATH_adsp-sc584-ezkit = "arch/arm/cpu/armv7/sc58x"
+INIT_PATH_adsp-sc589-ezkit = "arch/arm/cpu/armv7/sc58x"
+INIT_PATH_adsp-sc589-mini = "arch/arm/cpu/armv7/sc58x"
+INIT_PATH_adsp-sc594-som-ezkit = "arch/arm/cpu/armv7/sc59x"
+INIT_PATH_adsp-sc598-som-ezkit = "arch/arm/cpu/armv8/sc59x-64"
 
 # Actual contents of this don't matter, we just need to sign this fit image in order to get uboot
 # to update the dtb with the key that was used for signing, which will be used to sign the kernel
@@ -115,6 +83,21 @@ sits_emit() {
 	};
 };
 EOF
+}
+
+do_configure_prepend() {
+	if [ -n "${BOARD_HAS_SPL}" ]; then
+		bbwarn "You should consider using SPL or falcon boot instead of legacy boot"
+	fi
+}
+
+do_configure_prepend_secureboot() {
+	if [ ! -d "${UBOOT_SIGN_KEYDIR}" ]; then
+		bbfatal "Missing or invalid UBOOT_SIGN_KEYDIR (= '${UBOOT_SIGN_KEYDIR}')"
+	fi
+	if [ ! -f  "${UBOOT_SIGN_KEYDIR}/${UBOOT_SIGN_KEYNAME}.key" ]; then
+		bbfatal "Missing key matching ${UBOOT_SIGN_KEYNAME}, looking for '${UBOOT_SIGN_KEYDIR}/${UBOOT_SIGN_KEYNAME}.key'"
+	fi
 }
 
 # For secure boot, rewrite the compile step to build dtbs separately and inject the signing key
@@ -230,7 +213,7 @@ do_compile_secureboot() {
 }
 
 do_install () {
-    if [ "${SPL_BINARY}" == "" ]; then
+    if [ -z "${BASH_HAS_SPL}" ]; then
         install ${B}/u-boot-${BOARD}.ldr ${D}/
         if [ "${MACHINE}" = "adsp-sc598-som-ezkit" ]; then
             install ${B}/u-boot-${BOARD}.ldr.emmc_boot_stage1 ${D}/
@@ -249,7 +232,7 @@ do_install () {
 
 # Install signed versions in place of spl and proper, add unsigned copies
 do_install_secureboot() {
-	if [ "${SPL_BINARY}" == "" ]; then
+	if [ -z "${BASH_HAS_SPL}"]; then
 		bbfatal "For secure boot, you must use an SPL build"
 	fi
 
@@ -263,7 +246,7 @@ do_install_secureboot() {
 }
 
 do_deploy() {
-    if [ "${SPL_BINARY}" == "" ]; then
+    if [ -z "${BASH_HAS_SPL}" ]; then
         install ${B}/u-boot-${BOARD}.ldr ${DEPLOYDIR}/
         if [ "${MACHINE}" = "adsp-sc598-som-ezkit" ]; then
             install ${B}/u-boot-${BOARD}.ldr.emmc_boot_stage1 ${DEPLOYDIR}/

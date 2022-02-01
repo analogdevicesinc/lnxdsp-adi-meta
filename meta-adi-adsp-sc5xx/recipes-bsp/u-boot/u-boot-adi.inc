@@ -6,45 +6,28 @@ require ${COREBASE}/meta/recipes-bsp/u-boot/u-boot.inc
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/u-boot-adi:"
 
-def get_uboot_branch (d):
-  MACHINE = d.getVar('MACHINE')
-  if MACHINE == 'adsp-sc598-som-ezkit':
-    UBOOT_BRANCH = "develop/sc598"
-  else:
-    UBOOT_BRANCH = "master"
-  return UBOOT_BRANCH
-
-def get_git_uri (d):
-  #Pull in from Timesys repository for now.  Change this when releasing SC594 board to public
-  #UBOOT_GIT_URI ?= "git://github.com/analogdevicesinc/u-boot-sharc.git"
-  UBOOT_GIT_URI = "git://git@src.timesys.com/services/analog-devices/analog-devices-new-board-bringup-1/u-boot-sharc-2020.10.git"
-  return UBOOT_GIT_URI
+#Pull in from Timesys repository for now.  Change this when releasing SC594 board to public
+#UBOOT_GIT_URI ?= "git://github.com/analogdevicesinc/u-boot-sharc.git"
+UBOOT_GIT_URI ?= "git://git@src.timesys.com/services/analog-devices/analog-devices-new-board-bringup-1/u-boot-sharc-2020.10.git"
 
 #UBOOT_GIT_PROTOCOL ?= "https"
-UBOOT_GIT_PROTOCOL = "ssh"
+UBOOT_GIT_PROTOCOL ?= "ssh"
 
-def get_wdt_patch (d):
-  WDT_FILE = ""
-  if d.getVar('ANALOG_DEVICES_WATCHDOG'):
-    MACHINE = d.getVar('MACHINE')
-    if MACHINE == 'adsp-sc594-som-ezkit':
-      WDT_FILE = "file://enable-ADI-watchdog-sc594.patch"
-    elif MACHINE == 'adsp-sc589-ezkit' or MACHINE == 'adsp-sc573-ezkit':
-      WDT_FILE = "file://enable-ADI-watchdog-2020.10.patch"
-    else:
-      WDT_FILE = "file://enable-ADI-watchdog.patch"
-  return WDT_FILE
+UBOOT_WDT_FILE = "file://enable-ADI-watchdog.patch"
+UBOOT_WDT_FILE_adsp-sc589-ezkit = "file://enable-ADI-watchdog-2020.10.patch"
+UBOOT_WDT_FILE_adsp-sc573-ezkit = "file://enable-ADI-watchdog-2020.10.patch"
+UBOOT_WDT_FILE_adsp-sc594-ezkit = "file://enable-ADI-watchdog-sc594.patch"
+UBOOT_WDT = "${@bb.utils.contains('MACHINE_FEATURES', 'watchdog', '${UBOOT_WDT_FILE}', '', d)}"
 
-def get_ramdisk_patch (d):
-  MACHINE = d.getVar('MACHINE')
-  if MACHINE == 'adsp-sc594-som-ezkit':
-    return " file://disable-relocation-of-ramdisk-to-top-of-memory.patch"
-  else:
-    return ""
+UBOOT_RAMDISK_PATCH = ""
+UBOOT_RAMDISK_PATCH_adsp-sc594-som-ezkit = " file://disable-relocation-of-ramdisk-to-top-of-memory.patch"
+
+UBOOT_BRANCH ?= "master"
+UBOOT_BRANCH_adsp-sc598-som-ezkit ?= "develop/sc598"
 
 SRC_URI += " \
-	${@get_git_uri(d)};protocol=${UBOOT_GIT_PROTOCOL};branch=${@get_uboot_branch(d)} \
-	${@get_wdt_patch(d)} ${@get_ramdisk_patch(d)} \
+	${UBOOT_GIT_URI};protocol=${UBOOT_GIT_PROTOCOL};branch=${UBOOT_BRANCH} \
+	${UBOOT_WDT} ${UBOOT_RAMDISK_PATCH} \
 "
 
 LICENSE = "GPLv2+"
