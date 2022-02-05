@@ -153,6 +153,16 @@ do_compile_prepend_secureboot(){
 
 	dtc ${UBOOT_MKIMAGE_DTCOPTS} -I dtb -O dts \
 	-o ${SRC} ${WORKDIR}/${DTS_NAME}.dtb
+
+	#Allow key to persist in SPL DTB as well, via u-boot,dm-pre-reloc flag.
+	LINE=$(sed -n '/key-name-hint/=' ${SRC})        #Find the end of the key node in DTS
+	LINE=$(expr ${LINE} + 1)                        #Increment to the next line
+	MATCH=$(sed -e ${LINE}'!d' -e 's/\t//g' ${SRC}) #Grab the next line
+
+	#Check if the flag already exists, add it if not
+	if [ "${MATCH}" != "u-boot,dm-pre-reloc;" ]; then
+		sed -i 's/.*key-name-hint.*/&\n\t\t\tu-boot,dm-pre-reloc;/' ${SRC}
+	fi
 }
 
 do_install () {
