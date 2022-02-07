@@ -100,92 +100,8 @@ do_configure_prepend_secureboot() {
 	fi
 }
 
-# For secure boot, rewrite the compile step to build dtbs separately and inject the signing key
-# and then call adi signtool on the resulting uboot images
-do_compile_secureboot() {
-	if [ "${@bb.utils.filter('DISTRO_FEATURES', 'ld-is-gold', d)}" ]; then
-		sed -i 's/$(CROSS_COMPILE)ld$/$(CROSS_COMPILE)ld.bfd/g' ${S}/config.mk
-	fi
-
-	unset LDFLAGS
-	unset CFLAGS
-	unset CPPFLAGS
-
-	if [ ! -e ${B}/.scmversion -a ! -e ${S}/.scmversion ]
-	then
-		echo ${UBOOT_LOCALVERSION} > ${B}/.scmversion
-		echo ${UBOOT_LOCALVERSION} > ${S}/.scmversion
-	fi
-
-	if [ -n "${UBOOT_CONFIG}" -o -n "${UBOOT_DELTA_CONFIG}" ]
-	then
-		unset i j k
-		for config in ${UBOOT_MACHINE}; do
-			i=$(expr $i + 1);
-			for type in ${UBOOT_CONFIG}; do
-				j=$(expr $j + 1);
-				if [ $j -eq $i ]
-				then
-					oe_runmake -C ${S} O=${B}/${config} ${config}
-					oe_runmake -C ${S} O=${B}/${config} dtbs
-					sits_emit
-
-					uboot-mkimage -D "${UBOOT_MKIMAGE_DTCOPTS}" \
-						-f ${WORKDIR}/simple.its ${B}/simpleFitImage
-
-					uboot-mkimage -D "${UBOOT_MKIMAGE_DTCOPTS}" \
-						-F -k ${UBOOT_SIGN_KEYDIR} \
-						-K ${B}/${config}/dts/dt.dtb \
-						-r ${B}/simpleFitImage
-
-					rm ${WORKDIR}/simple.its
-					rm ${B}/simpleFitImage
-
-					oe_runmake -C ${S} O=${B}/${config} ${UBOOT_MAKE_TARGET}
-					for binary in ${UBOOT_BINARIES}; do
-						k=$(expr $k + 1);
-						if [ $k -eq $i ]; then
-							cp ${B}/${config}/${binary} ${B}/${config}/u-boot-${type}.${UBOOT_SUFFIX}
-						fi
-					done
-
-					# Generate the uboot-initial-env
-					if [ -n "${UBOOT_INITIAL_ENV}" ]; then
-						oe_runmake -C ${S} O=${B}/${config} u-boot-initial-env
-						cp ${B}/${config}/u-boot-initial-env ${B}/${config}/u-boot-initial-env-${type}
-					fi
-
-					unset k
-				fi
-			done
-			unset  j
-		done
-		unset  i
-	else
-		oe_runmake -C ${S} O=${B} ${UBOOT_MACHINE}
-		oe_runmake -C ${S} O=${B} dtbs
-
-		sits_emit
-
-		uboot-mkimage -D "${UBOOT_MKIMAGE_DTCOPTS}" \
-			-f ${WORKDIR}/simple.its ${B}/simpleFitImage
-
-		uboot-mkimage -D "${UBOOT_MKIMAGE_DTCOPTS}" \
-			-F -k ${UBOOT_SIGN_KEYDIR} \
-			-K ${B}/dts/dt.dtb \
-			-r ${B}/simpleFitImage
-
-		rm ${WORKDIR}/simple.its
-		rm ${B}/simpleFitImage
-
-		oe_runmake -C ${S} O=${B} ${UBOOT_MAKE_TARGET}
-
-		# Generate the uboot-initial-env
-		if [ -n "${UBOOT_INITIAL_ENV}" ]; then
-			oe_runmake -C ${S} O=${B} u-boot-initial-env
-		fi
-	fi
-
+# For secure boot, append the compile step to call adi signtool on the resulting uboot images
+do_compile_append_secureboot() {
 	if [ -z "${ADI_SIGNTOOL_KEY}" ]; then
 		bbfatal "Signing key not specified, please set ADI_SIGNTOOL_KEY in local.conf"
 	fi
@@ -208,6 +124,45 @@ do_compile_secureboot() {
 	${ADI_SIGNTOOL_PATH} -proc ${SIGNTOOL_PROC} sign -type ${ADI_SIGNATURE_TYPE} -algo ecdsa256 \
 		-infile u-boot-proper-${BOARD}.ldr -outfile u-boot-proper-signed-${BOARD}.ldr \
 		-prikey ${ADI_SIGNTOOL_KEY}
+}
+
+# Add/Inject FIT public key into U-Boot DTS prior to U-Boot compilation
+do_compile_prepend_secureboot(){
+	sits_emit
+
+	DTS_NAME=$(cat ${S}/configs/${UBOOT_MACHINE} | grep DEVICE_TREE | sed -e 's/.*="//g' -e 's/"//g')
+
+	INCLUDE=${S}/arch/arm/dts/
+	INCLUDE2=${S}/include
+	INCLUDE3=${S}/arch/arm/include/asm
+	SRC=${S}/arch/arm/dts/${DTS_NAME}.dts
+	TMP=${WORKDIR}/${DTS_NAME}.dts.tmp
+
+	cpp -nostdinc -I${INCLUDE} -I${INCLUDE2} -I${INCLUDE3} -undef -x assembler-with-cpp ${SRC} > ${TMP}
+
+	dtc ${UBOOT_MKIMAGE_DTCOPTS} \
+	-o ${WORKDIR}/${DTS_NAME}.dtb ${TMP}
+
+	uboot-mkimage -D "${UBOOT_MKIMAGE_DTCOPTS}" \
+	-f ${WORKDIR}/simple.its ${WORKDIR}/simpleFitImage
+
+	uboot-mkimage -D "${UBOOT_MKIMAGE_DTCOPTS}" \
+	-F -k ${UBOOT_SIGN_KEYDIR} \
+	-K ${WORKDIR}/${DTS_NAME}.dtb \
+	-r ${WORKDIR}/simpleFitImage
+
+	dtc ${UBOOT_MKIMAGE_DTCOPTS} -I dtb -O dts \
+	-o ${SRC} ${WORKDIR}/${DTS_NAME}.dtb
+
+	#Allow key to persist in SPL DTB as well, via u-boot,dm-pre-reloc flag.
+	LINE=$(sed -n '/key-name-hint/=' ${SRC})        #Find the end of the key node in DTS
+	LINE=$(expr ${LINE} + 1)                        #Increment to the next line
+	MATCH=$(sed -e ${LINE}'!d' -e 's/\t//g' ${SRC}) #Grab the next line
+
+	#Check if the flag already exists, add it if not
+	if [ "${MATCH}" != "u-boot,dm-pre-reloc;" ]; then
+		sed -i 's/.*key-name-hint.*/&\n\t\t\tu-boot,dm-pre-reloc;/' ${SRC}
+	fi
 }
 
 do_install () {
