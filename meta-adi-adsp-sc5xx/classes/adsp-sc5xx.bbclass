@@ -29,6 +29,7 @@ IMAGE_INSTALL = " \
     packagegroup-core-boot \
     packagegroup-base \
     ${CORE_IMAGE_EXTRA_INSTALL} \
+	alsa-utils \
     openssh \
     openssl \
     iproute2 \
