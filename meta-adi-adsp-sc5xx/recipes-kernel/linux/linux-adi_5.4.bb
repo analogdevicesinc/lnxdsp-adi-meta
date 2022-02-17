@@ -51,8 +51,8 @@ emit_its() {
 			arch = "arm64";
 			os = "linux";
 			compression = "none";
-			load = <0x90080000>;
-			entry = <0x90080000>;
+			load = <0x9a080000>;
+			entry = <0x9a080000>;
 			hash-1 {
 				algo = "sha1";
 			};
@@ -68,7 +68,7 @@ emit_its() {
 			type = "flat_dt";
 			arch = "arm64";
 			compression = "none";
-			load = <0x84000000>;
+			load = <0x99000000>;
 			hash-1 {
 				algo = "sha1";
 			};
