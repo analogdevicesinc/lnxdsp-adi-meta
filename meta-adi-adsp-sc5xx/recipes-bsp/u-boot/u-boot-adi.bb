@@ -41,6 +41,8 @@ INIT_PATH_adsp-sc589-mini = "arch/arm/cpu/armv7/sc58x"
 INIT_PATH_adsp-sc594-som-ezkit = "arch/arm/cpu/armv7/sc59x"
 INIT_PATH_adsp-sc598-som-ezkit = "arch/arm/cpu/armv8/sc59x-64"
 
+COMPATIBLE_MACHINE = "(adsp-sc573-ezkit|adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini|adsp-sc594-som-ezkit|adsp-sc598-som-ezkit)"
+
 # Actual contents of this don't matter, we just need to sign this fit image in order to get uboot
 # to update the dtb with the key that was used for signing, which will be used to sign the kernel
 # fit image later
