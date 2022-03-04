@@ -114,7 +114,7 @@ static void xfree(void *ptr, char *alloc_type)
  *  - copy chk to dst
  *  - compare src and dst
  */
-int _do_test(char *src_desc, char *dst_desc, char *chk_desc, char *src, char *dst, char *chk, int size)
+int _do_test(char *src_desc, char *dst_desc, char *chk_desc, char *src, char *dst, char *chk, int size, struct device * dev)
 {
 	static int test_num = 1;
 	int ret = 0, i;
@@ -126,20 +126,20 @@ int _do_test(char *src_desc, char *dst_desc, char *chk_desc, char *src, char *ds
 	memset(chk, 'c', size);
 
 	if (!strncmp(src_desc, "SDRAM", 5)) {
-		src_handle = dma_map_single(NULL, src, size, DMA_TO_DEVICE);
-		if (dma_mapping_error(NULL, src_handle)) {
-			dev_err(NULL, "Couldn't DMA map a 10 byte buffer\n");
+		src_handle = dma_map_single(dev, src, size, DMA_TO_DEVICE);
+		if (dma_mapping_error(dev, src_handle)) {
+			dev_err(dev, "Couldn't DMA map a 10 byte buffer\n");
 			return -1;
 		}
 	} else if (!strncmp(src_desc, "SRAM", 4))
 		src_handle = gen_pool_virt_to_phys(sram_pool, src);
 
 	if (!strncmp(chk_desc, "SDRAM", 5)) {
-		chk_handle = dma_map_single(NULL, chk, size, DMA_FROM_DEVICE);
-		if (dma_mapping_error(NULL, chk_handle)) {
-			dev_err(NULL, "Couldn't DMA map a 10 byte buffer\n");
+		chk_handle = dma_map_single(dev, chk, size, DMA_FROM_DEVICE);
+		if (dma_mapping_error(dev, chk_handle)) {
+			dev_err(dev, "Couldn't DMA map a 10 byte buffer\n");
 			if (!strncmp(src_desc, "SDRAM", 5))
-				dma_unmap_single(NULL, src_handle, size, DMA_TO_DEVICE);
+				dma_unmap_single(dev, src_handle, size, DMA_TO_DEVICE);
 			return -1;
 		}
 	} else if (!strncmp(chk_desc, "SRAM", 4))
@@ -152,11 +152,11 @@ int _do_test(char *src_desc, char *dst_desc, char *chk_desc, char *src, char *ds
 		printk(KERN_ALERT "FAIL: dma_memcpy %s[s] to %s[c]\n", src_desc, chk_desc), ++ret;
 
 	if (!strncmp(src_desc, "SDRAM", 5))
-		dma_unmap_single(NULL, src_handle,
+		dma_unmap_single(dev, src_handle,
 			 size, DMA_TO_DEVICE);
 
 	if (!strncmp(chk_desc, "SDRAM", 5))
-		dma_unmap_single(NULL, chk_handle,
+		dma_unmap_single(dev, chk_handle,
 			size, DMA_FROM_DEVICE);
 
 	i = memcmp(chk, src, size);
@@ -168,20 +168,20 @@ int _do_test(char *src_desc, char *dst_desc, char *chk_desc, char *src, char *ds
 	}
 
 	if (!strncmp(dst_desc, "SDRAM", 5)) {
-		dst_handle = dma_map_single(NULL, dst, size, DMA_FROM_DEVICE);
-		if (dma_mapping_error(NULL, dst_handle)) {
-			dev_err(NULL, "Couldn't DMA map a 10 byte buffer\n");
+		dst_handle = dma_map_single(dev, dst, size, DMA_FROM_DEVICE);
+		if (dma_mapping_error(dev, dst_handle)) {
+			dev_err(dev, "Couldn't DMA map a 10 byte buffer\n");
 			return -1;
 		}
 	} else if (!strncmp(dst_desc, "SRAM", 4))
 		dst_handle = gen_pool_virt_to_phys(sram_pool, dst);
 
 	if (!strncmp(chk_desc, "SDRAM", 5)) {
-		chk_handle = dma_map_single(NULL, chk, size, DMA_FROM_DEVICE);
-		if (dma_mapping_error(NULL, chk_handle)) {
-			dev_err(NULL, "Couldn't DMA map a 10 byte buffer\n");
+		chk_handle = dma_map_single(dev, chk, size, DMA_FROM_DEVICE);
+		if (dma_mapping_error(dev, chk_handle)) {
+			dev_err(dev, "Couldn't DMA map a 10 byte buffer\n");
 			if (!strncmp(dst_desc, "SDRAM", 5))
-				dma_unmap_single(NULL, dst_handle, size, DMA_FROM_DEVICE);
+				dma_unmap_single(dev, dst_handle, size, DMA_FROM_DEVICE);
 			return -1;
 		}
 	} else if (!strncmp(chk_desc, "SRAM", 4))
@@ -195,11 +195,11 @@ int _do_test(char *src_desc, char *dst_desc, char *chk_desc, char *src, char *ds
 		printk(KERN_ALERT "FAIL: dma_memcpy %s[c] to %s[d]\n", chk_desc, dst_desc), ++ret;
 
 	if (!strncmp(dst_desc, "SDRAM", 5))
-		dma_unmap_single(NULL, dst_handle,
+		dma_unmap_single(dev, dst_handle,
 			 size, DMA_FROM_DEVICE);
 
 	if (!strncmp(chk_desc, "SDRAM", 5))
-		dma_unmap_single(NULL, chk_handle,
+		dma_unmap_single(dev, chk_handle,
 			size, DMA_FROM_DEVICE);
 
 	i = memcmp(dst, chk, size);
@@ -228,7 +228,7 @@ int _do_test(char *src_desc, char *dst_desc, char *chk_desc, char *src, char *ds
  *               src(SDRAM) and dst(SDRAM) to make sure that copy into or from SRAM is ok.
  *               also check that 8/16/32 bit transfers work by mucking with alignment.
  */
-int sram_test(int size)
+int sram_test(int size, struct device * dev)
 {
 	int ret = 0;
 	char *src = xmalloc(size, "SDRAM");
@@ -250,9 +250,9 @@ int sram_test(int size)
 		return 1;
 	}
 
-	ret += _do_test("SDRAMx32", "SDRAMx32", "SRAM", src, dst, sram, size);
-	ret += _do_test("SDRAMx16", "SDRAMx16", "SRAM", src+2, dst+2, sram+2, size-2);
-	ret += _do_test("SDRAMx8", "SDRAMx8", "SRAM", src+1, dst+1, sram+1, size-1);
+	ret += _do_test("SDRAMx32", "SDRAMx32", "SRAM", src, dst, sram, size, dev);
+	ret += _do_test("SDRAMx16", "SDRAMx16", "SRAM", src+2, dst+2, sram+2, size-2, dev);
+	ret += _do_test("SDRAMx8", "SDRAMx8", "SRAM", src+1, dst+1, sram+1, size-1, dev);
 
 	xfree(src, "SDRAM");
 	xfree(dst, "SDRAM");
@@ -266,7 +266,7 @@ int sram_test(int size)
  *               make sure that dma_memcpy in SDRAM is ok
  *               also check that 8/16/32 bit transfers work by mucking with alignment.
  */
-int sdram_test(int size)
+int sdram_test(int size, struct device * dev)
 {
 	int ret = 0;
 	char *src = xmalloc(size, "SDRAM");
@@ -283,9 +283,9 @@ int sdram_test(int size)
 		return 1;
 	}
 
-	ret += _do_test("SDRAMx32", "SDRAMx32", "SDRAM", src, dst, chk, size);
-	ret += _do_test("SDRAMx16", "SDRAMx16", "SDRAM", src+2, dst+2, chk+2, size-2);
-	ret += _do_test("SDRAMx8", "SDRAMx8", "SDRAM", src+1, dst+1, chk+1, size-1);
+	ret += _do_test("SDRAMx32", "SDRAMx32", "SDRAM", src, dst, chk, size, dev);
+	ret += _do_test("SDRAMx16", "SDRAMx16", "SDRAM", src+2, dst+2, chk+2, size-2, dev);
+	ret += _do_test("SDRAMx8", "SDRAMx8", "SDRAM", src+1, dst+1, chk+1, size-1, dev);
 
 	xfree(src, "SDRAM");
 	xfree(dst, "SDRAM");
@@ -299,7 +299,7 @@ int sdram_test(int size)
  *               make sure that dma_memcpy in SRAM is ok
  *               also check that 8/16/32 bit transfers work by mucking with alignment.
  */
-int insram_test(int size)
+int insram_test(int size, struct device * dev)
 {
 	int ret = 0;
 	char *src = xmalloc(size, "SRAM");
@@ -321,9 +321,9 @@ int insram_test(int size)
 		return 1;
 	}
 
-	ret += _do_test("SRAMx32", "SRAMx32", "SRAM", src, dst, sram, size);
-	ret += _do_test("SRAMx16", "SRAMx16", "SRAM", src+2, dst+2, sram+2, size-2);
-	ret += _do_test("SRAMx8", "SRAMx8", "SRAM", src+1, dst+1, sram+1, size-1);
+	ret += _do_test("SRAMx32", "SRAMx32", "SRAM", src, dst, sram, size, dev);
+	ret += _do_test("SRAMx16", "SRAMx16", "SRAM", src+2, dst+2, sram+2, size-2, dev);
+	ret += _do_test("SRAMx8", "SRAMx8", "SRAM", src+1, dst+1, sram+1, size-1, dev);
 
 	xfree(src, "SRAM");
 	xfree(dst, "SRAM");
@@ -357,7 +357,7 @@ static void sram_free(void * vaddr, size_t size)
 
 MODULE_LICENSE("Dual BSD/GPL");
 
-static int dmacopy_test_init(void)
+static int dmacopy_test_init(struct device * dev)
 {
 	int ret = 0, i;
 	int sml_range[] = { 4, 0x10, 0x1000 };
@@ -365,13 +365,13 @@ static int dmacopy_test_init(void)
 
 	printk(KERN_ALERT "------Start testing dma_memcpy------\n");
 
-	TEST_RANGE(sml, sram_test);
-	TEST_RANGE(sml, sdram_test);
-	TEST_RANGE(sml, insram_test);
+	TEST_RANGE(sml, sram_test, dev);
+	TEST_RANGE(sml, sdram_test, dev);
+	TEST_RANGE(sml, insram_test, dev);
 
-	TEST_RANGE(mid, sram_test);
-	TEST_RANGE(mid, sdram_test);
-	TEST_RANGE(mid, insram_test);
+	TEST_RANGE(mid, sram_test, dev);
+	TEST_RANGE(mid, sdram_test, dev);
+	TEST_RANGE(mid, insram_test, dev);
 
     if (ret)
 		printk(KERN_ALERT "SUMMARY: %i tests failed\n", ret);
@@ -401,7 +401,7 @@ static int adi_dmacopy_probe(struct platform_device *pdev)
 		return -ENODEV;
 	}
 
-	dmacopy_test_init();
+	dmacopy_test_init(dev);
 
 	return 0;
 }
