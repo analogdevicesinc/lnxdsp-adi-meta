@@ -1,17 +1,19 @@
-From 07433c9e4a473091e5b00dd2089b7e31fa7cce4f Mon Sep 17 00:00:00 2001
-From: David Brunecz <david.brunecz@timesys.com>
-Date: Tue, 4 May 2021 14:36:11 -0400
-Subject: [PATCH] enable ADI watchdog
+From 65cee999b3527661224c09445939f78903db0da0 Mon Sep 17 00:00:00 2001
+From: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+Date: Mon, 7 Mar 2022 14:11:03 -0500
+Subject: [PATCH] Enable ADI Watchdog
 
 ---
- board/adi/sc5xx-common/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ board/adi/sc5xx-common/Kconfig | 4 ++--
+ common/board_f.c               | 1 +
+ drivers/watchdog/adi_wdt.c     | 4 ++++
+ 3 files changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/board/adi/sc5xx-common/Kconfig b/board/adi/sc5xx-common/Kconfig
-index fcdb87c2fdc..d5e9d8db863 100644
+index fcdb87c2fd..9d533957a8 100644
 --- a/board/adi/sc5xx-common/Kconfig
 +++ b/board/adi/sc5xx-common/Kconfig
-@@ -120,7 +120,7 @@ config UART4_SERIAL
+@@ -120,8 +120,8 @@ config UART4_SERIAL
  
  config ADI_WATCHDOG
  	bool
@@ -20,6 +22,36 @@ index fcdb87c2fdc..d5e9d8db863 100644
  
  config WATCHDOG_TIMEOUT_MSECS
  	int
+-	default 10000
++	default 30000
+diff --git a/common/board_f.c b/common/board_f.c
+index d3444c7edc..fbb6b65eda 100644
+--- a/common/board_f.c
++++ b/common/board_f.c
+@@ -106,6 +106,7 @@ static int init_func_watchdog_init(void)
+ 	(defined(CONFIG_M68K) || defined(CONFIG_MICROBLAZE) || \
+ 	defined(CONFIG_SH) || \
+ 	defined(CONFIG_DESIGNWARE_WATCHDOG) || \
++	defined(CONFIG_ADI_WATCHDOG) || \
+ 	defined(CONFIG_IMX_WATCHDOG))
+ 	hw_watchdog_init();
+ 	puts("       Watchdog enabled\n");
+diff --git a/drivers/watchdog/adi_wdt.c b/drivers/watchdog/adi_wdt.c
+index 0da834f507..f1dbb9001f 100644
+--- a/drivers/watchdog/adi_wdt.c
++++ b/drivers/watchdog/adi_wdt.c
+@@ -58,7 +58,11 @@ void hw_watchdog_init(void)
+ 
+ 	/* enable watchdog0 */
+ 	writel(WDDIS, WDOG_CTL);
++#ifdef CONFIG_SC58X
++	writel(CONFIG_WATCHDOG_TIMEOUT_MSECS / 1000 * (get_sclk()/2), WDOG_CNT);
++#else
+ 	writel(CONFIG_WATCHDOG_TIMEOUT_MSECS / 1000 * get_sclk(), WDOG_CNT);
++#endif
+ 	hw_watchdog_reset();
+ 	writel(WDEN, WDOG_CTL);
+ }
 -- 
-2.17.1
+2.34.1
 
