@@ -104,11 +104,6 @@ do_assemble_fitimage() {
 		arch/arm64/boot/fitImage
 }
 
-do_assemble_fitimage_append_secureboot() {
-	uboot-mkimage -D "${UBOOT_MKIMAGE_DTCOPTS}" -F -k ${UBOOT_SIGN_KEYDIR} \
-		-r arch/arm64/boot/fitImage
-}
-
 addtask assemble_fitimage before do_install after do_compile
 
 KERNEL_IMAGETYPES_append = " fitImage"
