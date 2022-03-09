@@ -1,0 +1,39 @@
+From 5af19fcbd44ed69b11f221cffd86f04ed866d06a Mon Sep 17 00:00:00 2001
+From: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+Date: Wed, 9 Mar 2022 09:05:16 -0500
+Subject: [PATCH] Add in CRC32_HMAC for ADI driver
+
+---
+ crypto/cryptodev.h | 1 +
+ ioctl.c            | 3 +++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/crypto/cryptodev.h b/crypto/cryptodev.h
+index e66606f..8b7bb6d 100644
+--- a/crypto/cryptodev.h
++++ b/crypto/cryptodev.h
+@@ -53,6 +53,7 @@ enum cryptodev_crypto_op_t {
+ 	CRYPTO_SHA2_224_HMAC,
+ 	CRYPTO_TLS11_AES_CBC_HMAC_SHA1,
+ 	CRYPTO_TLS12_AES_CBC_HMAC_SHA256,
++	CRYPTO_CRC32_HMAC,
+ 	CRYPTO_ALGORITHM_ALL, /* Keep updated - see below */
+ };
+ 
+diff --git a/ioctl.c b/ioctl.c
+index 3d33238..d497d9c 100644
+--- a/ioctl.c
++++ b/ioctl.c
+@@ -203,6 +203,9 @@ crypto_create_session(struct fcrypt *fcr, struct session_op *sop)
+ 	case CRYPTO_SHA2_512_HMAC:
+ 		hash_name = "hmac(sha512)";
+ 		break;
++	case CRYPTO_CRC32_HMAC:
++		hash_name = "hmac(crc32)";
++		break;
+ 
+ 	/* non-hmac cases */
+ 	case CRYPTO_MD5:
+-- 
+2.34.1
+
