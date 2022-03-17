@@ -24,3 +24,5 @@ FILES_${PN} += " \
 	/remoteproc/Toggle_LED_GPIO_SC589_SHARC_Core1.ldr \
 	/remoteproc/Toggle_LED_GPIO_SC589_SHARC_Core2.ldr \
 "
+
+RDEPENDS_${PN} = " libmcapi sc5xx-corecontrol "
