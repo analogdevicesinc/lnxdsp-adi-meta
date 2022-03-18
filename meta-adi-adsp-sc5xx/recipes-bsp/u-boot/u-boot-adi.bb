@@ -9,12 +9,12 @@ UBOOT_INITIAL_ENV = ""
 EMMC_BOOT_STAGES = ""
 EMMC_BOOT_STAGES_adsp-sc598-som-ezkit = "u-boot-${BOARD}.ldr.emmc_boot_stage1 u-boot-${BOARD}.ldr.emmc_boot_stage2"
 
+STAGE_1_TARGET_NAME = "stage1-boot.ldr"
+
 FILES-SPL = " \
     u-boot-proper-${BOARD}.elf \
     u-boot-spl-${BOARD}.elf \
-    u-boot-proper-${BOARD}.ldr \
-    u-boot-spl-${BOARD}.ldr \
-    u-boot-uart-${BOARD}.ldr \
+    ${STAGE_1_TARGET_NAME} \
 "
 
 FILES-NO-SPL = " \
@@ -54,9 +54,7 @@ do_install () {
     else
         install ${B}/u-boot-proper-${BOARD}.elf ${D}/
         install ${B}/u-boot-spl-${BOARD}.elf ${D}/
-        install ${B}/u-boot-proper-${BOARD}.ldr ${D}/
-        install ${B}/u-boot-spl-${BOARD}.ldr ${D}/
-        install ${B}/u-boot-uart-${BOARD}.ldr ${D}/
+        install ${B}/u-boot-spl-${BOARD}.ldr ${D}/${STAGE_1_TARGET_NAME}
     fi
 }
 
@@ -72,8 +70,6 @@ do_deploy() {
     else
         install ${B}/u-boot-proper-${BOARD}.elf ${DEPLOYDIR}/
         install ${B}/u-boot-spl-${BOARD}.elf ${DEPLOYDIR}/
-        install ${B}/u-boot-proper-${BOARD}.ldr ${DEPLOYDIR}/
-        install ${B}/u-boot-spl-${BOARD}.ldr ${DEPLOYDIR}/
-        install ${B}/u-boot-uart-${BOARD}.ldr ${DEPLOYDIR}/
+        install ${B}/u-boot-spl-${BOARD}.ldr ${DEPLOYDIR}/${STAGE_1_TARGET_NAME}
     fi
 }

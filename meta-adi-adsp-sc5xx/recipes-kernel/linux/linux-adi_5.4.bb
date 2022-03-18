@@ -51,8 +51,8 @@ emit_its() {
 			arch = "arm64";
 			os = "linux";
 			compression = "none";
-			load = <0x9a080000>;
-			entry = <0x9a080000>;
+			load = <${UBOOT_LOADADDRESS}>;
+			entry = <${UBOOT_ENTRYPOINT}>;
 			hash-1 {
 				algo = "sha1";
 			};
@@ -68,7 +68,7 @@ emit_its() {
 			type = "flat_dt";
 			arch = "arm64";
 			compression = "none";
-			load = <0x99000000>;
+			load = <${UBOOT_DTBADDRESS}>;
 			hash-1 {
 				algo = "sha1";
 			};
