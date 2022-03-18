@@ -5,7 +5,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
 
 PR = "r0"
 
-KERNEL_BRANCH ?= "beta/sc589"
+KERNEL_BRANCH ?= "develop/yocto-2.0.0"
 SRCREV  = "ec73d2aedf00d5bf38c9ff44176a65ef5d115ac3"
 
 PV = "5.4.162"

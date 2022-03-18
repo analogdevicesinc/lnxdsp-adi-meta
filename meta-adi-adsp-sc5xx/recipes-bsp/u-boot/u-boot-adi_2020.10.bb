@@ -1,6 +1,6 @@
 UBOOT_GIT_URI ?= "git://github.com/analogdevicesinc/lnxdsp-u-boot.git"
 UBOOT_GIT_PROTOCOL ?= "https"
-UBOOT_BRANCH = "beta/sc589"
+UBOOT_BRANCH = "develop/yocto-2.0.0"
 LIC_FILES_CHKSUM = "file://Licenses/README;md5=5a7450c57ffe5ae63fd732446b988025"
 
 require u-boot-adi.inc

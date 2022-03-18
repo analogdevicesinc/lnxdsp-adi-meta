@@ -5,7 +5,7 @@ inherit autotools
 
 MCAPI_GIT_URI ?= "git://github.com/analogdevicesinc/lnxdsp-mcapi.git"
 MCAPI_GIT_PROTOCOL ?= "https"
-MCAPI_GIT_BRANCH ?= "release/yocto-1.0.0"
+MCAPI_GIT_BRANCH ?= "develop/yocto-2.0.0"
 
 PR = "r0"
 SRCREV= "${AUTOREV}"
