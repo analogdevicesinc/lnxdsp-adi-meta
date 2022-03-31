@@ -8,10 +8,10 @@ DEPENDS += "u-boot-mkimage-native dtc-native"
 PR = "r0"
 
 PV = "5.4"
-PV_adsp-sc598-som-ezkit = "5.4.162"
+PV_adsp-sc598-som-ezkit = "5.4.183"
 
 KERNEL_BRANCH ?= "v5.4-rebase-wip"
-KERNEL_BRANCH_adsp-sc598-som-ezkit ?= "develop/5.4.162/sc598"
+KERNEL_BRANCH_adsp-sc598-som-ezkit ?= "develop/5.4.183/sc598"
 SRCREV  = "${AUTOREV}"
 
 SRC_URI += "file://feature/"
