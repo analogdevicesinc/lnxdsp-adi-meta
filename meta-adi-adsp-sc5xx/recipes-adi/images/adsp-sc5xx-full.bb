@@ -93,25 +93,6 @@ DEBUG = " \
     strace \
 "
 
-QT5 = " \
-	qtbase \
-	qttools \
-	qtquickcontrols \
-	qtquickcontrols2 \
-	qtquick3d \
-"
-
-QT5_DEMOS = " \
-	cinematicexperience \
-	qtsmarthome \
-	quitbattery \
-	quitindicators \
-	qt5nmapcarousedemo \
-	qt5nmapper \
-	qt5everywheredemo \
-	qt5ledscreen \
-"
-
 IMAGE_INSTALL += " \
     ${OPROFILE_PERFORMANCE_BENCHMARK} \
     ${DEBUG} \
@@ -122,8 +103,6 @@ IMAGE_INSTALL += " \
 	${BLUETOOTH_AND_HEADSET} \
 	${OPROFILE} \
 	${MPLAYER} \
-	${QT5} \
-	${QT5_DEMOS} \
 	cpufrequtils \
 	jpeg \
 	libpng \
