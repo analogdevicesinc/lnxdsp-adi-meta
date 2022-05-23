@@ -6,12 +6,8 @@ require ${COREBASE}/meta/recipes-bsp/u-boot/u-boot.inc
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/u-boot-adi:"
 
-#Pull in from Timesys repository for now.  Change this when releasing SC594 board to public
-#UBOOT_GIT_URI ?= "git://github.com/analogdevicesinc/u-boot-sharc.git"
-UBOOT_GIT_URI ?= "git://git@src.timesys.com/services/analog-devices/analog-devices-new-board-bringup-1/u-boot-sharc-2020.10.git"
-
-#UBOOT_GIT_PROTOCOL ?= "https"
-UBOOT_GIT_PROTOCOL ?= "ssh"
+UBOOT_GIT_URI ?= "git://github.com/analogdevicesinc/lnxdsp-u-boot.git"
+UBOOT_GIT_PROTOCOL ?= "https"
 
 UBOOT_WDT_FILE = "file://enable-ADI-watchdog.patch"
 UBOOT_WDT_FILE_adsp-sc598-som-ezkit = "file://enable-ADI-watchdog-2020.10.patch"
