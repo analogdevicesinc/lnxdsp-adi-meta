@@ -9,8 +9,8 @@ PR = "r0"
 
 PV = "5.4.183"
 
-KERNEL_BRANCH ?= "develop/2.1.0"
-SRCREV  = "${AUTOREV}"
+KERNEL_BRANCH ?= "release/2.1.0"
+SRCREV  = "1fb73edfe59cfeed90103a3a5caf486199fbc63f"
 
 SRC_URI += "file://feature/"
 

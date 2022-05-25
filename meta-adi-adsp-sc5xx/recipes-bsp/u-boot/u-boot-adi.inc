@@ -6,7 +6,6 @@ require ${COREBASE}/meta/recipes-bsp/u-boot/u-boot.inc
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/u-boot-adi:"
 
-#Pull in from Timesys repository for now.  Change this when releasing SC594 board to public
 UBOOT_GIT_URI ?= "git://github.com/analogdevicesinc/lnxdsp-u-boot.git"
 
 UBOOT_GIT_PROTOCOL ?= "https"
@@ -21,7 +20,7 @@ UBOOT_RAMDISK_PATCH = ""
 UBOOT_RAMDISK_PATCH_adsp-sc594-som-ezkit = " file://disable-relocation-of-ramdisk-to-top-of-memory.patch"
 
 UBOOT_BRANCH ?= "master"
-UBOOT_BRANCH_adsp-sc598-som-ezkit ?= "develop/2.1.0"
+UBOOT_BRANCH_adsp-sc598-som-ezkit ?= "release/2.1.0"
 
 SRC_URI += " \
 	${UBOOT_GIT_URI};protocol=${UBOOT_GIT_PROTOCOL};branch=${UBOOT_BRANCH} \
