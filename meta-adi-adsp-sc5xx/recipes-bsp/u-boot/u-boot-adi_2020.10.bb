@@ -46,8 +46,8 @@ do_compile_prepend(){
 	cp ${LIBFDT_ENV_H_FILE} ${WORKDIR}/recipe-sysroot-native/usr/include/libfdt_env.h
 	cp ${LIBFDT_H_FILE} ${WORKDIR}/recipe-sysroot-native/usr/include/libfdt.h
 
-	#Add arm-poky-linux-gnueabi-ldr in to path
-	export PATH=$PATH:${WORKDIR}
+	#Make the ldr tool available to the build
+	cp ${WORKDIR}/arm-poky-linux-gnueabi-ldr ${RECIPE_SYSROOT_NATIVE}/usr/bin/${HOST_PREFIX}ldr
 }
 
 do_install () {
