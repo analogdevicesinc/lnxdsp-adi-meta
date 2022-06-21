@@ -1,0 +1,218 @@
+From 4a63a0dfc0680dc27d0142bc49db92935adacef1 Mon Sep 17 00:00:00 2001
+From: Greg Malysa <gmalysa@alumni.stanford.edu>
+Date: Fri, 10 Jun 2022 02:55:08 -0400
+Subject: [PATCH] SC598: Enable SHARC-ALSA demo, disabling most linux-based
+ audio drivers and replacing remoteproc with adi rpmsg
+
+---
+ arch/arm64/boot/dts/adi/sc598-som-ezkit.dts  | 41 ++++++++++--
+ arch/arm64/configs/sc598-som-ezkit_defconfig |  2 +-
+ drivers/soc/adi/mach-sc5xx/sec.c             | 67 ++++++++++----------
+ 3 files changed, 70 insertions(+), 40 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
+index abd954fb32b4..56fbb837f2ab 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
++++ b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
+@@ -73,7 +73,7 @@
+ 			adi,verify = <1>;
+ 			adi,tru = <&tru>;
+ 			adi,tru-master-id = <135>; /* trigger master SOFT4 */
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 
+ 		sharc1: core2-rproc@0x28a40000 {
+@@ -91,13 +91,40 @@
+ 			adi,verify = <1>;
+ 			adi,tru = <&tru>;
+ 			adi,tru-master-id = <136>; /* trigger master SOFT5 */
+-			status = "okay";
++			status = "disabled";
++		};
++
++		sharc0_rpmsg: core0-rpmsg@0x28240000 {
++				status = "okay";
++				compatible = "adi,rpmsg-SC598";
++				core-id = <1>;
++				adi,rcu = <&rcu>;
++				adi,rsc-table = <&rsc_tbl0>;
++				interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
++				adi,tru = <&tru>;
++				adi,tru-master-id = <135>; /* trigger master SOFT4 */
++				vdev-vring = <&vdev0vrings>;
++				memory-region = <&vdev0buffer>;
++		};
++
++		sharc1_rpmsg: core1-rpmsg@0x28a40000 {
++				status = "okay";
++				compatible = "adi,rpmsg-SC598";
++				core-id = <2>;
++				adi,rcu = <&rcu>;
++				adi,rsc-table = <&rsc_tbl1>;
++				interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
++				adi,tru = <&tru>;
++				adi,tru-master-id = <136>; /* trigger master SOFT5 */
++				vdev-vring = <&vdev1vrings>;
++				memory-region = <&vdev1buffer>;
+ 		};
+ 
+ 		sound {
+ 			compatible = "sc5xx,asoc-card";
+ 			adi,cpu-dai = <&i2s4>;
+ 			adi,codec = <&adau1962>, <&adau1979>;
++			status = "disabled";
+ 		};
+ 
+ //		firmware {
+@@ -114,7 +141,7 @@
+ &i2s4 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&sru_dai1>;
+-	status = "okay";
++	status = "disabled";
+ };
+ 
+ &tru {
+@@ -296,7 +323,7 @@
+ };
+ 
+ &i2c2 {
+-	status = "okay";
++	status = "disabled";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&i2c2_pins>;
+ 
+@@ -498,12 +525,14 @@
+ 	adau1979: adau1979@0x11 {
+ 		compatible = "adi,adau1979";
+ 		reg = <0x11>;
++		status = "disabled";
+ 	};
+ 
+ 	adau1962: adau1962@0x4 {
+ 		compatible = "adi,adau1962";
+ 		reg = <0x4>;
+ 		reset-gpios = <&ssw1 5 GPIO_ACTIVE_LOW>;
++		status = "disabled";
+ 	};
+ };
+ 
+@@ -731,11 +760,11 @@
+ };
+ 
+ &sru_ctrl_dai0 {
+-	status = "okay";
++	status = "disabled";
+ };
+ 
+ &sru_ctrl_dai1 {
+-	status = "okay";
++	status = "disabled";
+ 
+ 	sru_dai1: sru_dai1_mux {
+ 		route {
+diff --git a/arch/arm64/configs/sc598-som-ezkit_defconfig b/arch/arm64/configs/sc598-som-ezkit_defconfig
+index fd44fc462b0b..5383e9a71ddc 100644
+--- a/arch/arm64/configs/sc598-som-ezkit_defconfig
++++ b/arch/arm64/configs/sc598-som-ezkit_defconfig
+@@ -312,7 +312,7 @@ CONFIG_REMOTEPROC=y
+ CONFIG_ADI_REMOTEPROC=y
+ CONFIG_RPMSG_CHAR=y
+ CONFIG_RPMSG_QCOM_GLINK_RPM=y
+-CONFIG_RPMSG_VIRTIO=y
++CONFIG_RPMSG_ADI=y
+ CONFIG_EXTCON_USB_GPIO=y
+ CONFIG_EXTCON_USBC_CROS_EC=y
+ CONFIG_MEMORY=y
+diff --git a/drivers/soc/adi/mach-sc5xx/sec.c b/drivers/soc/adi/mach-sc5xx/sec.c
+index 0b92771d1656..b1a973ed28cd 100644
+--- a/drivers/soc/adi/mach-sc5xx/sec.c
++++ b/drivers/soc/adi/mach-sc5xx/sec.c
+@@ -29,11 +29,12 @@ struct adi_sec {
+ };
+ 
+ void adi_sec_writel(u32 val, struct adi_sec *rcu, int offset) {
+-	writel(val, rcu->ioaddr + offset);
++//	writel(val, rcu->ioaddr + offset);
+ }
+ 
+ u32 adi_sec_readl(struct adi_sec *rcu, int offset) {
+-	return readl(rcu->ioaddr + offset);
++//	return readl(rcu->ioaddr + offset);
++	return 0;
+ }
+ 
+ void sec_raise_irq(struct adi_sec *sec, unsigned int irq)
+@@ -189,37 +190,37 @@ static int adi_sec_probe(struct platform_device *pdev) {
+ 
+ 	adi_sec->ioaddr = base;
+ 
+-	/* Disable SYSCD_RESETb and clear RCU reset status */
+-	adi_rcu_writel(0x00, adi_rcu, ADI_RCU_REG_CTL);
+-	adi_rcu_writel(0x0f, adi_rcu, ADI_RCU_REG_STAT);
+-
+-	/* Reset SEC */
+-	adi_sec_writel(0x02, adi_sec, ADI_SEC_REG_GCTL);
+-	adi_sec_writel(0x02, adi_sec, ADI_SEC_REG_FCTL);
+-
+-	/* Initialize each core */
+-	for (cores = 0; cores < adi_sec->cores; ++cores) {
+-		adi_sec_writel(0x02, adi_sec,
+-			ADI_SEC_REG_CCTL_BASE + (cores+1)*ADI_SEC_CCTL_SIZE);
+-	}
+-	udelay(100);
+-
+-	/* Enable SEC fault event */
+-	adi_sec_writel(0x01, adi_sec, ADI_SEC_REG_GCTL);
+-
+-	/* ANOMALY 36100004 spurious external fault event occurs when FCTL is
+-	 * re-programmed when active fault is not cleared
+-	 */
+-	adi_sec_writel(0xc0, adi_sec, ADI_SEC_REG_FCTL);
+-	adi_sec_writel(0xc1, adi_sec, ADI_SEC_REG_FCTL);
+-
+-	/* Enable SYSCD_RESETb input */
+-	adi_rcu_writel(0x100, adi_rcu, ADI_RCU_REG_CTL);
+-
+-#ifdef CONFIG_ADI_WATCHDOG
+-	/* @todo verify sec watchdog event number, make device tree based */
+-	sec_enable_ssi(adi_sec, 3, true, true);
+-#endif
++//	/* Disable SYSCD_RESETb and clear RCU reset status */
++//	adi_rcu_writel(0x00, adi_rcu, ADI_RCU_REG_CTL);
++//	adi_rcu_writel(0x0f, adi_rcu, ADI_RCU_REG_STAT);
++//
++//	/* Reset SEC */
++//	adi_sec_writel(0x02, adi_sec, ADI_SEC_REG_GCTL);
++//	adi_sec_writel(0x02, adi_sec, ADI_SEC_REG_FCTL);
++//
++//	/* Initialize each core */
++//	for (cores = 0; cores < adi_sec->cores; ++cores) {
++//		adi_sec_writel(0x02, adi_sec,
++//			ADI_SEC_REG_CCTL_BASE + (cores+1)*ADI_SEC_CCTL_SIZE);
++//	}
++//	udelay(100);
++//
++//	/* Enable SEC fault event */
++//	adi_sec_writel(0x01, adi_sec, ADI_SEC_REG_GCTL);
++//
++//	/* ANOMALY 36100004 spurious external fault event occurs when FCTL is
++//	 * re-programmed when active fault is not cleared
++//	 */
++//	adi_sec_writel(0xc0, adi_sec, ADI_SEC_REG_FCTL);
++//	adi_sec_writel(0xc1, adi_sec, ADI_SEC_REG_FCTL);
++//
++//	/* Enable SYSCD_RESETb input */
++//	adi_rcu_writel(0x100, adi_rcu, ADI_RCU_REG_CTL);
++//
++//#ifdef CONFIG_ADI_WATCHDOG
++//	/* @todo verify sec watchdog event number, make device tree based */
++//	sec_enable_ssi(adi_sec, 3, true, true);
++//#endif
+ 
+ 	return 0;
+ 
+-- 
+2.34.1
+

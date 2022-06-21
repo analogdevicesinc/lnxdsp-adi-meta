@@ -16,6 +16,17 @@ SRCREV  = "${AUTOREV}"
 
 SRC_URI += "file://feature/"
 
+HYBRID_AUDIO_PATCH = " \
+	file://0001-SC598-Audio-configuration-for-hybrid-audio-support.patch \
+"
+SHARC_ALSA_PATCH = " \
+	${HYBRID_AUDIO_PATCH} \
+	file://0002-SC598-Enable-SHARC-ALSA-demo-disabling-most-linux-ba.patch \
+"
+
+SRC_URI += "${@bb.utils.contains('DISTRO_FEATURES', 'adi_hybrid_audio', '${HYBRID_AUDIO_PATCH}', '', d)}"
+SRC_URI += "${@bb.utils.contains('DISTRO_FEATURES', 'adi_sharc_alsa_audio', '${SHARC_ALSA_PATCH}', '', d)}"
+
 # Include kernel configuration fragment
 KERNEL_EXTRA_FEATURES ?= "${WORKDIR}/feature/cfg/nfs.cfg \
 						  ${WORKDIR}/feature/cfg/wireless.cfg \

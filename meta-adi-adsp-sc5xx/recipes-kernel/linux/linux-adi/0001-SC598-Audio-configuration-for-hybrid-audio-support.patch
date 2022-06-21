@@ -1,0 +1,47 @@
+From 21df3dd497eb3ccbba918c27af25e049cab9edb4 Mon Sep 17 00:00:00 2001
+From: Greg Malysa <gmalysa@alumni.stanford.edu>
+Date: Fri, 10 Jun 2022 16:35:19 -0400
+Subject: [PATCH] SC598: Audio configuration for hybrid audio support
+
+---
+ arch/arm64/boot/dts/adi/sc59x-64.dtsi        | 4 ++--
+ arch/arm64/configs/sc598-som-ezkit_defconfig | 1 +
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/adi/sc59x-64.dtsi b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
+index c30f09afeea4..13a4c2cb652f 100644
+--- a/arch/arm64/boot/dts/adi/sc59x-64.dtsi
++++ b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
+@@ -1059,7 +1059,7 @@
+ 			sport4a: channel@10 {
+ 				adi,id = <10>;
+ 				adi,src-offset = <0>;
+-				adi,skip-interrupts = <0>;
++				adi,skip-interrupts = <1>;
+ 				interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>,
+ 					<GIC_SPI 305 IRQ_TYPE_LEVEL_HIGH>;
+ 				interrupt-names = "complete", "error";
+@@ -1068,7 +1068,7 @@
+ 			sport4b: channel@11 {
+ 				adi,id = <11>;
+ 				adi,src-offset = <0x80>;
+-				adi,skip-interrupts = <0>;
++				adi,skip-interrupts = <1>;
+ 				interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>,
+ 					<GIC_SPI 306 IRQ_TYPE_LEVEL_HIGH>;
+ 				interrupt-names = "complete", "error";
+diff --git a/arch/arm64/configs/sc598-som-ezkit_defconfig b/arch/arm64/configs/sc598-som-ezkit_defconfig
+index 806e88e2d442..fd44fc462b0b 100644
+--- a/arch/arm64/configs/sc598-som-ezkit_defconfig
++++ b/arch/arm64/configs/sc598-som-ezkit_defconfig
+@@ -241,6 +241,7 @@ CONFIG_SND=y
+ CONFIG_SND_SOC=y
+ CONFIG_SND_SC5XX_SHARC_ALSA_CARD=y
+ CONFIG_SND_SC5XX_PCM=y
++CONFIG_SND_SC5XX_SPORT_SHARC=y
+ CONFIG_SND_SC5XX_ADAU1979=y
+ CONFIG_SND_SC5XX_ADAU1962=y
+ CONFIG_SND_SIMPLE_CARD=m
+-- 
+2.34.1
+
