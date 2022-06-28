@@ -37,4 +37,4 @@ KBUILD_DEFCONFIG_adsp-sc598-som-ezkit = "sc598-som-ezkit_defconfig"
 
 COMPATIBLE_MACHINE = "(adsp-sc573-ezkit|adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini|adsp-sc594-som-ezkit|adsp-sc598-som-ezkit)"
 
-KERNEL_IMAGETYPE_FOR_MAKE = "Image"
+KERNEL_IMAGETYPE_FOR_MAKE = "${KERNEL_IMAGETYPE}"

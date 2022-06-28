@@ -9,9 +9,11 @@ PR = "r0"
 
 PV = "5.4"
 PV_adsp-sc598-som-ezkit = "5.4.183"
+PV_adsp-sc573-ezkit = "5.4.183"
 
 KERNEL_BRANCH ?= "v5.4-rebase-wip"
 KERNEL_BRANCH_adsp-sc598-som-ezkit ?= "develop/5.4.183/sc598"
+KERNEL_BRANCH_adsp-sc573-ezkit ?= "develop/5.4.183/sc598"
 SRCREV  = "${AUTOREV}"
 
 SRC_URI += "file://feature/"
@@ -57,9 +59,9 @@ emit_its() {
 	images {
 		kernel@1 {
 			description = "Linux kernel";
-			data = /incbin/("arch/arm64/boot/Image");
+			data = /incbin/("${KERNEL_OUTPUT_DIR}/${KERNEL_IMAGETYPE}");
 			type = "kernel";
-			arch = "arm64";
+			arch = "${ARCH}";
 			os = "linux";
 			compression = "none";
 			load = <${UBOOT_LOADADDRESS}>;
@@ -75,9 +77,9 @@ emit_its() {
 
 		fdt@2 {
 			description = "Flattened Device Tree Blob";
-			data = /incbin/("arch/arm64/boot/dts/adi/sc598-som-ezkit.dtb");
+			data = /incbin/("${KERNEL_OUTPUT_DIR}/dts/${KERNEL_DEVICETREE}");
 			type = "flat_dt";
-			arch = "arm64";
+			arch = "${ARCH}";
 			compression = "none";
 			load = <${UBOOT_DTBADDRESS}>;
 			hash-1 {
@@ -112,7 +114,7 @@ do_assemble_fitimage() {
 	emit_its;
 
 	uboot-mkimage -D "${UBOOT_MKIMAGE_DTCOPTS}" -f fit-image.its \
-		arch/arm64/boot/fitImage
+		${KERNEL_OUTPUT_DIR}/fitImage
 }
 
 addtask assemble_fitimage before do_install after do_compile
