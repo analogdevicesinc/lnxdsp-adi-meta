@@ -25,6 +25,22 @@ DISTRO_FEATURES = " ram"
 IMAGE_FSTYPES = " cpio.xz"
 
 DEPENDS += "u-boot-tools-native"
+
+#We do not need these files in the rootfs -- remove them to reduce the minimal rootfs size
+fakeroot do_rootfs_cleanup(){
+	rm -rf ${IMAGE_ROOTFS}/boot
+	rm -rf ${IMAGE_ROOTFS}/lib/udev/hwdb.bin
+	rm -rf ${IMAGE_ROOTFS}/lib/udev/hwdb.d
+	rm -rf ${IMAGE_ROOTFS}/usr/lib/opkg
+	rm -rf ${IMAGE_ROOTFS}/usr/lib/locale
+	rm -rf ${IMAGE_ROOTFS}/etc/X11
+	rm -rf ${IMAGE_ROOTFS}/usr/share/consolefonts
+	rm -rf ${IMAGE_ROOTFS}/usr/share/alsa
+	rm -rf ${IMAGE_ROOTFS}/usr/share/keymaps
+}
+
+addtask rootfs_cleanup after do_rootfs before do_image
+
 do_adi_ramdisk[depends] = "virtual/bootloader:do_compile"
 do_adi_ramdisk(){
     #Format the cpio image for u-boot
