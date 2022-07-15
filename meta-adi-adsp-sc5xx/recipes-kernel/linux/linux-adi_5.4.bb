@@ -9,7 +9,7 @@ PR = "r0"
 
 PV = "5.4.183"
 
-KERNEL_BRANCH ?= "develop/5.4.183/sc598"
+KERNEL_BRANCH ?= "master"
 SRCREV  = "${AUTOREV}"
 
 SRC_URI += "file://feature/"
