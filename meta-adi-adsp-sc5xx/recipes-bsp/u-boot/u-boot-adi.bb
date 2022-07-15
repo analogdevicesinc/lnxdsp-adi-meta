@@ -17,6 +17,13 @@ FILES-SPL = " \
     ${STAGE_1_TARGET_NAME} \
 "
 
+FILES-SPL_adsp-sc594-som-ezkit = " \
+    u-boot-proper-${BOARD}.img \
+    u-boot-proper-${BOARD}.elf \
+    u-boot-spl-${BOARD}.elf \
+    ${STAGE_1_TARGET_NAME} \
+"
+
 FILES-NO-SPL = " \
     u-boot-${BOARD}.ldr \
     ${EMMC_BOOT_STAGES} \
@@ -52,6 +59,9 @@ do_install () {
         install ${B}/u-boot-${BOARD} ${D}/
         install ${B}/${INIT_PATH}/init-${BOARD}.elf ${D}/
     else
+        if [ "${MACHINE}" = "adsp-sc594-som-ezkit" ]; then
+            install ${B}/u-boot-proper-${BOARD}.img ${D}/
+        fi
         install ${B}/u-boot-proper-${BOARD}.elf ${D}/
         install ${B}/u-boot-spl-${BOARD}.elf ${D}/
         install ${B}/u-boot-spl-${BOARD}.ldr ${D}/${STAGE_1_TARGET_NAME}
@@ -68,6 +78,9 @@ do_deploy() {
         install ${B}/u-boot-${BOARD} ${DEPLOYDIR}/
         install ${B}/${INIT_PATH}/init-${BOARD}.elf ${DEPLOYDIR}/
     else
+        if [ "${MACHINE}" = "adsp-sc594-som-ezkit" ]; then
+            install ${B}/u-boot-proper-${BOARD}.img ${DEPLOYDIR}/
+        fi
         install ${B}/u-boot-proper-${BOARD}.elf ${DEPLOYDIR}/
         install ${B}/u-boot-spl-${BOARD}.elf ${DEPLOYDIR}/
         install ${B}/u-boot-spl-${BOARD}.ldr ${DEPLOYDIR}/${STAGE_1_TARGET_NAME}
