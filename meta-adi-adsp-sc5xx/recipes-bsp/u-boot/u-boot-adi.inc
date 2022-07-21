@@ -10,10 +10,6 @@ UBOOT_GIT_URI ?= "git://github.com/analogdevicesinc/lnxdsp-u-boot.git"
 UBOOT_GIT_PROTOCOL ?= "https"
 
 UBOOT_WDT_FILE = "file://enable-ADI-watchdog.patch"
-UBOOT_WDT_FILE_adsp-sc598-som-ezkit = "file://enable-ADI-watchdog-2020.10.patch"
-UBOOT_WDT_FILE_adsp-sc589-ezkit = "file://enable-ADI-watchdog-2020.10.patch"
-UBOOT_WDT_FILE_adsp-sc573-ezkit = "file://enable-ADI-watchdog-2020.10.patch"
-UBOOT_WDT_FILE_adsp-sc594-ezkit = "file://enable-ADI-watchdog-sc594.patch"
 UBOOT_WDT = "${@bb.utils.contains('MACHINE_FEATURES', 'watchdog', '${UBOOT_WDT_FILE}', '', d)}"
 
 UBOOT_BRANCH ?= "master"

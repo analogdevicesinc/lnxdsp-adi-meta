@@ -1,30 +1,25 @@
-From 79d5de28fbb6867bd2b0afd756ef9c476f906e4c Mon Sep 17 00:00:00 2001
-From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
-Date: Mon, 13 May 2019 10:44:01 -0400
+From 6f95fbe4daad193771f33840cd945d0a84b3118b Mon Sep 17 00:00:00 2001
+From: Greg Malysa <gmalysa@alumni.stanford.edu>
+Date: Thu, 21 Jul 2022 16:24:04 -0400
 Subject: [PATCH] Enable ADI watchdog
 
 ---
- include/configs/sc_adi_common.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ board/adi/sc5xx-common/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/configs/sc_adi_common.h b/include/configs/sc_adi_common.h
-index da3599c1a..75ef3bf29 100644
---- a/include/configs/sc_adi_common.h
-+++ b/include/configs/sc_adi_common.h
-@@ -292,11 +292,11 @@
- # endif
- #endif
+diff --git a/board/adi/sc5xx-common/Kconfig b/board/adi/sc5xx-common/Kconfig
+index 8570412149..afe7cc0741 100644
+--- a/board/adi/sc5xx-common/Kconfig
++++ b/board/adi/sc5xx-common/Kconfig
+@@ -121,7 +121,7 @@ config UART4_SERIAL
  
--/*
-+
- #define CONFIG_HW_WATCHDOG
- #define CONFIG_ADI_WATCHDOG
- #define CONFIG_WATCHDOG_TIMEOUT_MSECS 10000
--*/
-+
+ config ADI_WATCHDOG
+ 	bool
+-	default n
++	default y
  
- #define CONFIG_RSA
- 
+ config WATCHDOG_TIMEOUT_MSECS
+ 	int
 -- 
-2.11.0
+2.34.1
 
