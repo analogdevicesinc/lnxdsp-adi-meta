@@ -1,0 +1,1 @@
+part / --source rawcopy --sourceparams="file=${IMGDEPLOYDIR}/${IMAGE_BASENAME}-${MACHINE}.ext4" --ondisk mmcblk --fstype=ext4
