@@ -7,11 +7,11 @@ Subject: [PATCH] Enable ADI watchdog
  board/adi/sc5xx-common/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/board/adi/sc5xx-common/Kconfig b/board/adi/sc5xx-common/Kconfig
+diff --git a/board/adi/common/Kconfig b/board/adi/common/Kconfig
 index 8570412149..afe7cc0741 100644
---- a/board/adi/sc5xx-common/Kconfig
-+++ b/board/adi/sc5xx-common/Kconfig
-@@ -121,7 +121,7 @@ config UART4_SERIAL
+--- a/board/adi/common/Kconfig
++++ b/board/adi/common/Kconfig
+@@ -110,7 +110,7 @@ config UART4_SERIAL
  
  config ADI_WATCHDOG
  	bool
