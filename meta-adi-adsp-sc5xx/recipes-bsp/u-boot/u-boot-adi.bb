@@ -33,13 +33,7 @@ FILES-NO-SPL = " \
 
 FILES_${PN} = "${@bb.utils.contains_any('MACHINE_FEATURES', 'spl falcon', '${FILES-SPL}', '${FILES-NO-SPL}', d)}"
 
-INIT_PATH = ""
-INIT_PATH_adsp-sc573-ezkit = "arch/arm/cpu/armv7/sc57x"
-INIT_PATH_adsp-sc584-ezkit = "arch/arm/cpu/armv7/sc58x"
-INIT_PATH_adsp-sc589-ezkit = "arch/arm/cpu/armv7/sc58x"
-INIT_PATH_adsp-sc589-mini = "arch/arm/cpu/armv7/sc58x"
-INIT_PATH_adsp-sc594-som-ezkit = "arch/arm/cpu/armv7/sc59x"
-INIT_PATH_adsp-sc598-som-ezkit = "arch/arm/cpu/armv8/sc59x-64"
+INIT_PATH = "board/adi/common/init"
 
 COMPATIBLE_MACHINE = "(adsp-sc573-ezkit|adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini|adsp-sc594-som-ezkit|adsp-sc598-som-ezkit)"
 
