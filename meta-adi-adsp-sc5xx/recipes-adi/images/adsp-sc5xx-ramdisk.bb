@@ -6,20 +6,17 @@ IMAGE_INSTALL = " \
     packagegroup-core-boot \
     packagegroup-base \
     busybox-watchdog-init \
-	initramfs-init \
 "
 
 #For transferring data to flash eMMC via ramdisk
-IMAGE_INSTALL_adsp-sc598-som-ezkit += " \
-	busybox \
-    openssh \
-    e2fsprogs-resize2fs \
-    gzip \
-    adi-flash-emmc \
-    mtd-utils \
-    mtd-utils-ubifs \
-	initramfs-init \
-"
+#IMAGE_INSTALL_adsp-sc598-som-ezkit += " \
+#    openssh \
+#    e2fsprogs-resize2fs \
+#    gzip \
+#    adi-flash-emmc \
+#    mtd-utils \
+#    mtd-utils-ubifs \
+#"
 
 DISTRO_FEATURES = " ram"
 IMAGE_FSTYPES = " cpio.xz"
