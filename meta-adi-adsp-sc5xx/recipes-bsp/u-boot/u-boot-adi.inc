@@ -12,7 +12,7 @@ UBOOT_GIT_PROTOCOL ?= "https"
 UBOOT_WDT_FILE = "file://enable-ADI-watchdog.patch"
 UBOOT_WDT = "${@bb.utils.contains('MACHINE_FEATURES', 'watchdog', '${UBOOT_WDT_FILE}', '', d)}"
 
-UBOOT_BRANCH ?= "master"
+UBOOT_BRANCH ?= "develop/yocto-2.1.0"
 
 SRC_URI += " \
 	${UBOOT_GIT_URI};protocol=${UBOOT_GIT_PROTOCOL};branch=${UBOOT_BRANCH} \
