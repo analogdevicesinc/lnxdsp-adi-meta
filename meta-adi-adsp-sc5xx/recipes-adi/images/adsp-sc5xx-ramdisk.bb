@@ -2,21 +2,31 @@ inherit core-image extrausers
 SUMMARY = "Minimal ramdisk image for Analog Devices ADSP-SC5xx boards"
 LICENSE = "MIT"
 
+#For transferring data to flash eMMC via ramdisk
+SC598_EMMC_UTILS = " \
+    openssh \
+    e2fsprogs-resize2fs \
+    gzip \
+    adi-flash-emmc \
+    mtd-utils \
+    mtd-utils-ubifs \
+"
+
+def emmc_utils(d):
+  utils = ""
+  MACHINE = d.getVar('MACHINE')
+  if MACHINE == 'adsp-sc598-som-ezkit':
+    utils = "${SC598_EMMC_UTILS}"
+  else:
+    utils = ""
+  return utils
+
 IMAGE_INSTALL = " \
     packagegroup-core-boot \
     packagegroup-base \
     busybox-watchdog-init \
+    ${@emmc_utils(d)} \
 "
-
-#For transferring data to flash eMMC via ramdisk
-#IMAGE_INSTALL_adsp-sc598-som-ezkit += " \
-#    openssh \
-#    e2fsprogs-resize2fs \
-#    gzip \
-#    adi-flash-emmc \
-#    mtd-utils \
-#    mtd-utils-ubifs \
-#"
 
 DISTRO_FEATURES = " ram"
 IMAGE_FSTYPES = " cpio.xz"
