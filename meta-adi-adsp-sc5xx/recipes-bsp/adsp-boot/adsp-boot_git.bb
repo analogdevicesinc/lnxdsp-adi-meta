@@ -11,9 +11,6 @@ LDR = "arm-poky-linux-gnueabi-ldr"
 STAGE_2_SRC = "u-boot-proper-${BOARD}.elf"
 STAGE_2_TARGET_NAME = "stage2-boot.ldr"
 
-STAGE_2_SRC_adsp-sc594-som-ezkit = "u-boot-proper-${BOARD}.img"
-STAGE_2_TARGET_NAME_adsp-sc594-som-ezkit = "stage2-boot.img"
-
 DEPLOY_SRC_URI = "${STAGE_2_SRC}"
 
 inherit deploy deploy-dep
@@ -21,11 +18,6 @@ inherit deploy deploy-dep
 do_compile() {
 	cd ${WORKDIR}
 	${LDR} -T ${LDR_PROC} -c ${B}/${STAGE_2_TARGET_NAME} --bcode=${LDR_BCODE} ${STAGE_2_SRC}
-}
-
-do_compile_adsp-sc594-som-ezkit(){
-	cd ${WORKDIR}
-	cp ${STAGE_2_SRC} ${B}/${STAGE_2_TARGET_NAME}
 }
 
 FILES_${PN} = "adsp-boot.dummy"
