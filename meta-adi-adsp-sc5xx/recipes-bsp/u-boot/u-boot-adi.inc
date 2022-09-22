@@ -14,9 +14,16 @@ UBOOT_WDT = "${@bb.utils.contains('MACHINE_FEATURES', 'watchdog', '${UBOOT_WDT_F
 
 UBOOT_BRANCH ?= "develop/yocto-2.1.0"
 
+# On the SC598, we can't boot directly from the eMMC due to default speed configuration issues
+# We can boot the SPL from OSPI or QSPI and then subsequently boot U-Boot Proper from eMMC
+# To accomplish this, we need to set CONFIG_ADI_SPL_FORCE_BMODE=6 in u-boot.
+BMODE_FORCE_EMMC = "${@bb.utils.contains('DISTRO_FEATURES', \
+                   'bmode_force_emmc', 'file://bmode_force_emmc.cfg', '', d)}"
+
 SRC_URI += " \
 	${UBOOT_GIT_URI};protocol=${UBOOT_GIT_PROTOCOL};branch=${UBOOT_BRANCH} \
 	${UBOOT_WDT} \
+	${BMODE_FORCE_EMMC} \
 "
 
 LICENSE = "GPLv2+"
