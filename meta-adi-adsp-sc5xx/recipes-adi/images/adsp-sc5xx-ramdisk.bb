@@ -2,8 +2,8 @@ inherit core-image extrausers
 SUMMARY = "Minimal ramdisk image for Analog Devices ADSP-SC5xx boards"
 LICENSE = "MIT"
 
-#For transferring data to flash eMMC via ramdisk
-SC598_EMMC_UTILS = " \
+#For transferring data to flash eMMC/SD via ramdisk
+MMC_UTILS = " \
     openssh \
     e2fsprogs-resize2fs \
     gzip \
@@ -13,12 +13,12 @@ SC598_EMMC_UTILS = " \
 "
 
 def emmc_utils(d):
-  utils = ""
+  utils = "${MMC_UTILS}"
   MACHINE = d.getVar('MACHINE')
-  if MACHINE == 'adsp-sc598-som-ezkit':
-    utils = "${SC598_EMMC_UTILS}"
-  else:
-    utils = ""
+  if MACHINE == 'adsp-sc594-som-ezkit':
+      utils = ""
+  elif MACHINE == 'adsp-sc584-ezkit':
+      utils = ""
   return utils
 
 IMAGE_INSTALL = " \
