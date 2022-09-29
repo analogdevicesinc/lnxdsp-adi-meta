@@ -11,11 +11,14 @@ LDR = "arm-poky-linux-gnueabi-ldr"
 STAGE_2_SRC = "u-boot-proper-${BOARD}.elf"
 STAGE_2_TARGET_NAME = "stage2-boot.ldr"
 
-DEPLOY_SRC_URI = "${STAGE_2_SRC}"
-
 inherit deploy deploy-dep
 
 do_compile() {
+	for f in ${STAGE_2_SRC}
+	do
+		cp ${DEPLOY_DIR_IMAGE}/$f ${WORKDIR}/$f
+	done
+
 	cd ${WORKDIR}
 	${LDR} -T ${LDR_PROC} -c ${B}/${STAGE_2_TARGET_NAME} --bcode=${LDR_BCODE} ${STAGE_2_SRC}
 }
