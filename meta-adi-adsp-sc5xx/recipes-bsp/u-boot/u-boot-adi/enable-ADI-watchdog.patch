@@ -1,25 +1,25 @@
-From 6f95fbe4daad193771f33840cd945d0a84b3118b Mon Sep 17 00:00:00 2001
-From: Greg Malysa <gmalysa@alumni.stanford.edu>
-Date: Thu, 21 Jul 2022 16:24:04 -0400
-Subject: [PATCH] Enable ADI watchdog
+From fee1e6308ea86e2e8c3b755cfa1dc8d41b61aa42 Mon Sep 17 00:00:00 2001
+From: Greg Malysa <greg.malysa@timesys.com>
+Date: Wed, 5 Oct 2022 19:41:32 -0400
+Subject: [PATCH] Enable watchdog patch
 
 ---
- board/adi/sc5xx-common/Kconfig | 2 +-
+ arch/arm/dts/sc5xx.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/board/adi/common/Kconfig b/board/adi/common/Kconfig
-index 8570412149..afe7cc0741 100644
---- a/board/adi/common/Kconfig
-+++ b/board/adi/common/Kconfig
-@@ -110,7 +110,7 @@ config UART4_SERIAL
+diff --git a/arch/arm/dts/sc5xx.dtsi b/arch/arm/dts/sc5xx.dtsi
+index e4b3b02bef..3edb4527b6 100644
+--- a/arch/arm/dts/sc5xx.dtsi
++++ b/arch/arm/dts/sc5xx.dtsi
+@@ -129,7 +129,7 @@
+ 					<0x31008000 0x1000>;
+ 			reg-names = "rcu", "sec", "wdt";
+ 			clock-names = "sclk0";
+-			status = "disabled";
++			status = "okay";
+ 			u-boot,dm-pre-reloc;
+ 		};
  
- config ADI_WATCHDOG
- 	bool
--	default n
-+	default y
- 
- config WATCHDOG_TIMEOUT_MSECS
- 	int
 -- 
 2.34.1
 
