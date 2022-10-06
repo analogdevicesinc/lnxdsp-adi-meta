@@ -9,7 +9,7 @@ PR = "r0"
 
 PV = "5.4.183"
 
-KERNEL_BRANCH ?= "develop/yocto-2.1.0"
+KERNEL_BRANCH ?= "develop/yocto-2.2.0"
 SRCREV  = "${AUTOREV}"
 
 SRC_URI += "file://feature/"
