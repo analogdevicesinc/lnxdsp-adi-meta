@@ -1,4 +1,4 @@
-inherit core-image
+inherit core-image extrausers
 SUMMARY = "Tiny image for Analog Devices ADSP-SC5xx boards with 16MB SPI"
 LICENSE = "MIT"
 
@@ -6,6 +6,10 @@ IMAGE_INSTALL = " \
     packagegroup-core-boot \
     packagegroup-base \
     busybox-watchdog-init \
+"
+
+EXTRA_USERS_PARAMS = " \
+	usermod -P adi root; \
 "
 
 IMAGE_FSTYPES = " jffs2"
