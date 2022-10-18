@@ -14,9 +14,3 @@ SRC_URI = " \
 ${LDR_GIT_URI};protocol=${LDR_GIT_PROTOCOL};branch=${LDR_GIT_BRANCH}"
 
 S = "${WORKDIR}/git/src/ldr"
-
-do_install(){
-    install -d ${D}${bindir}/
-    install -m 755 ldr ${D}${bindir}/arm-poky-linux-gnueabi-ldr
-    install -m 755 ldr ${D}${bindir}/aarch64-poky-linux-ldr
-}

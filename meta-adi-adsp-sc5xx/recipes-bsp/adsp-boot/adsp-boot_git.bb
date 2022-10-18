@@ -5,7 +5,7 @@ LICENSE = "CLOSED"
 DEPENDS = "u-boot-adi ldr-adi-native"
 DDEPENDS = "u-boot-adi"
 
-LDR = "arm-poky-linux-gnueabi-ldr"
+LDR = "ldr"
 
 # Whatever is LAST in this list will be the jump target from SPL
 STAGE_2_SRC = "u-boot-proper-${BOARD}.elf"
