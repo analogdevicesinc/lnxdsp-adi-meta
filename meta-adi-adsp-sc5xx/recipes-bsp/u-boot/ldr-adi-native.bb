@@ -5,7 +5,7 @@ inherit autotools pkgconfig gettext native
 
 LDR_GIT_URI ?= "git://github.com/analogdevicesinc/lnxdsp-arm-poky-linux-gnueabi-ldr.git"
 LDR_GIT_PROTOCOL ?= "https"
-LDR_GIT_BRANCH ?= "develop/2.1.0"
+LDR_GIT_BRANCH ?= "release/yocto-2.1.0"
 
 PR = "r1"
 SRCREV= "a193b4fcdc541803d32573470a802b5ade9a3913"
