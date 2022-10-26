@@ -7,18 +7,9 @@ do_image_wic[depends] += " \
         ${IMAGE_BASENAME}:do_image_ext4 \
 "
 
-def get_whetstone (d):
-  WHETSTONE = ""
-  MACHINE = d.getVar('MACHINE')
-  if MACHINE == 'adsp-sc598-som-ezkit':
-    WHETSTONE = "whetstone"
-  else:
-    WHETSTONE = "whetstone-adi"
-  return WHETSTONE
-
 OPROFILE_PERFORMANCE_BENCHMARK = "\
 	dhrystone \
-	${@get_whetstone(d)} \
+	whetstone \
 "
 
 TOUCHSCREEN = "\
