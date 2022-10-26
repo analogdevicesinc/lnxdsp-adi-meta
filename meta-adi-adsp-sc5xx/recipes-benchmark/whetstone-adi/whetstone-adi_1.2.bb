@@ -1,6 +1,8 @@
 DESCRIPTION = "Whetstone benchmark is a synthetic benchmark for evaluating the performance of computers"
 SUMMARY = "CPU benchmark to measure floating point performance"
 
+inherit adsp-sc5xx-compatible
+
 LICENSE = "PD"
 LIC_FILES_CHKSUM ="file://${WORKDIR}/whetstone.c;beginline=1;endline=52;md5=c795edc15e7e1d92ca8f88ad718449f5"
 
@@ -18,4 +20,3 @@ do_install () {
 	install -Dm 0755 whetstone ${D}${bindir}/whetstone
 }
 
-COMPATIBLE_MACHINE = "(adsp-sc573-ezkit|adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini|adsp-sc594-som-ezkit|adsp-sc598-som-ezkit)"

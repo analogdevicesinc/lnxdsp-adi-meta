@@ -1,3 +1,5 @@
+inherit adsp-sc5xx-compatible
+
 require u-boot-adi.inc
 
 PR = "r0"
@@ -13,8 +15,6 @@ FILES_${PN} = " \
     u-boot-spl-${BOARD}.elf \
     ${STAGE_1_TARGET_NAME} \
 "
-
-COMPATIBLE_MACHINE = "(adsp-sc573-ezkit|adsp-sc584-ezkit|adsp-sc589-ezkit|adsp-sc589-mini|adsp-sc594-som-ezkit|adsp-sc598-som-ezkit)"
 
 EXTRA_OEMAKE += "LDR=ldr"
 
