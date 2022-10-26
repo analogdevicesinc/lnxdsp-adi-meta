@@ -1,4 +1,5 @@
-inherit core-image extrausers
+inherit core-image extrausers adsp-sc5xx-compatible
+
 SUMMARY = "Tiny image for Analog Devices ADSP-SC5xx boards with 16MB SPI"
 LICENSE = "MIT"
 
