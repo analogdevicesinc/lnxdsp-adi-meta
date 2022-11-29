@@ -1,20 +1,62 @@
-From 4a63a0dfc0680dc27d0142bc49db92935adacef1 Mon Sep 17 00:00:00 2001
+From 5ba66d6bbdac4dea01761416dea2e6469b1ffb0a Mon Sep 17 00:00:00 2001
 From: Greg Malysa <gmalysa@alumni.stanford.edu>
-Date: Fri, 10 Jun 2022 02:55:08 -0400
+Date: Tue, 29 Nov 2022 08:36:31 -0500
 Subject: [PATCH] SC598: Enable SHARC-ALSA demo, disabling most linux-based
  audio drivers and replacing remoteproc with adi rpmsg
 
 ---
- arch/arm64/boot/dts/adi/sc598-som-ezkit.dts  | 41 ++++++++++--
+ arch/arm64/boot/dts/adi/sc598-som-ezkit.dts  |  7 +-
+ arch/arm64/boot/dts/adi/sc598-som.dtsi       | 32 +++++++++-
  arch/arm64/configs/sc598-som-ezkit_defconfig |  2 +-
  drivers/soc/adi/mach-sc5xx/sec.c             | 67 ++++++++++----------
- 3 files changed, 70 insertions(+), 40 deletions(-)
+ 4 files changed, 69 insertions(+), 39 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
-index abd954fb32b4..56fbb837f2ab 100644
+index 2f820531df69..c2c88196da7a 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
 +++ b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
-@@ -73,7 +73,7 @@
+@@ -16,6 +16,7 @@
+ 			compatible = "sc5xx,asoc-card";
+ 			adi,cpu-dai = <&i2s4>;
+ 			adi,codec = <&adau1962>, <&adau1979>;
++			status = "disabled";
+ 		};
+ 	};
+ };
+@@ -195,12 +196,14 @@
+ 	adau1979: adau1979@0x11 {
+ 		compatible = "adi,adau1979";
+ 		reg = <0x11>;
++		status = "disabled";
+ 	};
+ 
+ 	adau1962: adau1962@0x4 {
+ 		compatible = "adi,adau1962";
+ 		reg = <0x4>;
+ 		reset-gpios = <&ssw1 5 GPIO_ACTIVE_LOW>;
++		status = "disabled";
+ 	};
+ };
+ 
+@@ -282,11 +285,11 @@
+ &i2s4 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&sru_dai1>;
+-	status = "okay";
++	status = "disabled";
+ };
+ 
+ &sru_ctrl_dai1 {
+-	status = "okay";
++	status = "disabled";
+ 
+ 	sru_dai1: sru_dai1_mux {
+ 		route {
+diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+index 74032f42f248..bb1357eee769 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
++++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+@@ -70,7 +70,7 @@
  			adi,verify = <1>;
  			adi,tru = <&tru>;
  			adi,tru-master-id = <135>; /* trigger master SOFT4 */
@@ -23,7 +65,7 @@ index abd954fb32b4..56fbb837f2ab 100644
  		};
  
  		sharc1: core2-rproc@0x28a40000 {
-@@ -91,13 +91,40 @@
+@@ -88,7 +88,33 @@
  			adi,verify = <1>;
  			adi,tru = <&tru>;
  			adi,tru-master-id = <136>; /* trigger master SOFT5 */
@@ -57,24 +99,8 @@ index abd954fb32b4..56fbb837f2ab 100644
 +				memory-region = <&vdev1buffer>;
  		};
  
- 		sound {
- 			compatible = "sc5xx,asoc-card";
- 			adi,cpu-dai = <&i2s4>;
- 			adi,codec = <&adau1962>, <&adau1979>;
-+			status = "disabled";
- 		};
- 
  //		firmware {
-@@ -114,7 +141,7 @@
- &i2s4 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&sru_dai1>;
--	status = "okay";
-+	status = "disabled";
- };
- 
- &tru {
-@@ -296,7 +323,7 @@
+@@ -225,7 +251,7 @@
  };
  
  &i2c2 {
@@ -83,40 +109,11 @@ index abd954fb32b4..56fbb837f2ab 100644
  	pinctrl-names = "default";
  	pinctrl-0 = <&i2c2_pins>;
  
-@@ -498,12 +525,14 @@
- 	adau1979: adau1979@0x11 {
- 		compatible = "adi,adau1979";
- 		reg = <0x11>;
-+		status = "disabled";
- 	};
- 
- 	adau1962: adau1962@0x4 {
- 		compatible = "adi,adau1962";
- 		reg = <0x4>;
- 		reset-gpios = <&ssw1 5 GPIO_ACTIVE_LOW>;
-+		status = "disabled";
- 	};
- };
- 
-@@ -731,11 +760,11 @@
- };
- 
- &sru_ctrl_dai0 {
--	status = "okay";
-+	status = "disabled";
- };
- 
- &sru_ctrl_dai1 {
--	status = "okay";
-+	status = "disabled";
- 
- 	sru_dai1: sru_dai1_mux {
- 		route {
 diff --git a/arch/arm64/configs/sc598-som-ezkit_defconfig b/arch/arm64/configs/sc598-som-ezkit_defconfig
-index fd44fc462b0b..5383e9a71ddc 100644
+index 42934dd9f1c1..68906d915bdf 100644
 --- a/arch/arm64/configs/sc598-som-ezkit_defconfig
 +++ b/arch/arm64/configs/sc598-som-ezkit_defconfig
-@@ -312,7 +312,7 @@ CONFIG_REMOTEPROC=y
+@@ -315,7 +315,7 @@ CONFIG_REMOTEPROC=y
  CONFIG_ADI_REMOTEPROC=y
  CONFIG_RPMSG_CHAR=y
  CONFIG_RPMSG_QCOM_GLINK_RPM=y
@@ -126,10 +123,10 @@ index fd44fc462b0b..5383e9a71ddc 100644
  CONFIG_EXTCON_USBC_CROS_EC=y
  CONFIG_MEMORY=y
 diff --git a/drivers/soc/adi/mach-sc5xx/sec.c b/drivers/soc/adi/mach-sc5xx/sec.c
-index 0b92771d1656..b1a973ed28cd 100644
+index 10ab8bdfcb62..38cff6c93866 100644
 --- a/drivers/soc/adi/mach-sc5xx/sec.c
 +++ b/drivers/soc/adi/mach-sc5xx/sec.c
-@@ -29,11 +29,12 @@ struct adi_sec {
+@@ -33,11 +33,12 @@ struct adi_sec {
  };
  
  void adi_sec_writel(u32 val, struct adi_sec *rcu, int offset) {
@@ -144,7 +141,7 @@ index 0b92771d1656..b1a973ed28cd 100644
  }
  
  void sec_raise_irq(struct adi_sec *sec, unsigned int irq)
-@@ -189,37 +190,37 @@ static int adi_sec_probe(struct platform_device *pdev) {
+@@ -193,37 +194,37 @@ static int adi_sec_probe(struct platform_device *pdev) {
  
  	adi_sec->ioaddr = base;
  
