@@ -1,15 +1,15 @@
 require linux-adi.inc
 
 LICENSE = "GPLv2"
-LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
+LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
 DEPENDS += "u-boot-mkimage-native dtc-native"
 
 PR = "r0"
 
-PV = "5.4.183"
+PV = "5.15.78"
 
-KERNEL_BRANCH ?= "master"
+KERNEL_BRANCH ?= "master-5.15.78"
 SRCREV  = "${AUTOREV}"
 
 SRC_URI += "file://feature/"
@@ -38,10 +38,6 @@ KERNEL_FEATURES_append_adsp-sc589-ezkit = " ${WORKDIR}/feature/snd_ezkit.scc"
 KERNEL_FEATURES_append_adsp-sc584-ezkit = " ${WORKDIR}/feature/snd_ezkit.scc"
 KERNEL_FEATURES_append_adsp-sc573-ezkit = " ${WORKDIR}/feature/snd_ezkit.scc"
 KERNEL_FEATURES_append_adsp-sc589-mini = " ${WORKDIR}/feature/snd_mini.scc"
-
-do_install_append(){
-	rm -rf ${D}/lib/modules/5.4.0-yocto-standard/modules.builtin.modinfo
-}
 
 # @todo this doesn't support ramdisk booting yet
 emit_its() {

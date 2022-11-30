@@ -1,8 +1,8 @@
 From 5ba66d6bbdac4dea01761416dea2e6469b1ffb0a Mon Sep 17 00:00:00 2001
 From: Greg Malysa <gmalysa@alumni.stanford.edu>
-Date: Tue, 29 Nov 2022 08:36:31 -0500
-Subject: [PATCH] SC598: Enable SHARC-ALSA demo, disabling most linux-based
- audio drivers and replacing remoteproc with adi rpmsg
+Date: Wed, 30 Nov 2022 15:33:50 -0500
+Subject: [PATCH 2/2] Enable SHARC-ALSA demo, disabling most linux-based audio
+ drivers and replacing remoteproc with adi rpmsg
 
 ---
  arch/arm64/boot/dts/adi/sc598-som-ezkit.dts  |  7 +-
@@ -12,10 +12,10 @@ Subject: [PATCH] SC598: Enable SHARC-ALSA demo, disabling most linux-based
  4 files changed, 69 insertions(+), 39 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
-index 2f820531df69..c2c88196da7a 100644
+index caf7bff0fccb..bdb9ee9aeca9 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
 +++ b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
-@@ -16,6 +16,7 @@
+@@ -16,6 +16,7 @@ sound {
  			compatible = "sc5xx,asoc-card";
  			adi,cpu-dai = <&i2s4>;
  			adi,codec = <&adau1962>, <&adau1979>;
@@ -23,7 +23,7 @@ index 2f820531df69..c2c88196da7a 100644
  		};
  	};
  };
-@@ -195,12 +196,14 @@
+@@ -193,12 +194,14 @@ gige-reset {
  	adau1979: adau1979@0x11 {
  		compatible = "adi,adau1979";
  		reg = <0x11>;
@@ -38,7 +38,7 @@ index 2f820531df69..c2c88196da7a 100644
  	};
  };
  
-@@ -282,11 +285,11 @@
+@@ -280,11 +283,11 @@ dp83848: ethernet-phy@1 {
  &i2s4 {
  	pinctrl-names = "default";
  	pinctrl-0 = <&sru_dai1>;
@@ -56,7 +56,7 @@ diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc
 index 74032f42f248..bb1357eee769 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-@@ -70,7 +70,7 @@
+@@ -70,7 +70,7 @@ sharc0: core1-rproc@0x28240000 {
  			adi,verify = <1>;
  			adi,tru = <&tru>;
  			adi,tru-master-id = <135>; /* trigger master SOFT4 */
@@ -65,7 +65,7 @@ index 74032f42f248..bb1357eee769 100644
  		};
  
  		sharc1: core2-rproc@0x28a40000 {
-@@ -88,7 +88,33 @@
+@@ -88,7 +88,33 @@ sharc1: core2-rproc@0x28a40000 {
  			adi,verify = <1>;
  			adi,tru = <&tru>;
  			adi,tru-master-id = <136>; /* trigger master SOFT5 */
@@ -100,7 +100,7 @@ index 74032f42f248..bb1357eee769 100644
  		};
  
  //		firmware {
-@@ -225,7 +251,7 @@
+@@ -225,7 +251,7 @@ &i2c1 {
  };
  
  &i2c2 {
@@ -110,20 +110,20 @@ index 74032f42f248..bb1357eee769 100644
  	pinctrl-0 = <&i2c2_pins>;
  
 diff --git a/arch/arm64/configs/sc598-som-ezkit_defconfig b/arch/arm64/configs/sc598-som-ezkit_defconfig
-index 42934dd9f1c1..68906d915bdf 100644
+index a3f365518575..7f75b8ac54bc 100644
 --- a/arch/arm64/configs/sc598-som-ezkit_defconfig
 +++ b/arch/arm64/configs/sc598-som-ezkit_defconfig
-@@ -315,7 +315,7 @@ CONFIG_REMOTEPROC=y
+@@ -298,7 +298,7 @@ CONFIG_REMOTEPROC=y
  CONFIG_ADI_REMOTEPROC=y
  CONFIG_RPMSG_CHAR=y
  CONFIG_RPMSG_QCOM_GLINK_RPM=y
 -CONFIG_RPMSG_VIRTIO=y
 +CONFIG_RPMSG_ADI=y
  CONFIG_EXTCON_USB_GPIO=y
- CONFIG_EXTCON_USBC_CROS_EC=y
  CONFIG_MEMORY=y
+ CONFIG_IIO=y
 diff --git a/drivers/soc/adi/mach-sc5xx/sec.c b/drivers/soc/adi/mach-sc5xx/sec.c
-index 10ab8bdfcb62..38cff6c93866 100644
+index 4bad868de617..1e8435c3d96d 100644
 --- a/drivers/soc/adi/mach-sc5xx/sec.c
 +++ b/drivers/soc/adi/mach-sc5xx/sec.c
 @@ -33,11 +33,12 @@ struct adi_sec {

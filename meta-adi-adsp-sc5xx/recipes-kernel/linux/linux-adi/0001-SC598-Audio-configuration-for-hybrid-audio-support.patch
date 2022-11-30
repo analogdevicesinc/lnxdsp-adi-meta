@@ -1,7 +1,7 @@
 From 21df3dd497eb3ccbba918c27af25e049cab9edb4 Mon Sep 17 00:00:00 2001
 From: Greg Malysa <gmalysa@alumni.stanford.edu>
-Date: Fri, 10 Jun 2022 16:35:19 -0400
-Subject: [PATCH] SC598: Audio configuration for hybrid audio support
+Date: Wed, 30 Nov 2022 15:33:15 -0500
+Subject: [PATCH 1/2] SC598: Audio configuration for hybrid audio support
 
 ---
  arch/arm64/boot/dts/adi/sc59x-64.dtsi        | 4 ++--
@@ -9,10 +9,10 @@ Subject: [PATCH] SC598: Audio configuration for hybrid audio support
  2 files changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc59x-64.dtsi b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
-index c30f09afeea4..13a4c2cb652f 100644
+index 4059f356ae30..8aff10c77cc9 100644
 --- a/arch/arm64/boot/dts/adi/sc59x-64.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
-@@ -1059,7 +1059,7 @@
+@@ -1135,7 +1135,7 @@ sport4_dma_cluster: dma@0x31023000 {
  			sport4a: channel@10 {
  				adi,id = <10>;
  				adi,src-offset = <0>;
@@ -21,7 +21,7 @@ index c30f09afeea4..13a4c2cb652f 100644
  				interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>,
  					<GIC_SPI 305 IRQ_TYPE_LEVEL_HIGH>;
  				interrupt-names = "complete", "error";
-@@ -1068,7 +1068,7 @@
+@@ -1144,7 +1144,7 @@ sport4a: channel@10 {
  			sport4b: channel@11 {
  				adi,id = <11>;
  				adi,src-offset = <0x80>;
@@ -31,17 +31,17 @@ index c30f09afeea4..13a4c2cb652f 100644
  					<GIC_SPI 306 IRQ_TYPE_LEVEL_HIGH>;
  				interrupt-names = "complete", "error";
 diff --git a/arch/arm64/configs/sc598-som-ezkit_defconfig b/arch/arm64/configs/sc598-som-ezkit_defconfig
-index 806e88e2d442..fd44fc462b0b 100644
+index 3c724e5190c2..a3f365518575 100644
 --- a/arch/arm64/configs/sc598-som-ezkit_defconfig
 +++ b/arch/arm64/configs/sc598-som-ezkit_defconfig
-@@ -241,6 +241,7 @@ CONFIG_SND=y
+@@ -230,6 +230,7 @@ CONFIG_SOUND=y
+ CONFIG_SND=y
  CONFIG_SND_SOC=y
- CONFIG_SND_SC5XX_SHARC_ALSA_CARD=y
  CONFIG_SND_SC5XX_PCM=y
 +CONFIG_SND_SC5XX_SPORT_SHARC=y
  CONFIG_SND_SC5XX_ADAU1979=y
  CONFIG_SND_SC5XX_ADAU1962=y
- CONFIG_SND_SIMPLE_CARD=m
+ CONFIG_SND_SC5XX_SHARC_ALSA_CARD=y
 -- 
 2.34.1
 
