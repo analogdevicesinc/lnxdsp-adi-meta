@@ -16,6 +16,9 @@ def crypto(d):
     CRYPTO = ""
   else:
     CRYPTO = "cryptodev-module crypto-tests"
+
+  #Not compiling for any boards on 5.15
+  CRYPTO = ""
   return CRYPTO
 
 CRYPTO = " \
