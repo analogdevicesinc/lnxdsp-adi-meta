@@ -47,6 +47,7 @@ IMAGE_INSTALL = " \
     spitools \
     ${ICC} \
     ${CRYPTO} \
+    libgpiod libgpiod-tools \
 "
 
 EXTRA_USERS_PARAMS = " \
