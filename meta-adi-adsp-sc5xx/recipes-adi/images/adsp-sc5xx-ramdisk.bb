@@ -27,6 +27,7 @@ IMAGE_INSTALL = " \
     packagegroup-base \
     busybox-watchdog-init \
     ${@emmc_utils(d)} \
+    libgpiod libgpiod-tools \
 "
 
 DISTRO_FEATURES = " ram"
