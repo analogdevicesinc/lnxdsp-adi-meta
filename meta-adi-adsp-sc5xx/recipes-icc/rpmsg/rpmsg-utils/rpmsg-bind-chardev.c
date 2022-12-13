@@ -21,9 +21,34 @@ int rpmsg_bind(char *device, unsigned int addr)
 	int fd;
 	int ret;
 	char path[MAX_PATH_LEN];
+	char dst_str[8];
+	char *end;
+	unsigned long int dst_addr;
 	DIR *directory;
 	struct dirent *dir_entry;
 	struct rpmsg_endpoint_info ept_info;
+
+	/* Get destination address of the device */
+	snprintf(path, MAX_PATH_LEN, "%s/devices/%s/dst", RPMSG_BUS_PATH, device);
+	fd = open(path, O_RDONLY);
+	if (fd < 0) {
+		fprintf(stderr, "Can't open %s: %s\n", path, strerror(errno));
+		return -EINVAL;
+	}
+	dst_str[0] = '\0';
+	ret = read(fd, dst_str, sizeof(dst_str));
+	if (ret < 0) {
+		fprintf(stderr, "Can't read dst addr from %s\n", path);
+		return -EINVAL;
+	}
+	close(fd);
+
+	errno = 0;
+	dst_addr = strtoul(dst_str, &end, 0);
+	if ((dst_str == end) || (errno != 0)) {
+		fprintf(stderr, "Invalid dst addr in %s\n", path);
+		return -EINVAL;
+	}
 
 	/* Override driver of the device with rpmsg_chardev */
 	snprintf(path, MAX_PATH_LEN, "%s/devices/%s/driver_override",	RPMSG_BUS_PATH, device);
@@ -82,7 +107,7 @@ int rpmsg_bind(char *device, unsigned int addr)
 	/* Create endpoint for rpmsg char device */
 	snprintf(ept_info.name, sizeof(ept_info.name), "chrdev_%s", device);
 	ept_info.src = addr;
-	ept_info.dst = addr;
+	ept_info.dst = dst_addr;
 	ret = ioctl(fd, RPMSG_CREATE_EPT_IOCTL, &ept_info);
 	if (ret){
 		fprintf(stderr, "Can't create endpoint %s: %s\n", ept_info.name, strerror(errno));
@@ -147,14 +172,14 @@ int main(int argc, char *argv[]){
 			rpmsg_device = optarg;
 			break;
 		case 'a':
-				addr = strtol(optarg, &end, 10);
-				if (*end !=0 ){
-					fprintf(stderr, "Wrong format: addr must be decimal\n");
+				errno = 0;
+				addr = strtol(optarg, &end, 0);
+				if ((end != (optarg + strlen(optarg))) || (errno != 0)) {
+					fprintf(stderr, "Wrong `addr` format\n");
 					usage();
 				}
 				if (addr < 0){
-					fprintf(stderr, "Wrong format: addr must be positive\n");
-					usage();
+					fprintf(stderr, "Wrong `addr` format: must be positive\n");
 				}
 				break;
 		default:
