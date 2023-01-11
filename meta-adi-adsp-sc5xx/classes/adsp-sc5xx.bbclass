@@ -53,3 +53,5 @@ IMAGE_INSTALL = " \
 EXTRA_USERS_PARAMS = " \
 	usermod -P adi root; \
 "
+
+TOOLCHAIN_HOST_TASK_append += " nativesdk-openocd-adi"
