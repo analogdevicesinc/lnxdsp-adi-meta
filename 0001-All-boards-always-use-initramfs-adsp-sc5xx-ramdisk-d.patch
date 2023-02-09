@@ -1,0 +1,828 @@
+From 06d45d5996f876e3ca9392999543d02482442c3a Mon Sep 17 00:00:00 2001
+From: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+Date: Thu, 9 Feb 2023 12:58:28 -0500
+Subject: [PATCH] All boards: always use initramfs(adsp-sc5xx-ramdisk) during
+ boot process
+
+This was done so that remoteproc can automatically load SHARC firmware files from /lib/firmware during boot
+
+DISTRO_FEATURES now includes four sound-related LDR firmware options:
+
+adi_sharc_alsa_audio: Audio playback handled through SHARC firmware, no codec control (volume, etc) from Linux
+                      Remoteproc is used to load the SHARC LDR firmware files
+    ramdisk includes sharc-audio package.  This:
+    Installs icap-sharc-alsa_Core1.ldr to /lib/firmware/adi_adsp_core1_fw.ldr
+    Installs icap-sharc-alsa_Core2.ldr to /lib/firmware/adi_adsp_core2_fw.ldr
+
+adi_sharc_alsa_audio_uboot: Audio playback handled through SHARC firmware, no codec control (volume, etc) from Linux
+                            Remoteproc is not used to load the SHARC LDR firmware files
+    ramdisk does not include any LDR firmware files.  These must be loaded from U-Boot prior to booting Linux
+
+adi_hybrid_audio:  Audio playback handled through SHARC firmware, codec control (volume, etc) is still available from Linux
+    ramdisk includes hybrid-audio package.  This:
+    installs icap-device-example_Core1.ldr to /lib/firmware/adi_adsp_core1_fw.ldr
+
+linux_only_audio:  Audio is handled entirely through Linux drivers and no SHARC firmware is needed
+    ramdisk includes rpmsg-echo-example package.  This:
+    Installs echo_core1-${MACHINE}.ldr to /lib/firmware/adi_adsp_core1_fw.ldr
+    Installs echo_core2-${MACHINE}.ldr to /lib/firmware/adi_adsp_core2_fw.ldr
+
+This is achieved by always bundling the initramfs inside the FIT image generation.  This does signficantly increase the FIT size.
+Size optimizations were done on both the initramfs image recipes and SC598-ezkit kernel image.  I expect more size optimization will need
+to be done for other boards.
+
+The 64-bit FIT images were also converted to use Image.gz instead of Image (saves ~10MB)
+
+This commit has only been tested on the SC598-ezkit so far.
+
+This commit relies on Linux commit 26c077abb591f5a7f06cc0d465180fbddd9adfc9
+This commit relies on U-Boot commit b6432917a68570889014600f740646c1f10deba6
+---
+ .../classes/adsp-fit-generation.bbclass       | 130 ++++++++++++++++++
+ .../classes/adsp-sc5xx.bbclass                |   8 +-
+ .../conf/machine/adsp-sc573-ezkit.conf        |   1 +
+ .../conf/machine/adsp-sc584-ezkit.conf        |   1 +
+ .../conf/machine/adsp-sc589-ezkit.conf        |   1 +
+ .../conf/machine/adsp-sc589-mini.conf         |   1 +
+ .../conf/machine/adsp-sc594-som-ezkit.conf    |   1 +
+ .../conf/machine/adsp-sc594-som-ezlite.conf   |   1 +
+ .../conf/machine/adsp-sc598-som-ezkit.conf    |   1 +
+ .../conf/machine/adsp-sc598-som-ezlite.conf   |   1 +
+ .../conf/machine/include/adsp-sc598-som.inc   |   2 +-
+ .../recipes-adi/images/adsp-sc5xx-ramdisk.bb  |  59 ++++----
+ .../recipes-adi/images/adsp-sc5xx-tiny.bb     |   2 +-
+ .../initramfs-init/init-ramfs.sh              |  51 +++++--
+ .../initramfs-init/initramfs-init_1.0.bb      |   2 +
+ .../rpmsg-echo-example_1.0.bb                 |   8 +-
+ .../sharc-audio/hybrid-audio_1.0.bb           |  15 ++
+ .../sharc-audio/sharc-audio_1.0.bb            |  11 +-
+ ...RC-ALSA-demo-disabling-most-linux-ba.patch |  39 ++----
+ .../linux-adi/0003-Disable-remoteproc.patch   |  34 +++++
+ .../recipes-kernel/linux/linux-adi_5.15.bb    |  80 +----------
+ 21 files changed, 290 insertions(+), 159 deletions(-)
+ create mode 100644 meta-adi-adsp-sc5xx/classes/adsp-fit-generation.bbclass
+ create mode 100644 meta-adi-adsp-sc5xx/recipes-icc/sharc-audio/hybrid-audio_1.0.bb
+ create mode 100644 meta-adi-adsp-sc5xx/recipes-kernel/linux/linux-adi/0003-Disable-remoteproc.patch
+
+diff --git a/meta-adi-adsp-sc5xx/classes/adsp-fit-generation.bbclass b/meta-adi-adsp-sc5xx/classes/adsp-fit-generation.bbclass
+new file mode 100644
+index 0000000..1521966
+--- /dev/null
++++ b/meta-adi-adsp-sc5xx/classes/adsp-fit-generation.bbclass
+@@ -0,0 +1,130 @@
++def get_image_fstype_tasks (d):
++    # Take a type in the form of foo.bar.car and split it into the items
++    # needed for the image deps "foo", and the conversion deps ["bar", "car"]
++    def split_types(typestring):
++        types = typestring.split(".")
++        return types[0], types[1:]
++
++    # Add do_generate_update_script deps on all image types
++    fstypes = set((d.getVar('IMAGE_FSTYPES') or "").split())
++    image_fstype_tasks = ""
++    for typestring in fstypes:
++        basetype, resttypes = split_types(typestring)
++        image_fstype_tasks += " do_image_" + basetype
++    return image_fstype_tasks
++
++emit_its() {
++	cat << EOF > fit-image.its
++/dts-v1/;
++
++/ {
++	description = "linux-adi FIT image $for ${PV}/${MACHINE}";
++	#address-cells = <1>;
++
++	images {
++		kernel@1 {
++			description = "Linux kernel";
++			data = /incbin/("${KERNEL_IMAGETYPE}");
++			type = "kernel";
++			arch = "${ARCH}";
++			os = "linux";
++			compression = "gzip";
++			load = <${UBOOT_LOADADDRESS}>;
++			entry = <${UBOOT_ENTRYPOINT}>;
++			hash-1 {
++				algo = "sha1";
++			};
++			signature-1 {
++				algo = "sha1,rsa2048";
++				key-name-hint = "${UBOOT_SIGN_KEYNAME}";
++			};
++		};
++
++		fdt@2 {
++			description = "Flattened Device Tree Blob";
++			data = /incbin/("$(basename ${KERNEL_DEVICETREE})");
++			type = "flat_dt";
++			arch = "${ARCH}";
++			compression = "none";
++			load = <${UBOOT_DTBADDRESS}>;
++			hash-1 {
++				algo = "sha1";
++			};
++			signature-1 {
++				algo = "sha1,rsa2048";
++				key-name-hint = "${UBOOT_SIGN_KEYNAME}";
++			};
++		};
++
++		ramdisk@3 {
++			description = "Initial Ram File System";
++			data = /incbin/("adsp-sc5xx-ramdisk-${MACHINE}.cpio.gz");
++			type = "ramdisk";
++			arch = "${ARCH}";
++			os = "linux";
++			compression = "none";
++			load = <${UBOOT_RDADDR}>;
++			entry = <${UBOOT_RDADDR}>;
++			hash-1 {
++					algo = "sha1";
++			};
++			signature-1 {
++				algo = "sha1,rsa2048";
++				key-name-hint = "${UBOOT_SIGN_KEYNAME}";
++			};
++		};
++
++	};
++
++	configurations {
++		default = "conf@1";
++		conf@1 {
++			description = "boot configuration";
++			kernel = "kernel@1";
++			fdt = "fdt@2";
++			ramdisk = "ramdisk@3";
++			signature-1 {
++				algo = "sha1,rsa2048";
++				key-name-hint = "${UBOOT_SIGN_KEYNAME}";
++			};
++		};
++	};
++};
++EOF
++}
++
++do_assemble_fitimage() {
++	cd ${DEPLOY_DIR_IMAGE}
++	emit_its;
++	uboot-mkimage -D "${UBOOT_MKIMAGE_DTCOPTS}" -f fit-image.its fitImage
++}
++
++addtask assemble_fitimage before "${@get_image_fstype_tasks(d)}" after do_rootfs do_image_cpio do_deploy_cpio
++
++do_assemble_fitimage[depends] += "\
++    adsp-sc5xx-ramdisk:do_image_complete \
++    virtual/bootloader:do_deploy \
++    virtual/kernel:do_deploy \
++    u-boot-tools-native:do_populate_sysroot \
++    u-boot-mkimage-native:do_populate_sysroot \
++    dtc-native:do_populate_sysroot \
++"
++
++do_assemble_fitimage[vardeps] += " \
++    UBOOT_LOADADDRESS \
++    UBOOT_ENTRYPOINT \
++    UBOOT_SIGN_KEYNAME \
++    UBOOT_DTBADDRESS \
++    ARCH \
++    UBOOT_MKIMAGE_DTCOPTS \
++"
++
++do_image_wic[depends] += "\
++     ${PN}:do_assemble_fitimage \
++     adsp-sc5xx-ramdisk:do_image_complete \
++"
++
++do_image_ext4[depends] += "\
++     ${PN}:do_assemble_fitimage \
++     adsp-sc5xx-ramdisk:do_image_complete \
++"
+diff --git a/meta-adi-adsp-sc5xx/classes/adsp-sc5xx.bbclass b/meta-adi-adsp-sc5xx/classes/adsp-sc5xx.bbclass
+index 8e71ea3..17a6031 100644
+--- a/meta-adi-adsp-sc5xx/classes/adsp-sc5xx.bbclass
++++ b/meta-adi-adsp-sc5xx/classes/adsp-sc5xx.bbclass
+@@ -1,10 +1,11 @@
+-inherit core-image extrausers adsp-sc5xx-compatible
++inherit core-image extrausers adsp-sc5xx-compatible adsp-fit-generation
+ 
+ SUMMARY = "Minimal image for Analog Devices ADSP-SC5xx boards"
+ LICENSE = "MIT"
+ 
++INITRD_NAME = "adsp-sc5xx-ramdisk-${MACHINE}.cpio.gz"
++
+ ICC = " \
+-	rpmsg-echo-example \
+ 	rpmsg-utils \
+ "
+ 
+@@ -27,13 +28,12 @@ CRYPTO = " \
+ 	cryptodev-linux \
+ 	${@crypto(d)} \
+ "
+-ADI_AUDIO_BINARIES = "${@bb.utils.contains_any('DISTRO_FEATURES', 'adi_hybrid_audio adi_sharc_alsa_audio', 'sharc-audio', '', d)}"
++
+ 
+ IMAGE_INSTALL = " \
+     packagegroup-core-boot \
+     packagegroup-base \
+     ${CORE_IMAGE_EXTRA_INSTALL} \
+-	${ADI_AUDIO_BINARIES} \
+ 	alsa-utils \
+     openssh \
+     openssl \
+diff --git a/meta-adi-adsp-sc5xx/conf/machine/adsp-sc573-ezkit.conf b/meta-adi-adsp-sc5xx/conf/machine/adsp-sc573-ezkit.conf
+index 7a1c4a6..25b0bb3 100644
+--- a/meta-adi-adsp-sc5xx/conf/machine/adsp-sc573-ezkit.conf
++++ b/meta-adi-adsp-sc5xx/conf/machine/adsp-sc573-ezkit.conf
+@@ -13,6 +13,7 @@ UBOOT_MACHINE = "sc573-ezkit_defconfig"
+ UBOOT_ENTRYPOINT = "0x80008000"
+ UBOOT_LOADADDRESS = "0x80008000"
+ UBOOT_DTBADDRESS = "0x80000000"
++UBOOT_RDADDR = "0x85000000"
+ 
+ KERNEL_DEVICETREE = "sc573-ezkit.dtb"
+ 
+diff --git a/meta-adi-adsp-sc5xx/conf/machine/adsp-sc584-ezkit.conf b/meta-adi-adsp-sc5xx/conf/machine/adsp-sc584-ezkit.conf
+index 6244405..421e7d9 100644
+--- a/meta-adi-adsp-sc5xx/conf/machine/adsp-sc584-ezkit.conf
++++ b/meta-adi-adsp-sc5xx/conf/machine/adsp-sc584-ezkit.conf
+@@ -13,6 +13,7 @@ UBOOT_MACHINE = "sc584-ezkit_defconfig"
+ UBOOT_ENTRYPOINT = "0x80008000"
+ UBOOT_LOADADDRESS = "0x80008000"
+ UBOOT_DTBADDRESS = "0x80000000"
++UBOOT_RDADDR = "0x8C000000"
+ 
+ KERNEL_DEVICETREE = "sc584-ezkit.dtb"
+ 
+diff --git a/meta-adi-adsp-sc5xx/conf/machine/adsp-sc589-ezkit.conf b/meta-adi-adsp-sc5xx/conf/machine/adsp-sc589-ezkit.conf
+index 5b5ddf4..88be836 100644
+--- a/meta-adi-adsp-sc5xx/conf/machine/adsp-sc589-ezkit.conf
++++ b/meta-adi-adsp-sc5xx/conf/machine/adsp-sc589-ezkit.conf
+@@ -13,6 +13,7 @@ UBOOT_MACHINE = "sc589-ezkit_defconfig"
+ UBOOT_ENTRYPOINT = "0x80008000"
+ UBOOT_LOADADDRESS = "0x80008000"
+ UBOOT_DTBADDRESS = "0x80000000"
++UBOOT_RDADDR = "0xC5000000"
+ 
+ KERNEL_DEVICETREE = "sc589-ezkit.dtb"
+ 
+diff --git a/meta-adi-adsp-sc5xx/conf/machine/adsp-sc589-mini.conf b/meta-adi-adsp-sc5xx/conf/machine/adsp-sc589-mini.conf
+index 2002166..e6f7cba 100644
+--- a/meta-adi-adsp-sc5xx/conf/machine/adsp-sc589-mini.conf
++++ b/meta-adi-adsp-sc5xx/conf/machine/adsp-sc589-mini.conf
+@@ -13,6 +13,7 @@ UBOOT_MACHINE = "sc589-mini_defconfig"
+ UBOOT_ENTRYPOINT = "0x80008000"
+ UBOOT_LOADADDRESS = "0x80008000"
+ UBOOT_DTBADDRESS = "0x80000000"
++UBOOT_RDADDR = "0xC5000000"
+ 
+ KERNEL_DEVICETREE = "sc589-mini.dtb"
+ 
+diff --git a/meta-adi-adsp-sc5xx/conf/machine/adsp-sc594-som-ezkit.conf b/meta-adi-adsp-sc5xx/conf/machine/adsp-sc594-som-ezkit.conf
+index 6e1d7ab..51beb9c 100644
+--- a/meta-adi-adsp-sc5xx/conf/machine/adsp-sc594-som-ezkit.conf
++++ b/meta-adi-adsp-sc5xx/conf/machine/adsp-sc594-som-ezkit.conf
+@@ -31,6 +31,7 @@ BASH_HAS_FALCON_ONLY = "${@bb.utils.contains('MACHINE_FEATURES', 'falcon', '1',
+ UBOOT_ENTRYPOINT = "0x80008000"
+ UBOOT_LOADADDRESS = "0x80008000"
+ UBOOT_DTBADDRESS = "0x80000000"
++UBOOT_RDADDR = "0x85000000"
+ 
+ KERNEL_DEVICETREE = "sc594-som-ezkit.dtb"
+ 
+diff --git a/meta-adi-adsp-sc5xx/conf/machine/adsp-sc594-som-ezlite.conf b/meta-adi-adsp-sc5xx/conf/machine/adsp-sc594-som-ezlite.conf
+index 5c4e803..07da5f5 100644
+--- a/meta-adi-adsp-sc5xx/conf/machine/adsp-sc594-som-ezlite.conf
++++ b/meta-adi-adsp-sc5xx/conf/machine/adsp-sc594-som-ezlite.conf
+@@ -31,6 +31,7 @@ BASH_HAS_FALCON_ONLY = "${@bb.utils.contains('MACHINE_FEATURES', 'falcon', '1',
+ UBOOT_ENTRYPOINT = "0x80008000"
+ UBOOT_LOADADDRESS = "0x80008000"
+ UBOOT_DTBADDRESS = "0x80000000"
++UBOOT_RDADDR = "0x85000000"
+ 
+ KERNEL_DEVICETREE = "sc594-som-ezlite.dtb"
+ 
+diff --git a/meta-adi-adsp-sc5xx/conf/machine/adsp-sc598-som-ezkit.conf b/meta-adi-adsp-sc5xx/conf/machine/adsp-sc598-som-ezkit.conf
+index 5651a53..3a779cc 100644
+--- a/meta-adi-adsp-sc5xx/conf/machine/adsp-sc598-som-ezkit.conf
++++ b/meta-adi-adsp-sc5xx/conf/machine/adsp-sc598-som-ezkit.conf
+@@ -34,6 +34,7 @@ BASH_HAS_FALCON_ONLY = "${@bb.utils.contains('MACHINE_FEATURES', 'falcon', '1',
+ UBOOT_ENTRYPOINT = "0x9a200000"
+ UBOOT_LOADADDRESS = "0x9a200000"
+ UBOOT_DTBADDRESS = "0x99000000"
++UBOOT_RDADDR = "0x9c000000"
+ 
+ KERNEL_DEVICETREE = "adi/sc598-som-ezkit.dtb"
+ 
+diff --git a/meta-adi-adsp-sc5xx/conf/machine/adsp-sc598-som-ezlite.conf b/meta-adi-adsp-sc5xx/conf/machine/adsp-sc598-som-ezlite.conf
+index ad9c3e9..1e5040c 100644
+--- a/meta-adi-adsp-sc5xx/conf/machine/adsp-sc598-som-ezlite.conf
++++ b/meta-adi-adsp-sc5xx/conf/machine/adsp-sc598-som-ezlite.conf
+@@ -34,6 +34,7 @@ BASH_HAS_FALCON_ONLY = "${@bb.utils.contains('MACHINE_FEATURES', 'falcon', '1',
+ UBOOT_ENTRYPOINT = "0x9a080000"
+ UBOOT_LOADADDRESS = "0x9a080000"
+ UBOOT_DTBADDRESS = "0x99000000"
++UBOOT_RDADDR = "0x9c000000"
+ 
+ KERNEL_DEVICETREE = "adi/sc598-som-ezlite.dtb"
+ 
+diff --git a/meta-adi-adsp-sc5xx/conf/machine/include/adsp-sc598-som.inc b/meta-adi-adsp-sc5xx/conf/machine/include/adsp-sc598-som.inc
+index 75d2204..9109811 100644
+--- a/meta-adi-adsp-sc5xx/conf/machine/include/adsp-sc598-som.inc
++++ b/meta-adi-adsp-sc5xx/conf/machine/include/adsp-sc598-som.inc
+@@ -7,7 +7,7 @@ require tune-cortexa55.inc
+ # Increase this everytime you change something in the kernel
+ MACHINE_KERNEL_PR = "r0"
+ 
+-KERNEL_IMAGETYPE = "Image"
++KERNEL_IMAGETYPE = "Image.gz"
+ 
+ PREFERRED_PROVIDER_virtual/kernel = "linux-adi"
+ PREFERRED_PROVIDER_virtual/bootloader = "u-boot-adi"
+diff --git a/meta-adi-adsp-sc5xx/recipes-adi/images/adsp-sc5xx-ramdisk.bb b/meta-adi-adsp-sc5xx/recipes-adi/images/adsp-sc5xx-ramdisk.bb
+index 2f80b16..9ca2203 100644
+--- a/meta-adi-adsp-sc5xx/recipes-adi/images/adsp-sc5xx-ramdisk.bb
++++ b/meta-adi-adsp-sc5xx/recipes-adi/images/adsp-sc5xx-ramdisk.bb
+@@ -22,40 +22,31 @@ def emmc_utils(d):
+       utils = ""
+   return utils
+ 
++SHARC_ALSA_BINARIES = "${@bb.utils.contains_any('DISTRO_FEATURES', 'adi_sharc_alsa_audio', 'sharc-audio', '', d)}"
++HYBRID_BINARIES = "${@bb.utils.contains_any('DISTRO_FEATURES', 'adi_hybrid_audio', 'hybrid-audio', '', d)}"
++LINUX_ONLY_BINARIES = "${@bb.utils.contains_any('DISTRO_FEATURES', 'linux_only_audio', 'rpmsg-echo-example', '', d)}"
++
+ IMAGE_INSTALL = " \
+-    packagegroup-core-boot \
+-    packagegroup-base \
+     busybox-watchdog-init \
+     ${@emmc_utils(d)} \
+-    libgpiod libgpiod-tools \
++    initramfs-init \
++    busybox \
++    ${SHARC_ALSA_BINARIES} \
++    ${HYBRID_BINARIES} \
++    ${LINUX_ONLY_BINARIES} \
+ "
+ 
+-DISTRO_FEATURES = " ram"
+-IMAGE_FSTYPES = " cpio.xz"
++DISTRO_FEATURES += " ram"
++IMAGE_FSTYPES = " cpio.xz cpio.gz"
+ 
+ DEPENDS += "u-boot-tools-native"
+ 
+ #We do not need these files in the rootfs -- remove them to reduce the minimal rootfs size
+ fakeroot do_rootfs_cleanup(){
+-	rm -rf ${IMAGE_ROOTFS}/boot
+-	rm -rf ${IMAGE_ROOTFS}/lib/udev/hwdb.bin
+-	rm -rf ${IMAGE_ROOTFS}/lib/udev/hwdb.d
+ 	rm -rf ${IMAGE_ROOTFS}/usr/lib/opkg
+ 	rm -rf ${IMAGE_ROOTFS}/usr/lib/locale
+-	rm -rf ${IMAGE_ROOTFS}/etc/X11
+-	rm -rf ${IMAGE_ROOTFS}/usr/share/consolefonts
+-	rm -rf ${IMAGE_ROOTFS}/usr/share/alsa
+-	rm -rf ${IMAGE_ROOTFS}/usr/share/keymaps
+-	rm -rf ${IMAGE_ROOTFS}/usr/lib/libX11.so.6.3.0
+-	rm -rf ${IMAGE_ROOTFS}/usr/lib/libX11.so.6
+-	rm -rf ${IMAGE_ROOTFS}/usr/lib/libasound.so.2.0.0
+-	rm -rf ${IMAGE_ROOTFS}/usr/lib/libasound.so.2
+-	rm -rf ${IMAGE_ROOTFS}/usr/lib/libxcb.so.1.1.0
+-	rm -rf ${IMAGE_ROOTFS}/usr/lib/libxcb.so.1
+-	rm -rf ${IMAGE_ROOTFS}/sbin/fsck.ext2
+-	rm -rf ${IMAGE_ROOTFS}/sbin/fsck.ext3
++	rm -rf ${IMAGE_ROOTFS}/sbin/ldconfig
+ 	rm -rf ${IMAGE_ROOTFS}/etc/ssh/moduli
+-	rm -rf ${IMAGE_ROOTFS}/usr/sbin/alsactl
+ 	rm -rf ${IMAGE_ROOTFS}/usr/sbin/useradd
+ 	rm -rf ${IMAGE_ROOTFS}/usr/sbin/userdel
+ 	rm -rf ${IMAGE_ROOTFS}/usr/sbin/usermod
+@@ -63,12 +54,24 @@ fakeroot do_rootfs_cleanup(){
+ 
+ addtask rootfs_cleanup after do_rootfs before do_image
+ 
+-do_adi_ramdisk[depends] = "virtual/bootloader:do_compile"
+-do_adi_ramdisk(){
+-    #Format the cpio image for u-boot
+-    mkimage -n 'Analog Devices Ram Disk Image'  -A ${UBOOT_ARCH} -O linux -T ramdisk -C gzip -d ${WORKDIR}/deploy-${PN}-image-complete/${PN}-${MACHINE}.cpio.xz ${DEPLOY_DIR_IMAGE}/${PN}-${MACHINE}.cpio.xz.u-boot
+-}
++EXTRA_USERS_PARAMS = "usermod -P adi root;"
+ 
+-addtask adi_ramdisk after do_image_cpio before do_image_complete
++python __anonymous() {
++    count=0
++    if bb.utils.contains('DISTRO_FEATURES', 'adi_sharc_alsa_audio', True, False, d):
++        count=count+1
++    if bb.utils.contains('DISTRO_FEATURES', 'adi_sharc_alsa_audio_uboot', True, False, d):
++        count=count+1
++    if bb.utils.contains('DISTRO_FEATURES', 'adi_hybrid_audio', True, False, d):
++        count=count+1
++    if bb.utils.contains('DISTRO_FEATURES', 'linux_only_audio', True, False, d):
++        count=count+1
+ 
+-EXTRA_USERS_PARAMS = "usermod -P adi root;"
++    if count > 1:
++        bb.fatal("You have multiple audio modes in DISTRO_FEATURES. \
++        Choose only one of: adi_sharc_alsa_audio, adi_sharc_alsa_audio_uboot, adi_hybrid_audio, linux_only_audio")
++
++    if count == 0:
++        bb.fatal("You need to select your audio mode in DISTRO_FEATURES. \
++        Choose only one of: adi_sharc_alsa_audio, adi_sharc_alsa_audio_uboot, adi_hybrid_audio, linux_only_audio")
++}
+\ No newline at end of file
+diff --git a/meta-adi-adsp-sc5xx/recipes-adi/images/adsp-sc5xx-tiny.bb b/meta-adi-adsp-sc5xx/recipes-adi/images/adsp-sc5xx-tiny.bb
+index 95e98c1..0726408 100644
+--- a/meta-adi-adsp-sc5xx/recipes-adi/images/adsp-sc5xx-tiny.bb
++++ b/meta-adi-adsp-sc5xx/recipes-adi/images/adsp-sc5xx-tiny.bb
+@@ -1,4 +1,4 @@
+-inherit core-image extrausers adsp-sc5xx-compatible
++inherit core-image extrausers adsp-sc5xx-compatible adsp-fit-generation
+ 
+ SUMMARY = "Tiny image for Analog Devices ADSP-SC5xx boards with 16MB SPI"
+ LICENSE = "MIT"
+diff --git a/meta-adi-adsp-sc5xx/recipes-adi/initramfs-init/initramfs-init/init-ramfs.sh b/meta-adi-adsp-sc5xx/recipes-adi/initramfs-init/initramfs-init/init-ramfs.sh
+index 30de074..49bdf90 100644
+--- a/meta-adi-adsp-sc5xx/recipes-adi/initramfs-init/initramfs-init/init-ramfs.sh
++++ b/meta-adi-adsp-sc5xx/recipes-adi/initramfs-init/initramfs-init/init-ramfs.sh
+@@ -2,19 +2,27 @@
+ 
+ PATH=/sbin:/bin:/usr/sbin:/usr/bin
+ 
++do_splash(){
++printf " \
++
++         Analog Initial Ram Filesystem
++                www.analog.com
++              www.yoctoproject.org
++
++Analog [Initramfs]: Preparing Operating System....
++Analog [Initramfs]: Mounting Root File System...
++" > /dev/kmsg
++}
++
+ do_mount_fs() {
+ 	grep -q "$1" /proc/filesystems || return
+ 	test -d "$2" || mkdir -p "$2"
+ 	mount -t "$1" "$1" "$2"
+ }
+ 
+-do_mknod() {
+-	test -e "$1" || mknod "$1" "$2" "$3" "$4"
+-}
+-
+-mkdir /proc
++mkdir -p /proc
++mkdir -p /rootmount
+ mount -t proc proc /proc
+-mkdir /tmp
+ 
+ do_mount_fs sysfs /sys
+ do_mount_fs debugfs /sys/kernel/debug
+@@ -22,12 +30,25 @@ do_mount_fs devtmpfs /dev
+ do_mount_fs devpts /dev/pts
+ do_mount_fs tmpfs /dev/shm
+ 
+-RFS_DEVICE=$(cat /proc/cmdline | sed -e 's/^.*root=//' -e 's/ .*$//')
+-
+-mkdir -p /rootmount
+-
+-mount -t ext2 $RFS_DEVICE /rootmount
+-
+-echo "Booting RFS from ${RFS_DEVICE}"
+-
+-exec switch_root /rootmount /sbin/init
++do_splash
++
++if [ "$(grep nfsroot= /proc/cmdline)" ]; then
++	NFS_ROOT=$(cat /proc/cmdline | sed -e 's/^.*nfsroot=//' -e 's/ .*$//')
++	NFS_SERVER=$(printf ${NFS_ROOT} | sed -e 's/,.*//')
++	NFS_OPTS=$(printf ${NFS_ROOT} | sed -e 's/,/REP/' -e 's/.*REP//')
++	echo "Analog [Initramfs]: Switching RFS to NFS mount (${NFS_OPTS},${NFS_SERVER})..." > /dev/kmsg
++	mount -t nfs -o nolock,$NFS_OPTS $NFS_SERVER /rootmount
++	exec switch_root /rootmount /sbin/init > /dev/kmsg
++elif [ "$(grep root= /proc/cmdline)" ]; then
++	RFS_DEVICE=$(cat /proc/cmdline | sed -e 's/^.*root=//' -e 's/ .*$//')
++	RFS_TYPE=$(cat /proc/cmdline | sed -e 's/^.*rootfstype=//' -e 's/ .*$//')
++	echo "Analog [Initramfs]: Switching RFS to ${RFS_TYPE},${RFS_DEVICE}..." > /dev/kmsg
++	mount -t $RFS_TYPE $RFS_DEVICE /rootmount
++	exec switch_root /rootmount /sbin/init > /dev/kmsg
++else
++	echo "Analog [Initramfs]: No root device found, dropping to getty" > /dev/kmsg
++
++	while [ 1 ]; do
++		/sbin/getty 115200 /dev/ttySC0
++	done
++fi
+\ No newline at end of file
+diff --git a/meta-adi-adsp-sc5xx/recipes-adi/initramfs-init/initramfs-init_1.0.bb b/meta-adi-adsp-sc5xx/recipes-adi/initramfs-init/initramfs-init_1.0.bb
+index 678f0d1..fc928f9 100644
+--- a/meta-adi-adsp-sc5xx/recipes-adi/initramfs-init/initramfs-init_1.0.bb
++++ b/meta-adi-adsp-sc5xx/recipes-adi/initramfs-init/initramfs-init_1.0.bb
+@@ -3,6 +3,8 @@ LICENSE = "CLOSED"
+ 
+ SRC_URI = "file://init-ramfs.sh"
+ 
++RDEPENDS_${PN} += "nfs-utils-mount"
++
+ S = "${WORKDIR}"
+ 
+ do_install() {
+diff --git a/meta-adi-adsp-sc5xx/recipes-icc/rpmsg-echo-example/rpmsg-echo-example_1.0.bb b/meta-adi-adsp-sc5xx/recipes-icc/rpmsg-echo-example/rpmsg-echo-example_1.0.bb
+index 88fcd9f..4181a88 100644
+--- a/meta-adi-adsp-sc5xx/recipes-icc/rpmsg-echo-example/rpmsg-echo-example_1.0.bb
++++ b/meta-adi-adsp-sc5xx/recipes-icc/rpmsg-echo-example/rpmsg-echo-example_1.0.bb
+@@ -10,13 +10,13 @@ SRC_URI += " \
+ do_install() {
+ 	install -m 0755 -d ${D}/lib/firmware
+ 	install -m 0755 -d ${D}/usr/bin
+-	install -m 0755 ${WORKDIR}/echo_core1-${MACHINE}.ldr ${D}/lib/firmware/echo_core1.ldr
+-	install -m 0755 ${WORKDIR}/echo_core2-${MACHINE}.ldr ${D}/lib/firmware/echo_core2.ldr
++	install -m 0755 ${WORKDIR}/echo_core1-${MACHINE}.ldr ${D}/lib/firmware/adi_adsp_core1_fw.ldr
++	install -m 0755 ${WORKDIR}/echo_core2-${MACHINE}.ldr ${D}/lib/firmware/adi_adsp_core2_fw.ldr
+ 	install -m 0755 ${WORKDIR}/test_rpmsg_echo.sh ${D}/usr/bin
+ }
+ 
+ FILES_${PN} += " \
+-	/lib/firmware/echo_core1.ldr \
+-	/lib/firmware/echo_core2.ldr \
++	/lib/firmware/adi_adsp_core1_fw.ldr \
++	/lib/firmware/adi_adsp_core2_fw.ldr \
+ 	/usr/bin/test_rpmsg_echo.sh \
+ "
+diff --git a/meta-adi-adsp-sc5xx/recipes-icc/sharc-audio/hybrid-audio_1.0.bb b/meta-adi-adsp-sc5xx/recipes-icc/sharc-audio/hybrid-audio_1.0.bb
+new file mode 100644
+index 0000000..b979bac
+--- /dev/null
++++ b/meta-adi-adsp-sc5xx/recipes-icc/sharc-audio/hybrid-audio_1.0.bb
+@@ -0,0 +1,15 @@
++DESCRIPTION = "Binaries for SHARC Audio demos"
++LICENSE = "CLOSED"
++
++SRC_URI += " \
++	file://icap-device-example_Core1.ldr \
++"
++
++do_install() {
++	install -m 0755 -d ${D}/lib/firmware
++	install -m 0755 ${WORKDIR}/icap-device-example_Core1.ldr ${D}/lib/firmware/adi_adsp_core1_fw.ldr
++}
++
++FILES_${PN} = " \
++	/lib/firmware/adi_adsp_core1_fw.ldr \
++"
+diff --git a/meta-adi-adsp-sc5xx/recipes-icc/sharc-audio/sharc-audio_1.0.bb b/meta-adi-adsp-sc5xx/recipes-icc/sharc-audio/sharc-audio_1.0.bb
+index 948e525..5a199d0 100644
+--- a/meta-adi-adsp-sc5xx/recipes-icc/sharc-audio/sharc-audio_1.0.bb
++++ b/meta-adi-adsp-sc5xx/recipes-icc/sharc-audio/sharc-audio_1.0.bb
+@@ -2,20 +2,17 @@ DESCRIPTION = "Binaries for SHARC Audio demos"
+ LICENSE = "CLOSED"
+ 
+ SRC_URI += " \
+-	file://icap-device-example_Core1.ldr \
+ 	file://icap-sharc-alsa_Core1.ldr \
+ 	file://icap-sharc-alsa_Core2.ldr \
+ "
+ 
+ do_install() {
+ 	install -m 0755 -d ${D}/lib/firmware
+-	install -m 0755 ${WORKDIR}/icap-device-example_Core1.ldr ${D}/lib/firmware
+-	install -m 0755 ${WORKDIR}/icap-sharc-alsa_Core1.ldr ${D}/lib/firmware
+-	install -m 0755 ${WORKDIR}/icap-sharc-alsa_Core2.ldr ${D}/lib/firmware
++	install -m 0755 ${WORKDIR}/icap-sharc-alsa_Core1.ldr ${D}/lib/firmware/adi_adsp_core1_fw.ldr
++	install -m 0755 ${WORKDIR}/icap-sharc-alsa_Core2.ldr ${D}/lib/firmware/adi_adsp_core2_fw.ldr	
+ }
+ 
+ FILES_${PN} = " \
+-	/lib/firmware/icap-device-example_Core1.ldr \
+-	/lib/firmware/icap-sharc-alsa_Core1.ldr \
+-	/lib/firmware/icap-sharc-alsa_Core2.ldr \
++	/lib/firmware/adi_adsp_core1_fw.ldr \
++	/lib/firmware/adi_adsp_core2_fw.ldr \
+ "
+diff --git a/meta-adi-adsp-sc5xx/recipes-kernel/linux/linux-adi/0002-SC598-Enable-SHARC-ALSA-demo-disabling-most-linux-ba.patch b/meta-adi-adsp-sc5xx/recipes-kernel/linux/linux-adi/0002-SC598-Enable-SHARC-ALSA-demo-disabling-most-linux-ba.patch
+index 6112fa6..3b2c7bc 100644
+--- a/meta-adi-adsp-sc5xx/recipes-kernel/linux/linux-adi/0002-SC598-Enable-SHARC-ALSA-demo-disabling-most-linux-ba.patch
++++ b/meta-adi-adsp-sc5xx/recipes-kernel/linux/linux-adi/0002-SC598-Enable-SHARC-ALSA-demo-disabling-most-linux-ba.patch
+@@ -6,10 +6,10 @@ Subject: [PATCH 2/2] Enable SHARC-ALSA demo, disabling most linux-based audio
+ 
+ ---
+  arch/arm64/boot/dts/adi/sc598-som-ezkit.dts  |  7 +-
+- arch/arm64/boot/dts/adi/sc598-som.dtsi       | 32 +++++++++-
++ arch/arm64/boot/dts/adi/sc598-som.dtsi       | 28 +++++++-
+  arch/arm64/configs/sc598-som-ezkit_defconfig |  2 +-
+  drivers/soc/adi/mach-sc5xx/sec.c             | 67 ++++++++++----------
+- 4 files changed, 69 insertions(+), 39 deletions(-)
++ 4 files changed, 67 insertions(+), 37 deletions(-)
+ 
+ diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
+ index caf7bff0fccb..bdb9ee9aeca9 100644
+@@ -53,26 +53,13 @@ index caf7bff0fccb..bdb9ee9aeca9 100644
+  	sru_dai1: sru_dai1_mux {
+  		route {
+ diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+-index 74032f42f248..bb1357eee769 100644
++index 3176650dd268..65c1a2d0c688 100644
+ --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
+ +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+-@@ -70,7 +70,7 @@ sharc0: core1-rproc@0x28240000 {
+- 			adi,verify = <1>;
+- 			adi,tru = <&tru>;
+- 			adi,tru-master-id = <135>; /* trigger master SOFT4 */
+--			status = "okay";
+-+			status = "disabled";
++@@ -91,6 +91,32 @@ sharc1: core2-rproc@0x28a40000 {
++ 			status = "okay";
+  		};
+  
+- 		sharc1: core2-rproc@0x28a40000 {
+-@@ -88,7 +88,33 @@ sharc1: core2-rproc@0x28a40000 {
+- 			adi,verify = <1>;
+- 			adi,tru = <&tru>;
+- 			adi,tru-master-id = <136>; /* trigger master SOFT5 */
+--			status = "okay";
+-+			status = "disabled";
+-+		};
+-+
+ +		sharc0_rpmsg: core0-rpmsg@0x28240000 {
+ +				status = "okay";
+ +				compatible = "adi,rpmsg-SC598";
+@@ -97,10 +84,12 @@ index 74032f42f248..bb1357eee769 100644
+ +				adi,tru-master-id = <136>; /* trigger master SOFT5 */
+ +				vdev-vring = <&vdev1vrings>;
+ +				memory-region = <&vdev1buffer>;
+- 		};
+- 
+++		};
+++
+  //		firmware {
+-@@ -225,7 +251,7 @@ &i2c1 {
++ //			optee {
++ //				compatible = "linaro,optee-tz";
++@@ -223,7 +249,7 @@ &i2c1 {
+  };
+  
+  &i2c2 {
+@@ -110,17 +99,17 @@ index 74032f42f248..bb1357eee769 100644
+  	pinctrl-0 = <&i2c2_pins>;
+  
+ diff --git a/arch/arm64/configs/sc598-som-ezkit_defconfig b/arch/arm64/configs/sc598-som-ezkit_defconfig
+-index a3f365518575..7f75b8ac54bc 100644
++index 83528945b410..29bb26044993 100644
+ --- a/arch/arm64/configs/sc598-som-ezkit_defconfig
+ +++ b/arch/arm64/configs/sc598-som-ezkit_defconfig
+-@@ -298,7 +298,7 @@ CONFIG_REMOTEPROC=y
++@@ -293,7 +293,7 @@ CONFIG_REMOTEPROC=y
+  CONFIG_ADI_REMOTEPROC=y
+  CONFIG_RPMSG_CHAR=y
+  CONFIG_RPMSG_QCOM_GLINK_RPM=y
+ -CONFIG_RPMSG_VIRTIO=y
+ +CONFIG_RPMSG_ADI=y
+- CONFIG_EXTCON_USB_GPIO=y
+- CONFIG_MEMORY=y
++ CONFIG_PM_DEVFREQ=y
++ CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND=y
+  CONFIG_IIO=y
+ diff --git a/drivers/soc/adi/mach-sc5xx/sec.c b/drivers/soc/adi/mach-sc5xx/sec.c
+ index 4bad868de617..1e8435c3d96d 100644
+diff --git a/meta-adi-adsp-sc5xx/recipes-kernel/linux/linux-adi/0003-Disable-remoteproc.patch b/meta-adi-adsp-sc5xx/recipes-kernel/linux/linux-adi/0003-Disable-remoteproc.patch
+new file mode 100644
+index 0000000..c9de899
+--- /dev/null
++++ b/meta-adi-adsp-sc5xx/recipes-kernel/linux/linux-adi/0003-Disable-remoteproc.patch
+@@ -0,0 +1,34 @@
++From 76279086aa6bb9d979e155f7824a2f3958f08ed5 Mon Sep 17 00:00:00 2001
++From: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
++Date: Thu, 9 Feb 2023 10:44:11 -0500
++Subject: [PATCH] Disable remoteproc
++
++---
++ arch/arm64/boot/dts/adi/sc598-som.dtsi | 4 ++--
++ 1 file changed, 2 insertions(+), 2 deletions(-)
++
++diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
++index 65c1a2d0c688..20a7d938a60a 100644
++--- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
+++++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
++@@ -70,7 +70,7 @@ sharc0: core1-rproc@0x28240000 {
++ 			adi,verify = <1>;
++ 			adi,tru = <&tru>;
++ 			adi,tru-master-id = <135>; /* trigger master SOFT4 */
++-			status = "okay";
+++			status = "disabled";
++ 		};
++ 
++ 		sharc1: core2-rproc@0x28a40000 {
++@@ -88,7 +88,7 @@ sharc1: core2-rproc@0x28a40000 {
++ 			adi,verify = <1>;
++ 			adi,tru = <&tru>;
++ 			adi,tru-master-id = <136>; /* trigger master SOFT5 */
++-			status = "okay";
+++			status = "disabled";
++ 		};
++ 
++ 		sharc0_rpmsg: core0-rpmsg@0x28240000 {
++-- 
++2.34.1
++
+diff --git a/meta-adi-adsp-sc5xx/recipes-kernel/linux/linux-adi_5.15.bb b/meta-adi-adsp-sc5xx/recipes-kernel/linux/linux-adi_5.15.bb
+index 652f745..6c47fdc 100644
+--- a/meta-adi-adsp-sc5xx/recipes-kernel/linux/linux-adi_5.15.bb
++++ b/meta-adi-adsp-sc5xx/recipes-kernel/linux/linux-adi_5.15.bb
+@@ -22,8 +22,14 @@ SHARC_ALSA_PATCH = " \
+ 	file://0002-SC598-Enable-SHARC-ALSA-demo-disabling-most-linux-ba.patch \
+ "
+ 
++SHARC_ALSA_PATCH_UBOOT = " \
++	${SHARC_ALSA_PATCH} \
++	file://0003-Disable-remoteproc.patch \
++"
++
+ SRC_URI += "${@bb.utils.contains('DISTRO_FEATURES', 'adi_hybrid_audio', '${HYBRID_AUDIO_PATCH}', '', d)}"
+ SRC_URI += "${@bb.utils.contains('DISTRO_FEATURES', 'adi_sharc_alsa_audio', '${SHARC_ALSA_PATCH}', '', d)}"
++SRC_URI += "${@bb.utils.contains('DISTRO_FEATURES', 'adi_sharc_alsa_audio_uboot', '${SHARC_ALSA_PATCH_UBOOT}', '', d)}"
+ 
+ # Include kernel configuration fragment
+ KERNEL_EXTRA_FEATURES ?= "${WORKDIR}/feature/cfg/nfs.cfg \
+@@ -44,77 +50,3 @@ KERNEL_FEATURES_append_adsp-sc589-mini = " ${WORKDIR}/feature/snd_mini.scc"
+ do_install_append(){
+ 	rm -rf ${D}/lib/modules/5.15.78-yocto-standard/modules.builtin.modinfo
+ }
+-
+-# @todo this doesn't support ramdisk booting yet
+-emit_its() {
+-	cat << EOF > ${B}/fit-image.its
+-/dts-v1/;
+-
+-/ {
+-	description = "linux-adi FIT image $for ${PV}/${MACHINE}";
+-	#address-cells = <1>;
+-
+-	images {
+-		kernel@1 {
+-			description = "Linux kernel";
+-			data = /incbin/("${KERNEL_OUTPUT_DIR}/${KERNEL_IMAGETYPE}");
+-			type = "kernel";
+-			arch = "${ARCH}";
+-			os = "linux";
+-			compression = "none";
+-			load = <${UBOOT_LOADADDRESS}>;
+-			entry = <${UBOOT_ENTRYPOINT}>;
+-			hash-1 {
+-				algo = "sha1";
+-			};
+-			signature-1 {
+-				algo = "sha1,rsa2048";
+-				key-name-hint = "${UBOOT_SIGN_KEYNAME}";
+-			};
+-		};
+-
+-		fdt@2 {
+-			description = "Flattened Device Tree Blob";
+-			data = /incbin/("${KERNEL_OUTPUT_DIR}/dts/${KERNEL_DEVICETREE}");
+-			type = "flat_dt";
+-			arch = "${ARCH}";
+-			compression = "none";
+-			load = <${UBOOT_DTBADDRESS}>;
+-			hash-1 {
+-				algo = "sha1";
+-			};
+-			signature-1 {
+-				algo = "sha1,rsa2048";
+-				key-name-hint = "${UBOOT_SIGN_KEYNAME}";
+-			};
+-		};
+-	};
+-
+-	configurations {
+-		default = "conf@1";
+-		conf@1 {
+-			description = "boot configuration";
+-			kernel = "kernel@1";
+-			fdt = "fdt@2";
+-			signature-1 {
+-				algo = "sha1,rsa2048";
+-				key-name-hint = "${UBOOT_SIGN_KEYNAME}";
+-			};
+-		};
+-	};
+-};
+-EOF
+-}
+-
+-do_assemble_fitimage() {
+-	cd ${B}
+-
+-	emit_its;
+-
+-	uboot-mkimage -D "${UBOOT_MKIMAGE_DTCOPTS}" -f fit-image.its \
+-		${KERNEL_OUTPUT_DIR}/fitImage
+-}
+-
+-addtask assemble_fitimage before do_install after do_compile
+-
+-KERNEL_IMAGETYPES_append = " fitImage"
+-- 
+2.30.2
+

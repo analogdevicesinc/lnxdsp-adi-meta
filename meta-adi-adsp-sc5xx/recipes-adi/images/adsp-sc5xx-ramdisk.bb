@@ -22,40 +22,31 @@ def emmc_utils(d):
       utils = ""
   return utils
 
+SHARC_ALSA_BINARIES = "${@bb.utils.contains_any('DISTRO_FEATURES', 'adi_sharc_alsa_audio', 'sharc-audio', '', d)}"
+HYBRID_BINARIES = "${@bb.utils.contains_any('DISTRO_FEATURES', 'adi_hybrid_audio', 'hybrid-audio', '', d)}"
+LINUX_ONLY_BINARIES = "${@bb.utils.contains_any('DISTRO_FEATURES', 'linux_only_audio', 'rpmsg-echo-example', '', d)}"
+
 IMAGE_INSTALL = " \
-    packagegroup-core-boot \
-    packagegroup-base \
     busybox-watchdog-init \
     ${@emmc_utils(d)} \
-    libgpiod libgpiod-tools \
+    initramfs-init \
+    busybox \
+    ${SHARC_ALSA_BINARIES} \
+    ${HYBRID_BINARIES} \
+    ${LINUX_ONLY_BINARIES} \
 "
 
-DISTRO_FEATURES = " ram"
-IMAGE_FSTYPES = " cpio.xz"
+DISTRO_FEATURES += " ram"
+IMAGE_FSTYPES = " cpio.xz cpio.gz"
 
 DEPENDS += "u-boot-tools-native"
 
 #We do not need these files in the rootfs -- remove them to reduce the minimal rootfs size
 fakeroot do_rootfs_cleanup(){
-	rm -rf ${IMAGE_ROOTFS}/boot
-	rm -rf ${IMAGE_ROOTFS}/lib/udev/hwdb.bin
-	rm -rf ${IMAGE_ROOTFS}/lib/udev/hwdb.d
 	rm -rf ${IMAGE_ROOTFS}/usr/lib/opkg
 	rm -rf ${IMAGE_ROOTFS}/usr/lib/locale
-	rm -rf ${IMAGE_ROOTFS}/etc/X11
-	rm -rf ${IMAGE_ROOTFS}/usr/share/consolefonts
-	rm -rf ${IMAGE_ROOTFS}/usr/share/alsa
-	rm -rf ${IMAGE_ROOTFS}/usr/share/keymaps
-	rm -rf ${IMAGE_ROOTFS}/usr/lib/libX11.so.6.3.0
-	rm -rf ${IMAGE_ROOTFS}/usr/lib/libX11.so.6
-	rm -rf ${IMAGE_ROOTFS}/usr/lib/libasound.so.2.0.0
-	rm -rf ${IMAGE_ROOTFS}/usr/lib/libasound.so.2
-	rm -rf ${IMAGE_ROOTFS}/usr/lib/libxcb.so.1.1.0
-	rm -rf ${IMAGE_ROOTFS}/usr/lib/libxcb.so.1
-	rm -rf ${IMAGE_ROOTFS}/sbin/fsck.ext2
-	rm -rf ${IMAGE_ROOTFS}/sbin/fsck.ext3
+	rm -rf ${IMAGE_ROOTFS}/sbin/ldconfig
 	rm -rf ${IMAGE_ROOTFS}/etc/ssh/moduli
-	rm -rf ${IMAGE_ROOTFS}/usr/sbin/alsactl
 	rm -rf ${IMAGE_ROOTFS}/usr/sbin/useradd
 	rm -rf ${IMAGE_ROOTFS}/usr/sbin/userdel
 	rm -rf ${IMAGE_ROOTFS}/usr/sbin/usermod
@@ -63,12 +54,24 @@ fakeroot do_rootfs_cleanup(){
 
 addtask rootfs_cleanup after do_rootfs before do_image
 
-do_adi_ramdisk[depends] = "virtual/bootloader:do_compile"
-do_adi_ramdisk(){
-    #Format the cpio image for u-boot
-    mkimage -n 'Analog Devices Ram Disk Image'  -A ${UBOOT_ARCH} -O linux -T ramdisk -C gzip -d ${WORKDIR}/deploy-${PN}-image-complete/${PN}-${MACHINE}.cpio.xz ${DEPLOY_DIR_IMAGE}/${PN}-${MACHINE}.cpio.xz.u-boot
-}
-
-addtask adi_ramdisk after do_image_cpio before do_image_complete
-
 EXTRA_USERS_PARAMS = "usermod -P adi root;"
+
+python __anonymous() {
+    count=0
+    if bb.utils.contains('DISTRO_FEATURES', 'adi_sharc_alsa_audio', True, False, d):
+        count=count+1
+    if bb.utils.contains('DISTRO_FEATURES', 'adi_sharc_alsa_audio_uboot', True, False, d):
+        count=count+1
+    if bb.utils.contains('DISTRO_FEATURES', 'adi_hybrid_audio', True, False, d):
+        count=count+1
+    if bb.utils.contains('DISTRO_FEATURES', 'linux_only_audio', True, False, d):
+        count=count+1
+
+    if count > 1:
+        bb.fatal("You have multiple audio modes in DISTRO_FEATURES. \
+        Choose only one of: adi_sharc_alsa_audio, adi_sharc_alsa_audio_uboot, adi_hybrid_audio, linux_only_audio")
+
+    if count == 0:
+        bb.fatal("You need to select your audio mode in DISTRO_FEATURES. \
+        Choose only one of: adi_sharc_alsa_audio, adi_sharc_alsa_audio_uboot, adi_hybrid_audio, linux_only_audio")
+}

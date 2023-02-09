@@ -1,10 +1,11 @@
-inherit core-image extrausers adsp-sc5xx-compatible
+inherit core-image extrausers adsp-sc5xx-compatible adsp-fit-generation
 
 SUMMARY = "Minimal image for Analog Devices ADSP-SC5xx boards"
 LICENSE = "MIT"
 
+INITRD_NAME = "adsp-sc5xx-ramdisk-${MACHINE}.cpio.gz"
+
 ICC = " \
-	rpmsg-echo-example \
 	rpmsg-utils \
 "
 
@@ -27,13 +28,12 @@ CRYPTO = " \
 	cryptodev-linux \
 	${@crypto(d)} \
 "
-ADI_AUDIO_BINARIES = "${@bb.utils.contains_any('DISTRO_FEATURES', 'adi_hybrid_audio adi_sharc_alsa_audio', 'sharc-audio', '', d)}"
+
 
 IMAGE_INSTALL = " \
     packagegroup-core-boot \
     packagegroup-base \
     ${CORE_IMAGE_EXTRA_INSTALL} \
-	${ADI_AUDIO_BINARIES} \
 	alsa-utils \
     openssh \
     openssl \

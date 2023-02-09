@@ -3,6 +3,8 @@ LICENSE = "CLOSED"
 
 SRC_URI = "file://init-ramfs.sh"
 
+RDEPENDS_${PN} += "nfs-utils-mount"
+
 S = "${WORKDIR}"
 
 do_install() {

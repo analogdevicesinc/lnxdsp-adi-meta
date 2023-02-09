@@ -6,10 +6,10 @@ Subject: [PATCH 2/2] Enable SHARC-ALSA demo, disabling most linux-based audio
 
 ---
  arch/arm64/boot/dts/adi/sc598-som-ezkit.dts  |  7 +-
- arch/arm64/boot/dts/adi/sc598-som.dtsi       | 32 +++++++++-
+ arch/arm64/boot/dts/adi/sc598-som.dtsi       | 28 +++++++-
  arch/arm64/configs/sc598-som-ezkit_defconfig |  2 +-
  drivers/soc/adi/mach-sc5xx/sec.c             | 67 ++++++++++----------
- 4 files changed, 69 insertions(+), 39 deletions(-)
+ 4 files changed, 67 insertions(+), 37 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
 index caf7bff0fccb..bdb9ee9aeca9 100644
@@ -53,26 +53,13 @@ index caf7bff0fccb..bdb9ee9aeca9 100644
  	sru_dai1: sru_dai1_mux {
  		route {
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index 74032f42f248..bb1357eee769 100644
+index 3176650dd268..65c1a2d0c688 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-@@ -70,7 +70,7 @@ sharc0: core1-rproc@0x28240000 {
- 			adi,verify = <1>;
- 			adi,tru = <&tru>;
- 			adi,tru-master-id = <135>; /* trigger master SOFT4 */
--			status = "okay";
-+			status = "disabled";
+@@ -91,6 +91,32 @@ sharc1: core2-rproc@0x28a40000 {
+ 			status = "okay";
  		};
  
- 		sharc1: core2-rproc@0x28a40000 {
-@@ -88,7 +88,33 @@ sharc1: core2-rproc@0x28a40000 {
- 			adi,verify = <1>;
- 			adi,tru = <&tru>;
- 			adi,tru-master-id = <136>; /* trigger master SOFT5 */
--			status = "okay";
-+			status = "disabled";
-+		};
-+
 +		sharc0_rpmsg: core0-rpmsg@0x28240000 {
 +				status = "okay";
 +				compatible = "adi,rpmsg-SC598";
@@ -97,10 +84,12 @@ index 74032f42f248..bb1357eee769 100644
 +				adi,tru-master-id = <136>; /* trigger master SOFT5 */
 +				vdev-vring = <&vdev1vrings>;
 +				memory-region = <&vdev1buffer>;
- 		};
- 
++		};
++
  //		firmware {
-@@ -225,7 +251,7 @@ &i2c1 {
+ //			optee {
+ //				compatible = "linaro,optee-tz";
+@@ -223,7 +249,7 @@ &i2c1 {
  };
  
  &i2c2 {
@@ -110,17 +99,17 @@ index 74032f42f248..bb1357eee769 100644
  	pinctrl-0 = <&i2c2_pins>;
  
 diff --git a/arch/arm64/configs/sc598-som-ezkit_defconfig b/arch/arm64/configs/sc598-som-ezkit_defconfig
-index a3f365518575..7f75b8ac54bc 100644
+index 83528945b410..29bb26044993 100644
 --- a/arch/arm64/configs/sc598-som-ezkit_defconfig
 +++ b/arch/arm64/configs/sc598-som-ezkit_defconfig
-@@ -298,7 +298,7 @@ CONFIG_REMOTEPROC=y
+@@ -293,7 +293,7 @@ CONFIG_REMOTEPROC=y
  CONFIG_ADI_REMOTEPROC=y
  CONFIG_RPMSG_CHAR=y
  CONFIG_RPMSG_QCOM_GLINK_RPM=y
 -CONFIG_RPMSG_VIRTIO=y
 +CONFIG_RPMSG_ADI=y
- CONFIG_EXTCON_USB_GPIO=y
- CONFIG_MEMORY=y
+ CONFIG_PM_DEVFREQ=y
+ CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND=y
  CONFIG_IIO=y
 diff --git a/drivers/soc/adi/mach-sc5xx/sec.c b/drivers/soc/adi/mach-sc5xx/sec.c
 index 4bad868de617..1e8435c3d96d 100644
