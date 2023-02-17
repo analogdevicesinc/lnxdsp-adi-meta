@@ -9,32 +9,19 @@ ICC = " \
 	rpmsg-utils \
 "
 
-#Not currently compiling for 64 bit -- skip for now
-def crypto(d):
-  CRYPTO = ""
-  MACHINE = d.getVar('MACHINE')
-  if MACHINE == 'adsp-sc598-som-ezkit':
-    CRYPTO = ""
-  else:
-    CRYPTO = "cryptodev-module crypto-tests"
-
-  #Not compiling for any boards on 5.15
-  CRYPTO = ""
-  return CRYPTO
-
 CRYPTO = " \
-	openssl \
-	openssl-bin \
-	cryptodev-linux \
-	${@crypto(d)} \
+    openssl \
+    openssl-bin \
+    cryptodev-linux \
+    cryptodev-module \
+    crypto-tests \
 "
-
 
 IMAGE_INSTALL = " \
     packagegroup-core-boot \
     packagegroup-base \
     ${CORE_IMAGE_EXTRA_INSTALL} \
-	alsa-utils \
+    alsa-utils \
     openssh \
     openssl \
     iproute2 \
