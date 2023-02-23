@@ -13,7 +13,7 @@ SRC_URI = " \
 	file://0001-Fixup-build-error-by-splitting-dap_cmd_pool-into-dap.patch \
 "
 
-SRCREV = "d5c76126458b8dc7bff7a30b48198801c05143e8"
+SRCREV = "40378454d281ae8ceb48343bc3a9b89c74754761"
 
 PV = "0.10+gitr${SRCPV}"
 S = "${WORKDIR}/git"
