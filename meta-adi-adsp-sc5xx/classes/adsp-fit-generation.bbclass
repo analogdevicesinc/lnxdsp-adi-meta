@@ -22,7 +22,7 @@ emit_its() {
 	#address-cells = <1>;
 
 	images {
-		kernel@1 {
+		kernel-1 {
 			description = "Linux kernel";
 			data = /incbin/("${KERNEL_IMAGETYPE}");
 			type = "kernel";
@@ -40,7 +40,7 @@ emit_its() {
 			};
 		};
 
-		fdt@2 {
+		fdt-2 {
 			description = "Flattened Device Tree Blob";
 			data = /incbin/("$(basename ${KERNEL_DEVICETREE})");
 			type = "flat_dt";
@@ -56,7 +56,7 @@ emit_its() {
 			};
 		};
 
-		ramdisk@3 {
+		ramdisk-3 {
 			description = "Initial Ram File System";
 			data = /incbin/("adsp-sc5xx-ramdisk-${MACHINE}.cpio.gz");
 			type = "ramdisk";
@@ -77,12 +77,12 @@ emit_its() {
 	};
 
 	configurations {
-		default = "conf@1";
-		conf@1 {
+		default = "conf-1";
+		conf-1 {
 			description = "boot configuration";
-			kernel = "kernel@1";
-			fdt = "fdt@2";
-			ramdisk = "ramdisk@3";
+			kernel = "kernel-1";
+			fdt = "fdt-2";
+			ramdisk = "ramdisk-3";
 			signature-1 {
 				algo = "sha1,rsa2048";
 				key-name-hint = "${UBOOT_SIGN_KEYNAME}";
