@@ -31,21 +31,20 @@ SRC_URI += "${@bb.utils.contains('DISTRO_FEATURES', 'adi_hybrid_audio', '${HYBRI
 SRC_URI += "${@bb.utils.contains('DISTRO_FEATURES', 'adi_sharc_alsa_audio', '${SHARC_ALSA_PATCH}', '', d)}"
 SRC_URI += "${@bb.utils.contains('DISTRO_FEATURES', 'adi_sharc_alsa_audio_uboot', '${SHARC_ALSA_PATCH_UBOOT}', '', d)}"
 
-# Include kernel configuration fragment
-KERNEL_EXTRA_FEATURES ?= "${WORKDIR}/feature/cfg/nfs.cfg \
-						  ${WORKDIR}/feature/cfg/wireless.cfg \
-						  ${WORKDIR}/feature/cfg/cpufreq.cfg \
-						  ${WORKDIR}/feature/cfg/crypto.cfg \
-						  ${WORKDIR}/feature/cfg/tracepoints.cfg \
-						  "
+# Include kernel configuration fragments
+KERNEL_FEATURES:append = " \
+	feature/cfg/nfs.cfg \
+	feature/cfg/wireless.cfg \
+	feature/cfg/cpufreq.cfg \
+	feature/cfg/crypto.cfg \
+	feature/cfg/tracepoints.cfg \
+"
 
-KERNEL_FEATURES:append = " ${KERNEL_EXTRA_FEATURES}"
-
-KERNEL_FEATURES:append_adsp-sc594_som_ezkit = " ${WORKDIR}/feature/snd_ezkit.scc"
-KERNEL_FEATURES:append_adsp-sc589-ezkit = " ${WORKDIR}/feature/snd_ezkit.scc"
-KERNEL_FEATURES:append_adsp-sc584-ezkit = " ${WORKDIR}/feature/snd_ezkit.scc"
-KERNEL_FEATURES:append_adsp-sc573-ezkit = " ${WORKDIR}/feature/snd_ezkit.scc"
-KERNEL_FEATURES:append_adsp-sc589-mini = " ${WORKDIR}/feature/snd_mini.scc"
+KERNEL_FEATURES:append_adsp-sc594_som_ezkit = " feature/snd_ezkit.scc"
+KERNEL_FEATURES:append_adsp-sc589-ezkit = " feature/snd_ezkit.scc"
+KERNEL_FEATURES:append_adsp-sc584-ezkit = " feature/snd_ezkit.scc"
+KERNEL_FEATURES:append_adsp-sc573-ezkit = " feature/snd_ezkit.scc"
+KERNEL_FEATURES:append_adsp-sc589-mini = " feature/snd_mini.scc"
 
 do_install:append(){
 	rm -rf ${D}/lib/modules/5.15.78-yocto-standard/modules.builtin.modinfo
