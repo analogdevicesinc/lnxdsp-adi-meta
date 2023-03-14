@@ -9,9 +9,9 @@ IMAGE_INSTALL = " \
     busybox-watchdog-init \
 "
 
-EXTRA_USERS_PARAMS = " \
-	usermod -P adi root; \
-"
+# printf "%q" $(mkpasswd -m sha256crypt adi)
+PASSWD_ROOT = "\$5\$j9T8zDE13LXUGyc6\$utDvGwFWR.kt/AKwwbHnXC14HJBqbcWwvLoDDLMQrc8"
+EXTRA_USERS_PARAMS = "usermod -p '${PASSWD_ROOT}' root;"
 
 IMAGE_FSTYPES = " jffs2"
 

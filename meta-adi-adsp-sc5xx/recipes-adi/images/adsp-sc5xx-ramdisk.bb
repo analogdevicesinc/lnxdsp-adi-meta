@@ -54,7 +54,9 @@ fakeroot do_rootfs_cleanup(){
 
 addtask rootfs_cleanup after do_rootfs before do_image
 
-EXTRA_USERS_PARAMS = "usermod -P adi root;"
+# printf "%q" $(mkpasswd -m sha256crypt adi)
+PASSWD_ROOT = "\$5\$j9T8zDE13LXUGyc6\$utDvGwFWR.kt/AKwwbHnXC14HJBqbcWwvLoDDLMQrc8"
+EXTRA_USERS_PARAMS = "usermod -p '${PASSWD_ROOT}' root;"
 
 python __anonymous() {
     count=0
