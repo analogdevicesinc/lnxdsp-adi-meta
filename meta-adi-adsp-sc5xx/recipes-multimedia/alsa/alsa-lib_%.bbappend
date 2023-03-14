@@ -1,4 +1,4 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/alsa-lib:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/alsa-lib:"
 
 SRC_URI += " \
 	file://alsa-lib-01-adi-audio-codec-config.patch \

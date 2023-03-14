@@ -15,7 +15,7 @@ do_install() {
 	install -m 0755 ${WORKDIR}/test_rpmsg_echo.sh ${D}/usr/bin
 }
 
-FILES_${PN} += " \
+FILES:${PN} += " \
 	/lib/firmware/adi_adsp_core1_fw.ldr \
 	/lib/firmware/adi_adsp_core2_fw.ldr \
 	/usr/bin/test_rpmsg_echo.sh \

@@ -2,7 +2,7 @@ SUMMARY = "Free and Open On-Chip Debugging, In-System Programming and Boundary-S
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 DEPENDS = "libusb-compat"
-RDEPENDS_${PN} = "libusb1"
+RDEPENDS:${PN} = "libusb1"
 
 OPENOCD_GIT_URI ?= "git://github.com/analogdevicesinc/openocd.git"
 OPENOCD_GIT_PROTOCOL ?= "https"
@@ -46,7 +46,7 @@ do_install() {
     fi
 }
 
-FILES_${PN} = " \
+FILES:${PN} = " \
   ${datadir}/openocd/* \
   ${bindir}/openocd \
   "

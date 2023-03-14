@@ -8,7 +8,7 @@ SRC_URI = " \
 
 S = "${WORKDIR}/v4l2_video_test"
 
-do_compile_prepend(){
+do_compile:prepend(){
 	cd ${S}
 }
 

@@ -3,7 +3,7 @@ LICENSE = "CLOSED"
 
 SRC_URI = "file://pint.c"
 
-FILES_${PN} = "/usr/bin/test_pint"
+FILES:${PN} = "/usr/bin/test_pint"
 
 S = "${WORKDIR}/pint_test"
 

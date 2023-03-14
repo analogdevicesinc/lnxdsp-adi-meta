@@ -1,6 +1,6 @@
 LICENSE="CLOSED"
 
-INSANE_SKIP_${PN} += "ldflags"
+INSANE_SKIP:${PN} += "ldflags"
 
 SRC_URI += " \
 	file://source/adi-crc.c \
@@ -11,7 +11,7 @@ S="${WORKDIR}/source"
 
 DEPENDS += "cryptodev-linux openssl"
 
-RDEPENDS_${PN} += "cryptodev-module"
+RDEPENDS:${PN} += "cryptodev-module"
 
 do_compile(){
 	${CC} -o adi-crc adi-crc.c -lssl -lcrypto
@@ -23,7 +23,7 @@ do_install(){
 	install -m 0777 ${S}/adi-crc.sh ${D}/crypto/adi-crc.sh
 }
 
-FILES_${PN} += " \
+FILES:${PN} += " \
 	/crypto/adi-crc \
 	/crypto/adi-crc.sh \
 "

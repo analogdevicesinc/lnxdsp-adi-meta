@@ -3,7 +3,7 @@ LICENSE = "CLOSED"
 
 SRC_URI = "file://init-ramfs.sh"
 
-RDEPENDS_${PN} += "nfs-utils-mount"
+RDEPENDS:${PN} += "nfs-utils-mount"
 
 S = "${WORKDIR}"
 
@@ -13,4 +13,4 @@ do_install() {
 
 inherit allarch
 
-FILES_${PN} += "/init"
+FILES:${PN} += "/init"

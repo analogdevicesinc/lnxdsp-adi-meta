@@ -41,4 +41,4 @@ EXTRA_USERS_PARAMS = " \
 	usermod -P adi root; \
 "
 
-TOOLCHAIN_HOST_TASK_append += " nativesdk-openocd-adi"
+TOOLCHAIN_HOST_TASK:append += " nativesdk-openocd-adi"

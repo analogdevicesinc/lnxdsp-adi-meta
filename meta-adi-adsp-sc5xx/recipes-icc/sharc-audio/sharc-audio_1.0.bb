@@ -12,7 +12,7 @@ do_install() {
 	install -m 0755 ${WORKDIR}/icap-sharc-alsa_Core2.ldr ${D}/lib/firmware/adi_adsp_core2_fw.ldr	
 }
 
-FILES_${PN} = " \
+FILES:${PN} = " \
 	/lib/firmware/adi_adsp_core1_fw.ldr \
 	/lib/firmware/adi_adsp_core2_fw.ldr \
 "

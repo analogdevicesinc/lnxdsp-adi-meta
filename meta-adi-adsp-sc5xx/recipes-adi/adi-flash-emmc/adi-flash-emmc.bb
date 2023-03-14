@@ -10,7 +10,7 @@ do_install(){
 	install -m 0777 ${WORKDIR}/adi-flash-emmc.sh ${D}/usr/bin
 }
 
-FILES_${PN} += " \
+FILES:${PN} += " \
 	/usr/bin/adi-flash-emmc.sh \
 "
 

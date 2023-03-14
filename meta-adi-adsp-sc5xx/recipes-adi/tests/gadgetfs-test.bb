@@ -29,7 +29,7 @@ do_install(){
 	install -m 755 ${B}/gadgetfs-test ${D}/usr/bin/
 }
 
-FILES_${PN} += " \
+FILES:${PN} += " \
 	/usr/bin \
 	/usr/bin/gadgetfs-test \
 "

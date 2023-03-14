@@ -64,7 +64,7 @@ static int hello_l2_alloc_probe(struct platform_device *pdev)
     return 0;
 }
 
-static int hello_l2_alloc_remove(struct platform_device *pdev)
+static int hello_l2_alloc:remove(struct platform_device *pdev)
 {
     int i;
 	for (i = 0; i < 10; i++) {
@@ -78,7 +78,7 @@ static int hello_l2_alloc_remove(struct platform_device *pdev)
 
 static struct platform_driver hello_l2_alloc_driver = {
      .probe = hello_l2_alloc_probe,
-     .remove = hello_l2_alloc_remove,
+     .remove = hello_l2_alloc:remove,
      .driver = {
          .name = "hello_l2_alloc",
          .of_match_table = of_match_ptr(hello_l2_alloc_of_match),

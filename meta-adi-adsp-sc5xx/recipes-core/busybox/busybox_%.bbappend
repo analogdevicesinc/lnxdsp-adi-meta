@@ -1,4 +1,4 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/busybox:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/busybox:"
 
 SRC_URI += " \
 	file://defconfig \

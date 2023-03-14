@@ -9,7 +9,7 @@ DEPENDS = "sqlite3"
 
 S = "${WORKDIR}/sqlite_test"
 
-do_compile_prepend(){
+do_compile:prepend(){
 	cd ${S}
 }
 
@@ -20,6 +20,6 @@ do_install(){
 	install -m 755 ${S}/wishlist.sql ${D}/usr/
 }
 
-FILES_${PN} += " \
+FILES:${PN} += " \
 	/usr/wishlist.sql \
 "

@@ -1,5 +1,5 @@
 
-SOC_FAMILY_append = ":adsp-sc5xx"
+SOC_FAMILY:append = ":adsp-sc5xx"
 SOC_FAMILY = "adi-soc"
 
 require conf/machine/include/soc-family.inc

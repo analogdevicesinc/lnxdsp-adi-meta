@@ -7,8 +7,8 @@ require arch-armv8a.inc
 
 # Little Endian base configs
 AVAILTUNES += "cortexa55"
-ARMPKGARCH_tune-cortexa55             = "cortexa55"
-TUNE_FEATURES_tune-cortexa55          = "${TUNE_FEATURES_tune-armv8a-crypto} cortexa55"
-PACKAGE_EXTRA_ARCHS_tune-cortexa55    = "${PACKAGE_EXTRA_ARCHS_tune-armv8a-crypto} cortexa55"
-BASE_LIB_tune-cortexa55               = "lib64"
+ARMPKGARCH:tune-cortexa55             = "cortexa55"
+TUNE_FEATURES:tune-cortexa55          = "${TUNE_FEATURES:tune-armv8a-crypto} cortexa55"
+PACKAGE_EXTRA_ARCHS:tune-cortexa55    = "${PACKAGE_EXTRA_ARCHS:tune-armv8a-crypto} cortexa55"
+BASE_LIB:tune-cortexa55               = "lib64"
 

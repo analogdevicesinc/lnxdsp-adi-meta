@@ -406,7 +406,7 @@ static int adi_dmacopy_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int adi_dmacopy_remove(struct platform_device *pdev)
+static int adi_dmacopy:remove(struct platform_device *pdev)
 {
 	printk(KERN_INFO "Goodbye, cruel world\n");
 	return 0;
@@ -414,7 +414,7 @@ static int adi_dmacopy_remove(struct platform_device *pdev)
 
 static struct platform_driver adi_dmacopy_driver = {
 	.probe = adi_dmacopy_probe,
-	.remove = adi_dmacopy_remove,
+	.remove = adi_dmacopy:remove,
 	.driver = {
 		.name = "adi_dmacopy",
 		.of_match_table = of_match_ptr(adi_dmacopy_of_match),

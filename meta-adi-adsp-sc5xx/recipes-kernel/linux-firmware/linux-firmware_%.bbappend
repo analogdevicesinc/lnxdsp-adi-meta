@@ -1,7 +1,7 @@
 SUMMARY = "Linux kernel firmware files from ADI distribution"
 DESCRIPTION = "These binaries provide kernel support for ADI sc5xx boards"
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/linux-firmware:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/linux-firmware:"
 SRC_URI += "file://adau1761.bin \
 			file://LICENSE.adau1761 \
 			file://sharc-alsa/icap-device-example.ldr \
@@ -17,7 +17,7 @@ SRC_URI[LICENSE.md.md5sum] = "e2bfd7246b6d241634f71dfdbfef3d41"
 
 FILEPATH = "/lib/firmware"
 
-do_install_append() {
+do_install:append() {
 	install -m 0644 ${WORKDIR}/LICENSE.adau1761 ${D}${FILEPATH}
 	install -m 0644 ${WORKDIR}/adau1761.bin ${D}${FILEPATH}
 	install -m 0644 ${WORKDIR}/sharc-alsa/LICENSE.md ${D}${FILEPATH}
@@ -30,14 +30,14 @@ do_install_append() {
 
 PACKAGES =+ "${PN}-adau1761"
 
-FILES_${PN}-adau1761 = " \
+FILES:${PN}-adau1761 = " \
 		${FILEPATH}/LICENSE.adau1761 \
 		${FILEPATH}/adau1761.bin \
 		"
 
 PACKAGES =+ "${PN}-sharc-alsa"
 
-FILES_${PN}-sharc-alsa = " \
+FILES:${PN}-sharc-alsa = " \
 		${FILEPATH}/LICENSE.md \
 		${FILEPATH}/icap-device-example.ldr \
 		${FILEPATH}/icap-sharc-alsa_Core1.ldr \

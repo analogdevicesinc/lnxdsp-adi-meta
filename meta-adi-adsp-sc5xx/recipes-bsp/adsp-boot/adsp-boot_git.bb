@@ -23,7 +23,7 @@ do_compile() {
 	${LDR} -T ${LDR_PROC} -c ${B}/${STAGE_2_TARGET_NAME} --bcode=${LDR_BCODE} ${STAGE_2_SRC}
 }
 
-FILES_${PN} = "adsp-boot.dummy"
+FILES:${PN} = "adsp-boot.dummy"
 
 do_install() {
 	touch ${D}/adsp-boot.dummy

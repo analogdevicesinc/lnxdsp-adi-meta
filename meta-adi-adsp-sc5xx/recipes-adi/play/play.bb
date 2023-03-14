@@ -7,7 +7,7 @@ SRC_URI = " \
 
 S = "${WORKDIR}/play"
 
-do_compile_prepend(){
+do_compile:prepend(){
 	cd ${S}
 }
 

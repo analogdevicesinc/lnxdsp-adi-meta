@@ -1,6 +1,6 @@
 LICENSE="CLOSED"
 
-INSANE_SKIP_${PN} += "ldflags"
+INSANE_SKIP:${PN} += "ldflags"
 
 SRC_URI += " \
 	file://source/adi-hash.c \
@@ -23,7 +23,7 @@ do_install(){
 	install -m 0777 ${S}/adi-skcipher.sh ${D}/crypto/adi-skcipher.sh
 }
 
-FILES_${PN} += " \
+FILES:${PN} += " \
 	/crypto/adi-hash \
 	/crypto/adi-hash.sh \
 	/crypto/adi-skcipher.sh \

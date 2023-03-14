@@ -7,7 +7,7 @@ SRC_URI = " \
 
 S = "${WORKDIR}/sram_mmap_test"
 
-do_compile_prepend(){
+do_compile:prepend(){
 	cd ${S}
 }
 

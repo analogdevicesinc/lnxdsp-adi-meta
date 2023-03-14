@@ -13,14 +13,14 @@ SRC_URI += " \
 "
 
 # Pull in the devicetree files into the rootfs
-# RDEPENDS_kernel-base += "kernel-devicetree"
+# RDEPENDS:kernel-base += "kernel-devicetree"
 
 KERNEL_EXTRA_ARGS += "LOADADDR=${UBOOT_ENTRYPOINT}"
 
 S = "${WORKDIR}/git"
 
 # Append to the MACHINE_KERNEL_PR so that a new SRCREV will cause a rebuild
-MACHINE_KERNEL_PR_append = "a"
+MACHINE_KERNEL_PR:append = "a"
 PR = "${MACHINE_KERNEL_PR}"
 
 # Use DEFCONFIGs for configuring linux-adi kernels

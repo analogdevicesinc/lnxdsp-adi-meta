@@ -7,7 +7,7 @@ SRC_URI = " \
 
 S = "${WORKDIR}/pthread_test"
 
-do_compile_prepend(){
+do_compile:prepend(){
 	cd ${S}
 }
 

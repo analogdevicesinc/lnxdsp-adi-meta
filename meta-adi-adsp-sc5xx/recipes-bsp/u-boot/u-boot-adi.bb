@@ -10,7 +10,7 @@ UBOOT_INITIAL_ENV = ""
 
 STAGE_1_TARGET_NAME = "stage1-boot.ldr"
 
-FILES_${PN} = " \
+FILES:${PN} = " \
     u-boot-proper-${BOARD}.elf \
     u-boot-spl-${BOARD}.elf \
     ${STAGE_1_TARGET_NAME} \

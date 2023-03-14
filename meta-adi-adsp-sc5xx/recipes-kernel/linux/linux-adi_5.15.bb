@@ -39,14 +39,14 @@ KERNEL_EXTRA_FEATURES ?= "${WORKDIR}/feature/cfg/nfs.cfg \
 						  ${WORKDIR}/feature/cfg/tracepoints.cfg \
 						  "
 
-KERNEL_FEATURES_append = " ${KERNEL_EXTRA_FEATURES}"
+KERNEL_FEATURES:append = " ${KERNEL_EXTRA_FEATURES}"
 
-KERNEL_FEATURES_append_adsp-sc594_som_ezkit = " ${WORKDIR}/feature/snd_ezkit.scc"
-KERNEL_FEATURES_append_adsp-sc589-ezkit = " ${WORKDIR}/feature/snd_ezkit.scc"
-KERNEL_FEATURES_append_adsp-sc584-ezkit = " ${WORKDIR}/feature/snd_ezkit.scc"
-KERNEL_FEATURES_append_adsp-sc573-ezkit = " ${WORKDIR}/feature/snd_ezkit.scc"
-KERNEL_FEATURES_append_adsp-sc589-mini = " ${WORKDIR}/feature/snd_mini.scc"
+KERNEL_FEATURES:append_adsp-sc594_som_ezkit = " ${WORKDIR}/feature/snd_ezkit.scc"
+KERNEL_FEATURES:append_adsp-sc589-ezkit = " ${WORKDIR}/feature/snd_ezkit.scc"
+KERNEL_FEATURES:append_adsp-sc584-ezkit = " ${WORKDIR}/feature/snd_ezkit.scc"
+KERNEL_FEATURES:append_adsp-sc573-ezkit = " ${WORKDIR}/feature/snd_ezkit.scc"
+KERNEL_FEATURES:append_adsp-sc589-mini = " ${WORKDIR}/feature/snd_mini.scc"
 
-do_install_append(){
+do_install:append(){
 	rm -rf ${D}/lib/modules/5.15.78-yocto-standard/modules.builtin.modinfo
 }

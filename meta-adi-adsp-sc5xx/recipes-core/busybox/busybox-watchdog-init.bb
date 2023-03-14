@@ -1,4 +1,4 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/busybox:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/busybox:"
 
 LICENSE = "CLOSED"
 
@@ -38,7 +38,7 @@ SYSTEMD_INITSCRIPT_NAME_FILES = "${@ '${libexecdir}/${INITSCRIPT_NAME}' if bb.ut
 
 SYSTEMD_SERVICE_NAME_FILES = "${@ '${systemd_system_unitdir}/watchdog.service' if bb.utils.contains('DISTRO_FEATURES', 'systemd', True, False, d) else ''}"
 
-FILES_${PN} += " \
+FILES:${PN} += " \
     ${SYSTEMD_INITSCRIPT_NAME_FILES} \
     ${SYSTEMD_SERVICE_NAME_FILES} \
     ${SYSVINIT_FILES} \
