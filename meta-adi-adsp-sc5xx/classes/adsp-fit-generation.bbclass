@@ -28,7 +28,7 @@ emit_its() {
 			type = "kernel";
 			arch = "${ARCH}";
 			os = "linux";
-			compression = "gzip";
+			compression = "${KERNEL_COMPRESSION}";
 			load = <${UBOOT_LOADADDRESS}>;
 			entry = <${UBOOT_ENTRYPOINT}>;
 			hash-1 {
@@ -117,6 +117,9 @@ do_assemble_fitimage[vardeps] += " \
     UBOOT_DTBADDRESS \
     ARCH \
     UBOOT_MKIMAGE_DTCOPTS \
+    KERNEL_COMPRESSION \
+    KERNEL_DEVICETREE \
+    KERNEL_IMAGETYPE \
 "
 
 do_image_wic[depends] += "\

@@ -9,6 +9,7 @@ require conf/machine/include/arm/armv7a/tune-cortexa5.inc
 MACHINE_KERNEL_PR = "r0"
 
 KERNEL_IMAGETYPE = "zImage"
+KERNEL_COMPRESSION = "none"
 
 PREFERRED_PROVIDER_virtual/kernel = "linux-adi"
 PREFERRED_PROVIDER_virtual/bootloader = "u-boot-adi"

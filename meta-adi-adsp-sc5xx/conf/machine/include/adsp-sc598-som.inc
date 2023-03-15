@@ -8,6 +8,7 @@ require conf/machine/include/arm/armv8-2a/tune-cortexa55.inc
 MACHINE_KERNEL_PR = "r0"
 
 KERNEL_IMAGETYPE = "Image.gz"
+KERNEL_COMPRESSION = "gzip"
 
 PREFERRED_PROVIDER_virtual/kernel = "linux-adi"
 PREFERRED_PROVIDER_virtual/bootloader = "u-boot-adi"
