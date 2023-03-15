@@ -9,6 +9,8 @@ PR = "r0"
 
 PV = "5.15.78"
 
+LINUX_VERSION = "${PV}"
+
 KERNEL_BRANCH ?= "master-5.15.78"
 SRCREV  = "${AUTOREV}"
 
