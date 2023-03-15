@@ -3,7 +3,7 @@ SOC_FAMILY:append = ":adsp-sc5xx"
 SOC_FAMILY = "adi-soc"
 
 require conf/machine/include/soc-family.inc
-require conf/machine/include/tune-cortexa5.inc
+require conf/machine/include/arm/armv7a/tune-cortexa5.inc
 
 # Increase this everytime you change something in the kernel
 MACHINE_KERNEL_PR = "r0"
