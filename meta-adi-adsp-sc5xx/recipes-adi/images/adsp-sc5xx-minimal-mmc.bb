@@ -19,3 +19,5 @@ fakeroot do_rootfs_cleanup(){
 }
 
 addtask rootfs_cleanup after do_rootfs before do_image
+
+IMAGE_FSTYPES:append = " wic.gz ext4 "

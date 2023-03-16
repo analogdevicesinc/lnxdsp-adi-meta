@@ -42,3 +42,14 @@ PASSWD_ROOT = "\$5\$j9T8zDE13LXUGyc6\$utDvGwFWR.kt/AKwwbHnXC14HJBqbcWwvLoDDLMQrc
 EXTRA_USERS_PARAMS = "usermod -p '${PASSWD_ROOT}' root;"
 
 TOOLCHAIN_HOST_TASK:append = " nativesdk-openocd-adi"
+
+IMAGE_FSTYPES:append = " tar.xz jffs2 "
+
+#For some reason on poky-tiny, INIT_MANAGER="systemd" does not appear to work
+#For now, let's relink directly to systemd
+fakeroot do_set_init(){
+    rm -rf ${IMAGE_ROOTFS}/sbin/init
+    ln -s /lib/systemd/systemd ${IMAGE_ROOTFS}/sbin/init
+}
+
+addtask do_set_init after do_rootfs before do_image
