@@ -1,0 +1,32 @@
+From 8395aea0b560c6d6ee0994b23c59a8c485d68c6d Mon Sep 17 00:00:00 2001
+From: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+Date: Tue, 21 Mar 2023 12:38:13 -0400
+Subject: [PATCH] Fix compilation error if __GLIBC_PREREQ is not defined
+
+---
+ testptp.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/testptp.c b/testptp.c
+index 2bc8abc..1b701c7 100755
+--- a/testptp.c
++++ b/testptp.c
+@@ -48,6 +48,7 @@
+ #endif
+ 
+ /* clock_adjtime is not available in GLIBC < 2.14 */
++#if defined(_GNU_SOURCE) && defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+ #if !__GLIBC_PREREQ(2, 14)
+ #include <sys/syscall.h>
+ static int clock_adjtime(clockid_t id, struct timex *tx)
+@@ -55,6 +56,7 @@ static int clock_adjtime(clockid_t id, struct timex *tx)
+ 	return syscall(__NR_clock_adjtime, id, tx);
+ }
+ #endif
++#endif
+ 
+ static clockid_t get_clockid(int fd)
+ {
+-- 
+2.34.1
+

@@ -20,7 +20,6 @@ TOUCHSCREEN = "\
 
 SQLITE = "\
 	sqlite3 \
-	sqlite-test \
 "
 
 FILE_SYSTEM_TOOLS = "\
@@ -54,7 +53,6 @@ BLUETOOTH_AND_HEADSET = " \
 	rpmsg-utils \
 	dbus \
 	bluez5 \
-	packagegroup-tools-bluetooth \
 	expat \
 	play \
 "
@@ -64,15 +62,10 @@ OPROFILE = " \
 "
 
 MPLAYER = " \
-	mplayer-common \
 	mpv \
-	video-test \
 	v4l2-video-test \
 	ffmpeg \
 "
-
-#Removed for Dunfell:
-# pound
 
 EXTRA_IMAGE_FEATURES += "debug-tweaks dbg-pkgs tools-profile"
 
