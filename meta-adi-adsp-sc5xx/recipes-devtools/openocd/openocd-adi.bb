@@ -10,6 +10,7 @@ OPENOCD_BRANCH ?= "adi-main"
 
 SRC_URI = " \
 	${OPENOCD_GIT_URI};protocol=${OPENOCD_GIT_PROTOCOL};branch=${OPENOCD_BRANCH} \
+	file://0001-Fixup-build-error-by-splitting-dap_cmd_pool-into-dap.patch \
 "
 
 SRCREV = "d5c76126458b8dc7bff7a30b48198801c05143e8"

@@ -1,0 +1,121 @@
+From e5db4a9f9e7146855531f32fd13689a4fa051126 Mon Sep 17 00:00:00 2001
+From: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+Date: Wed, 22 Mar 2023 09:30:06 -0400
+Subject: [PATCH] Fixup build error by splitting dap_cmd_pool into
+ dap_cmd_pool_v5 and dap_cmd_pool_v6
+
+src/.libs/libopenocd.a(adi_v6_jtag.o):(.bss+0x0): multiple definition of `dap_cmd_pool'; src/.libs/libopenocd.a(adi_v5_jtag.o):(.bss+0x0): first defined here
+---
+ src/target/adi_v5_jtag.c | 14 +++++++-------
+ src/target/adi_v6_jtag.c | 14 +++++++-------
+ 2 files changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/src/target/adi_v5_jtag.c b/src/target/adi_v5_jtag.c
+index ac3d6df68..7300d287e 100644
+--- a/src/target/adi_v5_jtag.c
++++ b/src/target/adi_v5_jtag.c
+@@ -145,10 +145,10 @@ struct dap_cmd {
+ 
+ #define MAX_DAP_COMMAND_NUM 65536
+ 
+-struct dap_cmd_pool {
++struct dap_cmd_pool_v5 {
+ 	struct list_head lh;
+ 	struct dap_cmd cmd;
+-} dap_cmd_pool;
++} dap_cmd_pool_v5;
+ 
+ static void log_dap_cmd(const char *header, struct dap_cmd *el)
+ {
+@@ -177,14 +177,14 @@ static struct dap_cmd *dap_cmd_new(struct adi_dap *dap, uint8_t instr,
+ 		uint8_t *outvalue, uint8_t *invalue,
+ 		uint32_t memaccess_tck)
+ {
+-	struct dap_cmd_pool *pool = NULL;
++	struct dap_cmd_pool_v5 *pool = NULL;
+ 
+ 	if (list_empty(&dap->cmd_pool)) {
+-		pool = calloc(1, sizeof(struct dap_cmd_pool));
++		pool = calloc(1, sizeof(struct dap_cmd_pool_v5));
+ 		if (pool == NULL)
+ 			return NULL;
+ 	} else {
+-		pool = list_first_entry(&dap->cmd_pool, struct dap_cmd_pool, lh);
++		pool = list_first_entry(&dap->cmd_pool, struct dap_cmd_pool_v5, lh);
+ 		list_del(&pool->lh);
+ 	}
+ 
+@@ -206,7 +206,7 @@ static struct dap_cmd *dap_cmd_new(struct adi_dap *dap, uint8_t instr,
+ 
+ static void dap_cmd_release(struct adi_dap *dap, struct dap_cmd *cmd)
+ {
+-	struct dap_cmd_pool *pool = container_of(cmd, struct dap_cmd_pool, cmd);
++	struct dap_cmd_pool_v5 *pool = container_of(cmd, struct dap_cmd_pool_v5, cmd);
+ 	if (dap->cmd_pool_size > MAX_DAP_COMMAND_NUM)
+ 		free(pool);
+ 	else
+@@ -227,7 +227,7 @@ static void flush_journal(struct adi_dap *dap, struct list_head *lh)
+ 
+ static void jtag_quit(struct adi_dap *dap)
+ {
+-	struct dap_cmd_pool *el, *tmp;
++	struct dap_cmd_pool_v5 *el, *tmp;
+ 	struct list_head *lh = &dap->cmd_pool;
+ 
+ 	list_for_each_entry_safe(el, tmp, lh, lh) {
+diff --git a/src/target/adi_v6_jtag.c b/src/target/adi_v6_jtag.c
+index 1a52eab80..0f7496d91 100644
+--- a/src/target/adi_v6_jtag.c
++++ b/src/target/adi_v6_jtag.c
+@@ -173,10 +173,10 @@ struct dap_cmd {
+ 
+ #define MAX_DAP_COMMAND_NUM 65536
+ 
+-struct dap_cmd_pool {
++struct dap_cmd_pool_v6 {
+ 	struct list_head lh;
+ 	struct dap_cmd cmd;
+-} dap_cmd_pool;
++} dap_cmd_pool_v6;
+ 
+ static void log_dap_cmd(const char *header, struct dap_cmd *el)
+ {
+@@ -205,14 +205,14 @@ static struct dap_cmd *dap_cmd_new(struct adi_dap *dap, uint8_t instr,
+ 		uint8_t *outvalue, uint8_t *invalue,
+ 		uint32_t memaccess_tck)
+ {
+-	struct dap_cmd_pool *pool = NULL;
++	struct dap_cmd_pool_v6 *pool = NULL;
+ 
+ 	if (list_empty(&dap->cmd_pool)) {
+-		pool = calloc(1, sizeof(struct dap_cmd_pool));
++		pool = calloc(1, sizeof(struct dap_cmd_pool_v6));
+ 		if (pool == NULL)
+ 			return NULL;
+ 	} else {
+-		pool = list_first_entry(&dap->cmd_pool, struct dap_cmd_pool, lh);
++		pool = list_first_entry(&dap->cmd_pool, struct dap_cmd_pool_v6, lh);
+ 		list_del(&pool->lh);
+ 	}
+ 
+@@ -234,7 +234,7 @@ static struct dap_cmd *dap_cmd_new(struct adi_dap *dap, uint8_t instr,
+ 
+ static void dap_cmd_release(struct adi_dap *dap, struct dap_cmd *cmd)
+ {
+-	struct dap_cmd_pool *pool = container_of(cmd, struct dap_cmd_pool, cmd);
++	struct dap_cmd_pool_v6 *pool = container_of(cmd, struct dap_cmd_pool_v6, cmd);
+ 	if (dap->cmd_pool_size > MAX_DAP_COMMAND_NUM)
+ 		free(pool);
+ 	else
+@@ -255,7 +255,7 @@ static void flush_journal(struct adi_dap *dap, struct list_head *lh)
+ 
+ static void jtag_quit(struct adi_dap *dap)
+ {
+-	struct dap_cmd_pool *el, *tmp;
++	struct dap_cmd_pool_v6 *el, *tmp;
+ 	struct list_head *lh = &dap->cmd_pool;
+ 
+ 	list_for_each_entry_safe(el, tmp, lh, lh) {
+-- 
+2.30.2
+
