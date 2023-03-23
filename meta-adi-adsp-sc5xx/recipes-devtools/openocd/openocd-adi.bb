@@ -27,6 +27,8 @@ EXTRA_OECONF = "--disable-ftdi --disable-stlink --disable-ti-icdi --disable-ulin
                 --disable-usbprog --disable-rlink --disable-armjtagew --enable-maintainer-mode --enable-ice1000 --enable-ice2000 \
                 --enable-adi-dbgagent --disable-libusbmux"
 
+do_configure[network] = "1"
+
 do_configure() {
     ./bootstrap
     oe_runconf ${EXTRA_OECONF}
