@@ -11,7 +11,7 @@ PV = "5.15.78"
 
 LINUX_VERSION = "${PV}"
 
-KERNEL_BRANCH ?= "master-5.15.78"
+KERNEL_BRANCH ?= "develop/yocto-3.0.0"
 SRCREV  = "${AUTOREV}"
 
 SRC_URI += "file://feature/"
