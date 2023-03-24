@@ -2,46 +2,50 @@
 
 cd /tmp
 
-LIST="1K 4K 8K 128K 512K 1M 4M 8M"
+FILESIZE="1K 4K 8K 128K 512K 1M 4M 8M"
+CIPHERS="aes-256-cbc des-cbc des3 aes-256-ecb"
 
-for i in ${LIST}; do
+#OpenSSL + cryptodev does not currently support des-ecb and des-ede3-ecb,
+#So we cannot test des-ecb and des-ede3-ecb here
+
+for i in ${FILESIZE}; do
 	dd if=/dev/urandom of=secrets.txt.${i} bs=${i} count=1 > /dev/null 2>&1
 done
 
-#PBKDF2="-pbkdf2"
-PBKDF2=""
-
 #Don't salt the encryptions, so that we can compare operations with and without PKTE driver
 
-rmmod cryptodev
+for j in ${CIPHERS}; do
 
-for i in ${LIST}; do
-	openssl aes-256-cbc -a -nosalt ${PBKDF2} -in secrets.txt.${i} -out secrets.txt.enc.${i} -pass pass:test
-	openssl aes-256-cbc -d -a -nosalt ${PBKDF2} -in secrets.txt.enc.${i} -out secrets.txt.dec.${i} -pass pass:test
+	rmmod cryptodev
+
+	for i in ${FILESIZE}; do
+		openssl enc -${j} -a -nosalt -in secrets.txt.${i} -out secrets.txt.enc.${i}.${j} -pass pass:test -provider legacy -provider default  > /dev/null 2>&1
+		openssl enc -${j} -d -a -nosalt -in secrets.txt.enc.${i}.${j} -out secrets.txt.dec.${i}.${j} -pass pass:test -provider legacy -provider default  > /dev/null 2>&1
+	done
+
+	modprobe cryptodev
+
+	for i in ${FILESIZE}; do
+		openssl enc -${j} -a -nosalt -in secrets.txt.${i} -out secrets.txt.enc.${i}.${j}.pkte -pass pass:test -provider legacy -provider default -engine devcrypto  > /dev/null 2>&1
+		openssl enc -${j} -d -a -nosalt -in secrets.txt.enc.${i}.${j}.pkte -out secrets.txt.dec.${i}.${j}.pkte -pass pass:test -provider legacy -provider default -engine devcrypto  > /dev/null 2>&1
+	done
+
+	for i in ${FILESIZE}; do
+		cmp secrets.txt.enc.${i}.${j} secrets.txt.enc.${i}.${j}.pkte
+		if [ $? -gt 0 ]; then
+			echo "${j} [OpenSSL] (encrypt, ${i}): FAIL"
+		else
+			echo "${j} [OpenSSL] (encrypt, ${i}): PASS"
+		fi
+		rm secrets.txt.enc.${i}.${j} secrets.txt.enc.${i}.${j}.pkte
+
+		cmp secrets.txt.dec.${i}.${j} secrets.txt.dec.${i}.${j}.pkte
+		if [ $? -gt 0 ]; then
+			echo "${j} [OpenSSL] (decrypt, ${i}): FAIL"
+		else
+			echo "${j} [OpenSSL] (decrypt, ${i}): PASS"
+		fi
+		rm secrets.txt.dec.${i}.${j} secrets.txt.dec.${i}.${j}.pkte
+	done
+
 done
-
-modprobe cryptodev
-
-for i in ${LIST}; do
-	openssl aes-256-cbc -a -nosalt ${PBKDF2} -in secrets.txt.${i} -out secrets.txt.enc.${i}.pkte -pass pass:test
-	openssl aes-256-cbc -d -a -nosalt ${PBKDF2} -in secrets.txt.enc.${i}.pkte -out secrets.txt.dec.${i}.pkte -pass pass:test
-done
-
-
-for i in ${LIST}; do
-	cmp secrets.txt.enc.${i} secrets.txt.enc.${i}.pkte
-	if [ $? -gt 0 ]; then
-		echo "AES-CBC [OpenSSL] (encrypt, ${i}): FAIL"
-	else
-		echo "AES-CBC [OpenSSL] (encrypt, ${i}): PASS"
-	fi
-
-	cmp secrets.txt.dec.${i} secrets.txt.dec.${i}.pkte
-	if [ $? -gt 0 ]; then
-		echo "AES-CBC [OpenSSL] (decrypt, ${i}): FAIL"
-	else
-		echo "AES-CBC [OpenSSL] (decrypt, ${i}): PASS"
-	fi
-done
-
-
