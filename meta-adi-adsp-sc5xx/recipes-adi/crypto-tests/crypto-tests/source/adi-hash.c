@@ -208,9 +208,6 @@ void test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint
 
 
 static int test_crypto(int cfd) {
-
-	//Commented out tests are currently unsupported/non-functional
-
 	//SHA256 Hashes
 	test_hash(cfd, test1_input, test1_sha256_expected, NULL, CRYPTO_SHA2_256);
 	test_hash(cfd, test2_input, test2_sha256_expected, NULL, CRYPTO_SHA2_256);
@@ -221,7 +218,7 @@ static int test_crypto(int cfd) {
 	test_hash(cfd, test1_input, test1_sha256_expected_hmac, test1_input_hmac_key, CRYPTO_SHA2_256_HMAC);
 	test_hash(cfd, test2_input, test2_sha256_expected_hmac, test2_input_hmac_key, CRYPTO_SHA2_256_HMAC);
 	test_hash(cfd, test3_input, test3_sha256_expected_hmac, test3_input_hmac_key, CRYPTO_SHA2_256_HMAC);
-	//test_hash(cfd, test4_input, test4_sha256_expected_hmac, test4_input_hmac_key, CRYPTO_SHA2_256_HMAC);
+	test_hash(cfd, test4_input, test4_sha256_expected_hmac, test4_input_hmac_key, CRYPTO_SHA2_256_HMAC);
 
 	//SHA1 Hashes
 	test_hash(cfd, test1_input, test1_sha1_expected, NULL, CRYPTO_SHA1);
@@ -233,7 +230,7 @@ static int test_crypto(int cfd) {
 	test_hash(cfd, test1_input, test1_sha1_expected_hmac, test1_input_hmac_key, CRYPTO_SHA1_HMAC);
 	test_hash(cfd, test2_input, test2_sha1_expected_hmac, test2_input_hmac_key, CRYPTO_SHA1_HMAC);
 	test_hash(cfd, test3_input, test3_sha1_expected_hmac, test3_input_hmac_key, CRYPTO_SHA1_HMAC);
-	//test_hash(cfd, test4_input, test4_sha1_expected_hmac, test4_input_hmac_key, CRYPTO_SHA1_HMAC);
+	test_hash(cfd, test4_input, test4_sha1_expected_hmac, test4_input_hmac_key, CRYPTO_SHA1_HMAC);
 
 	//SHA224 Hashes
 	test_hash(cfd, test1_input, test1_sha224_expected, NULL, CRYPTO_SHA2_224);
@@ -242,10 +239,10 @@ static int test_crypto(int cfd) {
 	test_hash(cfd, test4_input, test4_sha224_expected, NULL, CRYPTO_SHA2_224);
 
 	//SHA224 HMAC Hashes
-	//test_hash(cfd, test1_input, test1_sha224_expected_hmac, test1_input_hmac_key, CRYPTO_SHA2_224_HMAC);
-	//test_hash(cfd, test2_input, test2_sha224_expected_hmac, test2_input_hmac_key, CRYPTO_SHA2_224_HMAC);
-	//test_hash(cfd, test3_input, test3_sha224_expected_hmac, test3_input_hmac_key, CRYPTO_SHA2_224_HMAC);
-	//test_hash(cfd, test4_input, test4_sha224_expected_hmac, test4_input_hmac_key, CRYPTO_SHA2_224_HMAC);
+	test_hash(cfd, test1_input, test1_sha224_expected_hmac, test1_input_hmac_key, CRYPTO_SHA2_224_HMAC);
+	test_hash(cfd, test2_input, test2_sha224_expected_hmac, test2_input_hmac_key, CRYPTO_SHA2_224_HMAC);
+	test_hash(cfd, test3_input, test3_sha224_expected_hmac, test3_input_hmac_key, CRYPTO_SHA2_224_HMAC);
+	test_hash(cfd, test4_input, test4_sha224_expected_hmac, test4_input_hmac_key, CRYPTO_SHA2_224_HMAC);
 
 	//SHA1 Hashes
 	test_hash(cfd, test1_input, test1_md5_expected, NULL, CRYPTO_MD5);
@@ -257,7 +254,7 @@ static int test_crypto(int cfd) {
 	test_hash(cfd, test1_input, test1_md5_expected_hmac, test1_input_hmac_key, CRYPTO_MD5_HMAC);
 	test_hash(cfd, test2_input, test2_md5_expected_hmac, test2_input_hmac_key, CRYPTO_MD5_HMAC);
 	test_hash(cfd, test3_input, test3_md5_expected_hmac, test3_input_hmac_key, CRYPTO_MD5_HMAC);
-	//test_hash(cfd, test4_input, test4_md5_expected_hmac, test4_input_hmac_key, CRYPTO_MD5_HMAC);
+	test_hash(cfd, test4_input, test4_md5_expected_hmac, test4_input_hmac_key, CRYPTO_MD5_HMAC);
 
 	return 0;
 }
