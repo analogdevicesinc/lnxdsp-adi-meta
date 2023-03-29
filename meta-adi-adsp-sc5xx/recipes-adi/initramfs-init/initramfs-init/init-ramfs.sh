@@ -48,7 +48,12 @@ elif [ "$(grep root= /proc/cmdline)" ]; then
 else
 	echo "Analog [Initramfs]: No root device found, dropping to getty" > /dev/kmsg
 
+	cat /etc/hostname > /proc/sys/kernel/hostname
+
+	/sbin/udhcpc eth0 &
+
 	while [ 1 ]; do
-		/sbin/getty 115200 /dev/ttySC0
+		/sbin/getty 115200 /dev/ttySC0 linux
 	done
 fi
+

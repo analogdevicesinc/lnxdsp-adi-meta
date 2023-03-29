@@ -20,20 +20,23 @@ DEPENDS += "u-boot-tools-native"
 
 #We do not need these files in the rootfs -- remove them to reduce the minimal rootfs size
 fakeroot do_rootfs_cleanup(){
-	rm -rf ${IMAGE_ROOTFS}/usr/lib/opkg
-	rm -rf ${IMAGE_ROOTFS}/usr/lib/locale
-	rm -rf ${IMAGE_ROOTFS}/sbin/ldconfig
-	rm -rf ${IMAGE_ROOTFS}/etc/ssh/moduli
-	rm -rf ${IMAGE_ROOTFS}/usr/sbin/useradd
-	rm -rf ${IMAGE_ROOTFS}/usr/sbin/userdel
-	rm -rf ${IMAGE_ROOTFS}/usr/sbin/usermod
+    rm -rf ${IMAGE_ROOTFS}/usr/lib/opkg
+    rm -rf ${IMAGE_ROOTFS}/usr/lib/locale
+    rm -rf ${IMAGE_ROOTFS}/sbin/ldconfig
+    rm -rf ${IMAGE_ROOTFS}/etc/ssh/moduli
+    rm -rf ${IMAGE_ROOTFS}/usr/sbin/useradd
+    rm -rf ${IMAGE_ROOTFS}/usr/sbin/userdel
+    rm -rf ${IMAGE_ROOTFS}/usr/sbin/usermod
+
+    echo ${MACHINE} > ${IMAGE_ROOTFS}/etc/hostname
+    chmod 777 ${IMAGE_ROOTFS}/etc/hostname
 }
 
 addtask rootfs_cleanup after do_rootfs before do_image
 
 # printf "%q" $(mkpasswd -m sha256crypt adi)
 PASSWD_ROOT = "\$5\$j9T8zDE13LXUGyc6\$utDvGwFWR.kt/AKwwbHnXC14HJBqbcWwvLoDDLMQrc8"
-EXTRA_USERS_PARAMS = "usermod -p '${PASSWD_ROOT}' root;"
+EXTRA_USERS_PARAMS = "usermod -d /root -p '${PASSWD_ROOT}' root;"
 
 python __anonymous() {
     count=0
