@@ -15,6 +15,7 @@ CRYPTO = " \
     cryptodev-linux \
     cryptodev-module \
     crypto-tests \
+    crc-tests \
 "
 
 IMAGE_INSTALL = " \
