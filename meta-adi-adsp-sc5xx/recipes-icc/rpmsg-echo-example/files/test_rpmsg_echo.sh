@@ -1,14 +1,16 @@
 #!/bin/sh
 
-echo "echo_core1.ldr" > /sys/class/remoteproc/remoteproc0/firmware
-echo "start" > /sys/class/remoteproc/remoteproc0/state
+#If not already loaded at boot, then load the firmware:
 
-sleep 2
+#echo "echo_core1.ldr" > /sys/class/remoteproc/remoteproc0/firmware
+#echo "start" > /sys/class/remoteproc/remoteproc0/state
 
-echo "echo_core2.ldr" > /sys/class/remoteproc/remoteproc1/firmware
-echo "start" > /sys/class/remoteproc/remoteproc1/state
+#sleep 2
 
-sleep 2
+#echo "echo_core2.ldr" > /sys/class/remoteproc/remoteproc1/firmware
+#echo "start" > /sys/class/remoteproc/remoteproc1/state
+
+#sleep 2
 
 RPMSG_EP=$(basename $(ls -d /sys/bus/rpmsg/devices/*.sharc-echo.-1.151))
 rpmsg-bind-chardev -d ${RPMSG_EP} -a 50
