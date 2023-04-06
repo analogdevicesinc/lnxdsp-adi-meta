@@ -5,8 +5,15 @@ LICENSE = "MIT"
 
 INITRD_NAME = "adsp-sc5xx-ramdisk-${MACHINE}.cpio.gz"
 
+SHARC_ALSA_BINARIES = "${@bb.utils.contains_any('DISTRO_FEATURES', 'adi_sharc_alsa_audio', 'sharc-audio', '', d)}"
+HYBRID_BINARIES = "${@bb.utils.contains_any('DISTRO_FEATURES', 'adi_hybrid_audio', 'hybrid-audio', '', d)}"
+LINUX_ONLY_BINARIES = "${@bb.utils.contains_any('DISTRO_FEATURES', 'linux_only_audio', 'rpmsg-echo-example', '', d)}"
+
 ICC = " \
 	rpmsg-utils \
+	${SHARC_ALSA_BINARIES} \
+	${HYBRID_BINARIES} \
+	${LINUX_ONLY_BINARIES} \
 "
 
 CRYPTO = " \
