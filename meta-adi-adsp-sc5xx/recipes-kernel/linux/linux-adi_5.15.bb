@@ -1,4 +1,8 @@
-require linux-adi.inc
+USB_AUDIO = " \
+	${@bb.utils.contains('DISTRO_FEATURES', 'adi_usb_gadget_audio', 'adi_usb_gadget_audio.inc', '', d)} \
+"
+
+require linux-adi.inc sharc_audio.inc ${USB_AUDIO}
 
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
@@ -13,23 +17,6 @@ LINUX_VERSION = "${PV}"
 
 KERNEL_BRANCH ?= "develop/yocto-3.0.0"
 SRCREV  = "${AUTOREV}"
-
-HYBRID_AUDIO_PATCH = " \
-	file://0001-SC598-Audio-configuration-for-hybrid-audio-support.patch \
-"
-SHARC_ALSA_PATCH = " \
-	${HYBRID_AUDIO_PATCH} \
-	file://0002-SC598-Enable-SHARC-ALSA-demo-disabling-most-linux-ba.patch \
-"
-
-SHARC_ALSA_PATCH_UBOOT = " \
-	${SHARC_ALSA_PATCH} \
-	file://0003-Disable-remoteproc.patch \
-"
-
-SRC_URI += "${@bb.utils.contains('DISTRO_FEATURES', 'adi_hybrid_audio', '${HYBRID_AUDIO_PATCH}', '', d)}"
-SRC_URI += "${@bb.utils.contains('DISTRO_FEATURES', 'adi_sharc_alsa_audio', '${SHARC_ALSA_PATCH}', '', d)}"
-SRC_URI += "${@bb.utils.contains('DISTRO_FEATURES', 'adi_sharc_alsa_audio_uboot', '${SHARC_ALSA_PATCH_UBOOT}', '', d)}"
 
 # Include kernel configuration fragments
 SRC_URI:append = " \
