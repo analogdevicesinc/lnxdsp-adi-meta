@@ -94,7 +94,6 @@ IMAGE_INSTALL += " \
 	linux-firmware-rtl8192su \
 	linux-firmware-adau1761 \
 	lrzsz \
-	wireless-tools \
 	can-utils \
 	netperf \
 	lighttpd \
