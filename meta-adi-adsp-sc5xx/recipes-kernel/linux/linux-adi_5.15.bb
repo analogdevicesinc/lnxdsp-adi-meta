@@ -4,7 +4,7 @@ USB_AUDIO = " \
 
 require linux-adi.inc sharc_audio.inc ${USB_AUDIO}
 
-LICENSE = "GPLv2"
+LICENSE = "GPL-2.0-only"
 LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
 DEPENDS += "u-boot-mkimage-native dtc-native"

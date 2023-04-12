@@ -1,6 +1,6 @@
 SUMMARY = "RPMsg utils and test tools"
 
-LICENSE = "BSD"
+LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3460f536ba9d78eca5515f8b51223812"
 
 SRC_URI = "\
