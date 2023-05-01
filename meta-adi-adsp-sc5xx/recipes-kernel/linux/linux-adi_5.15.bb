@@ -13,7 +13,7 @@ PR = "r0"
 
 PV = "5.15.78"
 
-LINUX_VERSION = "${PV}"
+LINUX_VERSION = "ef09828fa5233ea4c155b7ccf0276057ab2f30ca"
 
 KERNEL_BRANCH ?= "develop/yocto-3.0.0"
 SRCREV  = "${AUTOREV}"
