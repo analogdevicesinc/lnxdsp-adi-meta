@@ -56,8 +56,10 @@ IMAGE_FSTYPES:append = " tar.xz jffs2 "
 #For some reason on poky-tiny, INIT_MANAGER="systemd" does not appear to work
 #For now, let's relink directly to systemd
 fakeroot do_set_init(){
-    rm -rf ${IMAGE_ROOTFS}/sbin/init
-    ln -s /lib/systemd/systemd ${IMAGE_ROOTFS}/sbin/init
+    if [ "${DISTRO}" = "adi-distro-musl" ]; then
+        rm -rf ${IMAGE_ROOTFS}/sbin/init
+        ln -s /lib/systemd/systemd ${IMAGE_ROOTFS}/sbin/init
+    fi
 }
 
 addtask do_set_init after do_rootfs before do_image
