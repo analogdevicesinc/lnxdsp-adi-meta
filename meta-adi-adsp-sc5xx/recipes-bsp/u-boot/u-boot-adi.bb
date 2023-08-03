@@ -4,7 +4,7 @@ require u-boot-adi.inc
 
 PR = "r0"
 
-SRCREV = "${AUTOREV}"
+SRCREV = "e2e8f503a55c42901ad6713ca6691ecdf8c3eabf"
 
 UBOOT_INITIAL_ENV = ""
 
