@@ -29,3 +29,5 @@ do_deploy() {
 	install ${B}/u-boot-spl-${BOARD}.elf ${DEPLOYDIR}/
 	install ${B}/u-boot-spl-${BOARD}.ldr ${DEPLOYDIR}/${STAGE_1_TARGET_NAME}
 }
+
+INSANE_SKIP:${PN} += "textrel"
