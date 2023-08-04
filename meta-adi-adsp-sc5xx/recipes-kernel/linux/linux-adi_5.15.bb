@@ -27,11 +27,11 @@ SRC_URI:append = " \
 	file://feature/cfg/tracepoints.cfg \
 "
 
-SRC_URI:append:adsp-sc594-som-ezkit = "file://feature/snd_ezkit.scc"
-SRC_URI:append:adsp-sc589-ezkit = "file://feature/snd_ezkit.scc"
-SRC_URI:append:adsp-sc584-ezkit = "file://feature/snd_ezkit.scc"
-SRC_URI:append:adsp-sc573-ezkit = "file://feature/snd_ezkit.scc"
-SRC_URI:append:adsp-sc589-mini = "file://feature/snd_mini.scc"
+SRC_URI:append:adsp-sc594-som-ezkit = " file://feature/snd_ezkit.scc"
+SRC_URI:append:adsp-sc589-ezkit = " file://feature/snd_ezkit.scc"
+SRC_URI:append:adsp-sc584-ezkit = " file://feature/snd_ezkit.scc"
+SRC_URI:append:adsp-sc573-ezkit = " file://feature/snd_ezkit.scc"
+SRC_URI:append:adsp-sc589-mini = " file://feature/snd_mini.scc"
 
 do_install:append(){
 	rm -rf ${D}/lib/modules/5.15.78-yocto-standard/modules.builtin.modinfo
