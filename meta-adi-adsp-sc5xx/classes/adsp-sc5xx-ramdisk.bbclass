@@ -1,10 +1,10 @@
-inherit core-image extrausers adsp-sc5xx-compatible
+inherit core-image extrausers adsp-sc5xx-compatible nopackages
 
 SHARC_ALSA_BINARIES = "${@bb.utils.contains_any('DISTRO_FEATURES', 'adi_sharc_alsa_audio', 'sharc-audio', '', d)}"
 HYBRID_BINARIES = "${@bb.utils.contains_any('DISTRO_FEATURES', 'adi_hybrid_audio', 'hybrid-audio', '', d)}"
 LINUX_ONLY_BINARIES = "${@bb.utils.contains_any('DISTRO_FEATURES', 'linux_only_audio', 'rpmsg-echo-example', '', d)}"
 
-IMAGE_INSTALL = " \
+PACKAGE_INSTALL = " \
     busybox-watchdog-init \
     initramfs-init \
     busybox \
@@ -12,7 +12,7 @@ IMAGE_INSTALL = " \
     ${HYBRID_BINARIES} \
     ${LINUX_ONLY_BINARIES} \
 "
-
+INHIBIT_DEFAULT_DEPS = "1"
 DISTRO_FEATURES += " ram"
 IMAGE_FSTYPES = " cpio.xz cpio.gz"
 
