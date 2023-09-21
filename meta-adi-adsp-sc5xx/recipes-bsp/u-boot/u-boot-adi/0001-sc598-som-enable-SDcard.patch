@@ -1,0 +1,49 @@
+From 40f81efa5c0187a2cdd75438ed168aa4ceaec9bb Mon Sep 17 00:00:00 2001
+From: Ilies CHERGUI <Ilies.Chergui@analog.com>
+Date: Mon, 18 Sep 2023 19:25:02 +0100
+Subject: [PATCH] sc598-som: enable SDcard
+
+Signed-off-by: Ilies CHERGUI <Ilies.Chergui@analog.com>
+---
+ arch/arm/dts/sc598-som.dtsi | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/dts/sc598-som.dtsi b/arch/arm/dts/sc598-som.dtsi
+index 3d30f8dca1..fa5308a526 100644
+--- a/arch/arm/dts/sc598-som.dtsi
++++ b/arch/arm/dts/sc598-som.dtsi
+@@ -54,8 +54,11 @@
+ 			pinctrl-0 = <&mmc_defaults>;
+ 			clocks = <&emmcclk>;
+ 			clock-names = "core";
+-			max-frequency = <50000000>;
+-			bus-width = <8>;
++			//max-frequency = <50000000>;
++			max-frequency = <44000000>;
++			no-1-8-v;
++			//bus-width = <8>;
++			bus-width = <4>;
+ 			u-boot,dm-pre-reloc;
+ 		};
+ 	};
+@@ -197,7 +200,7 @@
+ 		emmc {
+ 			gpio-hog;
+ 			gpios = <8 GPIO_ACTIVE_HIGH>;
+-			output-low;
++			output-high;
+ 			line-name = "emmc-en";
+ 			u-boot,dm-pre-reloc;
+ 		};
+@@ -205,7 +208,7 @@
+ 		emmc-som-en {
+ 			gpio-hog;
+ 			gpios = <9 GPIO_ACTIVE_HIGH>;
+-			output-high;
++			output-low;
+ 			line-name = "emmc-som-en";
+ 			u-boot,dm-pre-reloc;
+ 		};
+-- 
+2.25.1
+
