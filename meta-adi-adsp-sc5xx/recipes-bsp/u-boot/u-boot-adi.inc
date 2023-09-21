@@ -26,6 +26,8 @@ SRC_URI += " \
 	${BMODE_FORCE_EMMC} \
 "
 
+SRC_URI:append:adsp-sc598-som-ezkit = "${@' file://0001-sc598-som-enable-SDcard.patch' if bb.utils.to_boolean(d.getVar('ADSP_SC598_SDCARD')) else ''}"
+
 LICENSE = "GPL-2.0-or-later"
 LIC_FILES_CHKSUM = "file://Licenses/README;md5=2ca5f2c35c8cc335f0a19756634782f1"
 
