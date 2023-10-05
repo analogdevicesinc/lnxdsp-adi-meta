@@ -1,6 +1,10 @@
 #!/bin/sh
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
+rootdev=""
+opt="rw"
+wait=""
+fstype="auto"
 
 do_splash(){
 printf " \
@@ -40,10 +44,25 @@ if [ "$(grep nfsroot= /proc/cmdline)" ]; then
 	mount -t nfs -o nolock,$NFS_OPTS $NFS_SERVER /rootmount
 	exec switch_root /rootmount /sbin/init > /dev/kmsg
 elif [ "$(grep root= /proc/cmdline)" ]; then
-	RFS_DEVICE=$(cat /proc/cmdline | sed -e 's/^.*root=//' -e 's/ .*$//')
-	RFS_TYPE=$(cat /proc/cmdline | sed -e 's/^.*rootfstype=//' -e 's/ .*$//')
-	echo "Analog [Initramfs]: Switching RFS to ${RFS_TYPE},${RFS_DEVICE}..." > /dev/kmsg
-	mount -t $RFS_TYPE $RFS_DEVICE /rootmount
+	for bootarg in $(cat /proc/cmdline); do
+		case "$bootarg" in
+			root=*) rootdev="${bootarg##root=}" ;;
+			ro) opt="ro" ;;
+			rootwait) wait="yes" ;;
+			rootfstype=*) fstype="${bootarg##rootfstype=}" ;;
+		esac
+	done
+
+	if [ -n "${wait}" -a ! -b "${rootdev}" ]; then
+		echo "Waiting for ${rootdev}..."  > /dev/kmsg
+		while true; do
+			test -b "${rootdev}" && break
+			sleep 1
+		done
+	fi
+
+	echo "Analog [Initramfs]: Switching RFS to ${fstype},${rootdev}..." > /dev/kmsg
+	mount -t "${fstype}" -o "${opt}" "${rootdev}" /rootmount
 	exec switch_root /rootmount /sbin/init > /dev/kmsg
 else
 	echo "Analog [Initramfs]: No root device found, dropping to getty" > /dev/kmsg
