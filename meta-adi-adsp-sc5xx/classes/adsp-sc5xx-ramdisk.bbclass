@@ -11,6 +11,10 @@ PACKAGE_INSTALL = " \
     ${SHARC_ALSA_BINARIES} \
     ${HYBRID_BINARIES} \
     ${LINUX_ONLY_BINARIES} \
+    kernel-module-usb-storage \
+    kernel-module-scsi-common \
+    kernel-module-scsi-mod \
+    kernel-module-sd-mod \
 "
 INHIBIT_DEFAULT_DEPS = "1"
 DISTRO_FEATURES += " ram"
