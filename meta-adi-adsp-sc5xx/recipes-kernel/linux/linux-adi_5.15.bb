@@ -25,11 +25,11 @@ SRC_URI:append = " \
 	file://feature/cfg/tracepoints.cfg \
 "
 
-SRC_URI:append:adsp-sc594-som-ezkit = " file://feature/snd_ezkit.scc"
-SRC_URI:append:adsp-sc589-ezkit = " file://feature/snd_ezkit.scc"
-SRC_URI:append:adsp-sc584-ezkit = " file://feature/snd_ezkit.scc"
-SRC_URI:append:adsp-sc573-ezkit = " file://feature/snd_ezkit.scc"
-SRC_URI:append:adsp-sc589-mini = " file://feature/snd_mini.scc"
+SRC_URI:append:adsp-sc594-som-ezkit = " file://feature/cfg/snd_ezkit.scc"
+SRC_URI:append:adsp-sc589-ezkit = " file://feature/cfg/snd_ezkit.scc"
+SRC_URI:append:adsp-sc584-ezkit = " file://feature/cfg/snd_ezkit.scc"
+SRC_URI:append:adsp-sc573-ezkit = " file://feature/cfg/snd_ezkit.scc"
+SRC_URI:append:adsp-sc589-mini = " file://feature/cfg/snd_mini.scc"
 
 SRC_URI:append:adsp-sc598-som-ezkit = "${@' file://0001-sc598-som-enable-SDcard.patch' if bb.utils.to_boolean(d.getVar('ADSP_SC598_SDCARD')) else ''}"
 

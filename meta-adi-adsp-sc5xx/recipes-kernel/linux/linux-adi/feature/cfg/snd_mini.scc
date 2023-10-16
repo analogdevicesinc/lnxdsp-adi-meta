@@ -1,5 +1,5 @@
 define KFEATURE_DESCRIPTION "Sound Card Kernel Support for SAM"
 define KFEATURE_COMPATIBILITY board
 
-kconf hardware cfg/sound/sc5xx_snd.cfg
-kconf hardware cfg/sound/adau1761.cfg
+kconf hardware sound/sc5xx_snd.cfg
+kconf hardware sound/adau1761.cfg
