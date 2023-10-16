@@ -1,7 +1,0 @@
-define KFEATURE_DESCRIPTION "Video Kernel Support"
-define KFEATURE_COMPATIBILITY board
-
-kconf hardware cfg/video/sc5xx_v4l2.cfg
-kconf hardware cfg/video/adv7842.cfg
-
-patch patches/add-childnode-for-video-capture.patch
