@@ -1,0 +1,35 @@
+From b604f166332361b764c2429f9b1a64869133f7df Mon Sep 17 00:00:00 2001
+From: Arturs Artamonovs <arturs.artamonovs@analog.com>
+Date: Mon, 30 Oct 2023 16:37:07 +0000
+Subject: [PATCH] SC598: fix stmmac dma split header crash
+
+Signed-off-by: Arturs Artamonovs <arturs.artamonovs@analog.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 9f2e231fb891..1bf51cea4e5d 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -95,7 +95,7 @@ static int pause = PAUSE_TIME;
+ module_param(pause, int, 0644);
+ MODULE_PARM_DESC(pause, "Flow Control Pause Time");
+ 
+-#define TC_DEFAULT 64
++#define TC_DEFAULT 128
+ static int tc = TC_DEFAULT;
+ module_param(tc, int, 0644);
+ MODULE_PARM_DESC(tc, "DMA threshold control value");
+@@ -5219,7 +5219,7 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+ 
+ 		buf1_len = stmmac_rx_buf1_len(priv, p, status, len);
+ 		len += buf1_len;
+-		buf2_len = stmmac_rx_buf2_len(priv, p, status, len);
++		buf2_len = stmmac_rx_buf2_len(priv, p, status, buf1_len);
+ 		len += buf2_len;
+ 
+ 		/* ACS is set; GMAC core strips PAD/FCS for IEEE 802.3
+-- 
+2.25.1
+
