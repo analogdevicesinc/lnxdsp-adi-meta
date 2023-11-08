@@ -1,0 +1,61 @@
+diff --git a/arch/arm/mach-sc5xx/spl.c b/arch/arm/mach-sc5xx/spl.c
+index 45a0b225d4..dd5a28107d 100644
+--- a/arch/arm/mach-sc5xx/spl.c
++++ b/arch/arm/mach-sc5xx/spl.c
+@@ -1,11 +1,13 @@
+ /* SPDX-License-Identifier: GPL-2.0-or-later */
+ /*
+- * (C) Copyright 2022 - Analog Devices, Inc.
++ * (C) Copyright 2023 - Analog Devices, Inc.
+  *
+  * Written and/or maintained by Timesys Corporation
++ * Modified by Analog Devices, Inc.
+  *
+  * Contact: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+  * Contact: Greg Malysa <greg.malysa@timesys.com>
++ * Contact: Utsav Agarwal <utsav.agarwal@analog.com>
+  */
+ 
+ #include <asm-generic/gpio.h>
+@@ -26,6 +28,7 @@ static u32 initramfs_len;
+ #endif
+ 
+ u32 bmode;
++#define BMODE_ADDR 0x82000000
+ 
+ int spl_start_uboot(void)
+ {
+@@ -68,6 +71,8 @@ void board_boot_order(u32 *spl_boot_list)
+ 	};
+ 
+ 	char *bmodeString = "unknown";
++	int i = 0;
++
+ 
+ 	bmode = (readl(pRCU_STAT) & BITM_RCU_STAT_BMODE) >> BITP_RCU_STAT_BMODE;
+ 
+@@ -131,10 +136,22 @@ void board_boot_order(u32 *spl_boot_list)
+ 	}
+ 
+ #else
++
++	bmode = *((unsigned int *) BMODE_ADDR) - 1;
++	printf("Entering Developer Mode...\n");
++	if ((ARRAY_SIZE(bmodes) <= bmode) || (0 >= bmode)) {
++		printf("Please enter a bootmode at 0x%08x via JTAG:\n",BMODE_ADDR);
++		for (i = 0; i < ARRAY_SIZE(bmodes); i++)
++			printf("[%d]	%s\n", i+1, bmodes[i]);
++		
++		bmode = 0; //allow continuing to load U-boot proper if needed
++	} else {
++		printf("Booting into %s\n", bmodes[bmode], bmode);
++	}
++
+ 	if (bmode == 0) {
+ 		printf("SPL execution has completed.  Please load U-Boot Proper via JTAG");
+-		while (1)
+-			;
++		while (1);
+ 	}
+ 
+ 	// Everything goes back to bootrom where we'll read table parameters and ask it
