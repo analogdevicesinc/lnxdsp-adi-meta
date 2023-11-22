@@ -12,9 +12,8 @@
 
 #sleep 2
 
-RPMSG_EP=$(basename $(ls -d /sys/bus/rpmsg/devices/*.sharc-echo.-1.151))
-rpmsg-bind-chardev -d ${RPMSG_EP} -a 50
+rpmsg-bind-chardev -p virtio0.sharc-echo-.-1. -n 1 -e 151 -s 50
 echo hello | rpmsg-xmit -n 5 /dev/rpmsg0
-RPMSG_EP=$(basename $(ls -d /sys/bus/rpmsg/devices/*.sharc-echo-cap.-1.161))
-rpmsg-bind-chardev -d ${RPMSG_EP} -a 61
+
+rpmsg-bind-chardev -p virtio0.sharc-echo-cap.-1. -n 1 -e 161 -s 61
 echo hello | rpmsg-xmit -n 5 /dev/rpmsg1
