@@ -12,7 +12,7 @@
 
 #sleep 2
 
-rpmsg-bind-chardev -p virtio0.sharc-echo-.-1. -n 1 -e 151 -s 50
+rpmsg-bind-chardev -p virtio0.sharc-echo.-1. -n 1 -e 151 -s 50
 echo hello | rpmsg-xmit -n 5 /dev/rpmsg0
 
 rpmsg-bind-chardev -p virtio0.sharc-echo-cap.-1. -n 1 -e 161 -s 61
