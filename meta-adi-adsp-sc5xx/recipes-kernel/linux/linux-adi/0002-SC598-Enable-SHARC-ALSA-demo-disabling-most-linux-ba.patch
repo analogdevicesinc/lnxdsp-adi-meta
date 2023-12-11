@@ -1,22 +1,22 @@
-From 5ba66d6bbdac4dea01761416dea2e6469b1ffb0a Mon Sep 17 00:00:00 2001
-From: Greg Malysa <gmalysa@alumni.stanford.edu>
-Date: Wed, 30 Nov 2022 15:33:50 -0500
-Subject: [PATCH 2/2] Enable SHARC-ALSA demo, disabling most linux-based audio
- drivers and replacing remoteproc with adi rpmsg
+From 6b6eabc1d7c59041cee23a50633b3ae2065860d7 Mon Sep 17 00:00:00 2001
+From: Utsav Agarwal <utsav.agarwal@analog.com>
+Date: Fri, 8 Dec 2023 10:30:45 +0000
+Subject: [PATCH 2/2] SC598 Enable SHARC ALSA demo disabling most linux ba
 
 ---
- arch/arm64/boot/dts/adi/sc598-som-ezkit.dts  |  7 +-
- arch/arm64/boot/dts/adi/sc598-som.dtsi       | 28 +++++++-
+ arch/arm64/boot/dts/adi/sc598-som-ezkit.dts  |  7 +++-
+ arch/arm64/boot/dts/adi/sc598-som.dtsi       | 39 +++++++++++++++++---
+ arch/arm64/boot/dts/adi/sc59x-64.dtsi        |  2 +-
  arch/arm64/configs/sc598-som-ezkit_defconfig |  2 +-
- drivers/soc/adi/mach-sc5xx/sec.c             | 67 ++++++++++----------
- 4 files changed, 67 insertions(+), 37 deletions(-)
+ drivers/soc/adi/mach-sc5xx/sec.c             | 36 +-----------------
+ 5 files changed, 41 insertions(+), 45 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
-index caf7bff0fccb..bdb9ee9aeca9 100644
+index 96287238f741..093c856bcf3d 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
 +++ b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
 @@ -16,6 +16,7 @@ sound {
- 			compatible = "sc5xx,asoc-card";
+ 			compatible = "adi,sc5xx-asoc-card";
  			adi,cpu-dai = <&i2s4>;
  			adi,codec = <&adau1962>, <&adau1979>;
 +			status = "disabled";
@@ -53,10 +53,29 @@ index caf7bff0fccb..bdb9ee9aeca9 100644
  	sru_dai1: sru_dai1_mux {
  		route {
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index 3176650dd268..65c1a2d0c688 100644
+index 2a2765720500..ecc58d904cd6 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-@@ -91,6 +91,32 @@ sharc1: core2-rproc@0x28a40000 {
+@@ -22,13 +22,13 @@ memory@90000000 {
+ 		reg = <0x90000000 0x0e000000>;
+ 	};
+ 
+-	memory@20040000 {
+-		device_type = "memory";
+-		reg = <0x20040000 0x40000>;
+-	};
++//	memory@20040000 {
++//		device_type = "memory";
++//		reg = <0x20040000 0x40000>;
++//	};
+ 
+ 	reserved-memory {
+-		//sram1_res: sram1-reserved@20040000 {
++//		sram1_res: sram1-reserved@20040000 {
+ //			compatible = "adi,sram-access";
+ //			reg = <0x20040000 0x40000>;
+ //		};
+@@ -102,6 +102,33 @@ sharc1: core2-rproc@0x28a40000 {
  			status = "okay";
  		};
  
@@ -86,10 +105,11 @@ index 3176650dd268..65c1a2d0c688 100644
 +				memory-region = <&vdev1buffer>;
 +		};
 +
- //		firmware {
- //			optee {
- //				compatible = "linaro,optee-tz";
-@@ -223,7 +249,7 @@ &i2c1 {
++
+ 	};
+ 
+ };
+@@ -227,7 +254,7 @@ &i2c1 {
  };
  
  &i2c2 {
@@ -98,11 +118,24 @@ index 3176650dd268..65c1a2d0c688 100644
  	pinctrl-names = "default";
  	pinctrl-0 = <&i2c2_pins>;
  
+diff --git a/arch/arm64/boot/dts/adi/sc59x-64.dtsi b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
+index 0aaa364f17f3..543ac76b5e6f 100644
+--- a/arch/arm64/boot/dts/adi/sc59x-64.dtsi
++++ b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
+@@ -245,7 +245,7 @@ sram-controller@31080000 {
+ 			reg = <0x31080000 0x100>;
+ 			adi,sram = <&sram0>, <&sram1>;
+ 			interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
+-			status = "disabled";
++			status = "okay";
+ 		};
+ 
+ 		sram_mmap: sram-mmap@0 {
 diff --git a/arch/arm64/configs/sc598-som-ezkit_defconfig b/arch/arm64/configs/sc598-som-ezkit_defconfig
-index 83528945b410..29bb26044993 100644
+index b7ea7bab5dcb..4380ef497418 100644
 --- a/arch/arm64/configs/sc598-som-ezkit_defconfig
 +++ b/arch/arm64/configs/sc598-som-ezkit_defconfig
-@@ -293,7 +293,7 @@ CONFIG_REMOTEPROC=y
+@@ -295,7 +295,7 @@ CONFIG_REMOTEPROC=y
  CONFIG_ADI_REMOTEPROC=y
  CONFIG_RPMSG_CHAR=y
  CONFIG_RPMSG_QCOM_GLINK_RPM=y
@@ -112,28 +145,28 @@ index 83528945b410..29bb26044993 100644
  CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND=y
  CONFIG_IIO=y
 diff --git a/drivers/soc/adi/mach-sc5xx/sec.c b/drivers/soc/adi/mach-sc5xx/sec.c
-index 4bad868de617..1e8435c3d96d 100644
+index 91fcab5481f4..97235980b4e3 100644
 --- a/drivers/soc/adi/mach-sc5xx/sec.c
 +++ b/drivers/soc/adi/mach-sc5xx/sec.c
-@@ -33,11 +33,12 @@ struct adi_sec {
- };
+@@ -34,12 +34,11 @@ struct adi_sec {
  
- void adi_sec_writel(u32 val, struct adi_sec *rcu, int offset) {
+ void adi_sec_writel(u32 val, struct adi_sec *rcu, int offset)
+ {
 -	writel(val, rcu->ioaddr + offset);
-+//	writel(val, rcu->ioaddr + offset);
  }
  
- u32 adi_sec_readl(struct adi_sec *rcu, int offset) {
+ u32 adi_sec_readl(struct adi_sec *rcu, int offset)
+ {
 -	return readl(rcu->ioaddr + offset);
-+//	return readl(rcu->ioaddr + offset);
 +	return 0;
  }
  
  void sec_raise_irq(struct adi_sec *sec, unsigned int irq)
-@@ -193,37 +194,37 @@ static int adi_sec_probe(struct platform_device *pdev) {
+@@ -197,39 +196,6 @@ static int adi_sec_probe(struct platform_device *pdev)
+ 	}
  
  	adi_sec->ioaddr = base;
- 
+-
 -	/* Disable SYSCD_RESETb and clear RCU reset status */
 -	adi_rcu_writel(0x00, adi_rcu, ADI_RCU_REG_CTL);
 -	adi_rcu_writel(0x0f, adi_rcu, ADI_RCU_REG_STAT);
@@ -165,40 +198,10 @@ index 4bad868de617..1e8435c3d96d 100644
 -	/* @todo verify sec watchdog event number, make device tree based */
 -	sec_enable_ssi(adi_sec, 3, true, true);
 -#endif
-+//	/* Disable SYSCD_RESETb and clear RCU reset status */
-+//	adi_rcu_writel(0x00, adi_rcu, ADI_RCU_REG_CTL);
-+//	adi_rcu_writel(0x0f, adi_rcu, ADI_RCU_REG_STAT);
-+//
-+//	/* Reset SEC */
-+//	adi_sec_writel(0x02, adi_sec, ADI_SEC_REG_GCTL);
-+//	adi_sec_writel(0x02, adi_sec, ADI_SEC_REG_FCTL);
-+//
-+//	/* Initialize each core */
-+//	for (cores = 0; cores < adi_sec->cores; ++cores) {
-+//		adi_sec_writel(0x02, adi_sec,
-+//			ADI_SEC_REG_CCTL_BASE + (cores+1)*ADI_SEC_CCTL_SIZE);
-+//	}
-+//	udelay(100);
-+//
-+//	/* Enable SEC fault event */
-+//	adi_sec_writel(0x01, adi_sec, ADI_SEC_REG_GCTL);
-+//
-+//	/* ANOMALY 36100004 spurious external fault event occurs when FCTL is
-+//	 * re-programmed when active fault is not cleared
-+//	 */
-+//	adi_sec_writel(0xc0, adi_sec, ADI_SEC_REG_FCTL);
-+//	adi_sec_writel(0xc1, adi_sec, ADI_SEC_REG_FCTL);
-+//
-+//	/* Enable SYSCD_RESETb input */
-+//	adi_rcu_writel(0x100, adi_rcu, ADI_RCU_REG_CTL);
-+//
-+//#ifdef CONFIG_ADI_WATCHDOG
-+//	/* @todo verify sec watchdog event number, make device tree based */
-+//	sec_enable_ssi(adi_sec, 3, true, true);
-+//#endif
- 
+-
  	return 0;
  
+ free_rcu:
 -- 
-2.34.1
+2.25.1
 
