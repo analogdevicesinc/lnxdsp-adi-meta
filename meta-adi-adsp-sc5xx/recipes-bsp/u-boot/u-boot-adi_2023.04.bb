@@ -2,7 +2,7 @@ inherit adsp-sc5xx-compatible
 
 require u-boot-adi.inc
 
-SRCREV = "9fc1dff966a71aa72fbdfea3d2cc607ffaf59ead"
+SRCREV = "cb521b799f521124e7edae8a6e142663f4af5f7c"
 
 UBOOT_INITIAL_ENV = ""
 
