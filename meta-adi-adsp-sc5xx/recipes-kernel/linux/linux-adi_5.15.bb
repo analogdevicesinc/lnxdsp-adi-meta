@@ -14,7 +14,7 @@ PV = "5.15.78"
 LINUX_VERSION = "${PV}"
 
 KERNEL_BRANCH ?= "dev"
-SRCREV  = "c84f87582f1677ecd5708b81b6b2d43ac923e7fe"
+SRCREV  = "22271517ceeaa5a01b95ae7fb3c4d7215a885b29"
 
 # Include kernel configuration fragments
 SRC_URI:append = " \
