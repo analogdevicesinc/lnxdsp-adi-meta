@@ -9,12 +9,12 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
 DEPENDS += "u-boot-mkimage-native dtc-native"
 
-PV = "5.15.78"
+PV = "5.15.148"
 
 LINUX_VERSION = "${PV}"
 
 KERNEL_BRANCH ?= "dev"
-SRCREV  = "22271517ceeaa5a01b95ae7fb3c4d7215a885b29"
+SRCREV  = "fdd7bf006ecc730744bdb0c654485b790bb94d20"
 
 # Include kernel configuration fragments
 SRC_URI:append = " \
@@ -36,5 +36,5 @@ SRC_URI:append:adsp-sc598-som-ezkit = "${@' file://0001-sc598-som-enable-SDcard.
 SRC_URI:append:adsp-sc598-som-ezkit = " file://0001-SC598-fix-stmmac-dma-split-header-crash.patch"
 
 do_install:append(){
-	rm -rf ${D}/lib/modules/5.15.78-yocto-standard/modules.builtin.modinfo
+	rm -rf ${D}/lib/modules/5.15.148-yocto-standard/modules.builtin.modinfo
 }
