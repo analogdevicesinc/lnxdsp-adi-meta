@@ -23,6 +23,7 @@ chmod a+x ./bin/repo
  -m main.xml
 ./bin/repo sync
 ```
+
 Now, inside the project directory that was created in the previous step, a `bin` directory will be created and the `repo` tool will be downoaded to it. The tool will be instructed to download the various `lnxdsp` sources (including this repo) according to the `main` branch.
 
 What remains is picking a board to build for, e.g. the ADSP-SC598-SOM-EZKIT:
