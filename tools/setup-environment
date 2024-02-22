@@ -1,0 +1,215 @@
+#!/bin/sh
+# -*- mode: shell-script; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+#
+# Copyright (C) 2012, 2013, 2016 O.S. Systems Software LTDA.
+# Authored-by:  Otavio Salvador <otavio@ossystems.com.br>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# Add options for the script
+# Copyright (C) 2023 Analog Devices, Inc.
+
+CWD="$(pwd)"
+PROGNAME="setup-environment"
+BUILDDIR_DEFAULT="build"
+DISTRO_DEFAULT="adi-distro-glibc"
+
+
+distro_list() {
+    local paths
+    paths=$(find -L sources/ -path '*meta-*adi*/conf/distro/*' -name '*.conf')
+    echo "$paths" | xargs basename -s .conf | sort -u | awk '{print "\t" $0}'
+}
+
+machine_list() {
+    find -L sources/meta-adi/meta-adi-adsp-sc5xx/conf/machine -maxdepth 1 -name '*.conf' | xargs basename -s .conf | sort -u | awk '{print "\t" $0}'
+}
+
+usage()
+{
+    cat >&2 <<EOF
+Usage: source $PROGNAME --machine <MACHINE> --distro <DISTRO> --builddir <BUILDDIR>
+Usage: source $PROGNAME --builddir <BUILDDIR>
+
+Options:
+    -h, --help         Print this usage message
+    -m, --machine      Set the MACHINE name in the build configuration
+    -b, --builddir     Set the build directory in the build configuration (default '${BUILDDIR_DEFAULT}')
+    -d, --distro       Set the DISTRO name in the build configuration (default '${DISTRO_DEFAULT}')
+
+The first usage is for creating a new build directory. In this case, the
+script creates the build directory <BUILDDIR>, configures it for the
+specified <MACHINE> and <DISTRO>, and prepares the calling shell for
+running bitbake on the build directory.
+
+The second usage is for using an existing build directory. In this case,
+the script prepares the calling shell for running bitbake on the build
+directory <BUILDDIR>. The build directory configuration is unchanged.
+
+Available distros:
+$(distro_list)
+Available machines:
+$(machine_list)
+
+Examples:
+- To create a new Yocto build directory:
+  $ source $PROGNAME --machine adsp-sc598-som-ezkit --distro adi-distro-glibc --builddir adsp-build
+
+- To use an existing Yocto build directory:
+  $ source $PROGNAME --builddir adsp-build
+
+EOF
+}
+
+clean_up()
+{
+   unset MACHINE USER_BUILDDIR CWD TEMPLATES
+   unset SHORTOPTS LONGOPTS ARGS PROGNAME
+   unset generated_config SDKMACHINE DISTRO OEROOT
+}
+
+# get command line options
+SHORTOPTS="hm:b:d:"
+LONGOPTS="help,machine:,builddir:,distro:"
+
+ARGS=$(getopt --options $SHORTOPTS --longoptions $LONGOPTS --name $PROGNAME -- "$@" )
+# Print the usage menu if invalid options are specified
+if [ $? != 0 ]; then
+   usage
+   clean_up
+   return 1
+fi
+
+eval set -- "$ARGS"
+MACHINE=
+USER_BUILDDIR=
+DISTRO=
+
+while true;
+do
+    case $1 in
+        -h | --help)       usage; clean_up; return 0 ;;
+        -m | --machine)    MACHINE="$2"; shift 2;;
+        -b | --builddir)   USER_BUILDDIR="$2"; shift 2;;
+        -d | --distro)     DISTRO="$2"; shift 2;;
+        -- )               shift; break ;;
+        * )                break ;;
+    esac
+done
+
+if [ "$(whoami)" = "root" ]; then
+    echo "ERROR: do not use the BSP as root. Exiting..."
+    return 1
+fi
+
+if [ -z "$USER_BUILDDIR" ]; then
+    folder="$BUILDDIR_DEFAULT"
+else
+    folder="$USER_BUILDDIR"
+fi
+
+if [ -z "$DISTRO" ]; then
+    DISTRO="$DISTRO_DEFAULT"
+fi
+
+if [ ! -e "$CWD"/"$folder"/conf/local.conf ]; then
+    build_dir_not_exist="true"
+else
+    build_dir_not_exist="false"
+fi
+
+if [ "$build_dir_not_exist" = "true" ] && [ -z "$MACHINE" ]; then
+    usage
+    echo "ERROR: You must set MACHINE when creating a new build directory."
+    clean_up
+    return 1
+fi
+
+# check whether the provided machine is valid or not
+if [ "$build_dir_not_exist" = "true" ] || [ -n "$MACHINE" ];then
+    if ! machine_list | grep -qx "[[:space:]]*$MACHINE"; then
+        echo "ERROR: machine \"$MACHINE\" not found"
+        echo "Available MACHINEs:"
+        machine_list
+        clean_up
+        return 1
+    fi
+fi
+
+# check whether the provided distro is valid or not
+if [ "$build_dir_not_exist" = "true" ] || [ -n "$DISTRO" ];then
+    if ! distro_list | grep -qx "[[:space:]]*$DISTRO"; then
+        echo "ERROR: distro \"$DISTRO\" not found"
+        echo "Available DISTROs:"
+        distro_list
+        clean_up
+        return 1
+    fi
+fi
+
+if [ ! -e "$CWD"/downloads ];then
+	mkdir "$CWD"/downloads
+fi
+
+OEROOT="$PWD"/sources/poky
+if [ -e "$PWD"/sources/oe-core ]; then
+    OEROOT="$PWD"/sources/oe-core
+fi
+# get the available kernel array for users
+kernel_arr="$(find sources/meta-adi/meta-adi-adsp-sc5xx/recipes-adi/images/ -name '*.bb' | sed s/\.bb//g | sed -r 's/^.+\///' | xargs -I% echo -e "\t%")"
+
+source "$OEROOT"/oe-init-build-env "$CWD"/"$folder" > /dev/null
+
+# if conf/local.conf not generated, no need to go further
+if [ ! -e "conf/local.conf" ]; then
+    clean_up
+    return 1
+fi
+
+generated_config=0
+# Clean up PATH, because if it includes tokens to current directories somehow,
+# wrong binaries can be used instead of the expected ones during task execution
+export PATH="$(echo "$PATH" | sed 's/\(:.\|:\)*:/:/g;s/^.\?://;s/:.\?$//')"
+
+if [ "$build_dir_not_exist" = "true" ] || [ -n "$MACHINE" ]; then
+    TEMPLATES="$CWD"/sources/base/"$MACHINE"
+    cp "$TEMPLATES"/* conf/
+    cp "$CWD"/sources/base/bblayers.conf conf/bblayers.conf
+    # Change settings according environment
+    sed -e "s,MACHINE ?=.*,MACHINE ?= \"$MACHINE\",g" \
+        -e "s,DISTRO ?=.*,DISTRO ?= \"$DISTRO\",g" \
+        -e "s,DL_DIR ?=.*,DL_DIR ?= \"$CWD/downloads\",g" \
+        -i conf/local.conf
+
+    generated_config=1
+fi
+
+if [ "$generated_config" -eq "1" ]; then
+    cat <<EOF
+Your build environment has been configured with:
+
+        MACHINE=$MACHINE
+
+You can now run 'bitbake <target>'
+Some of common targets are:
+        u-boot-adi
+        linux-adi
+$kernel_arr
+
+EOF
+else
+    echo "You are reusing the files in $folder"
+fi
+
+clean_up
