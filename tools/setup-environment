@@ -285,6 +285,8 @@ EOF
 EOF
     fi
 
+cp "$CWD"/sources/meta-adi/tools/bblayers.conf conf/bblayers.conf
+
     generated_config=1
 fi
 
