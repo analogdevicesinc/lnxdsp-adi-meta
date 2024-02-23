@@ -12,7 +12,7 @@ UBOOT_GIT_PROTOCOL ?= "https"
 UBOOT_WDT_FILE = "file://enable-ADI-watchdog.patch"
 UBOOT_WDT = "${@bb.utils.contains('MACHINE_FEATURES', 'watchdog', '${UBOOT_WDT_FILE}', '', d)}"
 
-UBOOT_BRANCH ?= "main"
+UBOOT_BRANCH ?= "dev"
 
 # On the SC598, we can't boot directly from the eMMC due to default speed configuration issues
 # We can boot the SPL from OSPI or QSPI and then subsequently boot U-Boot Proper from eMMC
