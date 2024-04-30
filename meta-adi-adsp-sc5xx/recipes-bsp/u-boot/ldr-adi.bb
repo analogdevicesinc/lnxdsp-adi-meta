@@ -1,7 +1,7 @@
 DESCRIPTION = "Analog Devices Loader Utility"
 LICENSE = "CLOSED"
 
-inherit autotools pkgconfig gettext native
+inherit autotools pkgconfig gettext
 
 LDR_GIT_URI ?= "git://github.com/analogdevicesinc/lnxdsp-arm-poky-linux-gnueabi-ldr.git"
 LDR_GIT_PROTOCOL ?= "https"
@@ -14,3 +14,5 @@ SRC_URI = " \
 ${LDR_GIT_URI};protocol=${LDR_GIT_PROTOCOL};branch=${LDR_GIT_BRANCH}"
 
 S = "${WORKDIR}/git/src/ldr"
+
+BBCLASSEXTEND += "native nativesdk"
