@@ -50,6 +50,7 @@ PASSWD_ROOT = "\$5\$j9T8zDE13LXUGyc6\$utDvGwFWR.kt/AKwwbHnXC14HJBqbcWwvLoDDLMQrc
 EXTRA_USERS_PARAMS = "usermod -p '${PASSWD_ROOT}' root;"
 
 TOOLCHAIN_HOST_TASK:append = " nativesdk-openocd-adi"
+TOOLCHAIN_HOST_TASK:append = " nativesdk-ldr-adi"
 
 IMAGE_FSTYPES:append = " tar.xz jffs2 "
 
