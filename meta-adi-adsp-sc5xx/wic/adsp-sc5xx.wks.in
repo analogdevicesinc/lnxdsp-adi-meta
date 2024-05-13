@@ -11,6 +11,6 @@ part bootloader --source rawcopy --sourceparams="file=${BOARD}.dtb" --ondisk mmc
 part bootloader --source rawcopy --sourceparams="file=${KERNEL_IMAGETYPE}" --ondisk mmcblk --no-table --align 2048
 
 # (32M) - RFS
-part / --source rawcopy --sourceparams="file=${IMGDEPLOYDIR}/${IMAGE_BASENAME}-${MACHINE}.ext4" --ondisk mmcblk --fstype=ext4 --align 32768
+part / --source rawcopy --sourceparams="file=${IMGDEPLOYDIR}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ext4" --ondisk mmcblk --fstype=ext4 --align 32768
 
 bootloader --ptable msdos

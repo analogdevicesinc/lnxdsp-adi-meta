@@ -58,7 +58,7 @@ emit_its() {
 
 		ramdisk-3 {
 			description = "Initial Ram File System";
-			data = /incbin/("adsp-sc5xx-ramdisk-${MACHINE}.cpio.gz");
+			data = /incbin/("adsp-sc5xx-ramdisk-${MACHINE}.rootfs.cpio.gz");
 			type = "ramdisk";
 			arch = "${ARCH}";
 			os = "linux";
@@ -95,6 +95,7 @@ EOF
 
 do_assemble_fitimage() {
 	cd ${DEPLOY_DIR_IMAGE}
+        echo "currently in ${DEPLOY_DIR_IMAGE}"
 	emit_its;
 	uboot-mkimage -D "${UBOOT_MKIMAGE_DTCOPTS}" -f fit-image.its fitImage
 }
