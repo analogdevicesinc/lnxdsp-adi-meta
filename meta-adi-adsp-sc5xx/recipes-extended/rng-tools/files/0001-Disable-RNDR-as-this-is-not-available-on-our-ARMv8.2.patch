@@ -1,19 +1,21 @@
-From a4fae0e2dc955b587a601673ddcedd1a95068faf Mon Sep 17 00:00:00 2001
-From: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
-Date: Fri, 5 May 2023 11:52:50 -0400
+From 2a734ceb55f35e7c7f6471b0b66dbab244383e5a Mon Sep 17 00:00:00 2001
+From: UtsavAgarwalADI <utsav.agarwal@analog.com>
+Date: Thu, 4 Apr 2024 10:43:54 +0100
+Upstream-Status: Pending
 Subject: [PATCH] Disable RNDR as this is not available on our ARMv8.2 platform
 
+Signed-off-by: UtsavAgarwalADI <utsav.agarwal@analog.com>
 ---
  Makefile.am  | 4 ----
  configure.ac | 2 --
  2 files changed, 6 deletions(-)
 
 diff --git a/Makefile.am b/Makefile.am
-index c303b11..6f938bc 100644
+index 8001ecc..648dd07 100644
 --- a/Makefile.am
 +++ b/Makefile.am
-@@ -23,10 +23,6 @@ if DARN
- rngd_SOURCES	+= rngd_darn.c
+@@ -20,10 +20,6 @@ if RDRAND
+ rngd_SOURCES	+= rngd_rdrand.c rdrand_asm.S
  endif
  
 -if RNDR
@@ -24,17 +26,18 @@ index c303b11..6f938bc 100644
  rngd_SOURCES	+= rngd_jitter.c
  endif
 diff --git a/configure.ac b/configure.ac
-index 40008ca..6c74402 100644
+index 91775cf..1457e3b 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -75,8 +75,6 @@ AS_IF([test $host_cpu = x86_64 || test $host_cpu = i686], [AC_DEFINE([HAVE_RDRAN
- AM_CONDITIONAL([DARN], [test $host_cpu = powerpc64le])
- AS_IF([test $host_cpu = powerpc64le], [AC_DEFINE([HAVE_DARN],1,[Enable DARN])],[])
+@@ -85,8 +85,6 @@ AS_IF([test $host_cpu = x86_64 || test $host_cpu = i686], [AC_DEFINE([HAVE_RDRAN
+ AM_CONDITIONAL([DARN], [test $host_cpu = powerpc64le -a "$ac_cv_header_sys_auxv_h" = "yes"])
+ AS_IF([test $host_cpu = powerpc64le -a "$ac_cv_header_sys_auxv_h" = "yes"], [AC_DEFINE([HAVE_DARN],1,[Enable DARN])],[])
  
--AM_CONDITIONAL([RNDR], [test $host_cpu = aarch64])
--AS_IF([test $host_cpu = aarch64], [AC_DEFINE([HAVE_RNDR],1,[Enable RNDR])],[])
+-AM_CONDITIONAL([RNDR], [test $host_cpu = aarch64 -a "$ac_cv_header_sys_auxv_h" = "yes"])
+-AS_IF([test $host_cpu = aarch64 -a "$ac_cv_header_sys_auxv_h" = "yes"], [AC_DEFINE([HAVE_RNDR],1,[Enable RNDR])],[])
  AM_CONDITIONAL([JITTER], [false])
  
  AC_ARG_ENABLE(jitterentropy,
 -- 
-2.30.2
+2.25.1
+
