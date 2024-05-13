@@ -1,21 +1,21 @@
-From 5e7e1e11dc9f3404d2fface245e56049ea694346 Mon Sep 17 00:00:00 2001
-From: huanhuan feng <huanhuan.feng@analog.com>
-Date: Fri, 10 Jul 2020 23:25:08 +0800
+From d905c5b6e0f445ed3a519b435fc0106ff5f3b13b Mon Sep 17 00:00:00 2001
+From: UtsavAgarwalADI <utsav.agarwal@analog.com>
+Date: Thu, 4 Apr 2024 10:54:27 +0100
+Upstream-Status: Pending
+
 Subject: [PATCH] Add linuxptp-adi patch for ptptest
 
-Signed-off-by: huanhuan feng <huanhuan.feng@analog.com>
-
 ---
- sk.c      |   8 +
- testptp.c | 519 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 527 insertions(+)
- create mode 100755 testptp.c
+ sk.c      |   9 +
+ testptp.c | 520 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 529 insertions(+)
+ create mode 100644 testptp.c
 
 diff --git a/sk.c b/sk.c
-index 63ec206..a448ca3 100644
+index 19395c9..faac4ab 100644
 --- a/sk.c
 +++ b/sk.c
-@@ -245,6 +245,10 @@ int sk_receive(int fd, void *buf, int buflen,
+@@ -435,6 +435,10 @@ int sk_receive(int fd, void *buf, int buflen,
  	msg.msg_control = control;
  	msg.msg_controllen = sizeof(control);
  
@@ -26,7 +26,7 @@ index 63ec206..a448ca3 100644
  	if (flags == MSG_ERRQUEUE) {
  		struct pollfd pfd = { fd, sk_events, 0 };
  		res = poll(&pfd, 1, sk_tx_timeout);
-@@ -288,6 +292,10 @@ int sk_receive(int fd, void *buf, int buflen,
+@@ -485,6 +489,11 @@ int sk_receive(int fd, void *buf, int buflen,
  	if (addr)
  		addr->len = msg.msg_namelen;
  
@@ -34,15 +34,17 @@ index 63ec206..a448ca3 100644
 +	if (flags == MSG_ERRQUEUE && cm == NULL)
 +		goto retry;
 +#endif
++
  	if (!ts) {
  		memset(&hwts->ts, 0, sizeof(hwts->ts));
- 		return cnt;
+ 		return cnt < 0 ? -errno : cnt;
 diff --git a/testptp.c b/testptp.c
-new file mode 100755
-index 0000000..2bc8abc
+new file mode 100644
+index 0000000..ee50569
 --- /dev/null
 +++ b/testptp.c
-@@ -0,0 +1,519 @@
+@@ -0,0 +1,520 @@
++
 +/*
 + * PTP 1588 clock support - User space test program
 + *
@@ -562,3 +564,6 @@ index 0000000..2bc8abc
 +	close(fd);
 +	return 0;
 +}
+-- 
+2.25.1
+
