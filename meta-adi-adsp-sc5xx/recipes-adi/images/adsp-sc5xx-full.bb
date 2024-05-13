@@ -26,7 +26,6 @@ SOUND = " \
 
 UTILS = " \
     iperf3 \
-    perf \
     netperf \
     cpufrequtils \
     uftrace \
@@ -34,6 +33,8 @@ UTILS = " \
     strace \
     bonnie++ \
 "
+
+UTILS += "${@'' if (bb.utils.to_boolean(d.getVar('ADSP_KERNEL_TYPE') == 'upstream')) else ' perf '}"
 
 IMAGE_INSTALL += " \
     ${UTILS} \

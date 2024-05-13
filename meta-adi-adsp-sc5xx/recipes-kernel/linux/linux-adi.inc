@@ -5,9 +5,8 @@ inherit adsp-sc5xx-compatible
 
 require recipes-kernel/linux/linux-yocto.inc
 
-KERNEL_GIT_URI ?= "git://github.com/analogdevicesinc/lnxdsp-linux.git"
+KERNEL_GIT_URI ?= "${@bb.utils.contains('PV', 'upstream', 'git://github.com/analogdevicesinc/linux.git' ,'git://github.com/analogdevicesinc/lnxdsp-linux.git', d)}"
 KERNEL_GIT_PROTOCOL ?= "https"
-
 SRC_URI += " \
 	${KERNEL_GIT_URI};protocol=${KERNEL_GIT_PROTOCOL};branch=${KERNEL_BRANCH} \
 "
