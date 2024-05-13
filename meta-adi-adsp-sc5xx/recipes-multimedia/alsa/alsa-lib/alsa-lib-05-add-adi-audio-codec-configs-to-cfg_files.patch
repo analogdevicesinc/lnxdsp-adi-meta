@@ -1,6 +1,7 @@
 From c85acca5bc7926c01bfaa3c3afa8b6cef37dcb07 Mon Sep 17 00:00:00 2001
 From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
 Date: Mon, 3 Jun 2019 13:11:07 -0400
+Upstream-Status: Pending
 Subject: [PATCH] alsa-lib-05-add-adi-audio-codec-configs-to-cfg_files.patch
 
 ---

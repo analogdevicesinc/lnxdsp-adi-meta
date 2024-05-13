@@ -1,3 +1,5 @@
+Upstream-Status: Pending
+---
 Index: alsa-lib/src/conf/cards/AD1980-no-mmap.conf
 ===================================================================
 --- alsa-lib/src/conf/cards/AD1980-no-mmap.conf	(revision 0)

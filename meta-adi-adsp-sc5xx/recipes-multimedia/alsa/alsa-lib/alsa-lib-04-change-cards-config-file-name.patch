@@ -1,3 +1,5 @@
+Upstream-Status: Pending
+---
 Index: alsa-lib/src/conf/cards/SSM2602.conf
 ===================================================================
 --- alsa-lib/src/conf/cards/SSM2602.conf	(revision 10418)
