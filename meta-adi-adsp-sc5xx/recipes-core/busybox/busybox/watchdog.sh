@@ -15,7 +15,7 @@ case "$1" in
 	/sbin/watchdog -t 1 /dev/watchdog
 	;;
   *)
-	echo $"Usage: $0 {start|stop|restart}"
+	echo "Usage: $0 {start|stop|restart}"
 	exit 1
 esac
 
