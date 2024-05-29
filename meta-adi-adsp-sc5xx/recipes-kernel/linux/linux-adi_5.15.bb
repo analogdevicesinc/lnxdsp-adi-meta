@@ -14,7 +14,7 @@ PV = "5.15.78"
 LINUX_VERSION = "${PV}"
 
 KERNEL_BRANCH ?= "release/yocto-3.1.0"
-SRCREV  = "a8804f76d40e9acd35ad4f7c14d20a6da2141b05"
+SRCREV  = "6e24729413be91745eebd7d8a1faa548856d5eda"
 
 # Include kernel configuration fragments
 SRC_URI:append = " \
