@@ -1,0 +1,58 @@
+From 40c5ffe39792d23ab497514067124f0ad4880511 Mon Sep 17 00:00:00 2001
+From: UtsavAgarwalADI <utsav.agarwal@analog.com>
+Date: Tue, 4 Jun 2024 15:10:54 +0100
+Subject: [PATCH] Add GlencOS (Analog Devices Inc.)
+
+Signed-off-by: UtsavAgarwalADI <utsav.agarwal@analog.com>
+---
+ neofetch | 27 ++++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
+
+diff --git a/neofetch b/neofetch
+index 1e4b5646..1827fbb9 100755
+--- a/neofetch
++++ b/neofetch
+@@ -772,7 +772,7 @@ image_source="auto"
+ # Default: 'auto'
+ # Values:  'auto', 'distro_name'
+ # Flag:    --ascii_distro
+-# NOTE: AIX, Alpine, Anarchy, Android, Antergos, antiX, "AOSC OS",
++# NOTE: GlencOS, AIX, Alpine, Anarchy, Android, Antergos, antiX, "AOSC OS",
+ #       "AOSC OS/Retro", Apricity, ArcoLinux, ArchBox, ARCHlabs,
+ #       ArchStrike, XFerience, ArchMerge, Arch, Artix, Arya, Bedrock,
+ #       Bitrig, BlackArch, BLAG, BlankOn, BlueLight, bonsai, BSD,
+@@ -5288,6 +5288,31 @@ get_distro_ascii() {
+     #
+     # $ascii_distro is the same as $distro.
+     case $(trim "$ascii_distro") in
++        "GlencOS"*)
++            set_colors 4
++            read -rd '' ascii_data <<'EOF'
++${c1}
++     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
++     @@@@@@@@  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@     
++     @@@@@@@@     @@@@@@@@@@@@@@@@@@@@@@@@@@
++     @@@@@@@@        @@@@@@@@@@@@@@@@@@@@@@@
++     @@@@@@@@            @@@@@@@@@@@@@@@@@@@
++     @@@@@@@@               @@@@@@@@@@@@@@@@
++     @@@@@@@@                   @@@@@@@@@@@@
++     @@@@@@@@                     @@@@@@@@@@
++     @@@@@@@@                        @@@@@@@
++     @@@@@@@@                     @@@@@@@@@@
++     @@@@@@@@                   @@@@@@@@@@@@
++     @@@@@@@@               @@@@@@@@@@@@@@@@
++     @@@@@@@@            @@@@@@@@@@@@@@@@@@@
++     @@@@@@@@        @@@@@@@@@@@@@@@@@@@@@@@
++     @@@@@@@@     @@@@@@@@@@@@@@@@@@@@@@@@@@
++     @@@@@@@@  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
++     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
++
++EOF
++        ;;
++
+         "AIX"*)
+             set_colors 2 7
+             read -rd '' ascii_data <<'EOF'
+-- 
+2.34.1
+
