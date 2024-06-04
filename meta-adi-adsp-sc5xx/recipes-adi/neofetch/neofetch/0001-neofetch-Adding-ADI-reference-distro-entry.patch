@@ -1,0 +1,58 @@
+From 85201e1a5fda0b62c64c8a136cf2b46b03a1cc54 Mon Sep 17 00:00:00 2001
+From: Utsav Agarwal <utsav.agarwal@analog.com>
+Date: Wed, 11 Jun 2025 15:27:01 +0100
+Subject: [PATCH] neofetch: Adding ADI reference distro entry
+
+Signed-off-by: Utsav Agarwal <utsav.agarwal@analog.com>
+---
+ neofetch | 27 ++++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
+
+diff --git a/neofetch b/neofetch
+index 1e4b5646..d73df4b4 100755
+--- a/neofetch
++++ b/neofetch
+@@ -772,7 +772,7 @@ image_source="auto"
+ # Default: 'auto'
+ # Values:  'auto', 'distro_name'
+ # Flag:    --ascii_distro
+-# NOTE: AIX, Alpine, Anarchy, Android, Antergos, antiX, "AOSC OS",
++# NOTE: Analog Devices Inc Reference Distro, AIX, Alpine, Anarchy, Android, Antergos, antiX, "AOSC OS",
+ #       "AOSC OS/Retro", Apricity, ArcoLinux, ArchBox, ARCHlabs,
+ #       ArchStrike, XFerience, ArchMerge, Arch, Artix, Arya, Bedrock,
+ #       Bitrig, BlackArch, BLAG, BlankOn, BlueLight, bonsai, BSD,
+@@ -5288,6 +5288,31 @@ get_distro_ascii() {
+     #
+     # $ascii_distro is the same as $distro.
+     case $(trim "$ascii_distro") in
++        "Analog Devices Inc"*)
++            set_colors 4
++            read -rd '' ascii_data <<'EOF'
++${c1}
++     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
++     @@@@@@@@  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@     
++     @@@@@@@@     @@@@@@@@@@@@@@@@@@@@@@@@@@
++     @@@@@@@@        @@@@@@@@@@@@@@@@@@@@@@@
++     @@@@@@@@            @@@@@@@@@@@@@@@@@@@
++     @@@@@@@@               @@@@@@@@@@@@@@@@
++     @@@@@@@@                   @@@@@@@@@@@@
++     @@@@@@@@                     @@@@@@@@@@
++     @@@@@@@@                        @@@@@@@
++     @@@@@@@@                     @@@@@@@@@@
++     @@@@@@@@                   @@@@@@@@@@@@
++     @@@@@@@@               @@@@@@@@@@@@@@@@
++     @@@@@@@@            @@@@@@@@@@@@@@@@@@@
++     @@@@@@@@        @@@@@@@@@@@@@@@@@@@@@@@
++     @@@@@@@@     @@@@@@@@@@@@@@@@@@@@@@@@@@
++     @@@@@@@@  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
++     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
++
++EOF
++        ;;
++
+         "AIX"*)
+             set_colors 2 7
+             read -rd '' ascii_data <<'EOF'
+-- 
+2.34.1
+
