@@ -48,12 +48,14 @@ python __anonymous() {
         count=count+1
     if bb.utils.contains('DISTRO_FEATURES', 'linux_only_audio', True, False, d):
         count=count+1
+    if bb.utils.contains('DISTRO_FEATURES', 'adi_usb_gadget_audio', True, False, d):
+        count=count+1
 
     if count > 1:
         bb.fatal("You have multiple audio modes in DISTRO_FEATURES. \
-        Choose only one of: adi_sharc_alsa_audio, adi_sharc_alsa_audio_uboot, adi_hybrid_audio, linux_only_audio")
+        Choose only one of: adi_sharc_alsa_audio, adi_sharc_alsa_audio_uboot, adi_hybrid_audio, linux_only_audio, adi_usb_gadget_audio")
 
     if count == 0:
         bb.fatal("You need to select your audio mode in DISTRO_FEATURES. \
-        Choose only one of: adi_sharc_alsa_audio, adi_sharc_alsa_audio_uboot, adi_hybrid_audio, linux_only_audio")
+        Choose only one of: adi_sharc_alsa_audio, adi_sharc_alsa_audio_uboot, adi_hybrid_audio, linux_only_audio, adi_usb_gadget_audio")
 }
