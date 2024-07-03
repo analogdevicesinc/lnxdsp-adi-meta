@@ -1,0 +1,65 @@
+From aa524dbd448f2789044b8e1b7264c3cd72ad53a3 Mon Sep 17 00:00:00 2001
+From: Oliver Gaskell <Oliver.Gaskell@analog.com>
+Date: Wed, 3 Jul 2024 16:29:50 +0100
+Subject: [PATCH] Disable sharc[n]_rpmsg drivers, and revert RPMSG_ADI to
+ RPMSG_VIRTIO
+
+---
+ arch/arm64/boot/dts/adi/sc598-som.dtsi       | 27 --------------------
+ arch/arm64/configs/sc598-som-ezkit_defconfig |  2 +-
+ 2 files changed, 1 insertion(+), 28 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+index ecc58d904cd6..65b0f101ef92 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
++++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+@@ -102,33 +102,6 @@ sharc1: core2-rproc@0x28a40000 {
+ 			status = "okay";
+ 		};
+ 
+-		sharc0_rpmsg: core0-rpmsg@0x28240000 {
+-				status = "okay";
+-				compatible = "adi,rpmsg-SC598";
+-				core-id = <1>;
+-				adi,rcu = <&rcu>;
+-				adi,rsc-table = <&rsc_tbl0>;
+-				interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
+-				adi,tru = <&tru>;
+-				adi,tru-master-id = <135>; /* trigger master SOFT4 */
+-				vdev-vring = <&vdev0vrings>;
+-				memory-region = <&vdev0buffer>;
+-		};
+-
+-		sharc1_rpmsg: core1-rpmsg@0x28a40000 {
+-				status = "okay";
+-				compatible = "adi,rpmsg-SC598";
+-				core-id = <2>;
+-				adi,rcu = <&rcu>;
+-				adi,rsc-table = <&rsc_tbl1>;
+-				interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
+-				adi,tru = <&tru>;
+-				adi,tru-master-id = <136>; /* trigger master SOFT5 */
+-				vdev-vring = <&vdev1vrings>;
+-				memory-region = <&vdev1buffer>;
+-		};
+-
+-
+ 	};
+ 
+ };
+diff --git a/arch/arm64/configs/sc598-som-ezkit_defconfig b/arch/arm64/configs/sc598-som-ezkit_defconfig
+index 4380ef497418..b7ea7bab5dcb 100644
+--- a/arch/arm64/configs/sc598-som-ezkit_defconfig
++++ b/arch/arm64/configs/sc598-som-ezkit_defconfig
+@@ -295,7 +295,7 @@ CONFIG_REMOTEPROC=y
+ CONFIG_ADI_REMOTEPROC=y
+ CONFIG_RPMSG_CHAR=y
+ CONFIG_RPMSG_QCOM_GLINK_RPM=y
+-CONFIG_RPMSG_ADI=y
++CONFIG_RPMSG_VIRTIO=y
+ CONFIG_PM_DEVFREQ=y
+ CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND=y
+ CONFIG_IIO=y
+-- 
+2.34.1
+
