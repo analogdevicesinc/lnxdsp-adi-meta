@@ -1,0 +1,3 @@
+[submodule "jupyter-meta"]
+	path = jupyter-meta
+	url = https://github.com/UtsavAgarwalADI/jupyter-meta/
