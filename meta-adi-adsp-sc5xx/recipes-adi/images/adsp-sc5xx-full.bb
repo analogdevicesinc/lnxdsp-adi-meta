@@ -50,4 +50,5 @@ IMAGE_INSTALL += " \
 	version \
 	libopus \
 	opus-tools \
+	python3-pyrpmsg \
 "
