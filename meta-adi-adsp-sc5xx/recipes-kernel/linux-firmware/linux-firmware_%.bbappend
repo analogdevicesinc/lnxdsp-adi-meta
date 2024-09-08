@@ -15,10 +15,10 @@ SRC_URI[LICENSE.adau1761.md5sum] = "dff5777c9526c7f6db0a0571f066e818"
 SRC_URI[LICENSE.md.md5sum] = "e2bfd7246b6d241634f71dfdbfef3d41"
 
 
-FILEPATH = "/lib/firmware"
+FILEPATH = "/usr/lib/firmware"
 
 do_install:append() {
-	install -m 0644 ${WORKDIR}/LICENSE.adau1761 ${D}${FILEPATH}
+        install -m 0644 ${WORKDIR}/LICENSE.adau1761 ${D}${FILEPATH}
 	install -m 0644 ${WORKDIR}/adau1761.bin ${D}${FILEPATH}
 	install -m 0644 ${WORKDIR}/sharc-alsa/LICENSE.md ${D}${FILEPATH}
 	install -m 0644 ${WORKDIR}/sharc-alsa/icap-device-example.ldr ${D}${FILEPATH}
@@ -28,10 +28,12 @@ do_install:append() {
 	install -m 0644 ${WORKDIR}/sharc-alsa/2Ch_L440_R200_48kHz_16bit_6s.wav ${D}/usr/share/sounds/alsa/
 }
 
+FILES:${PN} = "${FILEPATH}"
+
 PACKAGES =+ "${PN}-adau1761"
 
 FILES:${PN}-adau1761 = " \
-		${FILEPATH}/LICENSE.adau1761 \
+                ${FILEPATH}/LICENSE.adau1761 \
 		${FILEPATH}/adau1761.bin \
 		"
 

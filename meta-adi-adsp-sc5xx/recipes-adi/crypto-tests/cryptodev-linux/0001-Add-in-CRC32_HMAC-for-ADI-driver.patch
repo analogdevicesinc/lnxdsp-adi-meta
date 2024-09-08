@@ -1,8 +1,8 @@
 From 5af19fcbd44ed69b11f221cffd86f04ed866d06a Mon Sep 17 00:00:00 2001
 From: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
 Date: Wed, 9 Mar 2022 09:05:16 -0500
+Upstream-Status: Pending
 Subject: [PATCH] Add in CRC32_HMAC for ADI driver
-
 ---
  crypto/cryptodev.h | 1 +
  ioctl.c            | 3 +++

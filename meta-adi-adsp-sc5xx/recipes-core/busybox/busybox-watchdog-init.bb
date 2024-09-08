@@ -27,7 +27,7 @@ do_install(){
         install -m 0644 ${WORKDIR}/watchdog.service ${D}${systemd_system_unitdir}/watchdog.service
 
         install -d ${D}/etc/systemd/system/multi-user.target.wants/
-        ln -s ${systemd_system_unitdir}/watchdog.service} ${D}/etc/systemd/system/multi-user.target.wants/watchdog.service
+        ln -s ${systemd_system_unitdir}/watchdog.service ${D}/etc/systemd/system/multi-user.target.wants/watchdog.service
     else
         install -d ${D}/${INIT_D_DIR}
         install -m 0755 ${WORKDIR}/${INITSCRIPT_NAME} ${D}/${INIT_D_DIR}/${INITSCRIPT_NAME}

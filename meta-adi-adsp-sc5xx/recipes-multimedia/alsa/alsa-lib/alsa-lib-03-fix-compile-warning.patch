@@ -1,8 +1,8 @@
 From 2144a3491aae90de9e70bde613fc3f8754f83fc8 Mon Sep 17 00:00:00 2001
 From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
 Date: Mon, 3 Jun 2019 13:09:23 -0400
+Upstream-Status: Pending
 Subject: [PATCH] alsa-lib-03-fix-compile-warning.patch
-
 ---
  src/ucm/parser.c | 1 +
  1 file changed, 1 insertion(+)
