@@ -10,9 +10,9 @@ PV = "1.0"
 S = "${WORKDIR}/source"
 
 DEPENDS = "python3 python3-build-native python3-installer-native"
-RDEPENDS_${PN} = "python3-core python3-modules rpmsg-utils"
+RDEPENDS:${PN} = "python3-core python3-modules rpmsg-utils"
 
-RPROVIDES_${PN} = "python3-pyrpmsg python3-remoteshell python3-adi_remote_rpmsg"
+RPROVIDES:${PN} = "python3-pyrpmsg python3-remoteshell python3-adi_remote_rpmsg"
 
 FILES:${PN} += " ${PYTHON_SITEPACKAGES_DIR}/adi_remote_rpmsg/* "
 FILES:${PN} += " ${PYTHON_SITEPACKAGES_DIR}/remoteshell/* "
