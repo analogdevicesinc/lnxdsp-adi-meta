@@ -1,0 +1,25 @@
+From ff2e6468f3a2aa1624017cd50efa58a5006e7e99 Mon Sep 17 00:00:00 2001
+From: Oliver Gaskell <Oliver.Gaskell@analog.com>
+Date: Wed, 11 Sep 2024 14:10:28 +0100
+Subject: [PATCH] rpmsg-bind-chardev: output name of bound /dev device
+
+Signed-off-by: Oliver Gaskell <Oliver.Gaskell@analog.com>
+---
+ rpmsg-bind-chardev.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/rpmsg-bind-chardev.c b/rpmsg-bind-chardev.c
+index d3f5e65..0cd64b8 100644
+--- a/rpmsg-bind-chardev.c
++++ b/rpmsg-bind-chardev.c
+@@ -98,6 +98,7 @@ int rpmsg_bind(char *device, unsigned int addr)
+ 				closedir(directory);
+ 				return -EINVAL;
+ 			}
++			printf("rpmsg device: %s\n", path);
+ 			break;
+ 		}
+ 	}
+-- 
+2.34.1
+
