@@ -9,6 +9,10 @@ SRC_URI = "git://github.com/analogdevicesinc/rpmsg-utils.git;protocol=https;bran
 
 S = "${WORKDIR}/git"
 
+SRC_URI += "\
+    file://rpmsg-utils-show-dev.patch \
+"
+
 do_install () {
 	install -d ${D}${bindir}
 	install -m 0755 rpmsg-bind-chardev ${D}${bindir}
