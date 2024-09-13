@@ -35,3 +35,24 @@ This will result in the `minimal` image being built. The [wiki](https://github.c
 
 ## Licensing
 Please refer to the LICENSE.md file in this repository for more information regarding licensing.
+
+## GlencOS / Demo branch instructions
+
+```shell
+# Fetch sources
+mkdir gxp2-glencos; cd gxp2-glencos
+mkdir bin
+curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ./bin/repo
+./bin/repo init \
+   -u https://github.com/OliverGaskellADI/lnxdsp-repo-manifest.git \
+   -b glencos \
+   -m glencos.xml
+./bin/repo sync
+
+# Setup build environment
+source setup-environment -m adsp-sc598-som-ezkit -b build
+cp ../sources/meta-adi/tools/bblayers.conf ./conf/  # Update bblayers to add the jupyter layer
+
+# Build demo image
+bitbake adsp-sc5xx-demo
+```
