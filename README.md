@@ -56,3 +56,34 @@ cp ../sources/meta-adi/tools/bblayers.conf ./conf/  # Update bblayers to add the
 # Build demo image
 bitbake adsp-sc5xx-demo
 ```
+
+You should then setup the system as normal, and boot using `nfsboot`.
+> Note that the root filesystem will be called `adsp-sc5xx-demo-adsp-sc598-som-ezkit.rootfs.tar.xz` - Yocto 5 adds the `.rootfs` and the image name is `adsp-sc5xx-demo`.
+
+### Running Jupyter
+
+On the target machine:
+
+```shell
+# Set hostname
+# Replace HOSTNAME with a unique hostname, e.g. my-sc598
+echo HOSTNAME > /etc/hostname
+
+# Setup Jupyter Config
+mkdir -pv /root/.jupyter/
+cat << EOF > /root/.jupyter/jupyter_lab_config.py
+# Configuration file for lab.
+import platform
+c = get_config()  # noqa
+c.ServerApp.allow_origin = '*'
+c.ServerApp.allow_remote_access = True
+c.ServerApp.allow_root = True
+c.ServerApp.ip = platform.node() + ".local"
+EOF
+
+# Run Jupyter
+jupyter lab
+
+# Once Jupyter starts, a link will be printed that can be used to access it remotely - it should start with your hostname.
+# E.g., http://my-sc598.local:8888/lab?token=...
+```
