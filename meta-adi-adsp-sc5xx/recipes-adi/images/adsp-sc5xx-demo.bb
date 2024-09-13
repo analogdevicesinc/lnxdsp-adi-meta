@@ -9,7 +9,7 @@ do_image_wic[depends] += " \
 
 
 FILE_SYSTEM_TOOLS = "\
-	e2fsprogs \
+    e2fsprogs \
 "
 
 TESTING = "\
@@ -17,11 +17,11 @@ TESTING = "\
 "
 
 SOUND = " \
-	alsa-utils \
-	alsa-lib \
-	rpmsg-utils \
-	dbus \
-	play \
+    alsa-utils \
+    alsa-lib \
+    rpmsg-utils \
+    dbus \
+    play \
 "
 
 UTILS = " \
@@ -34,21 +34,35 @@ UTILS = " \
     bonnie++ \
 "
 
+JUPYTER = " \
+    python3-jupyter \
+    python3-jupyterlab \
+    python3-jupyter-server \
+    python3-websocket-client \
+    python3-notebook-shim \
+    python3-nbconvert \
+    python3-nbclient \
+    python3-nest-asyncio \
+    python3-psutil \
+    python3-jupyterlab-pygments \
+"
+
 UTILS += "${@'' if (bb.utils.to_boolean(d.getVar('ADSP_KERNEL_TYPE') == 'upstream')) else ' perf '}"
 
 IMAGE_INSTALL += " \
     ${UTILS} \
-   	${FILE_SYSTEM_TOOLS} \
-   	${TESTING} \
-	${SOUND} \
-	ltp \
-	linuxptp \
-	linux-firmware-rtl8192su \
-	linux-firmware-adau1761 \
-	mtd-utils \
-	mtd-utils-ubifs \
-	version \
-	libopus \
-	opus-tools \
-	python3-pyrpmsg \
+       ${FILE_SYSTEM_TOOLS} \
+       ${TESTING} \
+    ${SOUND} \
+    ltp \
+    linuxptp \
+    linux-firmware-rtl8192su \
+    linux-firmware-adau1761 \
+    mtd-utils \
+    mtd-utils-ubifs \
+    version \
+    libopus \
+    opus-tools \
+    python3-pyrpmsg \
+    ${JUPYTER} \
 "
