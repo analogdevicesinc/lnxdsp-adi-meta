@@ -38,6 +38,8 @@ SRC_URI:append:adsp-sc598-som-ezkit = "${@bb.utils.contains_any('MACHINE_FEATURE
 
 SRC_URI:append:adsp-sc598-som-ezkit = ' file://0001-SC598-fix-stmmac-dma-split-header-crash.patch'
 
+SRC_URI:append = " file://0001-enable-Loop-Devices-and-Swap-over-NFS.patch "
+
 do_install:append(){
 	rm -rf ${D}/lib/modules/*-yocto-standard/modules.builtin.modinfo
 }
