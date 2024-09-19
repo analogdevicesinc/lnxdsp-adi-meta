@@ -60,7 +60,7 @@ bitbake adsp-sc5xx-demo
 You should then setup the system as normal, and boot using `nfsboot`.
 > Note that the root filesystem will be called `adsp-sc5xx-demo-adsp-sc598-som-ezkit.rootfs.tar.xz` - Yocto 5 adds the `.rootfs` and the image name is `adsp-sc5xx-demo`.
 
-### Running Jupyter
+### Configuring Jupyter
 
 On the target machine:
 
@@ -80,7 +80,33 @@ c.ServerApp.allow_remote_access = True
 c.ServerApp.allow_root = True
 c.ServerApp.ip = platform.node() + ".local"
 EOF
+```
 
+### Setting up Swap
+
+Setting up swap memory over NFS gives the system access to a large swap partition, meaning memory-intensive applications like Jupyter can still run on the board, despite the small ~200MB of actual memory available to Linux on the ARM core.
+
+On the build machine: (assuming your NFS filesystem is setup in `/romfs`)
+
+```shell
+# Create a 2GB swapfile
+sudo dd if=/dev/zero of=/romfs/swapfile bs=1M count=2000
+```
+
+On the board:
+
+```shell
+# Create a loop device for the swapfile
+losetup /dev/loop0 /swapfile
+
+# Setup swap
+mkswap /dev/loop0
+swapon /dev/loop0
+```
+
+### Run Jupyter
+
+```shell
 # Run Jupyter
 jupyter lab
 
