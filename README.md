@@ -93,11 +93,11 @@ On the build machine: (assuming your NFS filesystem is setup in `/romfs`)
 sudo dd if=/dev/zero of=/romfs/swapfile bs=1M count=2000
 ```
 
-On the board:
+On the board: (Note this must be run after every boot)
 
 ```shell
 # Create a loop device for the swapfile
-losetup /dev/loop0 /swapfile
+losetup $(losetup -f) /swapfile
 
 # Setup swap
 mkswap /dev/loop0
