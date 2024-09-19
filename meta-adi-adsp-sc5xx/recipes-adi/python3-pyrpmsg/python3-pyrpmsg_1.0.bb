@@ -6,6 +6,7 @@ LIC_FILES_CHKSUM = ""
 SRC_URI = "\
 	file://source/ \
 	file://pyrpmsg-example.ipynb \
+	file://setup-demo \
 "
 
 PV = "1.0"
@@ -22,7 +23,7 @@ FILES:${PN} += " ${PYTHON_SITEPACKAGES_DIR}/adi_remote_rpmsg/* "
 FILES:${PN} += " ${PYTHON_SITEPACKAGES_DIR}/remoteshell/* "
 FILES:${PN} += " ${PYTHON_SITEPACKAGES_DIR}/pyrpmsg/* "
 FILES:${PN} += " ${PYTHON_SITEPACKAGES_DIR}/utils.py "
-FILES:${PN} += " /root/pyrpmsg-examples/ "
+FILES:${PN} += " /root/pyrpmsg-demo/ "
 
 do_configure () {
 	:
@@ -34,8 +35,9 @@ do_compile () {
 
 do_install () {
 	# Install Jupyter Example
-	install -d ${D}/root/pyrpmsg-examples/
-	install ${S}/pyrpmsg-example.ipynb ${D}/root/pyrpmsg-examples/
+	install -d ${D}/root/pyrpmsg-demo/
+	install ${S}/pyrpmsg-example.ipynb ${D}/root/pyrpmsg-demo/
+	install -m 755 ${S}/setup-demo ${D}/root/pyrpmsg-demo/
 
 	install -d ${D}${PYTHON_SITEPACKAGES_DIR}
 	cp -r ${S_PYMODULES}/adi_remote_rpmsg ${D}${PYTHON_SITEPACKAGES_DIR}
