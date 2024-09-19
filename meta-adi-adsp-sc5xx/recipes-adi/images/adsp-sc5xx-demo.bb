@@ -7,6 +7,8 @@ do_image_wic[depends] += " \
         ${IMAGE_BASENAME}:do_image_ext4 \
 "
 
+OVERRIDES:append = ":adsp-demo-image"
+
 
 FILE_SYSTEM_TOOLS = "\
     e2fsprogs \
