@@ -1,0 +1,33 @@
+From 2d7b52e74c9911c45c21b2471c5d3962bfc3b0ff Mon Sep 17 00:00:00 2001
+From: Oliver Gaskell <Oliver.Gaskell@analog.com>
+Date: Thu, 19 Sep 2024 14:12:23 +0100
+Subject: [PATCH] enable Loop Devices and Swap over NFS
+
+Signed-off-by: Oliver Gaskell <Oliver.Gaskell@analog.com>
+---
+ arch/arm64/configs/sc598-som-ezkit_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm64/configs/sc598-som-ezkit_defconfig b/arch/arm64/configs/sc598-som-ezkit_defconfig
+index b7ea7bab5dcb..c0e7fe2bd5d8 100644
+--- a/arch/arm64/configs/sc598-som-ezkit_defconfig
++++ b/arch/arm64/configs/sc598-som-ezkit_defconfig
+@@ -30,6 +30,7 @@ CONFIG_NAMESPACES=y
+ CONFIG_USER_NS=y
+ CONFIG_SCHED_AUTOGROUP=y
+ CONFIG_BLK_DEV_INITRD=y
++CONFIG_BLK_DEV_LOOP=y
+ # CONFIG_RD_BZIP2 is not set
+ # CONFIG_RD_LZMA is not set
+ # CONFIG_RD_XZ is not set
+@@ -319,6 +320,7 @@ CONFIG_CONFIGFS_FS=y
+ CONFIG_EFIVAR_FS=y
+ CONFIG_JFFS2_FS=y
+ CONFIG_NFS_FS=y
++CONFIG_NFS_SWAP=y
+ CONFIG_NFS_V3_ACL=y
+ CONFIG_NFS_V4=y
+ CONFIG_NFS_V4_1=y
+-- 
+2.34.1
+
