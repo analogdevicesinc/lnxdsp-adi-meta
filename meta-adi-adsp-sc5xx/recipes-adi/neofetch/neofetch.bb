@@ -12,10 +12,14 @@ PROVIDES = "neofetch"
 
 S = "${WORKDIR}/git"
 
+FILES:${PN}:append = " /root/.profile "
+
 do_install () {
 	install -d ${D}${bindir}
 	install -m 0755 ${S}/neofetch ${D}${bindir}
 
+	install -d ${D}/root/
+	echo "neofetch" >> ${D}/root/.profile
 }
 
 
