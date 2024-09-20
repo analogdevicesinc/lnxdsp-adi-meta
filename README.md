@@ -43,6 +43,8 @@ Please refer to the LICENSE.md file in this repository for more information rega
 mkdir gxp2-glencos; cd gxp2-glencos
 mkdir bin
 curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ./bin/repo
+chmod +x ./bin/repo
+
 ./bin/repo init \
    -u https://github.com/OliverGaskellADI/lnxdsp-repo-manifest.git \
    -b glencos \
