@@ -14,6 +14,14 @@ S = "${WORKDIR}/git"
 
 FILES:${PN}:append = " /root/.profile "
 
+do_configure () {
+	:
+}
+
+do_compile () {
+	:
+}
+
 do_install () {
 	install -d ${D}${bindir}
 	install -m 0755 ${S}/neofetch ${D}${bindir}
