@@ -67,4 +67,5 @@ IMAGE_INSTALL += " \
     opus-tools \
     python3-pyrpmsg \
     ${JUPYTER} \
+    neofetch \
 "
