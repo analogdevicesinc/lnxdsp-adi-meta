@@ -38,6 +38,12 @@ Please refer to the LICENSE.md file in this repository for more information rega
 
 ## GlencOS / Demo branch instructions
 
+Some important points about running the demo:
+- Ensure the board has a unique IP. An unstable network connection caused by boards with the same IP can result in *extreme system instability*, since the network is used for swap memory.
+- Ensure the time and date on the board are correct - otherwise, SSL errors may occur and Jupyter will not function correctly.
+
+Setup the sources and build environment:
+
 ```shell
 # Fetch sources
 mkdir gxp2-glencos; cd gxp2-glencos
