@@ -2,6 +2,7 @@
 
 import sys
 from pathlib import Path
+import subprocess
 
 from pyrpmsg import RPMsgCore, RPMsgEndpoint
 from remoteshell import Receiver, Sender, test_callback
@@ -63,6 +64,7 @@ class Remote:
         self.r.bind("close_e", self.c_close_e)
         self.r.bind("use_c", self.c_use_c)
         self.r.bind("use_e", self.c_use_e)
+        self.r.bind("aplay", self.c_aplay)
 
         if self.port is None:
             self.r.connect(self.hostname)
@@ -329,3 +331,44 @@ class Remote:
 
         self.default_endpoint = int(endpoint_n)
         return 0, f"Set default endpoint to {endpoint_n}"
+
+    def c_aplay(self, r: Receiver, args: list[str]) -> tuple[int, str]:
+        """Interface to `aplay`."""
+        if "-h" in args or "--help" in args:
+            return 0, """\
+aplay interface.
+> aplay [options] [filename]
+
+Options:
+-h  --help:
+    Display this help.
+-d  --device:
+    PCM device to use.
+-l  --list:
+    List available PCM devices.
+-f  --filename
+    Filename of audio file to play.
+"""
+        if "-l" in args or "--list" in args:
+            cmd = ["aplay", "-L"]
+            result = subprocess.run(cmd, stdout=subprocess.PIPE)
+
+            return result.returncode, result.stdout.decode()
+
+        dev = getarg(args, "d", "device")
+        filename = getarg(args, "f", "filename")
+
+        if filename is None:
+            return -1, "Specify a filename with -f/--filename."
+
+        audiobinary = self.r.request_binary(filename)
+
+        cmd = ["aplay"]
+        if dev:
+            cmd += ["-D", dev]
+
+        aplay = subprocess.Popen(cmd, stdout=subprocess.PIPE,  stdin=subprocess.PIPE)
+
+        stdout, _ = aplay.communicate(input=audiobinary)
+
+        return aplay.returncode, stdout.decode()
