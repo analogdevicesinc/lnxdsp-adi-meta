@@ -7,6 +7,7 @@ SRC_URI = "\
 	file://source/ \
 	file://pyrpmsg-example.ipynb \
 	file://setup-demo \
+	file://adi_remote_rpmsg.service \
 "
 
 PV = "1.0"
