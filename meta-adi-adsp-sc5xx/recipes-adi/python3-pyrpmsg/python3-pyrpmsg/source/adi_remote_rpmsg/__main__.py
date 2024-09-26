@@ -26,9 +26,11 @@ if __name__ == "__main__":
 
     print(c.Fore.BLUE + c.BOLD + BANNER + c.NORMAL + c.RESET)
 
+    reverse = "--reverse" in sys.argv
+
     if "--cli" in sys.argv or "-c" in sys.argv:
-        CLI(sys.argv, colour=colour)
+        CLI(sys.argv, colour=colour, reverse=reverse)
     elif "--remote" in sys.argv or "-r" in sys.argv:
-        Remote(sys.argv)
+        Remote(sys.argv, reverse=reverse)
     else:
         print("Must specify -c/--cli or -r/--remote.")

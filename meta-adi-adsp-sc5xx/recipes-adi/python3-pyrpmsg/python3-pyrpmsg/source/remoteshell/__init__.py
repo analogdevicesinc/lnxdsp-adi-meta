@@ -23,10 +23,15 @@ class Sender:
     Will act like a server - opens a port and waits for connections.
     """
 
-    def __init__(self, hostname: str, port: int = 5000, colour: bool = True):
-        self.sock = socket.socket()
-        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.sock.bind((hostname, port))
+    def __init__(self, hostname: str, port: int = 5000, colour: bool = True, reverse: bool = False):
+        self.reverse = reverse
+        if not reverse:
+            self.sock = socket.socket()
+            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.sock.bind((hostname, port))
+        else:
+            self.sock = socket.socket()
+            self.hostname, self.port = hostname, port
 
         self.command_queue = []
 
@@ -35,8 +40,18 @@ class Sender:
         else:
             self.c = DummyColours
 
+    def connect(self, host: str, port: int = 5000) -> None:
+        """Connect to a Receiver."""
+        if not self.reverse:
+            raise ValueError("Sender.connect only supported in reverse mode.")
+
+        self.sock.connect((host, port))
+
     def wait_connection(self) -> tuple[socket.socket, str]:
         """Wait for a connection, and return the opened socket and connected address."""
+        if self.reverse:
+            raise ValueError("Sender.wait_connection not supported in reverse mode.")
+
         self.sock.listen(2)
         return self.sock.accept()
 
@@ -61,8 +76,13 @@ class Sender:
 
     def main_loop(self) -> None:
         """Main event loop. Provides an interactive console with which to send commands over the network."""
-        conn, addr = self.wait_connection()
-        print(f"Connected to {addr}")
+        if self.reverse:
+            self.connect(self.hostname, self.port)
+            conn = self.sock
+        else:
+            conn, addr = self.wait_connection()
+            print(f"Connected to {addr}")
+
         ret = 0
 
         while True:
@@ -127,16 +147,36 @@ class Receiver:
     Acts like a client - will attempt to connect to some already-running remote host.
     """
 
-    def __init__(self):
-        self.sock = socket.socket()
-        self.connected = False
+    def __init__(self, hostname: str | None = None, port: int = 5000, reverse: bool = False):
+        self.reverse = reverse
+        if not reverse:
+            self.sock = socket.socket()
+            self.connected = False
+        else:
+            self.sock = socket.socket()
+            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.sock.bind((hostname, port))
 
         self.callbacks: dict[str, Callback] = {}
 
     def connect(self, host: str, port: int = 5000) -> None:
         """Connect to a Sender."""
+        if self.reverse:
+            raise ValueError("Receiver.connect not supported in reverse mode.")
+
         self.sock.connect((host, port))
         self.connected = True
+        self.conn = self.sock
+
+    def wait_connection(self) -> tuple[socket.socket, str]:
+        """Wait for a connection, and return the opened socket and connected address."""
+        if not self.reverse:
+            raise ValueError("Receiver.wait_connection only supported in reverse mode.")
+
+        self.sock.listen(2)
+        self.conn, addr = self.sock.accept()
+        self.connected = True
+        return self.conn, addr
 
     def bind(self, command: str, callback: Callback) -> None:
         """Bind a command to a callback.
@@ -153,7 +193,7 @@ class Receiver:
         """
         command_raw = bytes()
         while len(command_raw) < size:
-            command_raw += self.sock.recv(NET_CHUNK_SIZE)
+            command_raw += self.conn.recv(NET_CHUNK_SIZE)
 
         command = command_raw.decode().strip().split(" ")
 
@@ -166,21 +206,21 @@ class Receiver:
 
     def receive_binary(self) -> bytes:
         """Recieve a binary, and return as a bytes object."""
-        net_type = self.sock.recv(NET_TYPE_SIZE).decode()
+        net_type = self.conn.recv(NET_TYPE_SIZE).decode()
         _, s = net_type.strip().split(" ")
         s = int(s)
 
-        self.sock.send("binary_ready".encode())
+        self.conn.send("binary_ready".encode())
 
         binary = bytes()
         while len(binary) < s:
-            binary += self.sock.recv(NET_CHUNK_SIZE)
+            binary += self.conn.recv(NET_CHUNK_SIZE)
 
         return binary
 
     def request_binary(self, filename: str) -> bytes:
         """Request a binary with given filename, and return as bytes."""
-        self.sock.send(f"request_binary {filename}".encode())
+        self.conn.send(f"request_binary {filename}".encode())
 
         return self.receive_binary()
 
@@ -194,7 +234,7 @@ class Receiver:
             return
 
         while True:
-            net_type = self.sock.recv(NET_TYPE_SIZE).decode()
+            net_type = self.conn.recv(NET_TYPE_SIZE).decode()
             t, s = net_type.strip().split(" ")
             s = int(s)
 
@@ -202,8 +242,8 @@ class Receiver:
                 case "command":
                     ret, output = self.receive_command(s)
                     output_bytes = output.encode()
-                    self.sock.send(f"command_output {len(output_bytes)} {ret}".encode())
-                    self.sock.send(output_bytes)
+                    self.conn.send(f"command_output {len(output_bytes)} {ret}".encode())
+                    self.conn.send(output_bytes)
                 case _:
                     print(f"Network error: unexpected type <{t}> of size <{s}>.")
                     continue
@@ -216,7 +256,7 @@ def test_callback(recv: Receiver, args: list[str]) -> tuple[int, str]:
 
 def test_binary(recv: Receiver, args: list[str]) -> tuple[int, str]:
     """Callback for binary testing."""
-    recv.sock.send(f"request_binary {args[1]}".encode())
+    recv.conn.send(f"request_binary {args[1]}".encode())
 
     bin = recv.receive_binary()
 

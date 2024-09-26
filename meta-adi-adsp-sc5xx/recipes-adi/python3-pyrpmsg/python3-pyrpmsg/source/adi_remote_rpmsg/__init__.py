@@ -9,7 +9,7 @@ from remoteshell import Receiver, Sender, test_callback
 from utils import getarg
 
 
-def CLI(argv: list[str], colour: bool = True) -> None:
+def CLI(argv: list[str], colour: bool = True, reverse: bool = False) -> None:
     """CLI Application to interface with a remote DSP device."""
     hostname = getarg(argv, "h", "hostname")
     port = getarg(argv, "p", "port")
@@ -19,9 +19,9 @@ def CLI(argv: list[str], colour: bool = True) -> None:
         sys.exit(1)
 
     if port is None:
-        s = Sender(hostname, colour=colour)
+        s = Sender(hostname, colour=colour, reverse=reverse)
     else:
-        s = Sender(hostname, int(port), colour=colour)
+        s = Sender(hostname, int(port), colour=colour, reverse=reverse)
 
     s.command_queue.append("detect_cores")
     s.command_queue.append("detect_endpoints")
@@ -32,13 +32,15 @@ def CLI(argv: list[str], colour: bool = True) -> None:
 class Remote:
     """Remote DSP device application."""
 
-    def __init__(self, argv: list[str]):
+    def __init__(self, argv: list[str], reverse: bool = False):
         self.hostname = getarg(argv, "h", "hostname")
         self.port = getarg(argv, "p", "port")
 
         if self.hostname is None:
             print("Please specify a hostname with -h/--hostname.")
             sys.exit(1)
+        if self.port is None:
+            self.port = 5000
 
         self.cores: dict[int, RPMsgCore] = {}
         self.endpoints: list[RPMsgEndpoint | None] = []
@@ -46,7 +48,14 @@ class Remote:
         self.default_core: int | None = None
         self.default_endpoint: int | None = None
 
-        self.r = Receiver()
+        if reverse:
+            self.r = Receiver(
+                hostname=self.hostname,
+                port=self.port,
+                reverse=True,
+            )
+        else:
+            self.r = Receiver()
         self.r.bind("test", test_callback)
         self.r.bind("create_c", self.c_create_c)
         self.r.bind("detect_cores", self.c_detect_cores)
@@ -66,10 +75,13 @@ class Remote:
         self.r.bind("use_e", self.c_use_e)
         self.r.bind("aplay", self.c_aplay)
 
-        if self.port is None:
-            self.r.connect(self.hostname)
+        if not reverse:
+            if self.port is None:
+                self.r.connect(self.hostname)
+            else:
+                self.r.connect(self.hostname, int(self.port))
         else:
-            self.r.connect(self.hostname, int(self.port))
+            self.r.wait_connection()
 
         self.r.main_loop()
 
