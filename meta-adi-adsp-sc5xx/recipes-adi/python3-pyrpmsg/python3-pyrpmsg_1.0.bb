@@ -24,6 +24,7 @@ FILES:${PN} += " ${PYTHON_SITEPACKAGES_DIR}/remoteshell/* "
 FILES:${PN} += " ${PYTHON_SITEPACKAGES_DIR}/pyrpmsg/* "
 FILES:${PN} += " ${PYTHON_SITEPACKAGES_DIR}/utils.py "
 FILES:${PN} += " /root/pyrpmsg-demo/ "
+FILES:${PN} += " /usr/lib/systemd/system/adi_remote_rpmsg.service "
 
 do_configure () {
 	:
@@ -39,6 +40,11 @@ do_install () {
 	install ${S}/pyrpmsg-example.ipynb ${D}/root/pyrpmsg-demo/
 	install -m 755 ${S}/setup-demo ${D}/root/pyrpmsg-demo/
 
+	# Install systemd unit
+	install -d ${D}/usr/lib/systemd/system/
+	install ${S}/adi_remote_rpmsg.service ${D}/usr/lib/systemd/system/adi_remote_rpmsg.service
+
+	# Install python libraries
 	install -d ${D}${PYTHON_SITEPACKAGES_DIR}
 	cp -r ${S_PYMODULES}/adi_remote_rpmsg ${D}${PYTHON_SITEPACKAGES_DIR}
 	cp -r ${S_PYMODULES}/remoteshell ${D}${PYTHON_SITEPACKAGES_DIR}

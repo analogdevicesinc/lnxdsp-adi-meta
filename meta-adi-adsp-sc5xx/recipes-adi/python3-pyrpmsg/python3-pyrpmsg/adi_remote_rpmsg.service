@@ -1,0 +1,12 @@
+[Unit]
+Description=ADI Remote RPMsg Interface - Remote Service
+
+[Service]
+ExecStart=/usr/bin/python3 -m adi_remote_rpmsg -h 10.37.65.84 -r --reverse
+Environment=PYTHONUNBUFFERED=1
+Restart=on-failure
+Type=simple
+User=root
+
+[Install]
+WantedBy=default.target
