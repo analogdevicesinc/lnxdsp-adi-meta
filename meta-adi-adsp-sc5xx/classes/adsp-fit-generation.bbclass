@@ -25,19 +25,11 @@ emit_its() {
 		kernel-1 {
 			description = "Linux kernel";
 			data = /incbin/("${KERNEL_IMAGETYPE}");
-			type = "kernel_noload";
+			type = "kernel";
 			arch = "${ARCH}";
 			os = "linux";
 			compression = "${KERNEL_COMPRESSION}";
-			load = <${UBOOT_LOADADDRESS}>;
-			entry = <${UBOOT_ENTRYPOINT}>;
-			hash-1 {
-				algo = "sha1";
-			};
-			signature-1 {
-				algo = "sha1,rsa2048";
-				key-name-hint = "${UBOOT_SIGN_KEYNAME}";
-			};
+			entry = <${KERNEL_ENTRYPOINT}>;
 		};
 
 		fdt-2 {
@@ -47,13 +39,6 @@ emit_its() {
 			arch = "${ARCH}";
 			compression = "none";
 			load = <${UBOOT_DTBADDRESS}>;
-			hash-1 {
-				algo = "sha1";
-			};
-			signature-1 {
-				algo = "sha1,rsa2048";
-				key-name-hint = "${UBOOT_SIGN_KEYNAME}";
-			};
 		};
 
 		ramdisk-3 {
@@ -63,15 +48,7 @@ emit_its() {
 			arch = "${ARCH}";
 			os = "linux";
 			compression = "none";
-			load = <${UBOOT_RDADDR}>;
 			entry = <${UBOOT_RDADDR}>;
-			hash-1 {
-					algo = "sha1";
-			};
-			signature-1 {
-				algo = "sha1,rsa2048";
-				key-name-hint = "${UBOOT_SIGN_KEYNAME}";
-			};
 		};
 
 	};
