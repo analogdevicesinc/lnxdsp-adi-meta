@@ -48,6 +48,7 @@ emit_its() {
 			arch = "${ARCH}";
 			os = "linux";
 			compression = "none";
+                        load = <${UBOOT_RDADDR}>;
 			entry = <${UBOOT_RDADDR}>;
 		};
 
