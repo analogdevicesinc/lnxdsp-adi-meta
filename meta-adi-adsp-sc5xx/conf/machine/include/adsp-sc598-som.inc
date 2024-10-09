@@ -7,8 +7,8 @@ require conf/machine/include/arm/armv8-2a/tune-cortexa55.inc
 # Increase this everytime you change something in the kernel
 MACHINE_KERNEL_PR = "r0"
 
-KERNEL_IMAGETYPE = "Image.gz"
-KERNEL_COMPRESSION = "gzip"
+KERNEL_IMAGETYPE = "Image"
+KERNEL_COMPRESSION = "none"
 
 PREFERRED_PROVIDER_virtual/kernel = "linux-adi"
 PREFERRED_PROVIDER_virtual/bootloader = "u-boot-adi"

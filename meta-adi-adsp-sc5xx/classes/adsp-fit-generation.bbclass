@@ -25,7 +25,7 @@ emit_its() {
 		kernel-1 {
 			description = "Linux kernel";
 			data = /incbin/("${KERNEL_IMAGETYPE}");
-			type = "kernel";
+			type = "kernel_noload";
 			arch = "${ARCH}";
 			os = "linux";
 			compression = "${KERNEL_COMPRESSION}";
