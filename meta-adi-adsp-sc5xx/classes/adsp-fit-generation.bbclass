@@ -30,6 +30,7 @@ emit_its() {
 			os = "linux";
 			compression = "${KERNEL_COMPRESSION}";
 			entry = <${KERNEL_ENTRYPOINT}>;
+			load = <${KERNEL_ENTRYPOINT}>;
 		};
 
 		fdt-2 {
