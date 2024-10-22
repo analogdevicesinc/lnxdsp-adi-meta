@@ -8,8 +8,19 @@ require recipes-kernel/linux/linux-yocto.inc
 KERNEL_GIT_URI ?= "git://github.com/analogdevicesinc/lnxdsp-linux.git"
 KERNEL_GIT_PROTOCOL ?= "https"
 
+LNX_CRR_FILE = ""
+LNX_CRR_FILE:adsp-sc598-som-ezkit = "file://0002-SC598-EZKIT-Adding-softconfig-changes-for-REV-D.patch"
+LNX_CRR_FILE:adsp-sc594-som-ezkit = "file://0003-SC594-EZKIT-Adding-softconfig-changes-for-REV-D.patch"
+LNX_CRR = "${@bb.utils.contains('CRR_REV', 'D', '${LNX_CRR_FILE}', '', d)}"
+
+LNX_SOM_FILE = ""
+LNX_SOM_FILE:adsp-sc598-som-ezkit = "file://0001-Adding-support-for-SC598-SOM-Rev-E.patch"
+LNX_SOM = "${@bb.utils.contains('SOM_REV', 'E', '${LNX_SOM_FILE}', '', d)}"
+
 SRC_URI += " \
 	${KERNEL_GIT_URI};protocol=${KERNEL_GIT_PROTOCOL};branch=${KERNEL_BRANCH} \
+        ${LNX_CRR} \
+        ${LNX_SOM} \
 "
 
 # Pull in the devicetree files into the rootfs

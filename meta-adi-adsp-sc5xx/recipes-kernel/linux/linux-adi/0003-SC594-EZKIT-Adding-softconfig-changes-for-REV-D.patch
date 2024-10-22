@@ -1,0 +1,51 @@
+From 5de4acadc7683a8429d863ae9c4fb2a4af6d0905 Mon Sep 17 00:00:00 2001
+From: UtsavAgarwalADI <utsav.agarwal@analog.com>
+Date: Fri, 10 May 2024 14:16:26 +0100
+Subject: [PATCH 3/3] SC594-EZKIT: Adding softconfig changes for REV-D
+
+    Inverting the following to outputs:
+            - EPROM
+            - OSPI_CS (chip select)
+
+    Signed-off-by: UtsavAgarwalADI <utsav.agarwal@analog.com>
+
+Signed-off-by: UtsavAgarwalADI <utsav.agarwal@analog.com>
+---
+ arch/arm/boot/dts/sc594-som-ezkit.dts | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/boot/dts/sc594-som-ezkit.dts b/arch/arm/boot/dts/sc594-som-ezkit.dts
+index 70bebaa1377e..5a7e12a342e4 100644
+--- a/arch/arm/boot/dts/sc594-som-ezkit.dts
++++ b/arch/arm/boot/dts/sc594-som-ezkit.dts
+@@ -33,15 +33,15 @@ ssw1: gpio@0x22 {
+ 
+ 		eeprom {
+ 			gpio-hog;
+-			gpios = <0 0x0>;
++			gpios = <0 0x1>;
+ 			output-low;
+ 			line-name = "eeprom-en";
+ 		};
+ 
+ 		pushbutton {
+ 			gpio-hog;
+-			gpios = <1 0x0>;
+-			output-low; /*output-high;*/
++			gpios = <1 0x1>;
++			output-low; 
+ 			line-name = "pushbutton-en";
+ 		};
+ 
+@@ -75,7 +75,7 @@ adau1979 {
+ 
+ 		octal {
+ 			gpio-hog;
+-			gpios = <8 0x0>;
++			gpios = <8 0x1>;
+ 			output-low;
+ 			line-name = "octal-spi-cs-en";
+ 		};
+-- 
+2.25.1
+
