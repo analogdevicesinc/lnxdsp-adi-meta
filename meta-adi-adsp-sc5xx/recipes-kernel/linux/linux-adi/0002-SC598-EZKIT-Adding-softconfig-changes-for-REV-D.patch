@@ -1,0 +1,50 @@
+From a376dcc8a4ccd9af5f54989bdf896e657ae563ea Mon Sep 17 00:00:00 2001
+From: UtsavAgarwalADI <utsav.agarwal@analog.com>
+Date: Fri, 10 May 2024 12:52:49 +0100
+Subject: [PATCH 2/3] SC598-EZKIT: Adding softconfig changes for REV-D
+
+Inverting the following to outputs:
+	- EPROM
+	- Pushbutton
+	- OSPI_CS (chip select)
+
+Signed-off-by: UtsavAgarwalADI <utsav.agarwal@analog.com>
+---
+ arch/arm64/boot/dts/adi/sc598-som-ezkit.dts | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
+index 96287238f741..14049bf6850d 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
++++ b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
+@@ -84,15 +84,15 @@ ssw1: gpio@0x22 {
+ 
+ 		eeprom {
+ 			gpio-hog;
+-			gpios = <0 0x0>;
++			gpios = <0 0x1>;
+ 			output-low;
+ 			line-name = "eeprom-en";
+ 		};
+ 
+ 		pushbutton {
+ 			gpio-hog;
+-			gpios = <1 0x0>;
+-			output-high;
++			gpios = <1 0x1>;
++			output-low;
+ 			line-name = "pushbutton-en";
+ 		};
+ 
+@@ -133,7 +133,7 @@ adau1979 {
+ 
+ 		octal {
+ 			gpio-hog;
+-			gpios = <8 0x0>;
++			gpios = <8 0x1>;
+ 			output-low;
+ 			line-name = "octal-spi-cs-en";
+ 		};
+-- 
+2.25.1
+

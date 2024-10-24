@@ -1,0 +1,364 @@
+From cc740ff2a609fd22d83cecb233d267559859241f Mon Sep 17 00:00:00 2001
+From: UtsavAgarwalADI <utsav.agarwal@analog.com>
+Date: Thu, 13 Jun 2024 12:38:15 +0100
+Subject: [PATCH] SC598-SOM: Adding Rev E compatibility for u-boot
+
+- Correcting memory configuration to more accurately reflect the ram size.
+
+- Adding checks to make sure valid gpio descriptors are obtained
+ before attempting to set value. This allows uboot to avoid crashing
+ entirely during init and provide a suitable error response.
+
+- Removing unneeded print from device driver for ADP5588/87
+
+NOTE: SPL doesnt print UART output when loaded for the first time
+
+Signed-off-by: Utsav Agarwal <utsav.agarwal@analog.com>
+---
+ arch/arm/dts/sc598-som.dtsi              | 67 ++++++++++++------------
+ arch/arm/dts/sc5xx.dtsi                  | 51 +++++++++---------
+ arch/arm/mach-sc5xx/sc59x/sc59x-shared.c | 56 +++++++++++++++++---
+ configs/sc598-som-ezkit-spl_defconfig    |  1 +
+ drivers/gpio/adp5588_gpio.c              |  4 +-
+ include/configs/sc598-som.h              |  2 +-
+ 6 files changed, 112 insertions(+), 69 deletions(-)
+
+diff --git a/arch/arm/dts/sc598-som.dtsi b/arch/arm/dts/sc598-som.dtsi
+index 3d30f8dca1..ed0c7a062d 100644
+--- a/arch/arm/dts/sc598-som.dtsi
++++ b/arch/arm/dts/sc598-som.dtsi
+@@ -128,43 +128,35 @@
+ };
+ 
+ &i2c2{
++
+ 	clocks = <&clk ADSP_SC598_CLK_CGU0_SCLK0>;
+ 
+-	gpio_expander1: mcp23018@20 {
+-		compatible = "microchip,mcp23018";
+-		reg = <0x20>;
++	gpio_expander1: adp5587@34 {
++		compatible = "adi,adp5588";
++		reg = <0x34>;
+ 		gpio-controller;
+ 		#gpio-cells = <2>;
+ 		u-boot,dm-pre-reloc;
+-		drive-pullups;
+-
+-		led1 {
++		
++		uart0 {
+ 			gpio-hog;
+ 			gpios = <0 GPIO_ACTIVE_HIGH>;
+ 			output-low;
+-			line-name = "led1-en";
++			line-name = "~uart0-en";
+ 			u-boot,dm-pre-reloc;
+ 		};
+ 
+-		led2 {
++		uart0-flow-en {
+ 			gpio-hog;
+ 			gpios = <1 GPIO_ACTIVE_HIGH>;
+-			output-low;
+-			line-name = "led2-en";
+-			u-boot,dm-pre-reloc;
+-		};
+-
+-		led3 {
+-			gpio-hog;
+-			gpios = <2 GPIO_ACTIVE_HIGH>;
+-			output-low;
+-			line-name = "led3-en";
++			output-high;
++			line-name = "~uart0-flow-en";
+ 			u-boot,dm-pre-reloc;
+ 		};
+ 
+ 		spi2d2-d3 {
+ 			gpio-hog;
+-			gpios = <3 GPIO_ACTIVE_HIGH>;
++			gpios = <2 GPIO_ACTIVE_HIGH>;
+ 			output-low;
+ 			line-name = "~spi2d2-d3-en";
+ 			u-boot,dm-pre-reloc;
+@@ -172,43 +164,52 @@
+ 
+ 		spi2flash-cs {
+ 			gpio-hog;
+-			gpios = <4 GPIO_ACTIVE_HIGH>;
++			gpios = <3 GPIO_ACTIVE_HIGH>;
+ 			output-low;
+ 			line-name = "~spi2flash-cs";
+ 			u-boot,dm-pre-reloc;
+ 		};
+ 
+-		uart0 {
++		emmc {
+ 			gpio-hog;
+-			gpios = <5 GPIO_ACTIVE_HIGH>;
++			gpios = <8 GPIO_ACTIVE_HIGH>;
+ 			output-low;
+-			line-name = "~uart0-en";
++			line-name = "emmc-en";
+ 			u-boot,dm-pre-reloc;
+ 		};
+ 
+-		uart0-flow-en {
++		emmc-som-en {
+ 			gpio-hog;
+-			gpios = <6 GPIO_ACTIVE_HIGH>;
++			gpios = <9 GPIO_ACTIVE_HIGH>;
+ 			output-high;
+-			line-name = "~uart0-flow-en";
++			line-name = "emmc-som-en";
++			u-boot,dm-pre-reloc;
++		};
++		
++		led1 {
++			gpio-hog;
++			gpios = <15 GPIO_ACTIVE_HIGH>;
++			output-low;
++			line-name = "led1-en";
+ 			u-boot,dm-pre-reloc;
+ 		};
+ 
+-		emmc {
++		led2 {
+ 			gpio-hog;
+-			gpios = <8 GPIO_ACTIVE_HIGH>;
++			gpios = <16 GPIO_ACTIVE_HIGH>;
+ 			output-low;
+-			line-name = "emmc-en";
++			line-name = "led2-en";
+ 			u-boot,dm-pre-reloc;
+ 		};
+ 
+-		emmc-som-en {
++		led3 {
+ 			gpio-hog;
+-			gpios = <9 GPIO_ACTIVE_HIGH>;
+-			output-high;
+-			line-name = "emmc-som-en";
++			gpios = <17 GPIO_ACTIVE_HIGH>;
++			output-low;
++			line-name = "led3-en";
+ 			u-boot,dm-pre-reloc;
+ 		};
++		
+ 	};
+ };
+ 
+diff --git a/arch/arm/dts/sc5xx.dtsi b/arch/arm/dts/sc5xx.dtsi
+index b2bdf20b27..fa0cb33571 100644
+--- a/arch/arm/dts/sc5xx.dtsi
++++ b/arch/arm/dts/sc5xx.dtsi
+@@ -92,6 +92,30 @@
+ 			status = "okay";
+ 			u-boot,dm-pre-reloc;
+ 		};
++		
++		i2c0: i2c0@31001400 {
++			compatible = "adi-i2c";
++			reg = <0x31001400 0x1000>;
++			clock-names = "i2c";
++			status = "okay";
++			u-boot,dm-pre-reloc;
++		};
++
++		i2c1: i2c1@31001500 {
++			compatible = "adi-i2c";
++			reg = <0x31001500 0x1000>;
++			clock-names = "i2c";
++			status = "okay";
++			u-boot,dm-pre-reloc;
++		};
++
++		i2c2: i2c2@31001600 {
++			compatible = "adi-i2c";
++			reg = <0x31001600 0x1000>;
++			clock-names = "i2c";
++			status = "okay";
++			u-boot,dm-pre-reloc;
++		};
+ 
+ 		uart0: serial@0x31003000 {
+ 			compatible = "adi,uart4";
+@@ -115,10 +139,10 @@
+ 			status = "okay";
+ 			u-boot,dm-pre-reloc;
+ 
+-			flash1: is25lp512@1 {
++			flash1: is25lp01g@1 {
+ 				#address-cells = <1>;
+ 				#size-cells = <1>;
+-				compatible = "jedec,spi-nor", "is25lp512";
++				compatible = "jedec,spi-nor", "is25lp01g";
+ 				reg = <1>;
+ 				spi-tx-bus-width = <4>;
+ 				spi-rx-bus-width = <4>;
+@@ -148,28 +172,5 @@
+ 			status = "okay";
+ 		};
+ 
+-		i2c0: i2c0@31001400 {
+-			compatible = "adi-i2c";
+-			reg = <0x31001400 0x1000>;
+-			clock-names = "i2c";
+-			status = "okay";
+-			u-boot,dm-pre-reloc;
+-		};
+-
+-		i2c1: i2c1@31001500 {
+-			compatible = "adi-i2c";
+-			reg = <0x31001500 0x1000>;
+-			clock-names = "i2c";
+-			status = "okay";
+-			u-boot,dm-pre-reloc;
+-		};
+-
+-		i2c2: i2c2@31001600 {
+-			compatible = "adi-i2c";
+-			reg = <0x31001600 0x1000>;
+-			clock-names = "i2c";
+-			status = "okay";
+-			u-boot,dm-pre-reloc;
+-		};
+ 	};
+ };
+diff --git a/arch/arm/mach-sc5xx/sc59x/sc59x-shared.c b/arch/arm/mach-sc5xx/sc59x/sc59x-shared.c
+index e367121885..a1e1b17da4 100644
+--- a/arch/arm/mach-sc5xx/sc59x/sc59x-shared.c
++++ b/arch/arm/mach-sc5xx/sc59x/sc59x-shared.c
+@@ -29,17 +29,37 @@ int adi_enable_ethernet_softconfig(void)
+ 	struct gpio_desc *eth1;
+ 	struct gpio_desc *eth1_reset;
+ 	struct gpio_desc *gige_reset;
++	int ret;
+ 
+ #if defined(CONFIG_ADI_CARRIER_SOMCRR_EZKIT)
+-	gpio_hog_lookup_name("~eth1-en", &eth1);
+-	gpio_hog_lookup_name("~eth1-reset", &eth1_reset);
+-	gpio_hog_lookup_name("~gige-reset", &gige_reset);
++	ret = gpio_hog_lookup_name("~eth1-en", &eth1);
++	if (ret) {
++		printf("Failed to find ~eth1-en GPIO\n");
++		return ret;
++	}
++
++	ret = gpio_hog_lookup_name("~eth1-reset", &eth1_reset);
++	if (ret) {
++		printf("Failed to find ~eth1-reset GPIO\n");
++		return ret;
++	}
++
++	ret = gpio_hog_lookup_name("~gige-reset", &gige_reset);
++	if (ret) {
++		printf("Failed to find ~gige-reset GPIO\n");
++		return ret;
++	}
+ 
+ 	dm_gpio_set_value(eth1, 1);
+ 	dm_gpio_set_value(eth1_reset, 0);
+ 	dm_gpio_set_value(gige_reset, 1);
+ #elif defined(CONFIG_ADI_CARRIER_SOMCRR_EZLITE)
+-	gpio_hog_lookup_name("~eth0-reset", &gige_reset);
++	ret = gpio_hog_lookup_name("~eth0-reset", &gige_reset);
++	if (ret) {
++		printf("Failed to find ~eth0-reset GPIO\n");
++		return ret;
++	}
++
+ 	dm_gpio_set_value(gige_reset, 1);
+ #endif
+ 
+@@ -51,17 +71,37 @@ int adi_disable_ethernet_softconfig(void)
+ 	struct gpio_desc *eth1;
+ 	struct gpio_desc *eth1_reset;
+ 	struct gpio_desc *gige_reset;
++	int ret;
+ 
+ #if defined(CONFIG_ADI_CARRIER_SOMCRR_EZKIT)
+-	gpio_hog_lookup_name("~eth1-en", &eth1);
+-	gpio_hog_lookup_name("~eth1-reset", &eth1_reset);
+-	gpio_hog_lookup_name("~gige-reset", &gige_reset);
++	ret = gpio_hog_lookup_name("~eth1-en", &eth1);
++	if (ret) {
++		printf("Failed to find ~eth1-en GPIO\n");
++		return ret;
++	}
++
++	ret = gpio_hog_lookup_name("~eth1-reset", &eth1_reset);
++	if (ret) {
++		printf("Failed to find ~eth1-reset GPIO\n");
++		return ret;
++	}
++
++	ret = gpio_hog_lookup_name("~gige-reset", &gige_reset);
++	if (ret) {
++		printf("Failed to find ~gige-reset GPIO\n");
++		return ret;
++	}
+ 
+ 	dm_gpio_set_value(eth1, 1);
+ 	dm_gpio_set_value(eth1_reset, 0);
+ 	dm_gpio_set_value(gige_reset, 0);
+ #elif defined(CONFIG_ADI_CARRIER_SOMCRR_EZLITE)
+-	gpio_hog_lookup_name("~eth0-reset", &gige_reset);
++	ret = gpio_hog_lookup_name("~eth0-reset", &gige_reset);
++	if (ret) {
++		printf("Failed to find ~eth0-reset GPIO\n");
++		return ret;
++	}
++
+ 	dm_gpio_set_value(gige_reset, 0);
+ #endif
+ 
+diff --git a/configs/sc598-som-ezkit-spl_defconfig b/configs/sc598-som-ezkit-spl_defconfig
+index 1fa078ba60..9ad2639d9f 100644
+--- a/configs/sc598-som-ezkit-spl_defconfig
++++ b/configs/sc598-som-ezkit-spl_defconfig
+@@ -93,6 +93,7 @@ CONFIG_SPL_GPIO_HOG=y
+ CONFIG_DM_GPIO_LOOKUP_LABEL=y
+ CONFIG_SPL_DM_GPIO_LOOKUP_LABEL=y
+ CONFIG_MCP2301X_GPIO=y
++CONFIG_ADP5588_GPIO=y
+ CONFIG_DM_I2C=y
+ CONFIG_DM_I2C_GPIO=y
+ CONFIG_SYS_I2C_ADI=y
+diff --git a/drivers/gpio/adp5588_gpio.c b/drivers/gpio/adp5588_gpio.c
+index caf407aa51..44d9344c6b 100644
+--- a/drivers/gpio/adp5588_gpio.c
++++ b/drivers/gpio/adp5588_gpio.c
+@@ -173,7 +173,7 @@ static int adp5588_ofdata_platdata(struct udevice *dev)
+ 
+ 	revid = ret & ID_MASK;
+ 
+-	printf("ADP5588 Detected: Rev %x, Rev ID %x\n", ret, revid);
++	debug("ADP5588 Detected: Rev %x, Rev ID %x\n", ret, revid);
+ 
+ 	for (i = 0, ret = 0; i <= ADP5588_BANK(ADP5588_MAXGPIO); i++) {
+ 		plat->dat_out[i] = adp5588_gpio_read(dev, GPIO_DAT_OUT1 + i);
+@@ -210,4 +210,4 @@ U_BOOT_DRIVER(gpio_adp5588) = {
+ 	.of_to_plat		  = adp5588_ofdata_platdata,
+ 	.plat_auto = sizeof(struct adp5588_gpio),
+ 	.flags					  = DM_FLAG_PRE_RELOC,
+-};
+\ No newline at end of file
++};
+diff --git a/include/configs/sc598-som.h b/include/configs/sc598-som.h
+index 69b5a59eb3..f12522a818 100644
+--- a/include/configs/sc598-som.h
++++ b/include/configs/sc598-som.h
+@@ -71,7 +71,7 @@
+ 
+ #define	CONFIG_NR_DRAM_BANKS		1
+ #define CFG_SYS_SDRAM_BASE	0x90000000
+-#define CFG_SYS_SDRAM_SIZE	0x0e000000
++#define CFG_SYS_SDRAM_SIZE	0x10000000 
+ #ifndef CONFIG_SPL_BUILD
+ #define CONFIG_SYS_LOAD_ADDR	0x0
+ #endif
+-- 
+2.25.1
+
