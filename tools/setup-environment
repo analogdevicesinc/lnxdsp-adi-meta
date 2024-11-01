@@ -1,0 +1,311 @@
+#!/bin/sh
+# -*- mode: shell-script; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+#
+# Copyright (C) 2012, 2013, 2016 O.S. Systems Software LTDA.
+# Authored-by:  Otavio Salvador <otavio@ossystems.com.br>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# Add options for the script
+# Copyright (C) 2023 Analog Devices, Inc.
+
+CWD="$(pwd)"
+PROGNAME="setup-environment"
+BUILDDIR_DEFAULT="build"
+DISTRO_DEFAULT="adi-distro-glibc"
+
+
+distro_list() {
+    local paths
+    paths=$(find -L sources/ -path '*meta-*adi*/conf/distro/*' -name '*.conf')
+    echo "$paths" | xargs basename -s .conf | sort -u | awk '{print "\t" $0}'
+}
+
+machine_list() {
+    find -L sources/meta-adi/meta-adi-adsp-sc5xx/conf/machine -maxdepth 1 -name '*.conf' | xargs basename -s .conf | sort -u | awk '{print "\t" $0}'
+}
+
+add_copyright_notice() {
+    # Get the current year
+    YEAR=$(date +%Y)
+
+    # Create a temporary file
+    temp_copyright_file=$(mktemp)
+
+    # Prepend the copyright notice with the current year
+    cat > "$temp_copyright_file" <<EOF
+# Copyright (C) $YEAR Analog Devices, Inc.
+# All right reserved.
+
+EOF
+
+    # Append the original file content to the temporary file
+    cat "conf/local.conf" >> "$temp_copyright_file"
+
+    # Move the temporary file to the original file location
+    mv "$temp_copyright_file" "conf/local.conf"
+}
+
+
+sc5xx_universal_edit() {
+
+    # remove all lines starting with "#MACHINE ?= "
+    sed -i '/^#MACHINE ?= /d' "conf/local.conf"
+    # Remove the qemu comment
+    sed -i '/^# This sets the default machine to/d' "conf/local.conf"
+    # Use sed to replace the MACHINE ??= line with the value of the MACHINE environment variable
+    sed -i "s/^MACHINE ??=.*$/MACHINE ??= \"$MACHINE\"/" "conf/local.conf"
+    # Change DISTRO ?= to $DISTRO
+    sed -i "s/^DISTRO ?=.*$/DISTRO ?= \"$DISTRO\"/" "conf/local.conf"
+    # Change PACKAGE_CLASSES ?= to "package_ipk"
+    sed -i 's/^PACKAGE_CLASSES ?=.*$/PACKAGE_CLASSES ?= "package_ipk"/' "conf/local.conf"
+    # Uncomment specific lines
+    sed -i -e 's/^#DL_DIR ?=/DL_DIR ?=/' -e 's/^#SSTATE_DIR ?=/SSTATE_DIR ?=/' "conf/local.conf"
+    # Append additional configurations
+    cat >> "conf/local.conf" <<EOF
+
+#Add this line below if using a version 2 board that requires the ethernet modification
+#ANALOG_DEVICES_VERSION2_ETHERNET="1"
+
+#Add this line to enable ADI watchdog from U-boot
+ANALOG_DEVICES_WATCHDOG="1"
+
+#If running tests which use sram_alloc(), then include the following patch as well (this disables CONFIG_ICC and enables CONFIG_ARCH_SRAM_ALLOC)
+ANALOG_DEVICES_SRAM_ALLOC="1"
+
+DISTRO_FEATURES:remove = "sysvinit"
+DISTRO_FEATURES:append = "systemd"
+DISTRO_FEATURES_BACKFILL_CONSIDERED = "sysvinit"
+
+VIRTUAL-RUNTIME_init_manager = "systemd"
+VIRTUAL-RUNTIME_initscripts = "systemd-compat-units"
+DISTRO_FEATURES:append = " linux_only_audio "
+
+EOF
+
+}
+
+
+usage()
+{
+    cat >&2 <<EOF
+Usage: source $PROGNAME --machine <MACHINE> --distro <DISTRO> --builddir <BUILDDIR>
+Usage: source $PROGNAME --builddir <BUILDDIR>
+
+Options:
+    -h, --help         Print this usage message
+    -m, --machine      Set the MACHINE name in the build configuration
+    -b, --builddir     Set the build directory in the build configuration (default '${BUILDDIR_DEFAULT}')
+    -d, --distro       Set the DISTRO name in the build configuration (default '${DISTRO_DEFAULT}')
+
+The first usage is for creating a new build directory. In this case, the
+script creates the build directory <BUILDDIR>, configures it for the
+specified <MACHINE> and <DISTRO>, and prepares the calling shell for
+running bitbake on the build directory.
+
+The second usage is for using an existing build directory. In this case,
+the script prepares the calling shell for running bitbake on the build
+directory <BUILDDIR>. The build directory configuration is unchanged.
+
+Available distros:
+$(distro_list)
+Available machines:
+$(machine_list)
+
+Examples:
+- To create a new Yocto build directory:
+  $ source $PROGNAME --machine adsp-sc598-som-ezkit --distro adi-distro-glibc --builddir adsp-build
+
+- To use an existing Yocto build directory:
+  $ source $PROGNAME --builddir adsp-build
+
+EOF
+}
+
+clean_up()
+{
+   unset MACHINE USER_BUILDDIR CWD TEMPLATES
+   unset SHORTOPTS LONGOPTS ARGS PROGNAME
+   unset generated_config SDKMACHINE DISTRO OEROOT
+}
+
+# get command line options
+SHORTOPTS="hm:b:d:"
+LONGOPTS="help,machine:,builddir:,distro:"
+
+ARGS=$(getopt --options $SHORTOPTS --longoptions $LONGOPTS --name $PROGNAME -- "$@" )
+# Print the usage menu if invalid options are specified
+if [ $? != 0 ]; then
+   usage
+   clean_up
+   return 1
+fi
+
+eval set -- "$ARGS"
+MACHINE=
+USER_BUILDDIR=
+DISTRO=
+
+while true;
+do
+    case $1 in
+        -h | --help)       usage; clean_up; return 0 ;;
+        -m | --machine)    MACHINE="$2"; shift 2;;
+        -b | --builddir)   USER_BUILDDIR="$2"; shift 2;;
+        -d | --distro)     DISTRO="$2"; shift 2;;
+        -- )               shift; break ;;
+        * )                break ;;
+    esac
+done
+
+if [ "$(whoami)" = "root" ]; then
+    echo "ERROR: do not use the BSP as root. Exiting..."
+    return 1
+fi
+
+if [ -z "$USER_BUILDDIR" ]; then
+    folder="$BUILDDIR_DEFAULT"
+else
+    folder="$USER_BUILDDIR"
+fi
+
+if [ -z "$DISTRO" ]; then
+    DISTRO="$DISTRO_DEFAULT"
+fi
+
+if [ ! -e "$CWD"/"$folder"/conf/local.conf ]; then
+    build_dir_not_exist="true"
+else
+    build_dir_not_exist="false"
+fi
+
+if [ "$build_dir_not_exist" = "true" ] && [ -z "$MACHINE" ]; then
+    usage
+    echo "ERROR: You must set MACHINE when creating a new build directory."
+    clean_up
+    return 1
+fi
+
+# check whether the provided machine is valid or not
+if [ "$build_dir_not_exist" = "true" ] || [ -n "$MACHINE" ];then
+    if ! machine_list | grep -qx "[[:space:]]*$MACHINE"; then
+        echo "ERROR: machine \"$MACHINE\" not found"
+        echo "Available MACHINEs:"
+        machine_list
+        clean_up
+        return 1
+    fi
+fi
+
+# check whether the provided distro is valid or not
+if [ "$build_dir_not_exist" = "true" ] || [ -n "$DISTRO" ];then
+    if ! distro_list | grep -qx "[[:space:]]*$DISTRO"; then
+        echo "ERROR: distro \"$DISTRO\" not found"
+        echo "Available DISTROs:"
+        distro_list
+        clean_up
+        return 1
+    fi
+fi
+
+if [ ! -e "$CWD"/downloads ];then
+	mkdir "$CWD"/downloads
+fi
+
+OEROOT="$PWD"/sources/poky
+if [ -e "$PWD"/sources/oe-core ]; then
+    OEROOT="$PWD"/sources/oe-core
+fi
+# get the available kernel array for users
+kernel_arr="$(find sources/meta-adi/meta-adi-adsp-sc5xx/recipes-adi/images/ -name '*.bb' | sed s/\.bb//g | sed -r 's/^.+\///' | xargs -I% echo -e "\t%")"
+
+source "$OEROOT"/oe-init-build-env "$CWD"/"$folder" > /dev/null
+
+# if conf/local.conf not generated, no need to go further
+if [ ! -e "conf/local.conf" ]; then
+    clean_up
+    return 1
+fi
+
+generated_config=0
+# Clean up PATH, because if it includes tokens to current directories somehow,
+# wrong binaries can be used instead of the expected ones during task execution
+export PATH="$(echo "$PATH" | sed 's/\(:.\|:\)*:/:/g;s/^.\?://;s/:.\?$//')"
+
+if [ "$build_dir_not_exist" = "true" ] || [ -n "$MACHINE" ]; then
+
+    add_copyright_notice
+    # This should result in a local.conf with all the edits that are common across the whole sc5xx line-up
+    sc5xx_universal_edit
+    # Make machine-specific additions/edits to conf/local.conf
+    case "$MACHINE" in
+        adsp-sc594-som-ezkit|adsp-sc594-som-ezlite|adsp-sc598-som-ezkit|adsp-sc598-som-ezlite)
+            sed -i '/^ANALOG_DEVICES_WATCHDOG="1"$/s/^/#/' "conf/local.conf"
+
+            # Add the (disabled by default) SHARC-ALSA option
+            cat >> "conf/local.conf" <<EOF
+# Uncomment the following lines to enable SHARC-ALSA.  This will make SHARC0 show up as a
+# playback device under ALSA.
+#ANALOG_DEVICES_SHARC_ALSA = "1"
+#IMAGE_INSTALL:append = " linux-firmware-sharc-alsa alsa-utils alsa-lib rpmsg-utils"
+
+EOF
+            ;;
+
+    esac
+
+    if [[ "$MACHINE" == "adsp-sc598-som-ezkit" || "$MACHINE" == "adsp-sc598-som-ezlite" ]]; then
+        # Comment out the SRAM ALLOC option for SC598-SOM
+        sed -i '/^ANALOG_DEVICES_SRAM_ALLOC="1"$/s/^/#/' "conf/local.conf"
+
+        # Add the ELFLOADER SLA option
+        cat >> "conf/local.conf" <<EOF
+#INITRAMFS_IMAGE_BUNDLE = "1"
+ADI_ELFLOADER_AGREE_SLA = "1"
+
+EOF
+
+        # Add the (disabled by default) SD card option for SC598-SOM-EZKIT
+        cat >> "conf/local.conf" <<EOF
+# Enable SD card support
+# Uncomment the following line to enable SD card support from u-boot and Linux kernel
+# ADSP_SC598_SDCARD = "1"
+
+EOF
+    fi
+
+cp "$CWD"/sources/meta-adi/tools/bblayers.conf conf/bblayers.conf
+
+    generated_config=1
+fi
+
+
+if [ "$generated_config" -eq "1" ]; then
+    cat <<EOF
+Your build environment has been configured with:
+
+        MACHINE=$MACHINE
+
+You can now run 'bitbake <target>'
+Some of common targets are:
+        u-boot-adi
+        linux-adi
+$kernel_arr
+
+EOF
+else
+    echo "You are reusing the files in $folder"
+fi
+
+clean_up
