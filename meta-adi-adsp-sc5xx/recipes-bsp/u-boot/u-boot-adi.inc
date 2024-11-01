@@ -21,7 +21,7 @@ UBOOT_SOM_FILE = ""
 UBOOT_SOM_FILE:adsp-sc598-som-ezkit = "file://0001-SC598-SOM-Adding-Rev-E-compatibility-for-u-boot.patch"
 UBOOT_SOM = "${@bb.utils.contains('SOM_REV', 'E', '${UBOOT_SOM_FILE}', '', d)}"
 
-UBOOT_BRANCH ?= "dev"
+UBOOT_BRANCH ?= "main"
 
 # On the SC598, we can't boot directly from the eMMC due to default speed configuration issues
 # We can boot the SPL from OSPI or QSPI and then subsequently boot U-Boot Proper from eMMC
