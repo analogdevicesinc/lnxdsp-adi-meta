@@ -1,0 +1,61 @@
+From c4a41f242bcaa7f7cee7dc8757159212e90e16b6 Mon Sep 17 00:00:00 2001
+From: UtsavAgarwalADI <utsav.agarwal@analog.com>
+Date: Fri, 10 May 2024 12:23:22 +0100
+Subject: [PATCH 1/2] SC598-EZKIT: Adding softconfig changes for REV-D
+
+Switching the following to active low:
+	- EPROM
+	- Pushbutton
+	- OSPI_CS (chipselect)
+
+Signed-off-by: UtsavAgarwalADI <utsav.agarwal@analog.com>
+---
+ arch/arm/dts/sc598-som-ezkit.dts | 6 +++---
+ arch/arm/dts/sc598-som.dtsi      | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/dts/sc598-som-ezkit.dts b/arch/arm/dts/sc598-som-ezkit.dts
+index b67cf94cd6..e24d82e955 100644
+--- a/arch/arm/dts/sc598-som-ezkit.dts
++++ b/arch/arm/dts/sc598-som-ezkit.dts
+@@ -27,7 +27,7 @@
+ 
+ 		eeprom {
+ 			gpio-hog;
+-			gpios = <0 GPIO_ACTIVE_HIGH>;
++			gpios = <0 GPIO_ACTIVE_LOW>;
+ 			output-low;
+ 			line-name = "eeprom-en";
+ 			u-boot,dm-pre-reloc;
+@@ -35,7 +35,7 @@
+ 
+ 		pushbutton {
+ 			gpio-hog;
+-			gpios = <1 GPIO_ACTIVE_HIGH>;
++			gpios = <1 GPIO_ACTIVE_LOW>;
+ 			output-low;
+ 			line-name = "pushbutton-en";
+ 			u-boot,dm-pre-reloc;
+@@ -83,7 +83,7 @@
+ 
+ 		octal {
+ 			gpio-hog;
+-			gpios = <8 GPIO_ACTIVE_HIGH>;
++			gpios = <8 GPIO_ACTIVE_LOW>;
+ 			output-low;
+ 			line-name = "octal-spi-cs-en";
+ 			u-boot,dm-pre-reloc;
+diff --git a/arch/arm/dts/sc598-som.dtsi b/arch/arm/dts/sc598-som.dtsi
+index 3d30f8dca1..23ca9a1306 100644
+--- a/arch/arm/dts/sc598-som.dtsi
++++ b/arch/arm/dts/sc598-som.dtsi
+@@ -236,4 +236,4 @@
+ 
+ &timer0 {
+ 	clocks = <&clk ADSP_SC598_CLK_CGU0_SCLK0>;
+-};
+\ No newline at end of file
++};
+-- 
+2.25.1
+

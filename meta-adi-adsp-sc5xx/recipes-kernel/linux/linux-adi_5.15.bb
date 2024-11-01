@@ -9,12 +9,12 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
 DEPENDS += "u-boot-mkimage-native dtc-native"
 
-PV = "5.15.148"
+PV = "5.15.168"
 
 LINUX_VERSION = "${PV}"
 
-KERNEL_BRANCH ?= "main"
-SRCREV  = "c4403f406eff867723e10acf414afdfe8132102f"
+KERNEL_BRANCH ?= "dev"
+SRCREV  = "7bdd2c68986067b883469b36225ceaf7466f144d"
 
 # Include kernel configuration fragments
 SRC_URI:append = " \

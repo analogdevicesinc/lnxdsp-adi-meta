@@ -12,7 +12,16 @@ UBOOT_GIT_PROTOCOL ?= "https"
 UBOOT_WDT_FILE = "file://enable-ADI-watchdog.patch"
 UBOOT_WDT = "${@bb.utils.contains('MACHINE_FEATURES', 'watchdog', '${UBOOT_WDT_FILE}', '', d)}"
 
-UBOOT_BRANCH ?= "main"
+UBOOT_CRR_FILES = ""
+UBOOT_CRR_FILES:adsp-sc594-som-ezkit = "file://0002-SC594-EZKIT-Adding-softconfig-changes-for-REV-D.patch"
+UBOOT_CRR_FILES:adsp-sc598-som-ezkit = "file://0001-SC598-EZKIT-Adding-softconfig-changes-for-REV-D.patch"
+UBOOT_CRR = "${@bb.utils.contains('CRR_REV', 'D', '${UBOOT_CRR_FILES}', '', d)}"
+
+UBOOT_SOM_FILE = ""
+UBOOT_SOM_FILE:adsp-sc598-som-ezkit = "file://0001-SC598-SOM-Adding-Rev-E-compatibility-for-u-boot.patch"
+UBOOT_SOM = "${@bb.utils.contains('SOM_REV', 'E', '${UBOOT_SOM_FILE}', '', d)}"
+
+UBOOT_BRANCH ?= "dev"
 
 # On the SC598, we can't boot directly from the eMMC due to default speed configuration issues
 # We can boot the SPL from OSPI or QSPI and then subsequently boot U-Boot Proper from eMMC
@@ -24,6 +33,8 @@ SRC_URI += " \
 	${UBOOT_GIT_URI};protocol=${UBOOT_GIT_PROTOCOL};branch=${UBOOT_BRANCH} \
 	${UBOOT_WDT} \
 	${BMODE_FORCE_EMMC} \
+        ${UBOOT_CRR} \
+        ${UBOOT_SOM} \
 "
 
 SRC_URI:append:adsp-sc598-som-ezkit = "${@' file://0001-sc598-som-enable-SDcard.patch' if bb.utils.to_boolean(d.getVar('ADSP_SC598_SDCARD')) else ''}"
