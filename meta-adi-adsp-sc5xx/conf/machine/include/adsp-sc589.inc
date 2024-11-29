@@ -1,0 +1,30 @@
+
+LDR_PROC = "SC589"
+LDR_BCODE ?= "2"
+
+MACHINE_EXTRA_RDEPENDS = "adsp-boot"
+
+MACHINE_FEATURES += " spl "
+
+BASH_HAS_SPL = "1"
+
+UBOOT_MACHINE = "sc589-mini_defconfig"
+UBOOT_ENTRYPOINT = "0x80008000"
+UBOOT_LOADADDRESS = "0x80008000"
+UBOOT_DTBADDRESS = "0x80000000"
+UBOOT_RDADDR = "0xC5000000"
+
+KERNEL_DEVICETREE = "sc589-mini.dtb"
+
+SERIAL_CONSOLES ?= "115200;ttySC0"
+
+MMC_BOOT_STAGE1 = "stage1-boot.ldr"
+MMC_BOOT_STAGE2 = "stage2-boot.ldr"
+
+IMAGE_FSTYPES = "tar.xz jffs2 wic.gz ext4"
+WKS_FILE = "adsp-sc5xx.wks.in"
+
+MACHINE_EXTRA_RRECOMMENDS = "kernel-modules"
+BOARD = "sc589-mini"
+
+EXTRA_IMAGECMD:jffs2 = "--pad=0x1AC0000 --little-endian --eraseblock=0x10000 --no-cleanmarkers"
