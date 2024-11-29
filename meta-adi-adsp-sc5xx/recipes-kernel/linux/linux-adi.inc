@@ -17,10 +17,16 @@ LNX_SOM_FILE = ""
 LNX_SOM_FILE:adsp-sc598-som-ezkit = "file://0001-Adding-support-for-SC598-SOM-Rev-E.patch"
 LNX_SOM = "${@bb.utils.contains('SOM_REV', 'E', '${LNX_SOM_FILE}', '', d)}"
 
+BRD_REV_21:adsp-sc589-mini-rev21 = "file://0001-mclk-rev2.1-sc5xx-asoc-card.patch"
+BRD_REV = "${@bb.utils.contains('REV', '2.1', '${BRD_REV_21}', ' ', d)}"
+BRD_REV = "${@bb.utils.contains('REV', '1.5', '', '', d)}"
+
+
 SRC_URI += " \
 	${KERNEL_GIT_URI};protocol=${KERNEL_GIT_PROTOCOL};branch=${KERNEL_BRANCH} \
         ${LNX_CRR} \
         ${LNX_SOM} \
+        ${BRD_REV} \
 "
 
 # Pull in the devicetree files into the rootfs
@@ -41,6 +47,7 @@ KBUILD_DEFCONFIG:adsp-sc589-ezkit = "sc589-ezkit_defconfig"
 KBUILD_DEFCONFIG:adsp-sc584-ezkit = "sc584-ezkit_defconfig"
 KBUILD_DEFCONFIG:adsp-sc573-ezkit = "sc573-ezkit_defconfig"
 KBUILD_DEFCONFIG:adsp-sc589-mini = "sc589-mini_defconfig"
+KBUILD_DEFCONFIG:adsp-sc589-mini-rev21 = "sc589-mini_defconfig"
 KBUILD_DEFCONFIG:adsp-sc594-som-ezkit = "sc594-som-ezkit_defconfig"
 KBUILD_DEFCONFIG:adsp-sc598-som-ezkit = "sc598-som-ezkit_defconfig"
 KBUILD_DEFCONFIG:adsp-sc594-som-ezlite = "sc594-som-ezlite_defconfig"
