@@ -1,0 +1,13 @@
+name: Build Project
+on:
+  push:
+    branches:
+      - add_ci
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+			- name: Print
+				run: echo "Hello World"
