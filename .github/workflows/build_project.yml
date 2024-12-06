@@ -1,0 +1,24 @@
+name: Build Project
+on:
+  push:
+    branches:
+      - add_ci
+
+jobs:
+  Build:
+    runs-on: [self-hosted, lnxdsp]
+    steps:
+      - name: Cleanup build folder
+        run: |
+          ls -al ./
+          pwd
+      - name: Build Project
+        run: |
+          mkdir lnxdsp-build && cd lnxdsp-build
+          mkdir bin
+          curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ./bin/repo
+          chmod a+x ./bin/repo
+          ./bin/repo init -u https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git -m main.xml
+          ./bin/repo sync
+          source setup-environment -m adsp-sc598-som-ezkit
+          bitbake adsp-sc5xx-minimal
