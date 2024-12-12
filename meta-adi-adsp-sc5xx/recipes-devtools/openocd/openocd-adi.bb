@@ -1,21 +1,19 @@
 SUMMARY = "Free and Open On-Chip Debugging, In-System Programming and Boundary-Scan Testing"
 LICENSE = "GPL-2.0-only"
-LIC_FILES_CHKSUM = "file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
+LIC_FILES_CHKSUM = "file://COPYING;md5=599d2d1ee7fc84c0467b3d19801db870"
 DEPENDS = "libusb-compat"
 RDEPENDS:${PN} = "libusb1"
 
 OPENOCD_GIT_URI ?= "git://github.com/analogdevicesinc/openocd.git"
 OPENOCD_GIT_PROTOCOL ?= "https"
-OPENOCD_BRANCH ?= "adi-main"
+OPENOCD_BRANCH ?= "release"
 
 SRC_URI = " \
-	${OPENOCD_GIT_URI};protocol=${OPENOCD_GIT_PROTOCOL};branch=${OPENOCD_BRANCH} \
-	file://0001-Fixup-build-error-by-splitting-dap_cmd_pool-into-dap.patch \
-"
+	${OPENOCD_GIT_URI};protocol=${OPENOCD_GIT_PROTOCOL};branch=${OPENOCD_BRANCH}\
+        "
+SRCREV = "5fc33afb75270f77089e634983c7b87936e4891f"
 
-SRCREV = "f73da81abc674d60b91fa3cdfae6db69a3a9e385"
-
-PV = "0.10+gitr${SRCPV}"
+PV = "0.12+git"
 S = "${WORKDIR}/git"
 
 inherit pkgconfig autotools-brokensep gettext
