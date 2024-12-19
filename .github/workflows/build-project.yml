@@ -1,0 +1,46 @@
+name: Build Project
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE.md'
+      - 'licenses/**'
+  repository_dispatch:
+    types: [dependency-repo]
+
+jobs:
+  Build:
+    runs-on: [self-hosted, lnxdsp]
+    steps:
+      - name: Cleanup build folder
+        run: |
+          ls -al ./
+          rm -rf ./* || true
+      - name: Trigger details
+        run: |
+          echo "Build triggered by ${{ github.event_name }}"
+          if [ ${{ github.event_name }} == 'push' ]; then
+            echo "MANIFEST=${{ github.ref_name }}" >> $GITHUB_ENV
+            echo "Build was triggered by a push to ${{ github.ref_name }}, the commit sha is: ${{ github.sha }}"
+          elif [ ${{ github.event_name }} == 'repository_dispatch' ]; then
+            echo "MANIFEST${{ github.event.client_payload.branch }}" >> $GITHUB_ENV
+            echo "Build was triggered by a repository_dispatch event from the ${{ github.event.client_payload.repo }}"
+            echo "The commit that triggerd the build was made on ${{ github.event.client_payload.branch }} branch with sha: ${{ github.event.client_payload.sha }}"
+          else
+            echo "MANIFEST=main" >> $GITHUB_ENV
+          fi
+      - name: Build sc598-som-ezkit project minimal image
+        run: |
+          mkdir lnxdsp-build && cd lnxdsp-build
+          mkdir bin
+          curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ./bin/repo
+          chmod a+x ./bin/repo
+          ./bin/repo init -u https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git -b main -m ${MANIFEST}.xml
+          ./bin/repo sync
+          source setup-environment -m adsp-sc598-som-ezkit
+          sed -i -e 's/^DL_DIR\s?=.*$/DL_DIR ?= '\''\/source-mirror'\''/' conf/local.conf
+          sed -i -e '/^DL_DIR\s?=/i\' -e 'MIRROR_SERVER = "file:///"' conf/local.conf
+          sed -i -e '/^DL_DIR\s?=/i\' -e 'BB_GENERATE_MIRROR_TARBALLS = "1"' conf/local.conf
+          bitbake adsp-sc5xx-minimal
