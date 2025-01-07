@@ -1,6 +1,6 @@
 inherit adsp-sc5xx-minimal
 
-IMAGE_INSTALL += "kernel kernel-devicetree"
+DEPENDS += "adsp-sc5xx-ramdisk-emmc-tools"
 
 #We do not need these files in the rootfs -- remove them to reduce the minimal rootfs size
 fakeroot do_rootfs_cleanup(){
@@ -16,8 +16,10 @@ fakeroot do_rootfs_cleanup(){
 
 	rm -rf ${IMAGE_ROOTFS}/usr/lib/libX11.so.6
 	rm -rf ${IMAGE_ROOTFS}/usr/lib/libX11.so.6.3.0
+
+        cp ${DEPLOY_DIR_IMAGE}/fitImage ${IMAGE_ROOTFS}/boot
 }
 
-addtask rootfs_cleanup after do_rootfs before do_image
+addtask rootfs_cleanup after do_assemble_fitimage before do_image_ext4
 
 IMAGE_FSTYPES:append = " wic.gz ext4 "
