@@ -43,6 +43,8 @@ SRC_URI:append:adsp-sc589-mini = " file://feature/cfg/snd_mini.scc"
 
 SRC_URI:append:adsp-sc598-som-ezkit = "${@' file://0001-sc598-som-enable-SDcard.patch' if (bb.utils.to_boolean(d.getVar('ADSP_SC598_SDCARD')) and (d.getVar('ADSP_KERNEL_TYPE') != 'upstream')) else ''}"
 
+SRC_URI:append:adsp-sc598-som-ezkit = "${@bb.utils.contains_any('MACHINE_FEATURES', 'falcon', 'file://0001-Disabling-peripherals-for-a-faster-falcon-boot.patch', '', d)}"
+
 SRC_URI:append:adsp-sc598-som-ezkit = ' file://0001-SC598-fix-stmmac-dma-split-header-crash.patch'
 
 do_install:append(){
