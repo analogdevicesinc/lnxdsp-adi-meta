@@ -2,6 +2,8 @@ inherit adsp-sc5xx-minimal
 
 DEPENDS += "adsp-sc5xx-ramdisk-emmc-tools"
 
+IMAGE_INSTALL:append = " parted"
+
 #We do not need these files in the rootfs -- remove them to reduce the minimal rootfs size
 fakeroot do_rootfs_cleanup(){
 
