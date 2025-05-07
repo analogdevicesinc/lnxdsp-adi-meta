@@ -9,5 +9,5 @@ EXTRA_OECONF:append=" --disable-jitterentropy"
 do_install:append() {
 	sed -i \
             -e 's/\$EXTRA_ARGS/$EXTRA_ARGS -x jitter/' \
-            ${D}${systemd_system_unitdir}/rngd.service
+            ${D}${systemd_system_unitdir}/rng-tools.service
 }
