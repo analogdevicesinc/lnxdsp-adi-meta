@@ -18,9 +18,9 @@ SRC_URI:append="\
 "
 
 python () {
-    if ((d.getVar('ADSP_KERNEL_TYPE') == 'upstream') and ("adsp-sc598" in d.getVar('MACHINE'))):
-        print("Building with upstream kernel")
-        d.setVar("PV","upstream")
+    if ("adsp-sc598" in d.getVar('MACHINE')):
+        print("Building with kernel 6.1x kernel")
+        d.setVar("PV","6.1x")
         d.setVar("KERNEL_VERSION_SANITY_SKIP","1")
         d.setVar("KERNEL_BRANCH","adsp-main")
         d.setVar("SRCREV","${AUTOREV}")
@@ -41,7 +41,8 @@ SRC_URI:append:adsp-sc589-mini = " file://feature/cfg/snd_mini.scc"
 
 # Only SC598 can trigger upstream builds
 
-SRC_URI:append:adsp-sc598-som-ezkit = "${@' file://0001-sc598-som-enable-SDcard.patch' if (bb.utils.to_boolean(d.getVar('ADSP_SC598_SDCARD')) and (d.getVar('ADSP_KERNEL_TYPE') != 'upstream')) else ''}"
+#@todo: Check for SDcard support in the kernel
+#SRC_URI:append:adsp-sc598-som-ezkit = "${@' file://0001-sc598-som-enable-SDcard.patch' if (bb.utils.to_boolean(d.getVar('ADSP_SC598_SDCARD')) and (d.getVar('ADSP_KERNEL_TYPE') != 'upstream')) else ''}"
 
 SRC_URI:append:adsp-sc598-som-ezkit = "${@bb.utils.contains_any('MACHINE_FEATURES', 'falcon', 'file://0001-Disabling-peripherals-for-a-faster-falcon-boot.patch', '', d)}"
 
