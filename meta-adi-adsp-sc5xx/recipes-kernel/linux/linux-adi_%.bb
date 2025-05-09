@@ -17,20 +17,11 @@ SRC_URI:append="\
 	file://feature/cfg/tracepoints.cfg \
 "
 
-python () {
-    if ("adsp-sc598" in d.getVar('MACHINE')):
-        print("Building with kernel 6.1x kernel")
-        d.setVar("PV","6.1x")
-        d.setVar("KERNEL_VERSION_SANITY_SKIP","1")
-        d.setVar("KERNEL_BRANCH","adsp-main")
-        d.setVar("SRCREV","${AUTOREV}")
-    else:
-        d.setVar("PV","5.15.148")
-        d.setVar("KERNEL_BRANCH","main")
-        d.setVar("SRCREV","c4403f406eff867723e10acf414afdfe8132102f")
-
-    d.setVar("LINUX_VERSION",d.getVar("PV"))
-}
+PV="6.12"
+KERNEL_BRANCH="adsp-main"
+SRCREV="${AUTOREV}"
+KERNEL_VERSION_SANITY_SKIP = "1"
+LINUX_VERSION="${PV}"
 
 
 SRC_URI:append:adsp-sc594-som-ezkit = " file://feature/cfg/snd_ezkit.scc"
