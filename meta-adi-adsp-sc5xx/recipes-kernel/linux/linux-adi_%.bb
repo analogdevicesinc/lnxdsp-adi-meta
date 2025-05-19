@@ -18,7 +18,9 @@ SRC_URI:append="\
 "
 
 PV="6.12"
-KERNEL_BRANCH="adsp-main"
+KERNEL_BRANCH = "adsp-main"
+KERNEL_BRANCH:adsp-sc594-som-ezkit = "adsp-main-6.12-sc594"
+
 SRCREV="${AUTOREV}"
 KERNEL_VERSION_SANITY_SKIP = "1"
 LINUX_VERSION="${PV}"
