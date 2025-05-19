@@ -1,0 +1,70 @@
+diff --git a/arch/arm/boot/dts/sc589-mini.dts b/arch/arm/boot/dts/sc589-mini.dts
+index ff6bfda31..656525141 100644
+--- a/arch/arm/boot/dts/sc589-mini.dts
++++ b/arch/arm/boot/dts/sc589-mini.dts
+@@ -51,6 +51,12 @@ vdev1buffer: vdev0buffer@200B4000 {
+ 		};
+ 	};
+ 
++	audio_clock: audio_clock@0 {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <24576000>;
++	};
++
+ 	scb {
+ 
+ 		button0: button@0 {
+@@ -182,6 +188,8 @@ &i2c0 {
+ 	adau1761: adau1761@0x38{
+ 		compatible = "adi,adau1761";
+ 		reg = <0x38>;
++		clock-names = "mclk";
++		clocks = <&audio_clock>;
+ 	};
+ };
+ 
+diff --git a/sound/soc/adi/sc5xx-asoc-card.c b/sound/soc/adi/sc5xx-asoc-card.c
+index 90677eb42..49fff54ec 100644
+--- a/sound/soc/adi/sc5xx-asoc-card.c
++++ b/sound/soc/adi/sc5xx-asoc-card.c
+@@ -12,6 +12,7 @@
+  * Author: Scott Jiang <Scott.Jiang.Linux@gmail.com>
+  */
+ 
++#include <linux/clk.h>
+ #include <linux/device.h>
+ #include <linux/module.h>
+ #include <linux/pinctrl/pinctrl.h>
+@@ -300,8 +301,10 @@ static int sc5xx_adau1761_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
++	struct adau *adau = dev_get_drvdata(codec_dai->dev);
+ 	int pll_rate;
+ 	int ret;
++	long mclk=0;
+ 
+ 	switch (params_rate(params)) {
+ 	case 48000:
+@@ -326,12 +329,18 @@ static int sc5xx_adau1761_hw_params(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
+ 	}
+ 
++	if (adau->mclk) {
++		mclk = clk_get_rate(adau->mclk);
++	} else {
++		mclk = 12288000;
++	}
++
+ 	ret = snd_soc_dai_set_pll(codec_dai, ADAU17X1_PLL,
+-			ADAU17X1_PLL_SRC_MCLK, 12288000, pll_rate);
++			ADAU17X1_PLL_SRC_MCLK, mclk, pll_rate);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = snd_soc_dai_set_sysclk(codec_dai, ADAU17X1_CLK_SRC_PLL, 12288000,
++	ret = snd_soc_dai_set_sysclk(codec_dai, ADAU17X1_CLK_SRC_PLL, mclk,
+ 			SND_SOC_CLOCK_IN);
+ 	if (ret) {
+ 		pr_err("%s error, ret:%d\n", __func__, ret);
