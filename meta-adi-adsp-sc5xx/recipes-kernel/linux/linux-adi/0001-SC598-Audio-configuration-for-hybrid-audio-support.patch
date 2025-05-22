@@ -1,15 +1,17 @@
-From 2c8e19f2de1d16a407ac6d09b5f6df2b63e8be8e Mon Sep 17 00:00:00 2001
-From: Utsav Agarwal <utsav.agarwal@analog.com>
-Date: Fri, 8 Dec 2023 10:28:42 +0000
-Subject: [PATCH 1/2] SC598 Audio configuration for hybrid audio support
+From 3209f28b8f9e02e896a20ab60103f7de2c588890 Mon Sep 17 00:00:00 2001
+From: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
+Date: Tue, 20 May 2025 13:53:51 +0100
+Subject: [PATCH] [PATCH 1/2] SC598 Audio configuration for hybrid audio
+ support
 
+Signed-off-by: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
 ---
- arch/arm64/boot/dts/adi/sc598-som.dtsi | 50 ++++++++------------------
- arch/arm64/boot/dts/adi/sc59x-64.dtsi  | 29 ++++++++++++++-
- 2 files changed, 43 insertions(+), 36 deletions(-)
+ arch/arm64/boot/dts/adi/sc598-som.dtsi | 23 +++++++++++++-------
+ arch/arm64/boot/dts/adi/sc59x-64.dtsi  | 29 +++++++++++++++++++++++++-
+ 2 files changed, 43 insertions(+), 9 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index 92749e6cf9eb..2a2765720500 100644
+index 47060d5bce61..3cc69b7aa2da 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
 @@ -28,10 +28,10 @@ memory@20040000 {
@@ -45,43 +47,9 @@ index 92749e6cf9eb..2a2765720500 100644
  
 +
  	scb {
- 		sharc0: core1-rproc@0x28240000 {
+ 		sharc0: core1-rproc@28240000 {
  			compatible = "adi,remoteproc";
-@@ -99,33 +102,6 @@ sharc1: core2-rproc@0x28a40000 {
- 			status = "okay";
- 		};
- 
--		sharc0_rpmsg: core0-rpmsg@0x28240000 {
--				status = "disabled";
--				compatible = "adi,rpmsg-SC598";
--				core-id = <1>;
--				adi,rcu = <&rcu>;
--				adi,check-idle;
--				adi,rsc-table = <&rsc_tbl0>;
--				interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
--				adi,tru = <&tru>;
--				adi,tru-master-id = <135>; /* trigger master SOFT4 */
--				vdev-vring = <&vdev0vrings>;
--				memory-region = <&vdev0buffer>;
--		};
--
--		sharc1_rpmsg: core1-rpmsg@0x28a40000 {
--				status = "disabled";
--				compatible = "adi,rpmsg-SC598";
--				core-id = <2>;
--				adi,rcu = <&rcu>;
--				adi,check-idle;
--				adi,rsc-table = <&rsc_tbl1>;
--				interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
--				adi,tru = <&tru>;
--				adi,tru-master-id = <136>; /* trigger master SOFT5 */
--				vdev-vring = <&vdev1vrings>;
--				memory-region = <&vdev1buffer>;
--		};
- 	};
- 
- };
-@@ -357,6 +333,10 @@ &usb0 {
+@@ -357,6 +360,10 @@ &usb0 {
  	status = "okay";
  };
  
@@ -93,7 +61,7 @@ index 92749e6cf9eb..2a2765720500 100644
  	uart0_default: uart0_default_pins {
  		pins {
 diff --git a/arch/arm64/boot/dts/adi/sc59x-64.dtsi b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
-index fd1eed8ad602..0aaa364f17f3 100644
+index f3f05804e720..72b3ad430f28 100644
 --- a/arch/arm64/boot/dts/adi/sc59x-64.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
 @@ -77,6 +77,22 @@ gic: interrupt-controller@31200000 {
@@ -151,5 +119,5 @@ index fd1eed8ad602..0aaa364f17f3 100644
  			compatible = "adi,gptimer-counter";
  			status = "okay";
 -- 
-2.25.1
+2.34.1
 

@@ -1,18 +1,19 @@
-From 6b6eabc1d7c59041cee23a50633b3ae2065860d7 Mon Sep 17 00:00:00 2001
-From: Utsav Agarwal <utsav.agarwal@analog.com>
-Date: Fri, 8 Dec 2023 10:30:45 +0000
-Subject: [PATCH 2/2] SC598 Enable SHARC ALSA demo disabling most linux ba
+From 4bb512e6426bad246c3da374c7abeccaabc52989 Mon Sep 17 00:00:00 2001
+From: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
+Date: Tue, 20 May 2025 14:48:38 +0100
+Subject: [PATCH 2/2] SC598 Enable SHARC ALSA demo disabling most linux
 
+Signed-off-by: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
 ---
- arch/arm64/boot/dts/adi/sc598-som-ezkit.dts  |  7 +++-
+ arch/arm64/boot/dts/adi/sc598-som-ezkit.dts  |  5 ++-
  arch/arm64/boot/dts/adi/sc598-som.dtsi       | 39 +++++++++++++++++---
  arch/arm64/boot/dts/adi/sc59x-64.dtsi        |  2 +-
  arch/arm64/configs/sc598-som-ezkit_defconfig |  2 +-
- drivers/soc/adi/mach-sc5xx/sec.c             | 36 +-----------------
- 5 files changed, 41 insertions(+), 45 deletions(-)
+ drivers/soc/adi/mach-sc5xx/sec.c             | 37 +------------------
+ 5 files changed, 39 insertions(+), 46 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
-index 96287238f741..093c856bcf3d 100644
+index 85c686ff08e0..924c42bce367 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
 +++ b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
 @@ -16,6 +16,7 @@ sound {
@@ -23,22 +24,7 @@ index 96287238f741..093c856bcf3d 100644
  		};
  	};
  };
-@@ -193,12 +194,14 @@ gige-reset {
- 	adau1979: adau1979@0x11 {
- 		compatible = "adi,adau1979";
- 		reg = <0x11>;
-+		status = "disabled";
- 	};
- 
- 	adau1962: adau1962@0x4 {
- 		compatible = "adi,adau1962";
- 		reg = <0x4>;
- 		reset-gpios = <&ssw1 5 GPIO_ACTIVE_LOW>;
-+		status = "disabled";
- 	};
- };
- 
-@@ -280,11 +283,11 @@ dp83848: ethernet-phy@1 {
+@@ -280,11 +281,11 @@ dp83867: ethernet-phy@0 {
  &i2s4 {
  	pinctrl-names = "default";
  	pinctrl-0 = <&sru_dai1>;
@@ -53,7 +39,7 @@ index 96287238f741..093c856bcf3d 100644
  	sru_dai1: sru_dai1_mux {
  		route {
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index 2a2765720500..ecc58d904cd6 100644
+index 3cc69b7aa2da..2897bc2fb9d0 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
 @@ -22,13 +22,13 @@ memory@90000000 {
@@ -75,8 +61,8 @@ index 2a2765720500..ecc58d904cd6 100644
  //			compatible = "adi,sram-access";
  //			reg = <0x20040000 0x40000>;
  //		};
-@@ -102,6 +102,33 @@ sharc1: core2-rproc@0x28a40000 {
- 			status = "okay";
+@@ -242,6 +242,33 @@ qspi_4: partition@4 {
+ 			reg = <0x1020000 0x2FE0000>;
  		};
  
 +		sharc0_rpmsg: core0-rpmsg@0x28240000 {
@@ -107,9 +93,9 @@ index 2a2765720500..ecc58d904cd6 100644
 +
 +
  	};
- 
  };
-@@ -227,7 +254,7 @@ &i2c1 {
+ 
+@@ -254,7 +281,7 @@ &i2c1 {
  };
  
  &i2c2 {
@@ -119,7 +105,7 @@ index 2a2765720500..ecc58d904cd6 100644
  	pinctrl-0 = <&i2c2_pins>;
  
 diff --git a/arch/arm64/boot/dts/adi/sc59x-64.dtsi b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
-index 0aaa364f17f3..543ac76b5e6f 100644
+index 72b3ad430f28..4c6181ba517e 100644
 --- a/arch/arm64/boot/dts/adi/sc59x-64.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
 @@ -245,7 +245,7 @@ sram-controller@31080000 {
@@ -145,7 +131,7 @@ index b7ea7bab5dcb..4380ef497418 100644
  CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND=y
  CONFIG_IIO=y
 diff --git a/drivers/soc/adi/mach-sc5xx/sec.c b/drivers/soc/adi/mach-sc5xx/sec.c
-index 91fcab5481f4..97235980b4e3 100644
+index bdeb0f8d9a3b..3856e17851ca 100644
 --- a/drivers/soc/adi/mach-sc5xx/sec.c
 +++ b/drivers/soc/adi/mach-sc5xx/sec.c
 @@ -34,12 +34,11 @@ struct adi_sec {
@@ -162,11 +148,10 @@ index 91fcab5481f4..97235980b4e3 100644
  }
  
  void sec_raise_irq(struct adi_sec *sec, unsigned int irq)
-@@ -197,39 +196,6 @@ static int adi_sec_probe(struct platform_device *pdev)
- 	}
+@@ -209,40 +208,6 @@ static int adi_sec_probe(struct platform_device *pdev)
  
  	adi_sec->ioaddr = base;
--
+ 
 -	/* Disable SYSCD_RESETb and clear RCU reset status */
 -	adi_rcu_writel(0x00, adi_rcu, ADI_RCU_REG_CTL);
 -	adi_rcu_writel(0x0f, adi_rcu, ADI_RCU_REG_STAT);
@@ -178,7 +163,9 @@ index 91fcab5481f4..97235980b4e3 100644
 -	/* Initialize each core */
 -	for (cores = 0; cores < adi_sec->cores; ++cores) {
 -		adi_sec_writel(0x02, adi_sec,
--			ADI_SEC_REG_CCTL_BASE + (cores+1)*ADI_SEC_CCTL_SIZE);
+-			       ADI_SEC_REG_CCTL_BASE + (cores +
+-							1) *
+-			       ADI_SEC_CCTL_SIZE);
 -	}
 -	udelay(100);
 -
@@ -201,7 +188,7 @@ index 91fcab5481f4..97235980b4e3 100644
 -
  	return 0;
  
- free_rcu:
+       free_rcu:
 -- 
-2.25.1
+2.34.1
 
