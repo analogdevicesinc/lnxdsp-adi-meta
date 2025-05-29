@@ -18,8 +18,7 @@ SRC_URI:append="\
 "
 
 PV="6.12"
-KERNEL_BRANCH = "adsp-main"
-KERNEL_BRANCH:adsp-sc594-som-ezkit = "adsp-main-6.12-sc594"
+KERNEL_BRANCH = "adsp-main-6.12"
 
 SRCREV="${AUTOREV}"
 KERNEL_VERSION_SANITY_SKIP = "1"
@@ -31,8 +30,6 @@ SRC_URI:append:adsp-sc589-ezkit = " file://feature/cfg/snd_ezkit.scc"
 SRC_URI:append:adsp-sc584-ezkit = " file://feature/cfg/snd_ezkit.scc"
 SRC_URI:append:adsp-sc573-ezkit = " file://feature/cfg/snd_ezkit.scc"
 SRC_URI:append:adsp-sc589-mini = " file://feature/cfg/snd_mini.scc"
-
-# Only SC598 can trigger upstream builds
 
 #@todo: Check for SDcard support in the kernel
 #SRC_URI:append:adsp-sc598-som-ezkit = "${@' file://0001-sc598-som-enable-SDcard.patch' if (bb.utils.to_boolean(d.getVar('ADSP_SC598_SDCARD')) and (d.getVar('ADSP_KERNEL_TYPE') != 'upstream')) else ''}"
