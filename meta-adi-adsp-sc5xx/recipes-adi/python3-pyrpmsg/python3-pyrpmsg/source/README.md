@@ -1,6 +1,14 @@
 # pyrpmsg
 
-![ADI Remote RPMsg Interface Banner](https://github.com/OliverGaskellADI/pyrpmsg/blob/0355c3f1aa13d1d76be94b8f219cd89c16debd2b/src/banner.png)
+```
+############
+##  ########
+##     #####    Analog Devices, Inc.
+##        ##
+##     #####    Remote RPMsg Interface
+##  ########
+############
+```
 
 ## Installation
 
