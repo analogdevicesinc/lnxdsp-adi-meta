@@ -1,0 +1,79 @@
+From 5101ce29d08ca156c26ea4c08bfc91ac6156c4e8 Mon Sep 17 00:00:00 2001
+From: Utsav Agarwal <utsav.agarwal@analog.com>
+Date: Mon, 19 Aug 2024 10:48:07 +0100
+Subject: [PATCH 1/4] Adding scarthgap compatibility
+
+Signed-off-by: Utsav Agarwal <utsav.agarwal@analog.com>
+---
+ conf/layer.conf                                 |  2 +-
+ recipes-python/python3-debugpy_1.5.1.bb         | 12 ------------
+ recipes-python/python3-debugpy_1.8.5.bb         | 12 ++++++++++++
+ recipes-python/python3-jupyter-console_6.1.0.bb |  2 +-
+ 4 files changed, 14 insertions(+), 14 deletions(-)
+ delete mode 100644 recipes-python/python3-debugpy_1.5.1.bb
+ create mode 100644 recipes-python/python3-debugpy_1.8.5.bb
+
+diff --git a/conf/layer.conf b/conf/layer.conf
+index 2a8669e..f2ca396 100644
+--- a/conf/layer.conf
++++ b/conf/layer.conf
+@@ -15,5 +15,5 @@ BBFILE_PRIORITY_jupyter-layer = "7"
+ 
+ LAYERDEPENDS_jupyter-layer = "core meta-python"
+ 
+-LAYERSERIES_COMPAT_jupyter-layer = "nanbield"
++LAYERSERIES_COMPAT_jupyter-layer = "nanbield scarthgap"
+ 
+diff --git a/recipes-python/python3-debugpy_1.5.1.bb b/recipes-python/python3-debugpy_1.5.1.bb
+deleted file mode 100644
+index 830ef66..0000000
+--- a/recipes-python/python3-debugpy_1.5.1.bb
++++ /dev/null
+@@ -1,12 +0,0 @@
+-SUMMARY = "An implementation of the Debug Adapter Protocol for Python"
+-LICENSE = "Apache-2.0"
+-LIC_FILES_CHKSUM = "file://LICENSE;md5=7b6b095fe2a2e2b66cb08d295b605789"
+-
+-PYPI_SRC_URI="https://files.pythonhosted.org/packages/68/8a/aba73af65eb84e0c61c658d2aa2f2a9b4d2939a7f87294dd396f4987efac/debugpy-1.5.1.zip"
+-SRC_URI[sha256sum] = "d2b09e91fbd1efa4f4fda121d49af89501beda50c18ed7499712c71a4bf3452e"
+-
+-PYPI_PACKAGE = "debugpy"
+-
+-inherit pypi setuptools3
+-
+-BBCLASSEXTEND = "native"
+\ No newline at end of file
+diff --git a/recipes-python/python3-debugpy_1.8.5.bb b/recipes-python/python3-debugpy_1.8.5.bb
+new file mode 100644
+index 0000000..d297314
+--- /dev/null
++++ b/recipes-python/python3-debugpy_1.8.5.bb
+@@ -0,0 +1,12 @@
++SUMMARY = "An implementation of the Debug Adapter Protocol for Python"
++LICENSE = "Apache-2.0"
++LIC_FILES_CHKSUM = "file://LICENSE;md5=7b6b095fe2a2e2b66cb08d295b605789"
++
++PYPI_SRC_URI="https://files.pythonhosted.org/packages/ea/f9/61c325a10ded8dc3ddc3e7cd2ed58c0b15b2ef4bf8b4bf2930ee98ed59ee/debugpy-1.8.5.zip"
++SRC_URI[sha256sum] = "b2112cfeb34b4507399d298fe7023a16656fc553ed5246536060ca7bd0e668d0"
++
++PYPI_PACKAGE = "debugpy"
++
++inherit pypi setuptools3
++
++BBCLASSEXTEND = "native"
+diff --git a/recipes-python/python3-jupyter-console_6.1.0.bb b/recipes-python/python3-jupyter-console_6.1.0.bb
+index 7709e87..820d90b 100644
+--- a/recipes-python/python3-jupyter-console_6.1.0.bb
++++ b/recipes-python/python3-jupyter-console_6.1.0.bb
+@@ -1,7 +1,7 @@
+ inherit pypi python_setuptools_build_meta
+ 
+ SUMMARY = "Jupyter notebook"
+-LICENSE = "BSD"
++LICENSE = "BSD-3-Clause"
+ LIC_FILES_CHKSUM = "file://COPYING.md;md5=d235895c780fa844e875697e16e5787b"
+ 
+ SRC_URI[sha256sum] = "6f6ead433b0534909df789ea64f0a14cdf9b6b2360757756f08182be4b9e431b"
+-- 
+2.34.1
+

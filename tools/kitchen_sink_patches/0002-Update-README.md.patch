@@ -1,0 +1,26 @@
+From 4da50c826b1108e5ed5f0a7e20738b80afa23576 Mon Sep 17 00:00:00 2001
+From: Utsav Agarwal <141642367+UtsavAgarwalADI@users.noreply.github.com>
+Date: Tue, 20 Aug 2024 10:09:50 +0100
+Subject: [PATCH 2/4] Update README.md
+
+Adding scarthgap as dependency
+---
+ README.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/README.md b/README.md
+index 4e7ce57..21794f0 100644
+--- a/README.md
++++ b/README.md
+@@ -43,7 +43,7 @@ This layer depends on:
+ 
+ 	URI: https:///git.yoctoproject.org/poky
+ 	layers: meta, meta-poky
+-	branch: langdale
++	branch: langdale, scarthgap
+ 
+ 	URI: https://git.openembedded.org/meta-openembedded
+ 	layers: meta-oe, meta-python
+-- 
+2.34.1
+

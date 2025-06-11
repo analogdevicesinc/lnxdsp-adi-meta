@@ -1,0 +1,12 @@
+diff --git a/meta-oe/recipes-graphics/graphviz/graphviz_8.1.0.bb b/meta-oe/recipes-graphics/graphviz/graphviz_8.1.0.bb
+index 2700142e5..b1417afee 100644
+--- a/meta-oe/recipes-graphics/graphviz/graphviz_8.1.0.bb
++++ b/meta-oe/recipes-graphics/graphviz/graphviz_8.1.0.bb
+@@ -23,7 +23,6 @@ SRC_URI = "https://gitlab.com/api/v4/projects/4207231/packages/generic/${BPN}-re
+            "
+ # Use native mkdefs
+ SRC_URI:append:class-target = "\
+-           file://0001-Set-use_tcl-to-be-empty-string-if-tcl-is-disabled.patch \
+ "
+ SRC_URI:append:class-nativesdk = "\
+            file://graphviz-setup.sh \

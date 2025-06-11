@@ -184,6 +184,17 @@ if [ -z "$DISTRO" ]; then
     DISTRO="$DISTRO_DEFAULT"
 fi
 
+if [ "$KITCHEN_SINK" -eq "1" ]; then
+    echo "You asked for it..."
+    CWD=${PWD}
+    # If KITCHEN_SINK is set, we will use the kitchen sink template
+    echo "Preparing ADI meta layer..."
+    cd sources/meta-adi
+    git checkout kitchen_sink_v1
+    bash tools/prepare-kitchen-sink.sh
+    cd "$CWD"
+fi
+
 if [ ! -e "$CWD"/"$folder"/conf/local.conf ]; then
     build_dir_not_exist="true"
 else

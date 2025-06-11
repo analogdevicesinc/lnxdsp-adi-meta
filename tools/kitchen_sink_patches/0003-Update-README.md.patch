@@ -1,0 +1,22 @@
+From 98d371c47555a0311f7b8dc2ef0e85d2b372ff9b Mon Sep 17 00:00:00 2001
+From: Utsav Agarwal <141642367+UtsavAgarwalADI@users.noreply.github.com>
+Date: Tue, 20 Aug 2024 10:10:20 +0100
+Subject: [PATCH 3/4] Update README.md
+
+---
+ README.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/README.md b/README.md
+index 21794f0..17e4343 100644
+--- a/README.md
++++ b/README.md
+@@ -47,4 +47,4 @@ This layer depends on:
+ 
+ 	URI: https://git.openembedded.org/meta-openembedded
+ 	layers: meta-oe, meta-python
+-	branch: langdale
++	branch: langdale, scarthgap
+-- 
+2.34.1
+
