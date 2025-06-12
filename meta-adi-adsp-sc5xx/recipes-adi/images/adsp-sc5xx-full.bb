@@ -32,6 +32,7 @@ UTILS = " \
     ltrace \
     strace \
     bonnie++ \
+    python3 \
 "
 
 UTILS += "${@'' if (bb.utils.to_boolean(d.getVar('ADSP_KERNEL_TYPE') == 'upstream')) else ' perf '}"
