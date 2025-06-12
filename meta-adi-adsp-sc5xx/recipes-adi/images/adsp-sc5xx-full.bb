@@ -35,8 +35,6 @@ UTILS = " \
     python3 \
 "
 
-UTILS += "${@'' if (bb.utils.to_boolean(d.getVar('ADSP_KERNEL_TYPE') == 'upstream')) else ' perf '}"
-
 IMAGE_INSTALL += " \
     ${UTILS} \
    	${FILE_SYSTEM_TOOLS} \
