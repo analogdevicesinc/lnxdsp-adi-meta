@@ -14,7 +14,7 @@ LNX_CRR_FILE:adsp-sc594-som-ezkit = "file://0003-SC594-EZKIT-Adding-softconfig-c
 LNX_CRR = "${@bb.utils.contains('CRR_REV', 'D', '${LNX_CRR_FILE}', '', d)}"
 
 LNX_SOM_FILE = ""
-LNX_SOM_FILE:adsp-sc598-som-ezkit = "file://0001-Adding-support-for-SC598-SOM-Rev-E.patch"
+LNX_SOM_FILE:adsp-sc598-som-ezkit = "file://0001-sc598-som-Adding-support-for-revision-E.patch"
 LNX_SOM = "${@bb.utils.contains('SOM_REV', 'E', '${LNX_SOM_FILE}', '', d)}"
 
 SRC_URI += " \
