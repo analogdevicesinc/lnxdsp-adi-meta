@@ -1,0 +1,100 @@
+From 4159dd16670e6919f86446d945f0caff338eadca Mon Sep 17 00:00:00 2001
+From: UtsavAgarwalADI <utsav.agarwal@analog.com>
+Date: Thu, 10 Jul 2025 13:12:11 +0100
+Subject: [PATCH] usb gadget audio: Adding support for USB audio
+
+Switches USB mode to OTG and configures it for USB gadget
+audio for all supported boards
+
+Signed-off-by: UtsavAgarwalADI <utsav.agarwal@analog.com>
+---
+ arch/arm/boot/dts/adi/sc573-ezkit.dts  | 2 +-
+ arch/arm/boot/dts/adi/sc589-mini.dts   | 2 +-
+ arch/arm/boot/dts/adi/sc594-som.dtsi   | 2 +-
+ arch/arm/boot/dts/adi/sc59x.dtsi       | 3 +++
+ arch/arm64/boot/dts/adi/sc598-som.dtsi | 2 +-
+ drivers/usb/gadget/function/u_uac2.h   | 2 +-
+ 6 files changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arm/boot/dts/adi/sc573-ezkit.dts b/arch/arm/boot/dts/adi/sc573-ezkit.dts
+index e54e86c017c7..9a2cd319a57f 100644
+--- a/arch/arm/boot/dts/adi/sc573-ezkit.dts
++++ b/arch/arm/boot/dts/adi/sc573-ezkit.dts
+@@ -472,7 +472,7 @@ &usb0_phy {
+ &usb0 {
+ 	/* mode = <2>; Place OTG port into Device Mode */
+ 	/* mode = <1>; Place OTG port into Host Mode */
+-	mode = <1>;
++	mode = <2>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/arm/boot/dts/adi/sc589-mini.dts b/arch/arm/boot/dts/adi/sc589-mini.dts
+index 0ed1cf2e9a4f..a1d8a7509eec 100644
+--- a/arch/arm/boot/dts/adi/sc589-mini.dts
++++ b/arch/arm/boot/dts/adi/sc589-mini.dts
+@@ -229,7 +229,7 @@ &usb0_phy {
+ &usb0 {
+ 	/* mode = <2>; Place OTG port into Device Mode */
+ 	/* mode = <1>; Place OTG port into Host Mode */
+-	mode = <1>;
++	mode = <2>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/arm/boot/dts/adi/sc594-som.dtsi b/arch/arm/boot/dts/adi/sc594-som.dtsi
+index 08ec0b757998..e52d44bbaced 100644
+--- a/arch/arm/boot/dts/adi/sc594-som.dtsi
++++ b/arch/arm/boot/dts/adi/sc594-som.dtsi
+@@ -346,7 +346,7 @@ &usb0_phy {
+ };
+ 
+ &usb0 {
+-	dr_mode = "host";
++	dr_mode = "otg";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&usbc0_default>;
+ 	status = "okay";
+diff --git a/arch/arm/boot/dts/adi/sc59x.dtsi b/arch/arm/boot/dts/adi/sc59x.dtsi
+index e24934e0d085..fcf6454806a1 100644
+--- a/arch/arm/boot/dts/adi/sc59x.dtsi
++++ b/arch/arm/boot/dts/adi/sc59x.dtsi
+@@ -733,6 +733,9 @@ usb0: usb@310c5000 {
+ 			interrupts = <GIC_SPI 241 IRQ_TYPE_LEVEL_HIGH>;
+ 			phys = <&usb0_phy>;
+ 			phy-names = "usb2-phy";
++			g-rx-fifo-size = <512>;
++			g-np-tx-fifo-size = <128>;
++			g-tx-fifo-size = <512 512 512 512 512 256 256>;
+ 			status = "disabled";
+ 		};
+ 
+diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+index 1af87078166e..2d6091aa9b6d 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
++++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+@@ -343,7 +343,7 @@ &usb0_phy {
+ };
+ 
+ &usb0 {
+-	dr_mode = "host";
++	dr_mode = "otg";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&usbc0_default>;
+ 	status = "okay";
+diff --git a/drivers/usb/gadget/function/u_uac2.h b/drivers/usb/gadget/function/u_uac2.h
+index 0df808289ded..7d5ff13fd0b1 100644
+--- a/drivers/usb/gadget/function/u_uac2.h
++++ b/drivers/usb/gadget/function/u_uac2.h
+@@ -32,7 +32,7 @@
+ #define UAC2_DEF_MAX_DB		0		/* 0 dB */
+ #define UAC2_DEF_RES_DB		(1*256)		/* 1 dB */
+ 
+-#define UAC2_DEF_REQ_NUM 2
++#define UAC2_DEF_REQ_NUM 32
+ #define UAC2_DEF_INT_REQ_NUM	10
+ 
+ #define UAC2_DEF_P_TERM_TYPE 0x301
+-- 
+2.34.1
+

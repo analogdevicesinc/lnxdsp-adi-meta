@@ -1,5 +1,5 @@
 GADGET_AUDIO_PATCH = " \
-	file://0004-Modifications-for-USB-Audio-support.patch \
+	file://0001-usb-gadget-audio-Adding-support-for-USB-audio.patch \
 	file://feature/cfg/usb_audio.cfg \
 "
 
