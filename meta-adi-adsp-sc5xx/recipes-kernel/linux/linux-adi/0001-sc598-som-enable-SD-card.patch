@@ -1,15 +1,20 @@
-From 20be1789b57b986fff2721b6547524b98505ce64 Mon Sep 17 00:00:00 2001
-From: Ilies CHERGUI <Ilies.Chergui@analog.com>
-Date: Tue, 19 Sep 2023 12:29:03 +0100
-Subject: [PATCH] sc598-som: enable SDcard
+From 7761bb0ec2b2209a2c4fdd4f9999981810e0ab2e Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Tue, 22 Jul 2025 15:35:53 +0100
+Subject: [PATCH] Updated SD card patch for 6.12
 
-Signed-off-by: Ilies CHERGUI <Ilies.Chergui@analog.com>
+eMMC and the SDcard operate mutually exclusively.
+
+- disable eMMC
+- enable MMC/SDcard
+
+Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
 ---
  arch/arm64/boot/dts/adi/sc598-som.dtsi | 9 +++++----
  1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index 92749e6cf9eb..cb71bd8820ae 100644
+index c9ea8704028a..67d386310df0 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
 @@ -323,14 +323,14 @@ uart0-flow-en {
@@ -42,5 +47,5 @@ index 92749e6cf9eb..cb71bd8820ae 100644
  	status = "okay";
  };
 -- 
-2.25.1
+2.34.1
 

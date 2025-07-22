@@ -17,6 +17,15 @@ LNX_SOM_FILE = ""
 LNX_SOM_FILE:adsp-sc598-som-ezkit = "file://0001-sc598-som-Adding-support-for-revision-E.patch"
 LNX_SOM = "${@bb.utils.contains('SOM_REV', 'E', '${LNX_SOM_FILE}', '', d)}"
 
+python() {
+    d.setVar('SDCARD_PATCH', '')
+    if bb.utils.to_boolean(d.getVar('ADSP_SC598_SDCARD')): 
+        if d.getVar('SOM_REV') != 'E': 
+            d.setVar('SDCARD_PATCH', ' file://0001-sc598-som-enable-SD-card.patch')
+        else:
+            d.setVar('SDCARD_PATCH', ' file://0001-sc598-som-enable-SD-card-revE.patch')
+}
+
 SRC_URI += " \
 	${KERNEL_GIT_URI};protocol=${KERNEL_GIT_PROTOCOL};branch=${KERNEL_BRANCH} \
         ${LNX_CRR} \
