@@ -29,10 +29,15 @@ python() {
         d.setVar('FALCON_PATCH',' file://0001-sc598-som-Disabling-peripherals-for-a-faster-falcon-boot_revE.patch')
 }
 
+LNX_BRD_FILE = ""
+LNX_BRD_FILE:adsp-sc589-mini = "file://0001-mclk-rev2.1-sc5xx-asoc-card.patch"
+LNX_BRD = "${@bb.utils.contains('BRD_REV', '2.1', '${LNX_BRD_FILE}', '', d)}"
+
 SRC_URI += " \
 	${KERNEL_GIT_URI};protocol=${KERNEL_GIT_PROTOCOL};branch=${KERNEL_BRANCH} \
         ${LNX_CRR} \
         ${LNX_SOM} \
+        ${LNX_BRD} \
 "
 
 # Pull in the devicetree files into the rootfs
