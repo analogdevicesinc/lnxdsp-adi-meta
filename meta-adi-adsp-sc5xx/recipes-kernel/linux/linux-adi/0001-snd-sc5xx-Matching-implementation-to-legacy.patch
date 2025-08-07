@@ -1,0 +1,82 @@
+From 01af7af0afe3004d5eda5644dffd791c871ba1bf Mon Sep 17 00:00:00 2001
+From: UtsavAgarwalADI <utsav.agarwal@analog.com>
+Date: Mon, 4 Aug 2025 12:21:34 +0100
+Subject: [PATCH] snd: sc5xx: Matching implementation to legacy
+
+The current implementation introduces some extra preprocessor
+statements which rely on new kernel config features that need
+to be defined.
+
+These were originally introduced to better showcase the usage
+of codecs and other software components in the machine config.
+
+However, due to other related factors, this seems to break the
+implementation for other components which rely on this as a
+dependecy. As a result, for the sake of simplicity, this is
+temporarily being reverted to its legacy implementation.
+
+Signed-off-by: UtsavAgarwalADI <utsav.agarwal@analog.com>
+---
+ sound/soc/adi/sc5xx-asoc-card.c | 6 +-----
+ sound/soc/adi/sc5xx-sport.c     | 1 +
+ 2 files changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/adi/sc5xx-asoc-card.c b/sound/soc/adi/sc5xx-asoc-card.c
+index 675d6ba97c47..86bb1dfe7d9e 100644
+--- a/sound/soc/adi/sc5xx-asoc-card.c
++++ b/sound/soc/adi/sc5xx-asoc-card.c
+@@ -359,7 +359,6 @@ static int __maybe_unused sc5xx_adau1979_init(struct snd_soc_pcm_runtime *rtd)
+ }
+ 
+ 
+-#if IS_ENABLED(CONFIG_SND_SC5XX_ADAU1372)
+ static struct snd_soc_dai_link_component adau1372_codec_component[] = {
+ 	{
+ 		.name = NULL,
+@@ -367,7 +366,6 @@ static struct snd_soc_dai_link_component adau1372_codec_component[] = {
+ 		.dai_name = "adau1372",
+ 	},
+ };
+-#endif
+ 
+ static struct snd_soc_dai_link_component adau1962_codec_component[] = {
+ 	{
+@@ -378,7 +376,6 @@ static struct snd_soc_dai_link_component adau1962_codec_component[] = {
+ };
+ 
+ 
+-#if IS_ENABLED(CONFIG_SND_SC5XX_ADAU1979)
+ static struct snd_soc_dai_link_component adau1979_codec_component[] = {
+ 	{
+ 		.name = NULL,
+@@ -386,14 +383,13 @@ static struct snd_soc_dai_link_component adau1979_codec_component[] = {
+ 		.dai_name = "adau1977-hifi",
+ 	},
+ };
+-#endif
+ 
+ #if IS_ENABLED(CONFIG_SND_SC5XX_ADAU1761)
+ static struct snd_soc_dai_link_component adau1961_codec_component[] = {
+ 	{
+ 		.name = NULL,
+ 		.of_node = NULL,
+-		.dai_name = "adau1961-hifi",
++		.dai_name = "adau-hifi",
+ 	},
+ };
+ #endif
+diff --git a/sound/soc/adi/sc5xx-sport.c b/sound/soc/adi/sc5xx-sport.c
+index e843b9387cc4..51c9c0d0f2ec 100644
+--- a/sound/soc/adi/sc5xx-sport.c
++++ b/sound/soc/adi/sc5xx-sport.c
+@@ -306,6 +306,7 @@ struct sport_device *sport_create(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_free_data;
+ 
++	dev_info(&pdev->dev, "SPORT device created\n");
+ 	return sport;
+ 
+ err_free_data:
+-- 
+2.34.1
+

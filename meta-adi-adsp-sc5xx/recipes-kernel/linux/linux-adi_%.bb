@@ -24,6 +24,7 @@ SRCREV="${AUTOREV}"
 KERNEL_VERSION_SANITY_SKIP = "1"
 LINUX_VERSION="${PV}"
 
+SRC_URI:append = "file://0001-snd-sc5xx-Matching-implementation-to-legacy.patch"
 
 SRC_URI:append:adsp-sc594-som-ezkit = " file://feature/cfg/snd_ezkit.scc"
 SRC_URI:append:adsp-sc589-ezkit = " file://feature/cfg/snd_ezkit.scc"
