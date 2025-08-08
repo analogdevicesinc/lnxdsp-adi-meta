@@ -31,7 +31,7 @@ python() {
         d.setVar('UBOOT_SOM', d.getVar('UBOOT_SOM_FILE') + " " + d.getVar('UBOOT_SOM_FALCON_FILE'))
 }
 
-UBOOT_BRANCH ?= "dev"
+UBOOT_BRANCH ?= "main"
 
 # On the SC598, we can't boot directly from the eMMC due to default speed configuration issues
 # We can boot the SPL from OSPI or QSPI and then subsequently boot U-Boot Proper from eMMC
