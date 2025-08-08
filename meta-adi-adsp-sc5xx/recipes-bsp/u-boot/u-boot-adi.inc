@@ -21,6 +21,16 @@ UBOOT_SOM_FILE = ""
 UBOOT_SOM_FILE:adsp-sc598-som-ezkit = "file://0001-SC598-SOM-Adding-Rev-E-compatibility-for-u-boot.patch"
 UBOOT_SOM = "${@bb.utils.contains('SOM_REV', 'E', '${UBOOT_SOM_FILE}', '', d)}"
 
+UBOOT_SOM_FALCON_FILE = ""
+UBOOT_SOM_FALCON_FILE = " file://0001-sc598-som-Adding-falcon-support-for-rev-E.patch \
+                          file://0002-fix-sc598-som-rev-E-falcon-print.patch "
+
+
+python() {
+    if ("falcon" in d.getVar("MACHINE_FEATURES")) and ("E" in d.getVar("SOM_REV")):
+        d.setVar('UBOOT_SOM', d.getVar('UBOOT_SOM_FILE') + " " + d.getVar('UBOOT_SOM_FALCON_FILE'))
+}
+
 UBOOT_BRANCH ?= "dev"
 
 # On the SC598, we can't boot directly from the eMMC due to default speed configuration issues

@@ -1,0 +1,32 @@
+From 49fe4e4e355b6d71ce1fa161fb8a819dca2cdbe2 Mon Sep 17 00:00:00 2001
+From: Utsav Agarwal <utsav.agarwal@analog.com>
+Date: Fri, 8 Aug 2025 10:44:07 +0100
+Subject: [PATCH 1/2] sc598-som: Adding falcon support for rev E
+
+Signed-off-by: Utsav Agarwal <utsav.agarwal@analog.com>
+---
+ configs/sc598-som-ezkit-falcon_defconfig  | 1 +
+ configs/sc598-som-ezlite-falcon_defconfig | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/configs/sc598-som-ezkit-falcon_defconfig b/configs/sc598-som-ezkit-falcon_defconfig
+index 674b0d4bf3d..66046699920 100644
+--- a/configs/sc598-som-ezkit-falcon_defconfig
++++ b/configs/sc598-som-ezkit-falcon_defconfig
+@@ -135,3 +135,4 @@ CONFIG_USB_DWC2=y
+ CONFIG_ADI_NOP_USB_XCEIV=y
+ CONFIG_SPL_GZIP=y
+ CONFIG_SPL_OF_LIBFDT_ASSUME_MASK=0x0
++CONFIG_ADP5588_GPIO=y
+diff --git a/configs/sc598-som-ezlite-falcon_defconfig b/configs/sc598-som-ezlite-falcon_defconfig
+index ebdbb5b57cc..79161200f40 100644
+--- a/configs/sc598-som-ezlite-falcon_defconfig
++++ b/configs/sc598-som-ezlite-falcon_defconfig
+@@ -137,3 +137,4 @@ CONFIG_USB_DWC2=y
+ CONFIG_ADI_NOP_USB_XCEIV=y
+ CONFIG_SPL_GZIP=y
+ CONFIG_SPL_OF_LIBFDT_ASSUME_MASK=0x0
++CONFIG_ADP5588_GPIO=y
+-- 
+2.34.1
+

@@ -1,0 +1,68 @@
+From a597661a2348173cf7bc6e220ab956344bd49328 Mon Sep 17 00:00:00 2001
+From: Utsav Agarwal <utsav.agarwal@analog.com>
+Date: Fri, 8 Aug 2025 10:50:00 +0100
+Subject: [PATCH 2/2] fix: sc598-som: rev E falcon print
+
+Jump back to uboot's init, similar to what gdb does to enable
+print. This is optional and can be omitted if not needed.
+
+Signed-off-by: Utsav Agarwal <utsav.agarwal@analog.com>
+---
+ common/spl/spl_spi.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+diff --git a/common/spl/spl_spi.c b/common/spl/spl_spi.c
+index df754c29733..a2b83352694 100644
+--- a/common/spl/spl_spi.c
++++ b/common/spl/spl_spi.c
+@@ -20,6 +20,7 @@
+ 
+ #define OSPI_BUS 0
+ #define OSPI_CS 0
++#define MAGIC_VAL 0xDEADBEEF
+ 
+ #if CONFIG_IS_ENABLED(OS_BOOT)
+ /*
+@@ -114,6 +115,27 @@ unsigned int spl_get_ezkit_fastest_spi_clock(void)
+ 	return ADI_OSPI_SF_DEFAULT_SPEED;
+ }
+ 
++
++static void adi_sc5xx_reset(void)
++{
++	u32 *magic_addr = (u32 *) CONFIG_SYS_LOAD_ADDR;
++	u32 magic = *(magic_addr) & MAGIC_VAL;
++
++
++	if (magic == MAGIC_VAL) {
++		*magic_addr = 0;
++		return;
++	}
++
++	*magic_addr = MAGIC_VAL;
++
++	//back to uboot, just like gdb 
++	void (*uboot) (void) = CONFIG_SPL_TEXT_BASE;
++	uboot();
++
++}
++
++
+ /*
+  * The main entry for SPI booting. It's necessary that SDRAM is already
+  * configured and available since this code loads the main U-Boot image
+@@ -135,6 +157,11 @@ static int spl_spi_load_image(struct spl_image_info *spl_image,
+ 	 * taken from DT when available
+ 	 */
+ 	
++
++#if CONFIG_IS_ENABLED(OS_BOOT)
++	adi_sc5xx_reset();
++#endif
++
+ #if defined(CONFIG_ADI_FALCON) && defined(CONFIG_ADI_CARRIER_SOMCRR_EZKIT) 
+ 	printf("Probe @%dHz\n", spl_get_ezkit_fastest_spi_clock());
+ 	flash = spi_flash_probe(OSPI_BUS, OSPI_CS,
+-- 
+2.34.1
+

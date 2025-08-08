@@ -24,7 +24,6 @@ SRCREV="${AUTOREV}"
 KERNEL_VERSION_SANITY_SKIP = "1"
 LINUX_VERSION="${PV}"
 
-SRC_URI:append = "file://0001-snd-sc5xx-Matching-implementation-to-legacy.patch"
 
 SRC_URI:append:adsp-sc594-som-ezkit = " file://feature/cfg/snd_ezkit.scc"
 SRC_URI:append:adsp-sc589-ezkit = " file://feature/cfg/snd_ezkit.scc"
@@ -33,9 +32,10 @@ SRC_URI:append:adsp-sc573-ezkit = " file://feature/cfg/snd_ezkit.scc"
 SRC_URI:append:adsp-sc589-mini = " file://feature/cfg/snd_mini.scc"
 SRC_URI:append:adsp-sc598-som-ezkit = "${@d.getVar('SDCARD_PATCH') if (bb.utils.to_boolean(d.getVar('ADSP_SC598_SDCARD'))) else ''}"
 
-SRC_URI:append:adsp-sc598-som-ezkit = "${@bb.utils.contains_any('MACHINE_FEATURES', 'falcon', 'file://0001-Disabling-peripherals-for-a-faster-falcon-boot.patch', '', d)}"
+SRC_URI:append:adsp-sc598-som-ezkit = "${@bb.utils.contains_any('MACHINE_FEATURES', 'falcon', d.getVar('FALCON_PATCH'), '', d)}"
 
 SRC_URI:append:adsp-sc598-som-ezkit = ' file://0001-SC598-fix-stmmac-dma-split-header-crash.patch'
+SRC_URI:append = ' file://0001-snd-sc5xx-Matching-implementation-to-legacy.patch'
 
 do_install:append(){
 	rm -rf ${D}/lib/modules/*-yocto-standard/modules.builtin.modinfo

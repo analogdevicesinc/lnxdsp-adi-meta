@@ -19,11 +19,14 @@ LNX_SOM = "${@bb.utils.contains('SOM_REV', 'E', '${LNX_SOM_FILE}', '', d)}"
 
 python() {
     d.setVar('SDCARD_PATCH', '')
-    if bb.utils.to_boolean(d.getVar('ADSP_SC598_SDCARD')): 
-        if d.getVar('SOM_REV') != 'E': 
-            d.setVar('SDCARD_PATCH', ' file://0001-sc598-som-enable-SD-card.patch')
-        else:
-            d.setVar('SDCARD_PATCH', ' file://0001-sc598-som-enable-SD-card-revE.patch')
+    d.setVar('FALCON_PATCH', '')
+    
+    if d.getVar('SOM_REV') != 'E': 
+        d.setVar('SDCARD_PATCH', ' file://0001-sc598-som-enable-SD-card.patch')
+        d.setVar('FALCON_PATCH',' file://0001-sc598-som-Disabling-peripherals-for-faster-boot.patch')
+    else:
+        d.setVar('SDCARD_PATCH', ' file://0001-sc598-som-enable-SD-card-revE.patch')
+        d.setVar('FALCON_PATCH',' file://0001-sc598-som-Disabling-peripherals-for-a-faster-falcon-boot_revE.patch')
 }
 
 SRC_URI += " \
