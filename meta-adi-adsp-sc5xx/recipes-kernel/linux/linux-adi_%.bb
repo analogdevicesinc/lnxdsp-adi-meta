@@ -11,8 +11,6 @@ DEPENDS += "u-boot-mkimage-native dtc-native"
 # Include kernel configuration fragments
 SRC_URI:append="\
 	file://feature/cfg/nfs.cfg \
-	file://feature/cfg/wireless.cfg \
-	file://feature/cfg/cpufreq.cfg \
 	file://feature/cfg/crypto.cfg \
 	file://feature/cfg/tracepoints.cfg \
 "
