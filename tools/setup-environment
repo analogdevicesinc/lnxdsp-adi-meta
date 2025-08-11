@@ -75,15 +75,6 @@ sc5xx_universal_edit() {
     # Append additional configurations
     cat >> "conf/local.conf" <<EOF
 
-#Add this line below if using a version 2 board that requires the ethernet modification
-#ANALOG_DEVICES_VERSION2_ETHERNET="1"
-
-#Add this line to enable ADI watchdog from U-boot
-ANALOG_DEVICES_WATCHDOG="1"
-
-#If running tests which use sram_alloc(), then include the following patch as well (this disables CONFIG_ICC and enables CONFIG_ARCH_SRAM_ALLOC)
-ANALOG_DEVICES_SRAM_ALLOC="1"
-
 DISTRO_FEATURES:remove = "sysvinit"
 DISTRO_FEATURES:append = "systemd"
 DISTRO_FEATURES_BACKFILL_CONSIDERED = "sysvinit"
@@ -251,7 +242,6 @@ if [ "$build_dir_not_exist" = "true" ] || [ -n "$MACHINE" ]; then
     # Make machine-specific additions/edits to conf/local.conf
     case "$MACHINE" in
         adsp-sc594-som-ezkit|adsp-sc594-som-ezlite|adsp-sc598-som-ezkit|adsp-sc598-som-ezlite)
-            sed -i '/^ANALOG_DEVICES_WATCHDOG="1"$/s/^/#/' "conf/local.conf"
 
             # Add the (disabled by default) SHARC-ALSA option
             cat >> "conf/local.conf" <<EOF
