@@ -21,17 +21,17 @@ index 96287238f741..14049bf6850d 100644
  
  		eeprom {
  			gpio-hog;
--			gpios = <0 0x0>;
-+			gpios = <0 0x1>;
+-			gpios = <0 GPIO_ACTIVE_HIGH>;
++			gpios = <0 GPIO_ACTIVE_LOW>;
  			output-low;
  			line-name = "eeprom-en";
  		};
  
  		pushbutton {
  			gpio-hog;
--			gpios = <1 0x0>;
+-			gpios = <1 GPIO_ACTIVE_HIGH>;
 -			output-high;
-+			gpios = <1 0x1>;
++			gpios = <1 GPIO_ACTIVE_LOW>;
 +			output-low;
  			line-name = "pushbutton-en";
  		};
@@ -40,8 +40,8 @@ index 96287238f741..14049bf6850d 100644
  
  		octal {
  			gpio-hog;
--			gpios = <8 0x0>;
-+			gpios = <8 0x1>;
+-			gpios = <8 GPIO_ACTIVE_HIGH>;
++			gpios = <8 GPIO_ACTIVE_LOW>;
  			output-low;
  			line-name = "octal-spi-cs-en";
  		};

@@ -1,6 +1,6 @@
-From fe5e0a3bb4defb5b19b3f5b3ca08bea3b52ce1e4 Mon Sep 17 00:00:00 2001
-From: Utsav Agarwal <utsav.agarwal@analog.com>
-Date: Tue, 5 Aug 2025 12:20:14 +0100
+From 8efcb911b8d171208e6de961dc258d0d02168be0 Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Wed, 20 Aug 2025 14:02:13 -0400
 Subject: [PATCH] sc598-som: enable SD card
 
 eMMC and the SDcard operate mutually exclusively.
@@ -8,39 +8,37 @@ eMMC and the SDcard operate mutually exclusively.
 - disable eMMC
 - enable MMC/SDcard
 
-Signed-off-by: Utsav Agarwal <utsav.agarwal@analog.com>
+Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
 ---
- arch/arm64/boot/dts/adi/sc598-som.dtsi | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/adi/sc598-som.dtsi | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index a0c35d5a4fa2..e500fe8cbdb7 100644
+index 7946daaf2a90..346c17736d67 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
 @@ -294,14 +294,14 @@ spi2flash-cs {
  		emmc {
  			gpio-hog;
- 			gpios = <8 GPIO_ACTIVE_HIGH>;
--			output-low;
-+			output-high;
+ 			gpios = <8 GPIO_ACTIVE_LOW>;
+-			output-high;
++			output-low;
  			line-name = "emmc-en";
  		};
  
  		emmc-som-en {
  			gpio-hog;
- 			gpios = <9 GPIO_ACTIVE_HIGH>;
--			output-high;
-+			output-low;
+ 			gpios = <9 GPIO_ACTIVE_LOW>;
+-			output-low;
++			output-high;
  			line-name = "emmc-som-en";
  		};
  
-@@ -331,8 +331,9 @@ led3 {
- &mmc0{
+@@ -332,7 +332,8 @@ &mmc0{
  	pinctrl-names = "default";
  	pinctrl-0 = <&mmc0_8bgrp>;
--	bus-width = <8>;
+ 	bus-width = <8>;
 -	max-frequency = <50000000>;
-+	bus-width = <4>;
 +	no-1-8-v;
 +	max-frequency = <44000000>;
  	non-removable;

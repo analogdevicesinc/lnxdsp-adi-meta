@@ -1,20 +1,20 @@
-From 633d07a7b56dd583a32736d944df8b53a366acbf Mon Sep 17 00:00:00 2001
-From: UtsavAgarwalADI <utsav.agarwal@analog.com>
-Date: Fri, 13 Jun 2025 14:36:49 +0100
+From 3bbc60717095ab7ee5260350e1ddced7d4aef38f Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Wed, 20 Aug 2025 14:06:58 -0400
 Subject: [PATCH] sc598-som: Adding support for revision E
 
 - Updating qspi partitions to account for bigger flash storage
 - Adding spi flash entry for chip compatibility
 - Updating device tree to reflect new i2c gpio expander on the sc598-som
 
-Signed-off-by: UtsavAgarwalADI <utsav.agarwal@analog.com>
+Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
 ---
  arch/arm64/boot/dts/adi/sc598-som.dtsi       | 80 +++++++++-----------
  arch/arm64/configs/sc598-som-ezkit_defconfig |  3 +-
  2 files changed, 38 insertions(+), 45 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index 47060d5bce61..1af87078166e 100644
+index 347be49f82d4..7946daaf2a90 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
 @@ -204,10 +204,10 @@ &spi2 {
@@ -65,7 +65,7 @@ index 47060d5bce61..1af87078166e 100644
 -
 -		led1 {
 -			gpio-hog;
--			gpios = <0 0x0>;
+-			gpios = <0 GPIO_ACTIVE_HIGH>;
 -			output-high;
 -			line-name = "led1-en";
 -		};
@@ -73,66 +73,66 @@ index 47060d5bce61..1af87078166e 100644
 -		led2 {
 +		uart0 {
  			gpio-hog;
--			gpios = <1 0x0>;
--			output-high;
+-			gpios = <1 GPIO_ACTIVE_HIGH>;
++			gpios = <0 GPIO_ACTIVE_LOW>;
+ 			output-high;
 -			line-name = "led2-en";
-+			gpios = <0 GPIO_ACTIVE_HIGH>;
-+			output-low;
-+			line-name = "~uart0-en";
++			line-name = "uart0-en";
  		};
  
 -		led3 {
 +		uart0-flow-en {
  			gpio-hog;
--			gpios = <2 0x0>;
-+			gpios = <1 GPIO_ACTIVE_HIGH>;
- 			output-high;
+-			gpios = <2 GPIO_ACTIVE_HIGH>;
+-			output-high;
 -			line-name = "led3-en";
-+			line-name = "~uart0-flow-en";
++			gpios = <1 GPIO_ACTIVE_LOW>;
++			output-low;
++			line-name = "uart0-flow-en";
  		};
  
  		spi2d2-d3 {
  			gpio-hog;
--			gpios = <3 0x0>;
-+			gpios = <2 GPIO_ACTIVE_HIGH>;
- 			output-low;
- 			line-name = "~spi2d2-d3-en";
+-			gpios = <3 GPIO_ACTIVE_LOW>;
++			gpios = <2 GPIO_ACTIVE_LOW>;
+ 			output-high;
+ 			line-name = "spi2d2-d3-en";
  		};
  
  		spi2flash-cs {
  			gpio-hog;
--			gpios = <4 0x0>;
-+			gpios = <3 GPIO_ACTIVE_HIGH>;
- 			output-low;
- 			line-name = "~spi2flash-cs";
+-			gpios = <4 GPIO_ACTIVE_LOW>;
++			gpios = <3 GPIO_ACTIVE_LOW>;
+ 			output-high;
+ 			line-name = "spi2flash-cs";
  		};
  
 -		uart0 {
 +		emmc {
  			gpio-hog;
--			gpios = <5 0x0>;
-+			gpios = <8 GPIO_ACTIVE_HIGH>;
- 			output-low;
--			line-name = "~uart0-en";
+-			gpios = <5 GPIO_ACTIVE_LOW>;
++			gpios = <8 GPIO_ACTIVE_LOW>;
+ 			output-high;
+-			line-name = "uart0-en";
 +			line-name = "emmc-en";
  		};
  
 -		uart0-flow-en {
 +		emmc-som-en {
  			gpio-hog;
--			gpios = <6 0x0>;
-+			gpios = <9 GPIO_ACTIVE_HIGH>;
- 			output-high;
--			line-name = "~uart0-flow-en";
+-			gpios = <6 GPIO_ACTIVE_LOW>;
++			gpios = <9 GPIO_ACTIVE_LOW>;
+ 			output-low;
+-			line-name = "uart0-flow-en";
 +			line-name = "emmc-som-en";
  		};
  
 -		emmc {
 +		led1 {
  			gpio-hog;
--			gpios = <8 0x0>;
-+			gpios = <15 GPIO_ACTIVE_HIGH>;
- 			output-low;
+-			gpios = <8 GPIO_ACTIVE_LOW>;
++			gpios = <15 GPIO_ACTIVE_LOW>;
+ 			output-high;
 -			line-name = "emmc-en";
 +			line-name = "led1-en";
  		};
@@ -140,18 +140,18 @@ index 47060d5bce61..1af87078166e 100644
 -		emmc-som-en {
 +		led2 {
  			gpio-hog;
--			gpios = <9 0x0>;
--			output-high;
+-			gpios = <9 GPIO_ACTIVE_LOW>;
+-			output-low;
 -			line-name = "emmc-som-en";
-+			gpios = <16 GPIO_ACTIVE_HIGH>;
-+			output-low;
++			gpios = <16 GPIO_ACTIVE_LOW>;
++			output-high;
 +			line-name = "led2-en";
 +		};
 +
 +		led3 {
 +			gpio-hog;
-+			gpios = <17 GPIO_ACTIVE_HIGH>;
-+			output-low;
++			gpios = <17 GPIO_ACTIVE_LOW>;
++			output-high;
 +			line-name = "led3-en";
  		};
  	};
