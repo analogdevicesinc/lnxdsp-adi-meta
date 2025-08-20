@@ -1,7 +1,7 @@
-From aa8f5777ddce811eb635d4dfac10ff145cf736f0 Mon Sep 17 00:00:00 2001
-From: Utsav Agarwal <utsav.agarwal@analog.com>
-Date: Wed, 23 Jul 2025 15:17:34 +0100
-Subject: [PATCH] SC598-SOM: Adding Rev E compatibility for u-boot
+From 8b41eb305f5acea2191f619598d1fea9ad31cd01 Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Fri, 5 Sep 2025 09:43:37 -0400
+Subject: [PATCH] 0001-SC598-SOM-Adding-Rev-E-compatibility-for-u-boot
 
 - Adding checks to make sure valid gpio descriptors are obtained
  before attempting to set value. This allows uboot to avoid crashing
@@ -12,19 +12,20 @@ Subject: [PATCH] SC598-SOM: Adding Rev E compatibility for u-boot
 NOTE: SPL doesnt print UART output when loaded for the first time
 
 Signed-off-by: Utsav Agarwal <utsav.agarwal@analog.com>
+
 ---
- arch/arm/dts/sc598-som.dtsi              | 67 ++++++++++++------------
- arch/arm/dts/sc5xx.dtsi                  | 51 +++++++++---------
- arch/arm/mach-sc5xx/sc59x/sc59x-shared.c | 56 +++++++++++++++++---
+ arch/arm/dts/sc598-som.dtsi              | 75 ++++++++++++------------
+ arch/arm/dts/sc5xx.dtsi                  | 51 ++++++++--------
+ arch/arm/mach-sc5xx/sc59x/sc59x-shared.c | 56 +++++++++++++++---
  configs/sc598-som-ezkit-spl_defconfig    |  1 +
  drivers/gpio/adp5588_gpio.c              |  4 +-
- 5 files changed, 111 insertions(+), 68 deletions(-)
+ 5 files changed, 115 insertions(+), 72 deletions(-)
 
 diff --git a/arch/arm/dts/sc598-som.dtsi b/arch/arm/dts/sc598-som.dtsi
-index 3d30f8dca1d..ed0c7a062d7 100644
+index 02b46e5fff..e526eb1b6a 100644
 --- a/arch/arm/dts/sc598-som.dtsi
 +++ b/arch/arm/dts/sc598-som.dtsi
-@@ -128,43 +128,35 @@
+@@ -128,87 +128,88 @@
  };
  
  &i2c2{
@@ -43,60 +44,62 @@ index 3d30f8dca1d..ed0c7a062d7 100644
 -		drive-pullups;
 -
 -		led1 {
-+		
-+		uart0 {
- 			gpio-hog;
- 			gpios = <0 GPIO_ACTIVE_HIGH>;
- 			output-low;
--			line-name = "led1-en";
-+			line-name = "~uart0-en";
- 			u-boot,dm-pre-reloc;
- 		};
- 
--		led2 {
-+		uart0-flow-en {
- 			gpio-hog;
- 			gpios = <1 GPIO_ACTIVE_HIGH>;
+-			gpio-hog;
+-			gpios = <0 GPIO_ACTIVE_HIGH>;
 -			output-low;
--			line-name = "led2-en";
+-			line-name = "led1-en";
 -			u-boot,dm-pre-reloc;
 -		};
 -
--		led3 {
--			gpio-hog;
--			gpios = <2 GPIO_ACTIVE_HIGH>;
+-		led2 {
++		
++		uart0 {
+ 			gpio-hog;
+-			gpios = <1 GPIO_ACTIVE_HIGH>;
 -			output-low;
--			line-name = "led3-en";
+-			line-name = "led2-en";
++			gpios = <0 GPIO_ACTIVE_LOW>;
 +			output-high;
++			line-name = "uart0-en";
+ 			u-boot,dm-pre-reloc;
+ 		};
+ 
+-		led3 {
++		uart0-flow-en {
+ 			gpio-hog;
+-			gpios = <2 GPIO_ACTIVE_HIGH>;
++			gpios = <1 GPIO_ACTIVE_LOW>;
+ 			output-low;
+-			line-name = "led3-en";
 +			line-name = "~uart0-flow-en";
  			u-boot,dm-pre-reloc;
  		};
  
  		spi2d2-d3 {
  			gpio-hog;
--			gpios = <3 GPIO_ACTIVE_HIGH>;
-+			gpios = <2 GPIO_ACTIVE_HIGH>;
- 			output-low;
- 			line-name = "~spi2d2-d3-en";
+-			gpios = <3 GPIO_ACTIVE_LOW>;
++			gpios = <2 GPIO_ACTIVE_LOW>;
+ 			output-high;
+ 			line-name = "spi2d2-d3-en";
  			u-boot,dm-pre-reloc;
-@@ -172,43 +164,52 @@
+ 		};
  
  		spi2flash-cs {
  			gpio-hog;
--			gpios = <4 GPIO_ACTIVE_HIGH>;
-+			gpios = <3 GPIO_ACTIVE_HIGH>;
- 			output-low;
- 			line-name = "~spi2flash-cs";
+-			gpios = <4 GPIO_ACTIVE_LOW>;
++			gpios = <3 GPIO_ACTIVE_LOW>;
+ 			output-high;
+ 			line-name = "spi2flash-cs";
  			u-boot,dm-pre-reloc;
  		};
  
 -		uart0 {
 +		emmc {
  			gpio-hog;
--			gpios = <5 GPIO_ACTIVE_HIGH>;
-+			gpios = <8 GPIO_ACTIVE_HIGH>;
- 			output-low;
--			line-name = "~uart0-en";
+-			gpios = <5 GPIO_ACTIVE_LOW>;
++			gpios = <8 GPIO_ACTIVE_LOW>;
+ 			output-high;
+-			line-name = "uart0-en";
 +			line-name = "emmc-en";
  			u-boot,dm-pre-reloc;
  		};
@@ -104,18 +107,18 @@ index 3d30f8dca1d..ed0c7a062d7 100644
 -		uart0-flow-en {
 +		emmc-som-en {
  			gpio-hog;
--			gpios = <6 GPIO_ACTIVE_HIGH>;
-+			gpios = <9 GPIO_ACTIVE_HIGH>;
- 			output-high;
--			line-name = "~uart0-flow-en";
+-			gpios = <6 GPIO_ACTIVE_LOW>;
++			gpios = <9 GPIO_ACTIVE_LOW>;
+ 			output-low;
+-			line-name = "uart0-flow-en";
 +			line-name = "emmc-som-en";
 +			u-boot,dm-pre-reloc;
 +		};
 +		
 +		led1 {
 +			gpio-hog;
-+			gpios = <15 GPIO_ACTIVE_HIGH>;
-+			output-low;
++			gpios = <15 GPIO_ACTIVE_LOW>;
++			output-high;
 +			line-name = "led1-en";
  			u-boot,dm-pre-reloc;
  		};
@@ -123,9 +126,9 @@ index 3d30f8dca1d..ed0c7a062d7 100644
 -		emmc {
 +		led2 {
  			gpio-hog;
--			gpios = <8 GPIO_ACTIVE_HIGH>;
-+			gpios = <16 GPIO_ACTIVE_HIGH>;
- 			output-low;
+-			gpios = <8 GPIO_ACTIVE_LOW>;
++			gpios = <16 GPIO_ACTIVE_LOW>;
+ 			output-high;
 -			line-name = "emmc-en";
 +			line-name = "led2-en";
  			u-boot,dm-pre-reloc;
@@ -134,11 +137,11 @@ index 3d30f8dca1d..ed0c7a062d7 100644
 -		emmc-som-en {
 +		led3 {
  			gpio-hog;
--			gpios = <9 GPIO_ACTIVE_HIGH>;
--			output-high;
+-			gpios = <9 GPIO_ACTIVE_LOW>;
+-			output-low;
 -			line-name = "emmc-som-en";
-+			gpios = <17 GPIO_ACTIVE_HIGH>;
-+			output-low;
++			gpios = <17 GPIO_ACTIVE_LOW>;
++			output-high;
 +			line-name = "led3-en";
  			u-boot,dm-pre-reloc;
  		};
@@ -147,7 +150,7 @@ index 3d30f8dca1d..ed0c7a062d7 100644
  };
  
 diff --git a/arch/arm/dts/sc5xx.dtsi b/arch/arm/dts/sc5xx.dtsi
-index 2e4298743fa..5a90dca2b15 100644
+index 2e4298743f..5a90dca2b1 100644
 --- a/arch/arm/dts/sc5xx.dtsi
 +++ b/arch/arm/dts/sc5xx.dtsi
 @@ -92,6 +92,30 @@
@@ -224,7 +227,7 @@ index 2e4298743fa..5a90dca2b15 100644
  	};
  };
 diff --git a/arch/arm/mach-sc5xx/sc59x/sc59x-shared.c b/arch/arm/mach-sc5xx/sc59x/sc59x-shared.c
-index e3671218857..a1e1b17da4b 100644
+index 1f0afce07c..3735715d08 100644
 --- a/arch/arm/mach-sc5xx/sc59x/sc59x-shared.c
 +++ b/arch/arm/mach-sc5xx/sc59x/sc59x-shared.c
 @@ -29,17 +29,37 @@ int adi_enable_ethernet_softconfig(void)
@@ -234,24 +237,24 @@ index e3671218857..a1e1b17da4b 100644
 +	int ret;
  
  #if defined(CONFIG_ADI_CARRIER_SOMCRR_EZKIT)
--	gpio_hog_lookup_name("~eth1-en", &eth1);
--	gpio_hog_lookup_name("~eth1-reset", &eth1_reset);
--	gpio_hog_lookup_name("~gige-reset", &gige_reset);
-+	ret = gpio_hog_lookup_name("~eth1-en", &eth1);
+-	gpio_hog_lookup_name("eth1-en", &eth1);
+-	gpio_hog_lookup_name("eth1-reset", &eth1_reset);
+-	gpio_hog_lookup_name("gige-reset", &gige_reset);
++	ret = gpio_hog_lookup_name("eth1-en", &eth1);
 +	if (ret) {
-+		printf("Failed to find ~eth1-en GPIO\n");
++		printf("Failed to find eth1-en GPIO\n");
 +		return ret;
 +	}
 +
-+	ret = gpio_hog_lookup_name("~eth1-reset", &eth1_reset);
++	ret = gpio_hog_lookup_name("eth1-reset", &eth1_reset);
 +	if (ret) {
-+		printf("Failed to find ~eth1-reset GPIO\n");
++		printf("Failed to find eth1-reset GPIO\n");
 +		return ret;
 +	}
 +
-+	ret = gpio_hog_lookup_name("~gige-reset", &gige_reset);
++	ret = gpio_hog_lookup_name("gige-reset", &gige_reset);
 +	if (ret) {
-+		printf("Failed to find ~gige-reset GPIO\n");
++		printf("Failed to find gige-reset GPIO\n");
 +		return ret;
 +	}
  
@@ -259,10 +262,10 @@ index e3671218857..a1e1b17da4b 100644
  	dm_gpio_set_value(eth1_reset, 0);
  	dm_gpio_set_value(gige_reset, 1);
  #elif defined(CONFIG_ADI_CARRIER_SOMCRR_EZLITE)
--	gpio_hog_lookup_name("~eth0-reset", &gige_reset);
-+	ret = gpio_hog_lookup_name("~eth0-reset", &gige_reset);
+-	gpio_hog_lookup_name("eth0-reset", &gige_reset);
++	ret = gpio_hog_lookup_name("eth0-reset", &gige_reset);
 +	if (ret) {
-+		printf("Failed to find ~eth0-reset GPIO\n");
++		printf("Failed to find eth0-reset GPIO\n");
 +		return ret;
 +	}
 +
@@ -276,24 +279,24 @@ index e3671218857..a1e1b17da4b 100644
 +	int ret;
  
  #if defined(CONFIG_ADI_CARRIER_SOMCRR_EZKIT)
--	gpio_hog_lookup_name("~eth1-en", &eth1);
--	gpio_hog_lookup_name("~eth1-reset", &eth1_reset);
--	gpio_hog_lookup_name("~gige-reset", &gige_reset);
-+	ret = gpio_hog_lookup_name("~eth1-en", &eth1);
+-	gpio_hog_lookup_name("eth1-en", &eth1);
+-	gpio_hog_lookup_name("eth1-reset", &eth1_reset);
+-	gpio_hog_lookup_name("gige-reset", &gige_reset);
++	ret = gpio_hog_lookup_name("eth1-en", &eth1);
 +	if (ret) {
-+		printf("Failed to find ~eth1-en GPIO\n");
++		printf("Failed to find eth1-en GPIO\n");
 +		return ret;
 +	}
 +
-+	ret = gpio_hog_lookup_name("~eth1-reset", &eth1_reset);
++	ret = gpio_hog_lookup_name("eth1-reset", &eth1_reset);
 +	if (ret) {
-+		printf("Failed to find ~eth1-reset GPIO\n");
++		printf("Failed to find eth1-reset GPIO\n");
 +		return ret;
 +	}
 +
-+	ret = gpio_hog_lookup_name("~gige-reset", &gige_reset);
++	ret = gpio_hog_lookup_name("gige-reset", &gige_reset);
 +	if (ret) {
-+		printf("Failed to find ~gige-reset GPIO\n");
++		printf("Failed to find gige-reset GPIO\n");
 +		return ret;
 +	}
  
@@ -301,10 +304,10 @@ index e3671218857..a1e1b17da4b 100644
  	dm_gpio_set_value(eth1_reset, 0);
  	dm_gpio_set_value(gige_reset, 0);
  #elif defined(CONFIG_ADI_CARRIER_SOMCRR_EZLITE)
--	gpio_hog_lookup_name("~eth0-reset", &gige_reset);
-+	ret = gpio_hog_lookup_name("~eth0-reset", &gige_reset);
+-	gpio_hog_lookup_name("eth0-reset", &gige_reset);
++	ret = gpio_hog_lookup_name("eth0-reset", &gige_reset);
 +	if (ret) {
-+		printf("Failed to find ~eth0-reset GPIO\n");
++		printf("Failed to find eth0-reset GPIO\n");
 +		return ret;
 +	}
 +
@@ -312,7 +315,7 @@ index e3671218857..a1e1b17da4b 100644
  #endif
  
 diff --git a/configs/sc598-som-ezkit-spl_defconfig b/configs/sc598-som-ezkit-spl_defconfig
-index 1a5dcddfdd2..e56049b56cf 100644
+index 1a5dcddfdd..e56049b56c 100644
 --- a/configs/sc598-som-ezkit-spl_defconfig
 +++ b/configs/sc598-som-ezkit-spl_defconfig
 @@ -93,6 +93,7 @@ CONFIG_SPL_GPIO_HOG=y
@@ -324,7 +327,7 @@ index 1a5dcddfdd2..e56049b56cf 100644
  CONFIG_DM_I2C_GPIO=y
  CONFIG_SYS_I2C_ADI=y
 diff --git a/drivers/gpio/adp5588_gpio.c b/drivers/gpio/adp5588_gpio.c
-index caf407aa510..44d9344c6b6 100644
+index caf407aa51..44d9344c6b 100644
 --- a/drivers/gpio/adp5588_gpio.c
 +++ b/drivers/gpio/adp5588_gpio.c
 @@ -173,7 +173,7 @@ static int adp5588_ofdata_platdata(struct udevice *dev)

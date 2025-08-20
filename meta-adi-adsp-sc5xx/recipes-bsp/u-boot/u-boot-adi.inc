@@ -31,7 +31,16 @@ python() {
         d.setVar('UBOOT_SOM', d.getVar('UBOOT_SOM_FILE') + " " + d.getVar('UBOOT_SOM_FALCON_FILE'))
 }
 
-UBOOT_BRANCH ?= "main"
+python() {
+    d.setVar('SDCARD_PATCH', '')
+
+    if d.getVar('SOM_REV') != 'E':
+        d.setVar('SDCARD_PATCH', ' file://0001-sc598-som-enable-SD-card.patch')
+    else:
+        d.setVar('SDCARD_PATCH', ' file://0001-sc598-som-enable-SD-card-revE.patch')
+}
+
+UBOOT_BRANCH ?= "dev"
 
 # On the SC598, we can't boot directly from the eMMC due to default speed configuration issues
 # We can boot the SPL from OSPI or QSPI and then subsequently boot U-Boot Proper from eMMC
@@ -47,7 +56,7 @@ SRC_URI += " \
         ${UBOOT_SOM} \
 "
 
-SRC_URI:append:adsp-sc598-som-ezkit = "${@' file://0001-sc598-som-enable-SDcard.patch' if bb.utils.to_boolean(d.getVar('ADSP_SC598_SDCARD')) else ''}"
+SRC_URI:append:adsp-sc598-som-ezkit = "${@d.getVar('SDCARD_PATCH') if (bb.utils.to_boolean(d.getVar('ADSP_SC598_SDCARD'))) else ''}"
 
 SRC_URI:append = "${@' file://0002-developer-mode-enable.patch' if bb.utils.to_boolean(d.getVar('DEVELOPER_MODE')) else '' }"
 

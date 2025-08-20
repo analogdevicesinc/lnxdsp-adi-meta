@@ -1,6 +1,6 @@
-From 7761bb0ec2b2209a2c4fdd4f9999981810e0ab2e Mon Sep 17 00:00:00 2001
+From 57ccb4fe667090472b1b64f1c0f5f52f8cc13c7a Mon Sep 17 00:00:00 2001
 From: Caleb Ethridge <caleb.ethridge@analog.com>
-Date: Tue, 22 Jul 2025 15:35:53 +0100
+Date: Wed, 20 Aug 2025 14:05:08 -0400
 Subject: [PATCH] Updated SD card patch for 6.12
 
 eMMC and the SDcard operate mutually exclusively.
@@ -10,37 +10,35 @@ eMMC and the SDcard operate mutually exclusively.
 
 Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
 ---
- arch/arm64/boot/dts/adi/sc598-som.dtsi | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/adi/sc598-som.dtsi | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index c9ea8704028a..67d386310df0 100644
+index 347be49f82d4..b14f07761a72 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
 @@ -323,14 +323,14 @@ uart0-flow-en {
  		emmc {
  			gpio-hog;
- 			gpios = <8 0x0>;
--			output-low;
-+			output-high;
+ 			gpios = <8 GPIO_ACTIVE_LOW>;
+-			output-high;
++			output-low;
  			line-name = "emmc-en";
  		};
  
  		emmc-som-en {
  			gpio-hog;
- 			gpios = <9 0x0>;
--			output-high;
-+			output-low;
+ 			gpios = <9 GPIO_ACTIVE_LOW>;
+-			output-low;
++			output-high;
  			line-name = "emmc-som-en";
  		};
  	};
-@@ -339,8 +339,9 @@ emmc-som-en {
- &mmc0{
+@@ -340,7 +340,8 @@ &mmc0{
  	pinctrl-names = "default";
  	pinctrl-0 = <&mmc0_8bgrp>;
--	bus-width = <8>;
+ 	bus-width = <8>;
 -	max-frequency = <50000000>;
-+	bus-width = <4>;
 +	no-1-8-v;
 +	max-frequency = <44000000>;
  	non-removable;

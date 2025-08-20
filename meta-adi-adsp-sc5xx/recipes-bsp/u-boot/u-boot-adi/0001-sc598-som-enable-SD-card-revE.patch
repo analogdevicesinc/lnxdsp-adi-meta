@@ -1,15 +1,14 @@
-From 06487f1324b93b26087ac50604c5e3c5203ca201 Mon Sep 17 00:00:00 2001
+From 45ac2b0c650c68cf2a86a85885f38df13779b9c2 Mon Sep 17 00:00:00 2001
 From: Caleb Ethridge <caleb.ethridge@analog.com>
-Date: Fri, 5 Sep 2025 09:27:00 -0400
-Subject: [PATCH] Enabled SD card support for SC598 SOM
+Date: Mon, 8 Sep 2025 11:07:49 -0400
+Subject: [PATCH] Enable SD card support for SC598 SOM Rev E
 
-Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
 ---
  arch/arm/dts/sc598-som.dtsi | 9 +++++----
  1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/arch/arm/dts/sc598-som.dtsi b/arch/arm/dts/sc598-som.dtsi
-index 02b46e5fff..3924f925c2 100644
+index e526eb1b6a..0edd26b781 100644
 --- a/arch/arm/dts/sc598-som.dtsi
 +++ b/arch/arm/dts/sc598-som.dtsi
 @@ -54,8 +54,9 @@
@@ -24,7 +23,7 @@ index 02b46e5fff..3924f925c2 100644
  			u-boot,dm-pre-reloc;
  		};
  	};
-@@ -197,7 +198,7 @@
+@@ -173,7 +174,7 @@
  		emmc {
  			gpio-hog;
  			gpios = <8 GPIO_ACTIVE_LOW>;
@@ -33,7 +32,7 @@ index 02b46e5fff..3924f925c2 100644
  			line-name = "emmc-en";
  			u-boot,dm-pre-reloc;
  		};
-@@ -205,7 +206,7 @@
+@@ -181,7 +182,7 @@
  		emmc-som-en {
  			gpio-hog;
  			gpios = <9 GPIO_ACTIVE_LOW>;
