@@ -1,6 +1,18 @@
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 From 4bb512e6426bad246c3da374c7abeccaabc52989 Mon Sep 17 00:00:00 2001
 From: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
 Date: Tue, 20 May 2025 14:48:38 +0100
+=======
+From 91d16744ebcccf0449ee0bdb3e9fa44e13c7b698 Mon Sep 17 00:00:00 2001
+From: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
+Date: Wed, 20 Aug 2025 17:35:38 +0100
+>>>>>>> Stashed changes
+=======
+From 91d16744ebcccf0449ee0bdb3e9fa44e13c7b698 Mon Sep 17 00:00:00 2001
+From: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
+Date: Wed, 20 Aug 2025 17:35:38 +0100
+>>>>>>> Stashed changes
 Subject: [PATCH 2/2] SC598 Enable SHARC ALSA demo disabling most linux
 
 Signed-off-by: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
@@ -8,9 +20,21 @@ Signed-off-by: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
  arch/arm64/boot/dts/adi/sc598-som-ezkit.dts  |  5 ++-
  arch/arm64/boot/dts/adi/sc598-som.dtsi       | 39 +++++++++++++++++---
  arch/arm64/boot/dts/adi/sc59x-64.dtsi        |  2 +-
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
  arch/arm64/configs/sc598-som-ezkit_defconfig |  2 +-
  drivers/soc/adi/mach-sc5xx/sec.c             | 37 +------------------
  5 files changed, 39 insertions(+), 46 deletions(-)
+=======
+ arch/arm64/configs/sc598-som-ezkit_defconfig |  7 ++--
+ drivers/soc/adi/mach-sc5xx/sec.c             | 37 +-------------------
+ 5 files changed, 16 insertions(+), 47 deletions(-)
+>>>>>>> Stashed changes
+=======
+ arch/arm64/configs/sc598-som-ezkit_defconfig |  7 ++--
+ drivers/soc/adi/mach-sc5xx/sec.c             | 37 +-------------------
+ 5 files changed, 16 insertions(+), 47 deletions(-)
+>>>>>>> Stashed changes
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
 index 85c686ff08e0..924c42bce367 100644
@@ -39,7 +63,15 @@ index 85c686ff08e0..924c42bce367 100644
  	sru_dai1: sru_dai1_mux {
  		route {
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 index 3cc69b7aa2da..2897bc2fb9d0 100644
+=======
+index e5a029190754..c2582c67fe59 100644
+>>>>>>> Stashed changes
+=======
+index e5a029190754..c2582c67fe59 100644
+>>>>>>> Stashed changes
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
 @@ -22,13 +22,13 @@ memory@90000000 {
@@ -118,7 +150,15 @@ index 72b3ad430f28..4c6181ba517e 100644
  
  		sram_mmap: sram-mmap@0 {
 diff --git a/arch/arm64/configs/sc598-som-ezkit_defconfig b/arch/arm64/configs/sc598-som-ezkit_defconfig
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 index b7ea7bab5dcb..4380ef497418 100644
+=======
+index 041abcf35b61..582f17d42073 100644
+>>>>>>> Stashed changes
+=======
+index 041abcf35b61..582f17d42073 100644
+>>>>>>> Stashed changes
 --- a/arch/arm64/configs/sc598-som-ezkit_defconfig
 +++ b/arch/arm64/configs/sc598-som-ezkit_defconfig
 @@ -295,7 +295,7 @@ CONFIG_REMOTEPROC=y
@@ -126,10 +166,34 @@ index b7ea7bab5dcb..4380ef497418 100644
  CONFIG_RPMSG_CHAR=y
  CONFIG_RPMSG_QCOM_GLINK_RPM=y
 -CONFIG_RPMSG_VIRTIO=y
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 +CONFIG_RPMSG_ADI=y
  CONFIG_PM_DEVFREQ=y
  CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND=y
  CONFIG_IIO=y
+=======
+=======
+>>>>>>> Stashed changes
++CONFIG_RPMSG_ADI=y
+ CONFIG_PM_DEVFREQ=y
+ CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND=y
+ CONFIG_IIO=y
+@@ -366,4 +366,7 @@ CONFIG_BLK_DEV_SD=y
+ CONFIG_BLK_DEV_BSG=y
+ CONFIG_USB_STORAGE=y
+ CONFIG_SG_POOL=y
+-CONFIG_RPMSG_CTRL=y
+\ No newline at end of file
++CONFIG_RPMSG_CTRL=y
++CONFIG_RPMSG_VIRTIO=y
++CONFIG_RPMSG_ADI=y
++CONFIG_RPMSG_NS=y
+\ No newline at end of file
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 diff --git a/drivers/soc/adi/mach-sc5xx/sec.c b/drivers/soc/adi/mach-sc5xx/sec.c
 index bdeb0f8d9a3b..3856e17851ca 100644
 --- a/drivers/soc/adi/mach-sc5xx/sec.c
