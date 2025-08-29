@@ -1,20 +1,16 @@
-From b2c4f6d4d1b5ce9fb78bd075b21b037bbe650b0e Mon Sep 17 00:00:00 2001
-From: Utsav Agarwal <utsav.agarwal@analog.com>
-Date: Fri, 8 Aug 2025 12:54:53 +0100
-Subject: [PATCH] fix: Rpmsg: Updating rpmsg driver for kernel 6.12
+From 91d16744ebcccf0449ee0bdb3e9fa44e13c7b698 Mon Sep 17 00:00:00 2001
+From: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
+Date: Wed, 20 Aug 2025 17:35:38 +0100
+Subject: [PATCH 2/2] SC598 Enable SHARC ALSA demo disabling most linux
 
-This is a temporary fix that refreshes the rpmsg kernel driver.
-This is essential for enabling SHARC-ALSA audio.
-
-Signed-off-by: Utsav Agarwal <utsav.agarwal@analog.com>
+Signed-off-by: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
 ---
  arch/arm64/boot/dts/adi/sc598-som-ezkit.dts  |  5 +--
  arch/arm64/boot/dts/adi/sc598-som.dtsi       | 12 +++----
  arch/arm64/boot/dts/adi/sc59x-64.dtsi        |  2 +-
- arch/arm64/configs/sc598-som-ezkit_defconfig |  3 +-
- drivers/rpmsg/adi_rpmsg.c                    | 13 +++----
+ arch/arm64/configs/sc598-som-ezkit_defconfig |  7 ++--
  drivers/soc/adi/mach-sc5xx/sec.c             | 37 +-------------------
- 6 files changed, 18 insertions(+), 54 deletions(-)
+ 5 files changed, 16 insertions(+), 47 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
 index 85c686ff08e0..924c42bce367 100644
@@ -43,7 +39,7 @@ index 85c686ff08e0..924c42bce367 100644
  	sru_dai1: sru_dai1_mux {
  		route {
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index 3cc69b7aa2da..1620934bf48e 100644
+index e5a029190754..c2582c67fe59 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
 @@ -22,13 +22,13 @@ memory@90000000 {
@@ -88,66 +84,29 @@ index 72b3ad430f28..4c6181ba517e 100644
  
  		sram_mmap: sram-mmap@0 {
 diff --git a/arch/arm64/configs/sc598-som-ezkit_defconfig b/arch/arm64/configs/sc598-som-ezkit_defconfig
-index 041abcf35b61..d07c3a96ed7f 100644
+index 041abcf35b61..582f17d42073 100644
 --- a/arch/arm64/configs/sc598-som-ezkit_defconfig
 +++ b/arch/arm64/configs/sc598-som-ezkit_defconfig
-@@ -366,4 +366,5 @@ CONFIG_BLK_DEV_SD=y
+@@ -295,7 +295,7 @@ CONFIG_REMOTEPROC=y
+ CONFIG_ADI_REMOTEPROC=y
+ CONFIG_RPMSG_CHAR=y
+ CONFIG_RPMSG_QCOM_GLINK_RPM=y
+-CONFIG_RPMSG_VIRTIO=y
++CONFIG_RPMSG_ADI=y
+ CONFIG_PM_DEVFREQ=y
+ CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND=y
+ CONFIG_IIO=y
+@@ -366,4 +366,7 @@ CONFIG_BLK_DEV_SD=y
  CONFIG_BLK_DEV_BSG=y
  CONFIG_USB_STORAGE=y
  CONFIG_SG_POOL=y
 -CONFIG_RPMSG_CTRL=y
 \ No newline at end of file
 +CONFIG_RPMSG_CTRL=y
++CONFIG_RPMSG_VIRTIO=y
 +CONFIG_RPMSG_ADI=y
-diff --git a/drivers/rpmsg/adi_rpmsg.c b/drivers/rpmsg/adi_rpmsg.c
-index 3540c7f68853..fc3069eca672 100644
---- a/drivers/rpmsg/adi_rpmsg.c
-+++ b/drivers/rpmsg/adi_rpmsg.c
-@@ -194,9 +194,7 @@ static void adi_rproc_virtio_del_vqs(struct virtio_device *vdev)
- 
- static int adi_rpmsg_virtio_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
- 				 struct virtqueue *vqs[],
--				 vq_callback_t *callbacks[],
--				 const char * const names[],
--				 const bool *ctx,
-+				 struct virtqueue_info *vqs_info,
- 				 struct irq_affinity *desc)
- {
- 
-@@ -206,13 +204,13 @@ static int adi_rpmsg_virtio_find_vqs(struct virtio_device *vdev, unsigned int nv
- 		return -EINVAL;
- 
- 	for (i = 0; i < nvqs; ++i) {
--		if (!names[i]) {
-+		if (!vqs_info[i].name) {
- 			vqs[i] = NULL;
- 			continue;
- 		}
- 
--		vqs[i] = adi_find_vq(vdev, i, callbacks[i], names[i],
--				    ctx ? ctx[i] : false);
-+		vqs[i] = adi_find_vq(vdev, i, vqs_info[i].callback, vqs_info[i].name,
-+				    vqs_info[i].ctx ? vqs_info[i].ctx : false);
- 		if (IS_ERR(vqs[i])) {
- 			ret = PTR_ERR(vqs[i]);
- 			goto error;
-@@ -560,7 +558,7 @@ static int adi_rpmsg_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
--static int adi_rpmsg_remove(struct platform_device *pdev)
-+void adi_rpmsg_remove(struct platform_device *pdev)
- {
- 	struct adi_rpmsg_channel *rpchan = platform_get_drvdata(pdev);
- 	struct device *dev = &pdev->dev;
-@@ -575,7 +573,6 @@ static int adi_rpmsg_remove(struct platform_device *pdev)
- 		size = rpchan->vring[0].size + rpchan->vring[1].size;
- 		dma_free_coherent(dev, size, rpchan->vring[0].va, rpchan->vring[0].da);
- 	}
--	return 0;
- }
- 
- static const struct of_device_id adi_rpmsg_dt_ids[] = {
++CONFIG_RPMSG_NS=y
+\ No newline at end of file
 diff --git a/drivers/soc/adi/mach-sc5xx/sec.c b/drivers/soc/adi/mach-sc5xx/sec.c
 index bdeb0f8d9a3b..3856e17851ca 100644
 --- a/drivers/soc/adi/mach-sc5xx/sec.c
