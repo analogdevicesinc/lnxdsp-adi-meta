@@ -285,6 +285,14 @@ EOF
 EOF
     fi
 
+        # Add the (disabled by default) CMA kernel config options
+        cat >> "conf/local.conf" <<EOF
+# Enable CMA
+# Uncomment the following line to enable the kernel config options for loading large SHARC images
+# CMA_PATCH = "1"
+
+EOF
+
 cp "$CWD"/sources/meta-adi/tools/bblayers.conf conf/bblayers.conf
 
     generated_config=1
