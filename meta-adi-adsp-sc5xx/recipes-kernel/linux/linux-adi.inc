@@ -44,5 +44,8 @@ KBUILD_DEFCONFIG:adsp-sc594-som-ezkit = "sc594-som-ezkit_defconfig"
 KBUILD_DEFCONFIG:adsp-sc598-som-ezkit = "sc598-som-ezkit_defconfig"
 KBUILD_DEFCONFIG:adsp-sc594-som-ezlite = "sc594-som-ezlite_defconfig"
 KBUILD_DEFCONFIG:adsp-sc598-som-ezlite = "sc598-som-ezlite_defconfig"
+KBUILD_DEFCONFIG:adsp-sc846-som-ezkit = "sc846-som_defconfig"
+
+KBUILD_DEFCONFIG ?= "defconfig"
 
 KERNEL_IMAGETYPE_FOR_MAKE = "${KERNEL_IMAGETYPE}"
