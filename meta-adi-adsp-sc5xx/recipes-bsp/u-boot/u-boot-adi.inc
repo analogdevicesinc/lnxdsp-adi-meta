@@ -6,8 +6,8 @@ require ${COREBASE}/meta/recipes-bsp/u-boot/u-boot.inc
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/u-boot-adi:${THISDIR}/u-boot-adi/debug-cfg:"
 
-UBOOT_GIT_URI ?= "git://github.com/analogdevicesinc/u-boot.git"
-UBOOT_GIT_PROTOCOL ?= "https"
+UBOOT_GIT_URI ?= "git://git@ssh.github.com/adi-innersource/lnxdsp-u-boot.git"
+UBOOT_GIT_PROTOCOL ?= "ssh"
 
 UBOOT_WDT_FILE = "file://enable-ADI-watchdog.patch"
 UBOOT_WDT = "${@bb.utils.contains('MACHINE_FEATURES', 'watchdog', '${UBOOT_WDT_FILE}', '', d)}"
