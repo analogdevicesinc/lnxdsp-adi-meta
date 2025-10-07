@@ -6,12 +6,12 @@ RDEPENDS:${PN} = "libusb1"
 
 OPENOCD_GIT_URI ?= "gitsm://github.com/analogdevicesinc/openocd.git"
 OPENOCD_GIT_PROTOCOL ?= "https"
-OPENOCD_BRANCH ?= "release-0.12.0-1.1.2"
+OPENOCD_BRANCH ?= "release/0.12.0-1.4.0"
 
 SRC_URI = " \
 	${OPENOCD_GIT_URI};protocol=${OPENOCD_GIT_PROTOCOL};branch=${OPENOCD_BRANCH}\
         "
-SRCREV = "12eaf7e6c1ceffdbc4d97350e07e2e2bd07f4287"
+SRCREV = "ad75bfb79b509634b92646b9e65b958f3ea1d8bf"
 
 PV = "0.12+git"
 S = "${WORKDIR}/git"
@@ -23,7 +23,7 @@ BBCLASSEXTEND += "native nativesdk"
 EXTRA_OECONF = "--disable-ftdi --disable-stlink --disable-ti-icdi --disable-ulink --disable-usb-blaster-2 --disable-ft232r \
                 --disable-vsllink --disable-jlink --disable-xds110 --disable-osbdm --disable-opendous --disable-aice \
                 --disable-usbprog --disable-rlink --disable-armjtagew --enable-maintainer-mode --enable-ice1000 --enable-ice2000 \
-                --enable-adi-dbgagent --disable-libusbmux"
+                --enable-adi-dbgagent --disable-libusbmux --enable-internal-jimtcl"
 
 do_configure[network] = "1"
 
