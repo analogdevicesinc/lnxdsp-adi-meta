@@ -1,4 +1,5 @@
-
+SUMMARY = "eMMC flashing helper script"
+DESCRIPTION = "Analog Devices eMMC flashing utility for ADSP-SC5xx boards"
 LICENSE = "CLOSED"
 
 SRC_URI += " \
