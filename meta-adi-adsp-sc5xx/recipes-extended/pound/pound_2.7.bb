@@ -1,5 +1,8 @@
 inherit autotools texinfo update-alternatives gettext
 
+SUMMARY = "Pound HTTPS reverse proxy and load balancer"
+DESCRIPTION = "Reverse proxy/load balancer with sample config file, certificate and DH parameter header files"
+
 LICENSE = "GPL-3.0-or-later"
 LIC_FILES_CHKSUM = "file://GPL.txt;md5=d32239bcb673463ab874e80d47fae504"
 
