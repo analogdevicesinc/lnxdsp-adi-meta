@@ -30,7 +30,7 @@ index 28d4862d5eed..594491fcb2a0 100644
 --- a/arch/arm64/configs/sc598-som-ezkit_defconfig
 +++ b/arch/arm64/configs/sc598-som-ezkit_defconfig
 @@ -1,4 +1,4 @@
--CONFIG_LOCALVERSION="-yocto-standard"
+-CONFIG_LOCALVERSION=""
 +CONFIG_LOCALVERSION="-yocto-falcon"
  CONFIG_SYSVIPC=y
  CONFIG_POSIX_MQUEUE=y
