@@ -43,14 +43,14 @@ Development Boards
 Quick Start
 -----------
 
-**🏃 Getting Started in 4 Steps**
+**Getting Started in 4 Steps**
 
 1. :doc:`Setup your host PC <getting-started/Setting-Up-Your-Host-PC>` - Install tools and configure environment
 2. **Choose your board** - Select from the processor guides above (SC598, SC594, SC589, or SC573)
 3. :doc:`Build Linux image <development/Yocto-Linux-Kernel-development>` - Use Yocto to create your custom image
 4. :doc:`Run examples <examples/Examples>` - Try SHARC-ALSA, USB Audio, and more
 
-**🎯 Key Topics**: :doc:`Boot Process <boot/Boot-Sequence>` | :doc:`RPMsg <development/RPMsg>` | :doc:`Memory Configuration <development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>` | :doc:`Secure Boot <secure-boot/Secure-Boot-Support>`
+**Key Topics**: :doc:`Boot Process <boot/Boot-Sequence>` | :doc:`RPMsg <development/RPMsg>` | :doc:`Memory Configuration <development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>` | :doc:`Secure Boot <secure-boot/Secure-Boot-Support>`
 
 Latest Release
 --------------
@@ -75,9 +75,9 @@ Quick Links
 Resources
 ---------
 
-**📦 Source Code**: `lnxdsp-adi-meta <https://github.com/analogdevicesinc/lnxdsp-adi-meta>`_ | `linux-adi <https://github.com/analogdevicesinc/linux-adi>`_ | `u-boot-adi <https://github.com/analogdevicesinc/u-boot-adi>`_
+**Source Code**: `lnxdsp-adi-meta <https://github.com/analogdevicesinc/lnxdsp-adi-meta>`_ | `linux-adi <https://github.com/analogdevicesinc/linux-adi>`_ | `u-boot-adi <https://github.com/analogdevicesinc/u-boot-adi>`_
 
-**📖 Support**: `Hardware Docs <https://www.analog.com/en/products/adsp-sc598.html>`_ | `EngineerZone <https://ez.analog.com/linux-software-drivers>`_ | `Technical Support <https://www.analog.com/en/support/technical-support.html>`_
+**Support**: `Hardware Docs <https://www.analog.com/en/products/adsp-sc598.html>`_ | `EngineerZone <https://ez.analog.com/linux-software-drivers>`_ | `Technical Support <https://www.analog.com/en/support/technical-support.html>`_
 
 Documentation
 -------------
