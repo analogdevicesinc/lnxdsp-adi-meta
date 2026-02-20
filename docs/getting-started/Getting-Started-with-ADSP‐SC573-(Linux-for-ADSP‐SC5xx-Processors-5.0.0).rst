@@ -2,7 +2,7 @@
 Setting Up Your Host PC
 =======================
 
-The build system is currently supported on host PCs running Ubuntu 22.04 LTS 64-bit. For setting up your host PC, please see the :doc::doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>` page.
+The build system is currently supported on host PCs running Ubuntu 22.04 LTS 64-bit. For setting up your host PC, please see the :doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>` page.
 
 ====================
 Fetching the Sources

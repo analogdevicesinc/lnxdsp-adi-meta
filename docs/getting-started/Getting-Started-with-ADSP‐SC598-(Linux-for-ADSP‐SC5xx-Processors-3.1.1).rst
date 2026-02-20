@@ -2,7 +2,7 @@
 Setting Up Your Host PC
 =======================
 
-The build system is currently supported on host PCs running Ubuntu 20.04 LTS 64-bit. For setting up your host PC, please see the :doc::doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>` page.
+The build system is currently supported on host PCs running Ubuntu 20.04 LTS 64-bit. For setting up your host PC, please see the :doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>` page.
 
 ====================
 Fetching the Sources
@@ -621,7 +621,7 @@ Network Booting
 ===============
 
 
-In order to boot Linux via the network, the TFTP server should be setup as indicated in the :doc::doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>` page, and a copy of the fitImage should be copied into the ``/tftpboot`` directory.
+In order to boot Linux via the network, the TFTP server should be setup as indicated in the :doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>` page, and a copy of the fitImage should be copied into the ``/tftpboot`` directory.
 
 
 .. code-block:: shell
