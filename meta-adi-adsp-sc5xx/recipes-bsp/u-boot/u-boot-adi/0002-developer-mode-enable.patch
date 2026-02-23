@@ -1,61 +1,50 @@
 diff --git a/arch/arm/mach-sc5xx/spl.c b/arch/arm/mach-sc5xx/spl.c
-index 45a0b225d4..dd5a28107d 100644
+index 68e0310f5af..362263bdb0c 100644
 --- a/arch/arm/mach-sc5xx/spl.c
 +++ b/arch/arm/mach-sc5xx/spl.c
-@@ -1,11 +1,13 @@
- /* SPDX-License-Identifier: GPL-2.0-or-later */
- /*
-- * (C) Copyright 2022 - Analog Devices, Inc.
-+ * (C) Copyright 2023 - Analog Devices, Inc.
-  *
-  * Written and/or maintained by Timesys Corporation
-+ * Modified by Analog Devices, Inc.
-  *
-  * Contact: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
-  * Contact: Greg Malysa <greg.malysa@timesys.com>
-+ * Contact: Utsav Agarwal <utsav.agarwal@analog.com>
-  */
- 
- #include <asm-generic/gpio.h>
-@@ -26,6 +28,7 @@ static u32 initramfs_len;
- #endif
+@@ -21,6 +21,7 @@ static int adi_sf_default_cs = CONFIG_SF_DEFAULT_CS;
+ static int adi_sf_default_speed = CONFIG_SF_DEFAULT_SPEED;
  
  u32 bmode;
 +#define BMODE_ADDR 0x82000000
  
  int spl_start_uboot(void)
  {
-@@ -68,6 +71,8 @@ void board_boot_order(u32 *spl_boot_list)
- 	};
- 
- 	char *bmodeString = "unknown";
+@@ -45,6 +46,18 @@ unsigned int spl_spi_get_default_cs(void)
+ void board_boot_order(u32 *spl_boot_list)
+ {
+ 	const char *bmodestring = sc5xx_get_boot_mode(&bmode);
 +	int i = 0;
-+
++	static char *bmodes[] = {
++		"JTAG/BOOTROM",
++		"QSPI Master",
++		"QSPI Slave",
++		"UART",
++		"LP0 Slave",
++		"OSPI",
++#ifdef CONFIG_SC59X_64
++		"eMMC"
++#endif
++	};
  
- 	bmode = (readl(pRCU_STAT) & BITM_RCU_STAT_BMODE) >> BITP_RCU_STAT_BMODE;
+ 	printf("ADI Boot Mode: 0x%x (%s)\n", bmode, bmodestring);
  
-@@ -131,10 +136,22 @@ void board_boot_order(u32 *spl_boot_list)
- 	}
+@@ -54,6 +67,18 @@ void board_boot_order(u32 *spl_boot_list)
+ 	 */
+ 	spl_boot_list[0] = BOOT_DEVICE_BOOTROM;
  
- #else
-+
 +	bmode = *((unsigned int *) BMODE_ADDR) - 1;
-+	printf("Entering Developer Mode...\n");
-+	if ((ARRAY_SIZE(bmodes) <= bmode) || (0 >= bmode)) {
-+		printf("Please enter a bootmode at 0x%08x via JTAG:\n",BMODE_ADDR);
-+		for (i = 0; i < ARRAY_SIZE(bmodes); i++)
-+			printf("[%d]	%s\n", i+1, bmodes[i]);
-+		
-+		bmode = 0; //allow continuing to load U-boot proper if needed
-+	} else {
-+		printf("Booting into %s\n", bmodes[bmode], bmode);
-+	}
++ 	printf("Entering Developer Mode...\n");
++ 	if ((ARRAY_SIZE(bmodes) <= bmode) || (0 >= bmode)) {
++ 		printf("Please enter a bootmode at 0x%08x via JTAG:\n",BMODE_ADDR);
++ 		for (i = 0; i < ARRAY_SIZE(bmodes); i++)
++ 			printf("[%d]	%s\n", i+1, bmodes[i]);
++ 		
++ 		bmode = 0; //allow continuing to load U-boot proper if needed
++ 	} else {
++ 		printf("Booting into %s\n", bmodes[bmode], bmode);
++ 	}
 +
  	if (bmode == 0) {
  		printf("SPL execution has completed.  Please load U-Boot Proper via JTAG");
--		while (1)
--			;
-+		while (1);
- 	}
- 
- 	// Everything goes back to bootrom where we'll read table parameters and ask it
+ 		while (1)
