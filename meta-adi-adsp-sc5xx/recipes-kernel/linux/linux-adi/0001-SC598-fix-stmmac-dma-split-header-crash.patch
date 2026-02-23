@@ -9,10 +9,10 @@ Signed-off-by: Arturs Artamonovs <arturs.artamonovs@analog.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 9f2e231fb891..1bf51cea4e5d 100644
+index 7bf275f127c9..c3d561bef8e4 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -95,7 +95,7 @@ static int pause = PAUSE_TIME;
+@@ -96,7 +96,7 @@ static int pause = PAUSE_TIME;
  module_param(pause, int, 0644);
  MODULE_PARM_DESC(pause, "Flow Control Pause Time");
  
@@ -21,7 +21,7 @@ index 9f2e231fb891..1bf51cea4e5d 100644
  static int tc = TC_DEFAULT;
  module_param(tc, int, 0644);
  MODULE_PARM_DESC(tc, "DMA threshold control value");
-@@ -5219,7 +5219,7 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+@@ -5521,7 +5521,7 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
  
  		buf1_len = stmmac_rx_buf1_len(priv, p, status, len);
  		len += buf1_len;
@@ -29,7 +29,4 @@ index 9f2e231fb891..1bf51cea4e5d 100644
 +		buf2_len = stmmac_rx_buf2_len(priv, p, status, buf1_len);
  		len += buf2_len;
  
- 		/* ACS is set; GMAC core strips PAD/FCS for IEEE 802.3
--- 
-2.25.1
-
+ 		/* ACS is disabled; strip manually. */

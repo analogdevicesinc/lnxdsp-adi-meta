@@ -13,37 +13,38 @@ Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
  arch/arm64/boot/dts/adi/sc598-som.dtsi | 7 ++++---
  1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index 347be49f82d4..b14f07761a72 100644
---- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
-+++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-@@ -323,14 +323,14 @@ uart0-flow-en {
- 		emmc {
+diff --git a/arch/arm64/boot/dts/adi/sc598-som-revD.dtsi b/arch/arm64/boot/dts/adi/sc598-som-revD.dtsi
+index 78ec419b1424..6382c059ba48 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som-revD.dtsi
++++ b/arch/arm64/boot/dts/adi/sc598-som-revD.dtsi
+@@ -67,14 +67,14 @@ uart0-flow-en {
+ 		som-emmc {
  			gpio-hog;
  			gpios = <8 GPIO_ACTIVE_LOW>;
 -			output-high;
 +			output-low;
- 			line-name = "emmc-en";
+ 			line-name = "som-emmc-en";
  		};
  
- 		emmc-som-en {
+ 		crr-sdcard {
  			gpio-hog;
  			gpios = <9 GPIO_ACTIVE_LOW>;
 -			output-low;
 +			output-high;
- 			line-name = "emmc-som-en";
+ 			line-name = "crr-sdcard-en";
  		};
  	};
-@@ -340,7 +340,8 @@ &mmc0{
+diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+index b2a65303af28..1ab670149bc4 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
++++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+@@ -223,7 +223,8 @@ &mmc0{
  	pinctrl-names = "default";
  	pinctrl-0 = <&mmc0_8bgrp>;
  	bus-width = <8>;
 -	max-frequency = <50000000>;
-+	no-1-8-v;
 +	max-frequency = <44000000>;
++	no-1-8-v;
  	non-removable;
  	status = "okay";
  };
--- 
-2.34.1
-
