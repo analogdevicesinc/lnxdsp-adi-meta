@@ -100,10 +100,10 @@ Test Report (3.1.0)
    * - **Crypto Framework**
      - ➖
      - ➖
-     - __N/A__
-     - __N/A__
-     - __N/A__
-     - __N/A__
+     - **N/A**
+     - **N/A**
+     - **N/A**
+     - **N/A**
    * - **DMA Peripheral** *Implicitly tested as it's used by SPI, OSPI, and UART drivers*
      - ✅
      - ✅
@@ -195,41 +195,41 @@ Test Report (3.1.0)
      - ✅
      - ✅
      - ✅
-   * - **eMMC** _dev/mmcblk0_
+   * - **eMMC** ``dev/mmcblk0``
      - ➖
-     - __N/A__
-     - __N/A__
-     - __N/A__
-     - __N/A__
-     - __N/A__
+     - **N/A**
+     - **N/A**
+     - **N/A**
+     - **N/A**
+     - **N/A**
    * - **eMMC Boot**<sup>3</sup>
      - ➖
-     - __N/A__
-     - __N/A__
-     - __N/A__
-     - __N/A__
-     - __N/A__
+     - **N/A**
+     - **N/A**
+     - **N/A**
+     - **N/A**
+     - **N/A**
    * - **SD** *dev/mmcblk0*
      - ✅
-     - __N/A__
+     - **N/A**
      - ✅
      - ✅
-     - __N/A__
+     - **N/A**
      - ✅
    * - **SD Boot**
      - ✅
-     - __N/A__
+     - **N/A**
      - ✅
      - ✅
-     - __N/A__
+     - **N/A**
      - ✅
    * - **OSPI**<sup>4</sup>
-     - __N/A__
+     - **N/A**
      - ✅
-     - __N/A__
-     - __N/A__
-     - __N/A__
-     - __N/A__
+     - **N/A**
+     - **N/A**
+     - **N/A**
+     - **N/A**
    * - **uart0**
      - ✅
      - ✅

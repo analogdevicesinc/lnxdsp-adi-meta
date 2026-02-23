@@ -30,9 +30,9 @@ Test Report (5.0.0)
      - ✅
    * - **SHARC ALSA**
      - ✅
-     - __N/A__
-     - __N/A__
-     - __N/A__
+     - **N/A**
+     - **N/A**
+     - **N/A**
    * - **remoteproc**
      - ✅
      - ✅
@@ -51,8 +51,8 @@ Test Report (5.0.0)
    * - **Crypto Framework**
      - ➖
      - ➖
-     - __N/A__
-     - __N/A__
+     - **N/A**
+     - **N/A**
    * - **DMA Peripheral** *Implicitly tested as it's used by SPI, OSPI, and UART drivers*
      - ✅
      - ✅
@@ -98,31 +98,31 @@ Test Report (5.0.0)
      - ✅
      - ✅
      - ✅
-   * - **eMMC** _dev/mmcblk0_
+   * - **eMMC** ``dev/mmcblk0``
      - ➖
-     - __N/A__
-     - __N/A__
-     - __N/A__
+     - **N/A**
+     - **N/A**
+     - **N/A**
    * - **eMMC Boot**<sup>2</sup>
      - ➖
-     - __N/A__
-     - __N/A__
-     - __N/A__
+     - **N/A**
+     - **N/A**
+     - **N/A**
    * - **SD** *dev/mmcblk0*
      - ✅
-     - __N/A__
+     - **N/A**
      - ✅
      - ✅
    * - **SD Boot**
      - ✅
-     - __N/A__
+     - **N/A**
      - ✅
      - ✅
    * - **OSPI**<sup>3</sup>
-     - __N/A__
+     - **N/A**
      - ✅
-     - __N/A__
-     - __N/A__
+     - **N/A**
+     - **N/A**
    * - **uart0**
      - ✅
      - ✅

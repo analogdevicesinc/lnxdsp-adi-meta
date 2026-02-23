@@ -139,11 +139,9 @@ Transfer, run and flash U-Boot on the board for the first time
 
 
 
-.. list-table::
-   :header-rows: 1
+.. note::
 
-   * - :memo:
-     - It's always good practice to erase the contents of ``/tftpboot/`` before running and/or flashing a new build of U-Boot or Linux. You can do so by executing ``rm /tftpboot/*`` on your host PC before proceeding
+   It's always good practice to erase the contents of ``/tftpboot/`` before running and/or flashing a new build of U-Boot or Linux. You can do so by executing ``rm /tftpboot/*`` on your host PC before proceeding
 
 
 Transfer and run U-Boot on RAM
@@ -318,11 +316,9 @@ In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot 
 
 
 
-.. list-table::
-   :header-rows: 1
+.. note::
 
-   * - :memo:
-     - To find the IP address of your host Linux PC you can issue the ``ip addr`` command from the shell or console.
+   To find the IP address of your host Linux PC you can issue the ``ip addr`` command from the shell or console.
 
 
 If your network **supports** DHCP, run:

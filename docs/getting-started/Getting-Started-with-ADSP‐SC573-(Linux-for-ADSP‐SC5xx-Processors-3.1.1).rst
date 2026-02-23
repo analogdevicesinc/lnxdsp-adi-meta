@@ -333,8 +333,6 @@ In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot 
 
    => setenv tftpserverip <SERVERIP>
 
-
-
 .. note::
 
    To find the IP address of your host Linux PC you can issue the ``ip addr`` command from the shell or console.
