@@ -45,11 +45,9 @@ Source the setup script for your board:
 Sourcing the script will configure your build environment and create a build folder along with a local build configuration file.  See the Yocto Manual for further details.
 
 
-.. list-table::
-   :header-rows: 1
+.. note::
 
-   * - :memo:
-     - Note that the build environment needs to be sourced once only before building.  If later working in a different terminal, the `setup-environment` script should be sourced again.  If sourcing the `setup-environment` script is done without specifying the machine, Yocto will reuse the previous configuration settings and retain any changes made to the files in the `conf` folder
+   Note that the build environment needs to be sourced once only before building.  If later working in a different terminal, the `setup-environment` script should be sourced again.  If sourcing the `setup-environment` script is done without specifying the machine, Yocto will reuse the previous configuration settings and retain any changes made to the files in the `conf` folder
 
 
 
@@ -69,11 +67,9 @@ To build the example images invoke bitbake from within the build directory creat
 When the build completes you will see a warning that the ELF binary has relocations in .text. It is OK to ignore this warning
 
 
-.. list-table::
-   :header-rows: 1
+.. note::
 
-   * - :memo:
-     - Building a Linux distribution with Yocto is a significantly demanding process, both in CPU and network usage. A full build from scratch is estimated to take around 170 minutes for an 11th Gen Intel Core i5-11500T with 16 GB of RAM and a stable, fast Internet connection. This estimate can go up significantly for a poorer Internet connection or CPU resources, so set aside plenty of time for a clean build.
+   Building a Linux distribution with Yocto is a significantly demanding process, both in CPU and network usage. A full build from scratch is estimated to take around 170 minutes for an 11th Gen Intel Core i5-11500T with 16 GB of RAM and a stable, fast Internet connection. This estimate can go up significantly for a poorer Internet connection or CPU resources, so set aside plenty of time for a clean build.
 
 
 Building the SDK
@@ -156,11 +152,9 @@ Transfer, run and flash U-Boot on the board for the first time
 
 
 
-.. list-table::
-   :header-rows: 1
+.. note::
 
-   * - :memo:
-     - It's always good practice to erase the contents of ``/tftpboot/`` before running and/or flashing a new build of U-Boot or Linux. You can do so by executing ``rm /tftpboot/*`` on your host PC before proceeding
+   It's always good practice to erase the contents of ``/tftpboot/`` before running and/or flashing a new build of U-Boot or Linux. You can do so by executing ``rm /tftpboot/*`` on your host PC before proceeding
 
 
 Transfer and run U-Boot on RAM
@@ -336,11 +330,9 @@ In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot 
 
 
 
-.. list-table::
-   :header-rows: 1
+.. note::
 
-   * - :memo:
-     - To find the IP address of your host Linux PC you can issue the ``ip addr`` command from the shell or console.
+   To find the IP address of your host Linux PC you can issue the ``ip addr`` command from the shell or console.
 
 
 If your network **supports** DHCP, run:
@@ -364,11 +356,9 @@ If your network **does NOT support** DHCP, in the U-Boot console configure the b
 i.e. ``init*ethernet`` should now be ``init*ethernet=mii info; setenv serverip ${tftpserverip};``, where prior to this change it was ``init_ethernet=mii info; dhcp; setenv serverip ${tftpserverip};``
 
 
-.. list-table::
-   :header-rows: 1
+.. note::
 
-   * - :memo:
-     - If flashing a board that had been previously programmed, it's good to erase the whole flash before as sometimes previous U-Boot installations might leave remnants. You can do that by typing ``=> run erase_spi`` on the U-Boot prompt before proceeding to the following instructions
+   If flashing a board that had been previously programmed, it's good to erase the whole flash before as sometimes previous U-Boot installations might leave remnants. You can do that by typing ``=> run erase_spi`` on the U-Boot prompt before proceeding to the following instructions
 
 
 Next, run the U-Boot update command to copy the U-Boot loader files from the host PC to the target board, and write it into flash:

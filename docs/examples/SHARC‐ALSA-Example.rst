@@ -29,7 +29,7 @@ There are 2 modes for SHARC-ALSA, and they differ in how the SHARCs are programm
 
 * ``adi_sharc_alsa_audio_uboot``
 
-  Audio playback handled through SHARC firmware, no codec control (volume, etc) from Linux. `rproc <https://u-boot.readthedocs.io/en/latest/develop/driver-model/remoteproc-framework.html>:doc:`_ within U-Boot is used to load the SHARC LDR firmware file.
+  Audio playback handled through SHARC firmware, no codec control (volume, etc) from Linux. `rproc <https://u-boot.readthedocs.io/en/latest/develop/driver-model/remoteproc-framework.html>`_ within U-Boot is used to load the SHARC LDR firmware file.
 
 Programming the SHARC
 ---------------------

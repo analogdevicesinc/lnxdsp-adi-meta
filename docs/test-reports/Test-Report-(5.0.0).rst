@@ -4,11 +4,9 @@ Test Report (5.0.0)
 
 
 
-.. list-table::
-   :header-rows: 1
+.. note::
 
-   * - :memo:
-     - This test report applies to version 5.0.x. Any regressions specific to a .x release will be explicitly noted
+   This test report applies to version 5.0.x. Any regressions specific to a .x release will be explicitly noted
 
 
 
@@ -20,7 +18,7 @@ Test Report (5.0.0)
      - SC594-SOM-EZKIT
      - SC589-MINI
      - SC573-EZKIT
-   * - **ADAU1962** _Audio Out Driver_
+   * - **ADAU1962** *Audio Out Driver*
      - ✅
      - ✅
      - ✅
@@ -55,12 +53,12 @@ Test Report (5.0.0)
      - ➖
      - __N/A__
      - __N/A__
-   * - **DMA Peripheral** _Implicitly tested as it's used by SPI, OSPI, and UART drivers_
+   * - **DMA Peripheral** *Implicitly tested as it's used by SPI, OSPI, and UART drivers*
      - ✅
      - ✅
      - ✅
      - ✅
-   * - **MDMA** _Implicitly tested as it's used only by remoteproc to load data to SHARC shared memory_
+   * - **MDMA** *Implicitly tested as it's used only by remoteproc to load data to SHARC shared memory*
      - ✅
      - ✅
      - ✅
@@ -110,7 +108,7 @@ Test Report (5.0.0)
      - __N/A__
      - __N/A__
      - __N/A__
-   * - **SD** _dev/mmcblk0_
+   * - **SD** *dev/mmcblk0*
      - ✅
      - __N/A__
      - ✅

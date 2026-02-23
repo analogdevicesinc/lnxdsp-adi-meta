@@ -24,7 +24,7 @@ Getting started
 
 1) On your host/build machine, install rust via `rustup <https://www.rust-lang.org/tools/install>`_
 
-2) Clone the Linux kernel tree you wish to use. In our case, we will use `this <https://github.com/analogdevicesinc/linux/tree/adsp-main-6.12>:doc:`_.
+2) Clone the Linux kernel tree you wish to use. In our case, we will use `this <https://github.com/analogdevicesinc/linux/tree/adsp-main-6.12>`_.
 
 3) Once cloned, configure the kernel using either ``ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make menuconfig/defconfig/olddefconfig``
 

@@ -4,11 +4,9 @@ Test Report (3.1.0)
 
 
 
-.. list-table::
-   :header-rows: 1
+.. note::
 
-   * - :memo:
-     - This test report applies to versions 3.1.x. Any regressions specific to a .x release will be explicitly noted
+   This test report applies to versions 3.1.x. Any regressions specific to a .x release will be explicitly noted
 
 
 
@@ -22,35 +20,35 @@ Test Report (3.1.0)
      - SC589-MINI
      - SC584-EZKIT
      - SC573-EZKIT
-   * - **SRU** _DAI routing configuration_
+   * - **SRU** *DAI routing configuration*
      - 
      - 
      - 
      - 
      - 
      - 
-   * - **SPORT** _sending I2S data to CODECs_
+   * - **SPORT** *sending I2S data to CODECs*
      - 
      - 
      - 
      - 
      - 
      - 
-   * - **ADAU1761** _Audio In Driver_
+   * - **ADAU1761** *Audio In Driver*
      - 
      - 
      - 
      - 
      - 
      - 
-   * - **ADAU1962** _Audio Out Driver_
+   * - **ADAU1962** *Audio Out Driver*
      - ✅
      - ✅
      - ✅
      - ✅
      - 
      - ✅
-   * - **ADAU1979** _Audio In Driver_
+   * - **ADAU1979** *Audio In Driver*
      - 
      - 
      - 
@@ -106,14 +104,14 @@ Test Report (3.1.0)
      - __N/A__
      - __N/A__
      - __N/A__
-   * - **DMA Peripheral** _Implicitly tested as it's used by SPI, OSPI, and UART drivers_
+   * - **DMA Peripheral** *Implicitly tested as it's used by SPI, OSPI, and UART drivers*
      - ✅
      - ✅
      - 
      - ✅
      - 
      - 
-   * - **MDMA** _Implicitly tested as it's used only by remoteproc to load data to SHARC shared memory_
+   * - **MDMA** *Implicitly tested as it's used only by remoteproc to load data to SHARC shared memory*
      - ✅
      - ✅
      - 
@@ -211,7 +209,7 @@ Test Report (3.1.0)
      - __N/A__
      - __N/A__
      - __N/A__
-   * - **SD** _dev/mmcblk0_
+   * - **SD** *dev/mmcblk0*
      - ✅
      - __N/A__
      - ✅
