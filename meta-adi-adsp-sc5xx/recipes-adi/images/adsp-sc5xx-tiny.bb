@@ -53,3 +53,44 @@ fakeroot do_set_init(){
 }
 
 addtask do_set_init after do_rootfs before do_image
+
+do_create_programming_images(){
+    # Create programming-images directory
+    PROG_DIR="${DEPLOY_DIR_IMAGE}/programming-images/${IMAGE_BASENAME}"
+    install -d ${PROG_DIR}
+
+    # Copy U-boot ldr images
+    if [ -f ${DEPLOY_DIR_IMAGE}/u-boot-spl.ldr ]; then
+        cp ${DEPLOY_DIR_IMAGE}/u-boot-spl.ldr ${PROG_DIR}/
+    fi
+    if [ -f ${DEPLOY_DIR_IMAGE}/u-boot.ldr ]; then
+        cp ${DEPLOY_DIR_IMAGE}/u-boot.ldr ${PROG_DIR}/
+    fi
+
+    DTB_FILE=$(basename "${KERNEL_DEVICETREE}")
+    if [ -f "${DEPLOY_DIR_IMAGE}/$DTB_FILE" ]; then
+        cp "${DEPLOY_DIR_IMAGE}/$DTB_FILE" "${PROG_DIR}/dtb"
+    fi
+
+    # Copy fitImage
+    if [ -f ${DEPLOY_DIR_IMAGE}/fitImage ]; then
+        cp ${DEPLOY_DIR_IMAGE}/fitImage ${PROG_DIR}/
+    fi
+
+    # Copy rootfs.jffs2, rename to 'rootfs.jffs2'
+    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.jffs2 ]; then
+        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.jffs2 ${PROG_DIR}/rootfs.jffs2
+    fi
+
+    echo "Programming images created in: ${PROG_DIR}"
+    ls -la ${PROG_DIR}
+}
+
+addtask create_programming_images after do_image_complete before do_build
+
+do_create_programming_images[depends] += "\
+    virtual/bootloader:do_deploy \
+    virtual/kernel:do_deploy \
+"
+
+do_create_programming_images[vardeps] += "KERNEL_DEVICETREE IMAGE_BASENAME MACHINE"
