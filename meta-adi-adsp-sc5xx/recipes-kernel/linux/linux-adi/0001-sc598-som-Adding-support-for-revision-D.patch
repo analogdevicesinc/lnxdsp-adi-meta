@@ -1,0 +1,42 @@
+From f7d1621bbdae738313fb30790016e3e8db504ee1 Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Mon, 26 Jan 2026 11:28:58 -0500
+Subject: [PATCH] Adding support for revision D
+
+Enables support for Rev D of the SC598-SOM by swapping 
+the build to the Rev D device tree.
+
+---
+ arch/arm64/boot/dts/adi/sc598-som-ezkit.dts  | 2 +-
+ arch/arm64/boot/dts/adi/sc598-som-ezlite.dts | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
+index 36db04e9a1dc..351c000ff6e4 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
++++ b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
+@@ -5,7 +5,7 @@
+ 
+ /dts-v1/;
+ 
+-#include "sc598-som-revE.dtsi"
++#include "sc598-som-revD.dtsi"
+ 
+ / {
+ 	model = "ADI 64-bit SC598 SOM EZ Kit";
+diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezlite.dts b/arch/arm64/boot/dts/adi/sc598-som-ezlite.dts
+index cb857c671bc5..46017b788229 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som-ezlite.dts
++++ b/arch/arm64/boot/dts/adi/sc598-som-ezlite.dts
+@@ -5,7 +5,7 @@
+ 
+ /dts-v1/;
+ 
+-#include "sc598-som-revE.dtsi"
++#include "sc598-som-revD.dtsi"
+ 
+ / {
+ 	model = "ADI 64-bit SC598 SOM EZ Lite";
+-- 
+2.34.1
+

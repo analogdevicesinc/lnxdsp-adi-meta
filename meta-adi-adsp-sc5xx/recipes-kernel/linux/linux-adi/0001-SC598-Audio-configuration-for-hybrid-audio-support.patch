@@ -11,7 +11,7 @@ Signed-off-by: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
  2 files changed, 43 insertions(+), 9 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index 47060d5bce61..3cc69b7aa2da 100644
+index b2a65303af28..33f411bd382b 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
 @@ -28,10 +28,10 @@ memory@20040000 {
@@ -49,7 +49,7 @@ index 47060d5bce61..3cc69b7aa2da 100644
  	scb {
  		sharc0: core1-rproc@28240000 {
  			compatible = "adi,remoteproc";
-@@ -357,6 +360,10 @@ &usb0 {
+@@ -240,6 +243,10 @@ &usb0 {
  	status = "okay";
  };
  
@@ -61,10 +61,10 @@ index 47060d5bce61..3cc69b7aa2da 100644
  	uart0_default: uart0_default_pins {
  		pins {
 diff --git a/arch/arm64/boot/dts/adi/sc59x-64.dtsi b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
-index f3f05804e720..72b3ad430f28 100644
+index ef5aee84fc12..df9e8997868d 100644
 --- a/arch/arm64/boot/dts/adi/sc59x-64.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
-@@ -77,6 +77,22 @@ gic: interrupt-controller@31200000 {
+@@ -76,6 +76,22 @@ gic: interrupt-controller@31200000 {
  		      <0x31240000 0x40000>; /* GICR */
  	};
  
@@ -87,7 +87,7 @@ index f3f05804e720..72b3ad430f28 100644
  	timer {
  		compatible = "arm,armv8-timer";
  		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_LOW>, /* Physical Secure */
-@@ -195,6 +211,11 @@ rsc_tbl1: rsc_tbl0@20000400 {
+@@ -194,6 +210,11 @@ rsc_tbl1: rsc_tbl0@20000400 {
  			no-map;
  		};
  
@@ -99,7 +99,7 @@ index f3f05804e720..72b3ad430f28 100644
  		sharc_internal_icc@20005000 {
  			reg = <0x20005000 0x20000>; /*128KiB*/
  			no-map;
-@@ -222,11 +243,17 @@ dmc_pmu: dmc-pmu@31070000 {
+@@ -221,11 +242,17 @@ dmc_pmu: dmc-pmu@31070000 {
  		sram-controller@31080000 {
  			compatible = "adi,sram-controller";
  			reg = <0x31080000 0x100>;
@@ -118,6 +118,3 @@ index f3f05804e720..72b3ad430f28 100644
  		gptimer_counter: gptimer-counters@0 {
  			compatible = "adi,gptimer-counter";
  			status = "okay";
--- 
-2.34.1
-
