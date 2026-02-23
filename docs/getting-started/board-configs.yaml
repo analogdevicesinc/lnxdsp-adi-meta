@@ -1,0 +1,141 @@
+# Board configuration for getting-started guide generation
+# This file defines parameters for each board and release version
+
+releases:
+  "5.0.1":
+    ubuntu_version: "22.04 LTS"
+
+  "5.0.0":
+    ubuntu_version: "22.04 LTS"
+
+  "3.1.2":
+    ubuntu_version: "20.04 LTS"
+
+boards:
+  adsp-sc598-som-ezkit:
+    board_name: "ADSP-SC598"
+    board_slug: "adsp-sc598-som-ezkit"
+    machine_name: "adsp-sc598-som-ezkit"
+    arch: "cortexa55"
+    openocd_target: "adspsc59x_a55"
+    jtag_tap: "adspsc59x"
+    gdb_prefix: "aarch64-adi_glibc-linux"
+    som_rev_note: true
+    som_rev_default: "SOM Rev A/B/C/D with an EZkit Carrier rev D"
+    sdk_machine_note: true
+    sdk_files_example: |
+      adi-distro-glibc-glibc-x86_64-adsp-sc5xx-full-cortexa55-adsp-sc598-som-ezkit-toolchain-5.0.1.host.manifest
+      adi-distro-glibc-glibc-x86_64-adsp-sc5xx-full-cortexa55-adsp-sc598-som-ezkit-toolchain-5.0.1-host.spdx.tar.zst
+      adi-distro-glibc-glibc-x86_64-adsp-sc5xx-full-cortexa55-adsp-sc598-som-ezkit-toolchain-5.0.1.sh
+      adi-distro-glibc-glibc-x86_64-adsp-sc5xx-full-cortexa55-adsp-sc598-som-ezkit-toolchain-5.0.1.target.manifest
+      adi-distro-glibc-glibc-x86_64-adsp-sc5xx-full-cortexa55-adsp-sc598-som-ezkit-toolchain-5.0.1-target.spdx.tar.zst
+      adi-distro-glibc-glibc-x86_64-adsp-sc5xx-full-cortexa55-adsp-sc598-som-ezkit-toolchain-5.0.1.testdata.json
+    hardware_image: |
+      .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5471efe3-9cb0-44a1-a96e-72f453e1431f
+         :width: 400
+    hardware_connections: |
+      * Board connected to network via ethernet cable using J13 connector.
+      * Board connected to host PC using USB micro cable, connected to USB/UART port on the development board
+      * Board connected to the ICE 1000 or ICE 2000 via the DEBUG port on the board
+      * ICE is also connected to host PC via USB mini cable
+    boot_mode_settings: |
+      On the carrier board is a set of micro switches labelled SW1. These should all be set to the OFF position before continuing.
+
+      .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5e285aff-e67d-4d9c-8157-7f596c32134b
+         :width: 400
+
+      * The Power jumper JP1 on the EV-SC598-SOM board should be fitted so that it shorts the two pins closest to the edge. This will enable the routing of power from the SOMCRR-EZKIT.
+      * The BOOT MODE selector on the EV-SC598-SOM board should be turned to "0".
+
+      .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/16242018-95c7-4494-a471-d088a5f52d33
+         :width: 400
+    additional_boot_sections: |
+      Booting Linux Using SD Card
+      ---------------------------
+
+      [SD Card boot instructions here...]
+
+      Booting Linux from USB Mass Storage
+      ------------------------------------
+
+      [USB boot instructions here...]
+
+  adsp-sc594-som-ezkit:
+    board_name: "ADSP-SC594"
+    board_slug: "adsp-sc594-som-ezkit"
+    machine_name: "adsp-sc594-som-ezkit"
+    arch: "cortexa5t2hf-neon"
+    openocd_target: "adspsc57x"
+    jtag_tap: "adspsc57x"
+    gdb_prefix: "arm-adi_glibc-linux-gnueabi"
+    som_rev_note: true
+    som_rev_default: "SOM Rev B or later with EZkit Carrier"
+    sdk_machine_note: false
+    sdk_files_example: |
+      adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc594-som-ezkit-toolchain-5.0.1.host.manifest
+      adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc594-som-ezkit-toolchain-5.0.1.sh
+    hardware_image: |
+      .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/board-sc594.png
+         :width: 400
+    hardware_connections: |
+      * Board connected to network via ethernet cable
+      * Board connected to host PC using USB cable to USB/UART port
+      * Board connected to ICE debugger via DEBUG port
+      * ICE connected to host PC via USB
+    boot_mode_settings: |
+      * The BOOT MODE selector should be set to position "0"
+    additional_boot_sections: ""
+
+  adsp-sc589-mini:
+    board_name: "ADSP-SC589-MINI"
+    board_slug: "adsp-sc589-mini"
+    machine_name: "adsp-sc589-mini"
+    arch: "cortexa5t2hf-neon"
+    openocd_target: "adspsc57x"
+    jtag_tap: "adspsc57x"
+    gdb_prefix: "arm-adi_glibc-linux-gnueabi"
+    som_rev_note: false
+    sdk_machine_note: false
+    sdk_files_example: |
+      adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc589-mini-toolchain-5.0.1.sh
+    hardware_image: |
+      .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/board-sc589-mini.png
+         :width: 400
+    hardware_connections: |
+      * Board connected to network via ethernet cable
+      * Board connected to host PC using USB cable
+      * Board connected to ICE debugger
+    boot_mode_settings: |
+      * The BOOT MODE selector should be set to position "0"
+    additional_boot_sections: ""
+
+  adsp-sc573-ezkit:
+    board_name: "ADSP-SC573"
+    board_slug: "adsp-sc573-ezkit"
+    machine_name: "adsp-sc573-ezkit"
+    arch: "cortexa5t2hf-neon"
+    openocd_target: "adspsc57x"
+    jtag_tap: "adspsc57x"
+    gdb_prefix: "arm-adi_glibc-linux-gnueabi"
+    som_rev_note: false
+    sdk_machine_note: false
+    sdk_files_example: |
+      adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-5.0.1.sh
+    hardware_image: |
+      .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5ecd55a3-4572-4c77-97e5-8f4db302464f
+         :width: 400
+    hardware_connections: |
+      * Board connected to network via ethernet cable using J4 connector
+      * Board connected to host PC using USB micro cable, connected to USB/UART port on the development board
+      * Board connected to the ICE 1000 or ICE 2000 via the DEBUG port on the board
+      * ICE is also connected to host PC via USB mini cable
+    boot_mode_settings: |
+      * The BOOT MODE selector on the SC573 board should be turned to "0"
+
+      .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/fcf62f04-ebe3-469c-b271-2b5a6096182e
+         :width: 400
+    additional_boot_sections: |
+      Booting Linux Using SD Card
+      ---------------------------
+
+      [SD Card instructions specific to SC573...]
