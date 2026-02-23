@@ -13,7 +13,7 @@ Signed-off-by: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
  5 files changed, 16 insertions(+), 47 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
-index 85c686ff08e0..924c42bce367 100644
+index 36db04e9a1dc..2b8a730a7f34 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
 +++ b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
 @@ -16,6 +16,7 @@ sound {
@@ -39,7 +39,7 @@ index 85c686ff08e0..924c42bce367 100644
  	sru_dai1: sru_dai1_mux {
  		route {
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index e5a029190754..c2582c67fe59 100644
+index 33f411bd382b..659c51f17312 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
 @@ -22,13 +22,13 @@ memory@90000000 {
@@ -61,7 +61,7 @@ index e5a029190754..c2582c67fe59 100644
  //			compatible = "adi,sram-access";
  //			reg = <0x20040000 0x40000>;
  //		};
-@@ -254,7 +254,7 @@ &i2c1 {
+@@ -217,7 +217,7 @@ &i2c1 {
  };
  
  &i2c2 {
@@ -69,12 +69,12 @@ index e5a029190754..c2582c67fe59 100644
 +	status = "disabled";
  	pinctrl-names = "default";
  	pinctrl-0 = <&i2c2_pins>;
- 
+ };
 diff --git a/arch/arm64/boot/dts/adi/sc59x-64.dtsi b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
-index 72b3ad430f28..4c6181ba517e 100644
+index df9e8997868d..2f742ed9198b 100644
 --- a/arch/arm64/boot/dts/adi/sc59x-64.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
-@@ -245,7 +245,7 @@ sram-controller@31080000 {
+@@ -244,7 +244,7 @@ sram-controller@31080000 {
  			reg = <0x31080000 0x100>;
  			adi,sram = <&sram0>, <&sram1>;
  			interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
@@ -84,10 +84,10 @@ index 72b3ad430f28..4c6181ba517e 100644
  
  		sram_mmap: sram-mmap@0 {
 diff --git a/arch/arm64/configs/sc598-som-ezkit_defconfig b/arch/arm64/configs/sc598-som-ezkit_defconfig
-index 041abcf35b61..582f17d42073 100644
+index c86b70b01a5f..6589e0ca2320 100644
 --- a/arch/arm64/configs/sc598-som-ezkit_defconfig
 +++ b/arch/arm64/configs/sc598-som-ezkit_defconfig
-@@ -295,7 +295,7 @@ CONFIG_REMOTEPROC=y
+@@ -297,7 +297,7 @@ CONFIG_REMOTEPROC=y
  CONFIG_ADI_REMOTEPROC=y
  CONFIG_RPMSG_CHAR=y
  CONFIG_RPMSG_QCOM_GLINK_RPM=y
@@ -96,7 +96,7 @@ index 041abcf35b61..582f17d42073 100644
  CONFIG_PM_DEVFREQ=y
  CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND=y
  CONFIG_IIO=y
-@@ -366,4 +366,7 @@ CONFIG_BLK_DEV_SD=y
+@@ -369,4 +369,7 @@ CONFIG_BLK_DEV_SD=y
  CONFIG_BLK_DEV_BSG=y
  CONFIG_USB_STORAGE=y
  CONFIG_SG_POOL=y
@@ -108,7 +108,7 @@ index 041abcf35b61..582f17d42073 100644
 +CONFIG_RPMSG_NS=y
 \ No newline at end of file
 diff --git a/drivers/soc/adi/mach-sc5xx/sec.c b/drivers/soc/adi/mach-sc5xx/sec.c
-index bdeb0f8d9a3b..3856e17851ca 100644
+index 6e86ff51561a..8a5f8c888ffb 100644
 --- a/drivers/soc/adi/mach-sc5xx/sec.c
 +++ b/drivers/soc/adi/mach-sc5xx/sec.c
 @@ -34,12 +34,11 @@ struct adi_sec {
@@ -165,7 +165,4 @@ index bdeb0f8d9a3b..3856e17851ca 100644
 -
  	return 0;
  
-       free_rcu:
--- 
-2.34.1
-
+ free_rcu:
