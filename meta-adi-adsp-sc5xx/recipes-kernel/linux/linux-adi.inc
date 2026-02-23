@@ -56,7 +56,7 @@ KCONFIG_MODE ?= "alldefconfig"
 
 KBUILD_DEFCONFIG:adsp-sc589-ezkit = "sc589-ezkit_defconfig"
 KBUILD_DEFCONFIG:adsp-sc584-ezkit = "sc584-ezkit_defconfig"
-KBUILD_DEFCONFIG:adsp-sc573-ezkit = "sc573-ezkit_defconfig"
+KBUILD_DEFCONFIG:adsp-sc573-ezlite = "sc573-ezlite_defconfig"
 KBUILD_DEFCONFIG:adsp-sc589-mini = "sc589-mini_defconfig"
 KBUILD_DEFCONFIG:adsp-sc594-som-ezkit = "sc594-som-ezkit_defconfig"
 KBUILD_DEFCONFIG:adsp-sc598-som-ezkit = "sc598-som-ezkit_defconfig"
