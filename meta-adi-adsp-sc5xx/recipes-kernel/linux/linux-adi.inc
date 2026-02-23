@@ -8,25 +8,17 @@ require recipes-kernel/linux/linux-yocto.inc
 KERNEL_GIT_URI ?= "git://github.com/analogdevicesinc/linux.git"
 KERNEL_GIT_PROTOCOL ?= "https"
 
-LNX_CRR_FILE = ""
-LNX_CRR_FILE:adsp-sc598-som-ezkit = "file://0002-SC598-EZKIT-Adding-softconfig-changes-for-REV-D.patch"
-LNX_CRR_FILE:adsp-sc594-som-ezkit = "file://0003-SC594-EZKIT-Adding-softconfig-changes-for-REV-D.patch"
-LNX_CRR = "${@bb.utils.contains('CRR_REV', 'D', '${LNX_CRR_FILE}', '', d)}"
-
 LNX_SOM_FILE = ""
-LNX_SOM_FILE:adsp-sc598-som-ezkit = "file://0001-sc598-som-Adding-support-for-revision-E.patch"
-LNX_SOM = "${@bb.utils.contains('SOM_REV', 'E', '${LNX_SOM_FILE}', '', d)}"
+LNX_SOM_FILE:adsp-sc598-som-ezkit = "file://0001-sc598-som-Adding-support-for-revision-D.patch"
+LNX_SOM = "${@bb.utils.contains('SOM_REV', 'D', '${LNX_SOM_FILE}', '', d)}"
 
 python() {
     d.setVar('SDCARD_PATCH', '')
-    d.setVar('FALCON_PATCH', '')
     
     if d.getVar('SOM_REV') != 'E': 
         d.setVar('SDCARD_PATCH', ' file://0001-sc598-som-enable-SD-card.patch')
-        d.setVar('FALCON_PATCH',' file://0001-sc598-som-Disabling-peripherals-for-faster-boot.patch')
     else:
         d.setVar('SDCARD_PATCH', ' file://0001-sc598-som-enable-SD-card-revE.patch')
-        d.setVar('FALCON_PATCH',' file://0001-sc598-som-Disabling-peripherals-for-a-faster-falcon-boot_revE.patch')
 }
 
 LNX_BRD_FILE = ""
@@ -35,7 +27,6 @@ LNX_BRD = "${@bb.utils.contains('BRD_REV', '2.1', '${LNX_BRD_FILE}', '', d)}"
 
 SRC_URI += " \
 	${KERNEL_GIT_URI};protocol=${KERNEL_GIT_PROTOCOL};branch=${KERNEL_BRANCH} \
-        ${LNX_CRR} \
         ${LNX_SOM} \
         ${LNX_BRD} \
 "

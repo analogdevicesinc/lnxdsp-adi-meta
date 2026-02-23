@@ -8,10 +8,10 @@ Subject: [PATCH] Disable remoteproc
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index 65c1a2d0c688..20a7d938a60a 100644
+index b2a65303af28..c88ffcad0608 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-@@ -70,7 +70,7 @@ sharc0: core1-rproc@0x28240000 {
+@@ -78,7 +78,7 @@ sharc0: core1-rproc@28240000 {
  			adi,verify = <1>;
  			adi,tru = <&tru>;
  			adi,tru-master-id = <135>; /* trigger master SOFT4 */
@@ -19,8 +19,8 @@ index 65c1a2d0c688..20a7d938a60a 100644
 +			status = "disabled";
  		};
  
- 		sharc1: core2-rproc@0x28a40000 {
-@@ -88,7 +88,7 @@ sharc1: core2-rproc@0x28a40000 {
+ 		sharc1: core2-rproc@28a40000 {
+@@ -96,7 +96,7 @@ sharc1: core2-rproc@28a40000 {
  			adi,verify = <1>;
  			adi,tru = <&tru>;
  			adi,tru-master-id = <136>; /* trigger master SOFT5 */
@@ -28,7 +28,4 @@ index 65c1a2d0c688..20a7d938a60a 100644
 +			status = "disabled";
  		};
  
- 		sharc0_rpmsg: core0-rpmsg@0x28240000 {
--- 
-2.34.1
-
+ 		sharc0_rpmsg: core0-rpmsg@28240000 {

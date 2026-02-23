@@ -1,18 +1,40 @@
-From 06487f1324b93b26087ac50604c5e3c5203ca201 Mon Sep 17 00:00:00 2001
+From dd3a6cdc262f482c571662ab474a667da093ccf4 Mon Sep 17 00:00:00 2001
 From: Caleb Ethridge <caleb.ethridge@analog.com>
-Date: Fri, 5 Sep 2025 09:27:00 -0400
-Subject: [PATCH] Enabled SD card support for SC598 SOM
+Date: Mon, 9 Feb 2026 10:29:31 -0500
+Subject: [PATCH] Enabled SD card support for RevD SC598 SOM
 
-Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
 ---
- arch/arm/dts/sc598-som.dtsi | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ arch/arm/dts/sc598-som-revD.dtsi | 4 ++--
+ arch/arm/dts/sc598-som.dtsi      | 5 +++--
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
+diff --git a/arch/arm/dts/sc598-som-revD.dtsi b/arch/arm/dts/sc598-som-revD.dtsi
+index 26e272966ff..401334da753 100644
+--- a/arch/arm/dts/sc598-som-revD.dtsi
++++ b/arch/arm/dts/sc598-som-revD.dtsi
+@@ -75,7 +75,7 @@
+ 		som-emmc {
+ 			gpio-hog;
+ 			gpios = <8 GPIO_ACTIVE_LOW>;
+-			output-high;
++			output-low;
+ 			line-name = "som-emmc-en";
+ 			bootph-pre-ram;
+ 		};
+@@ -83,7 +83,7 @@
+ 		crr-sdcard {
+ 			gpio-hog;
+ 			gpios = <9 GPIO_ACTIVE_LOW>;
+-			output-low;
++			output-high;
+ 			line-name = "crr-sdcard-en";
+ 			bootph-pre-ram;
+ 		};
 diff --git a/arch/arm/dts/sc598-som.dtsi b/arch/arm/dts/sc598-som.dtsi
-index 02b46e5fff..3924f925c2 100644
+index bc212ef25cb..47596f55d9f 100644
 --- a/arch/arm/dts/sc598-som.dtsi
 +++ b/arch/arm/dts/sc598-som.dtsi
-@@ -54,8 +54,9 @@
+@@ -57,8 +57,9 @@
  			pinctrl-0 = <&mmc_defaults>;
  			clocks = <&emmcclk>;
  			clock-names = "core";
@@ -21,27 +43,9 @@ index 02b46e5fff..3924f925c2 100644
 +			max-frequency = <44000000>;
 +			no-1-8-v;
 +			bus-width = <4>;
- 			u-boot,dm-pre-reloc;
+ 			bootph-pre-ram;
  		};
  	};
-@@ -197,7 +198,7 @@
- 		emmc {
- 			gpio-hog;
- 			gpios = <8 GPIO_ACTIVE_LOW>;
--			output-high;
-+			output-low;
- 			line-name = "emmc-en";
- 			u-boot,dm-pre-reloc;
- 		};
-@@ -205,7 +206,7 @@
- 		emmc-som-en {
- 			gpio-hog;
- 			gpios = <9 GPIO_ACTIVE_LOW>;
--			output-low;
-+			output-high;
- 			line-name = "emmc-som-en";
- 			u-boot,dm-pre-reloc;
- 		};
 -- 
 2.34.1
 
