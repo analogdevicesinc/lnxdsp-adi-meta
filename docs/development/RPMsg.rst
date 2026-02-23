@@ -1,10 +1,28 @@
 ================
-What is RPMsg?
+RPMsg
 ================
 
-RPMsg is a communication protocol for heterogeneous inter-processor communication. These processors are often on the same SoC but isolated from each other via software (for instance, a board may boot up Linux with an Arm processor while additional microcontrollers (remote processors) run an RTOS or some bare-metal application).
+Introduction
+============
 
-This page aims to establish an introduction to the inner workings of RPMsg and how to execute a basic test for it. Please note that this is by no means a definitive guide on any RPMsg implementation (eg Linux, OpenAMP, RPMsgLite, etc) and for a deeper understanding, it is encouraged to go through the respective project's dedicated documentation.
+This guide introduces RPMsg, the inter-processor communication protocol that enables ADSP-SC5xx processors to seamlessly coordinate between the ARM Cortex-A cores running Linux and the SHARC+ DSP cores running bare-metal or RTOS applications. Understanding RPMsg is essential for building applications that leverage the full heterogeneous computing capabilities of your ADSP-SC5xx platform.
+
+RPMsg allows different processors on the same system-on-chip to communicate efficiently through shared memory, even when they're running different operating systems or execution environments. For example, your Linux application on the ARM core can send audio processing commands to SHARC+ DSP cores and receive results back—all through standardized RPMsg channels.
+
+**What you'll learn:**
+
+* How RPMsg works and its fundamental architecture
+* The boot process and how processors establish communication roles
+* RPMsg integration with Linux and the remoteproc framework
+* Setting up and testing RPMsg communication using Yocto
+
+.. note::
+   This guide provides an introduction to RPMsg concepts and basic testing. For deeper implementation details, refer to the specific project documentation for `Linux RPMsg driver <https://docs.kernel.org/staging/rpmsg.html>`_, `OpenAMP <https://www.openampproject.org/>`_, or `RPMsg-Lite <https://github.com/analogdevicesinc/rpmsg-lite>`_.
+
+What is RPMsg?
+==============
+
+RPMsg is a communication protocol for heterogeneous inter-processor communication. These processors are often on the same SoC but isolated from each other via software (for instance, a board may boot up Linux with an ARM processor while additional microcontrollers (remote processors) run an RTOS or some bare-metal application).
 
 RPMsg Working
 =============

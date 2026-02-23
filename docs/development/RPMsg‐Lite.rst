@@ -1,12 +1,37 @@
 ============
+RPMsg-Lite
+============
+
 Introduction
 ============
 
-RPMsg is used to transfer messages between cores on ADSP devices. An implementation is available for ARM when running Linux and for bare metal applications a port of RPMsg-Lite is available for ARM and SHARC+ cores. It allows for transmitting a message to a specific endpoint on a different core via a dedicated transport link. Multiple endpoints can be registered against a single link.
+This guide helps you implement RPMsg-Lite for bare-metal applications on ADSP-SC5xx processors. RPMsg-Lite is a lightweight implementation of the RPMsg protocol designed specifically for bare-metal and RTOS environments where the full Linux RPMsg stack is not available.
 
-This page describes how to use RPMsg-Lite for bare metal applications.
+While Linux on the ARM core includes native RPMsg support through kernel drivers, your SHARC+ DSP cores and bare-metal ARM applications need a different approach. RPMsg-Lite provides this solution—a minimal, efficient implementation that enables inter-processor communication without requiring a full operating system.
 
-Additional information can be found on the `RPMsg-Lite repo <https://github.com/analogdevicesinc/rpmsg-lite>`_.
+**What you'll learn:**
+
+* System resources used by RPMsg-Lite (shared memory, interrupts, TRU triggers)
+* How to allocate and configure memory for communication buffers
+* Creating resource tables for cross-processor coordination
+* Setting up RPMsg-Lite instances, endpoints, and message transmission
+* Practical implementation differences between ARM and SHARC+ cores
+
+**Prerequisites:**
+
+* Understanding of RPMsg concepts—see :doc:`What is RPMsg? <RPMsg>`
+* Familiarity with bare-metal or RTOS development
+* ADSP-SC5xx development environment configured
+
+**Additional resources:**
+
+* `RPMsg-Lite Repository <https://github.com/analogdevicesinc/rpmsg-lite>`_
+* `RPMsg Examples <https://github.com/analogdevicesinc/lnxdsp-examples>`_
+
+Overview
+========
+
+RPMsg-Lite enables message transfer between cores on ADSP devices. An implementation is available for ARM when running Linux, and for bare-metal applications, a port of RPMsg-Lite is available for ARM and SHARC+ cores. It allows for transmitting a message to a specific endpoint on a different core via a dedicated transport link. Multiple endpoints can be registered against a single link.
 
 Resources used
 --------------

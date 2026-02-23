@@ -1,24 +1,45 @@
-============
+====================
+Secure Boot Support
+====================
+
 Introduction
 ============
 
+This guide helps you build and deploy a security-hardened Linux distribution for ADSP-SC5xx processors with secure boot capabilities. Secure boot ensures that only authenticated software runs on your hardware, protecting against unauthorized firmware modifications and establishing a chain of trust from the bootloader through the Linux kernel.
 
-This guide will detail building and booting the security-focused distribution of Linux for ADSP.
+By following this guide, you'll create a complete secure boot environment that integrates OP-TEE (Open Portable Trusted Execution Environment), ARM Trusted Firmware-A, and Mbed-TLS into your U-Boot and Linux images. The system will verify cryptographic signatures at each boot stage, ensuring the integrity of your software stack.
 
-When following these instructions, OP-TEE, ARM Trusted-Firmware-A and MBed-TLS will be built into the produced U-Boot/Linux images, and the system will boot through these.
+**What you'll learn:**
 
+* Setting up the secure boot build environment
+* Generating and managing cryptographic keys for signing
+* Building security-focused Linux images with OP-TEE and ARM TF-A
+* Programming one-time programmable (OTP) secure boot keys
+* Flashing signed bootloader and kernel images
+* Signing and loading secure SHARC+ firmware
+* Testing the secure environment with OP-TEE and Mbed-TLS test suites
+
+**Prerequisites:**
+
+* CCES (CrossCore Embedded Studio) installed on your host machine—this guide references version 2.12.1, but you can use newer versions by updating version numbers in commands
+* Standard Linux build environment configured—see :doc:`Setting Up Your Host PC <../getting-started/Setting-Up-Your-Host-PC>`
+* Understanding of PKI concepts (public/private keys, certificates, signing)
+* Development board with ICE-1000 or ICE-2000 debugger
+
+**Important security considerations:**
+
+* OTP key programming is irreversible—test thoroughly with unsigned images first
+* Keep private keys secure—loss or compromise requires new hardware
+* This guide uses test keys for demonstration—never use test keys in production
+* Secure boot alone does not guarantee system security—implement defense in depth
+
+Getting Started
 ===============
-Getting started
-===============
-
 
 Prerequisites
-=============
+-------------
 
-
-- Install `CCES (CrossCore Embedded Studio) <https://www.analog.com/en/design-center/evaluation-hardware-and-software/software/adswt-cces.html#software-relatedsoftware>:doc:`_ on your host machine. This guide assumes you are using version 2.12.1, as this is the newest 2.x version at the time of writing. If you are using a newer version, simply replace ``2.12.1`` with your version in any commands or filepaths in this guide.
-
-- The system requirements and dependencies are otherwise the same as the standard (non-secure) version of the distribution. See `Setting Up Your Host PC <../getting-started/Setting-Up-Your-Host-PC>`.
+System requirements and dependencies are the same as the standard (non-secure) distribution, with the addition of CCES for signing tools.
 
 Build System Setup
 ==================

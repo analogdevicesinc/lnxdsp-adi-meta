@@ -5,7 +5,27 @@ Configuring System Memory When Using Linux and SHARC Applications
 Introduction
 ============
 
-The present document attempts to catalog the different types of memory and the default allocation of it on the ARM & SHARC cores on the the ADSP-SC5xx platforms.
+This guide helps you understand and configure memory allocation across the heterogeneous cores in ADSP-SC5xx processors. Properly managing memory between the ARM core running Linux and the SHARC+ DSP cores is critical for achieving optimal performance and avoiding memory conflicts in your applications.
+
+ADSP-SC5xx processors feature a unique memory architecture where ARM and SHARC+ cores share L2 and L3 memory spaces. While this shared memory enables efficient inter-processor communication, it requires careful planning to ensure each core has adequate memory for its workload. For example, audio processing algorithms on SHARC+ cores may need fast L1 memory, while Linux on the ARM core typically uses larger L3 memory regions.
+
+**What you'll learn:**
+
+* Different memory types (L1, L2, L3) and their characteristics
+* Default memory allocation across ARM and SHARC+ cores
+* How to modify memory splits for U-Boot, Linux, and SHARC applications
+* Memory ownership, cacheability, and protection mechanisms
+* SHARC-specific memory placement techniques and linker configuration
+* Address translation between internal and system memory maps
+
+**Prerequisites:**
+
+* Basic understanding of embedded memory hierarchies
+* Familiarity with device tree configuration for Linux memory regions
+* For SHARC development: knowledge of linker description files (LDF)
+* Working ADSP-SC5xx development environment
+
+**Important:** Memory allocation changes must be coordinated across all cores. The toolchains have no awareness of mappings used on other cores, so inconsistent configurations can result in wasted memory or corruption.
 
 Terminology
 -----------

@@ -2,31 +2,58 @@
 Frequently Asked Questions
 ===========================
 
+Introduction
+============
+
+This page answers common questions about developing with Linux for ADSP-SC5xx processors. Whether you're customizing your filesystem, debugging SHARC applications, or configuring peripherals, you'll find practical solutions and best practices here.
+
+The FAQ is organized by topic to help you quickly find relevant information. For additional support, visit the `EngineerZone forum <https://ez.analog.com/linux-software-drivers>`_ or check the `GitHub issues <https://github.com/analogdevicesinc/lnxdsp-adi-meta/issues>`_.
+
+**Quick Navigation:**
+
+* `Yocto and Build System`_
+* `Debugging SHARC Applications`_
+* `Custom Development Repositories`_
+* `Hardware Configuration`_
+
+----
+
+Yocto and Build System
+======================
+
 How do I add packages to my own Linux filesystem?
-==================================================
+--------------------------------------------------
 
 Let's try, for example, to add the package ``ethtool`` to your own target adsp-custom-ramdisk image.
 
 Find the Yocto Project recipe
-------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Users could add their own packages instead of the ``ethtool``, the first step is to find out the Yocto Project recipe that includes ``ethtool``. The way to find recipes is to go to the `Openembedded Layer Index <https://layers.openembedded.org/layerindex/branch/master/recipes/>:doc:`_ web site.
+You can add your own packages instead of ``ethtool``. The first step is to find the Yocto Project recipe for your desired package. The best way to locate recipes is through the `OpenEmbedded Layer Index <https://layers.openembedded.org/layerindex/branch/master/recipes/>`_.
 
-The below picture demonstrates how to find the package ``gstreamer`` in this website.
+The example below demonstrates how to search for packages on the OpenEmbedded Layer Index:
 
 .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/7bfec7fc-df8f-4bad-819c-a7484dbb2075
    :width: 600
+   :alt: OpenEmbedded Layer Index search example
 
-Add the Package to the filesystem
-----------------------------------
+Add the package to the filesystem
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Method 1**: After finding the specific recipe name, users need to add it to the image by adding this line to ``conf/local.conf``, which is highly recommended:
+**Method 1: Using local.conf (Recommended)**
+
+After finding the recipe name, add it to your image by appending this line to ``conf/local.conf``:
 
 .. code-block:: shell
 
-   IMAGE_INSTALL:append = "ethtool"
+   IMAGE_INSTALL:append = " ethtool"
 
-**Method 2**: Users can also add the package into their own custom-recipe.bb file directly. For example, applying the below patch would add the ``ethtool`` package into the ``adsp-custom-ramdisk``'s filesystem.
+.. note::
+   Always include a space before the package name when using ``:append`` to avoid concatenation with the previous entry.
+
+**Method 2: Using a custom recipe**
+
+Alternatively, add the package directly to your custom recipe file. For example, this patch adds ``ethtool`` to the ``adsp-custom-ramdisk`` filesystem:
 
 .. code-block:: diff
 
@@ -42,60 +69,93 @@ Add the Package to the filesystem
    "
    DISTRO_FEATURES = " ram"
 
-Build the Target Images
------------------------
+Build the target images
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-Run the below command to bitbake the ramdisk filesystem. The package ``ethtool`` will be deployed into the Linux filesystem directly.
+Build your image to include the new package:
 
 .. code-block:: shell
 
    bitbake adsp-custom-ramdisk
 
+The package will be deployed into the Linux filesystem during the build process.
+
+**See also:** :doc:`Yocto Linux Kernel Development <../development/Yocto-Linux-Kernel-development>`
+
+----
+
+Debugging SHARC Applications
+=============================
+
 How do I debug a SHARC application whilst running Linux on the ARM core?
-=========================================================================
+-------------------------------------------------------------------------
 
-When attempting to debug SHARC applications using CrossCore Embedded Studio, it is important to ensure that the debug session does not interfere with execution of Linux running on the ARM core of the processor.
+When debugging SHARC applications using CrossCore Embedded Studio (CCES) while Linux runs on the ARM core, you must configure the debug session carefully to avoid interfering with Linux execution.
 
-Since the ARM is the booting core for the SC5xx processors, Linux will be running when you connect to the Cross Core Embedded Studio debugger.
+Since the ARM core boots first and starts Linux, the system is already running when you connect the debugger. The following settings are essential for safe SHARC debugging.
 
-You will need to make several changes when creating a debug session for the SHARC cores to avoid interfering with Linux.
+Overview: Required debug session settings
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Ensure that the debug session does not load any preloads or applications to the ARM core
------------------------------------------------------------------------------------------
+To debug SHARC cores safely while Linux runs on ARM:
 
-By default the debug session will attempt to load applications on to the ARM core.
+1. **Do not load preloads or applications to the ARM core** - Prevents memory corruption
+2. **Disable processor reset** - Keeps Linux running
+3. **Disable semihosting** - Avoids interference with Linux system calls
 
-When creating the debug session you will need to remove any preload or initcode binary and ensure that an application is not loaded. This will ensure that the L2 and L3 memory reserved for the ARM core is not changed by the debug session (Assuming that you have either used the default memory configuration or correctly repartitioned the memory between the cores)
+Step 1: Do not load any preloads or applications to the ARM core
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Ensure that the debug session does not reset the processor when loading the SHARC cores
-----------------------------------------------------------------------------------------
+**Problem:** By default, CCES attempts to load applications onto the ARM core, which overwrites the L2 and L3 memory used by Linux.
 
-By default the debug session will reset the processor when starting a debug session. Since this cannot be performed on a core by core basis the whole system is reset, wiping the running Linux from memory.
+**Solution:** When creating the debug session:
 
-When creating the debug session you will need to uncheck the option to **"reset on reload"** from the debug session settings.
+* Remove any preload or initcode binaries for the ARM core
+* Ensure no application is loaded to the ARM core
+* This preserves the memory regions reserved for Linux
 
-Ensure that semihosting does not interfere with Linux running on the ARM core
-------------------------------------------------------------------------------
+.. note::
+   This assumes you're using the default memory configuration or have correctly partitioned memory between cores. See :doc:`Configuring System Memory <../development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>`.
 
-When creating a debug session for SC5xx processors by default CrossCore Embedded Studio uses the ARM supervisor call (SVC) instruction to trigger a communication to the host PC. Unfortunately this instruction is used by Linux for other purposes. By leaving this feature active the execution of Linux will become considerably slower and may result in crashes.
+Step 2: Disable processor reset on reload
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When creating the debug session you will need to uncheck the **"Use semihosting"** checkbox from the debug session settings.
+**Problem:** CCES resets the entire processor when starting a debug session, which erases Linux from memory.
 
-This will ensure that the emulator does not halt the board for each execution of the SVC instruction.
+**Solution:** In the debug session settings:
+
+* Uncheck **"Reset on reload"**
+* This allows the debug session to attach without resetting the system
+
+Step 3: Disable semihosting
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Problem:** CCES uses ARM Supervisor Call (SVC) instructions for host communication. Linux also uses these instructions for system calls, causing severe performance degradation or crashes when semihosting is enabled.
+
+**Solution:** In the debug session settings:
+
+* Uncheck **"Use semihosting"**
+* This prevents the emulator from halting on every SVC instruction
+
+**Result:** Linux continues running normally while you debug SHARC applications.
+
+----
+
+Custom Development Repositories
+================================
 
 How do I develop Linux for ADSP-SC5xx with my own repositories?
-================================================================
+----------------------------------------------------------------
 
-Host PC setup
--------------
+This guide explains how to configure your Yocto build to use custom Git repositories for development, allowing you to work with your own forks or private repositories.
 
-Covered in `Setting Up Your Host PC <../getting-started/Setting-Up-Your-Host-PC>`.
+Prerequisites
+~~~~~~~~~~~~~
 
-Source Code Preparation
------------------------
+Ensure your host PC is properly configured: :doc:`Setting Up Your Host PC <../getting-started/Setting-Up-Your-Host-PC>`.
 
-Download Source code
-~~~~~~~~~~~~~~~~~~~~
+Step 1: Download source code
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: shell
 
@@ -106,11 +166,16 @@ Download Source code
    $ chmod a+x ./bin/repo
    $ ./bin/repo init \
     -u https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git \
-    -b release/yocto-3.0.0 \
-    -m release-yocto-3.0.0.xml
+    -b main \
+    -m release-5.0.1.xml
 
-Change ``lnxdsp-adi-meta`` and ``lnxdsp-scripts`` to point to your own repo
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. note::
+   Replace ``release-5.0.1.xml`` with your desired release version.
+
+Step 2: Configure manifest to use your repositories
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Modify the repo manifest to point to your custom repositories for ``lnxdsp-adi-meta`` and ``lnxdsp-scripts``:
 
 .. code-block:: shell
 
@@ -129,136 +194,176 @@ Apply the below modifications into the ``lnxdsp-repo-manifest``
       <remote fetch="https://git.yoctoproject.org/git" name="yocto"/>
       <remote fetch="https://github.com/openembedded" name="oe"/>
    -  <remote fetch="https://github.com/analogdevicesinc" name="adigithub"/>
-   +  <remote fetch="$YOUR_REPO_PATH" name="dte"/>
+   +  <remote fetch="$YOUR_REPO_PATH" name="customrepo"/>
 
-      <project remote="yocto" revision="50f33d3bfebcbfb1538d932fb487cfd789872026" name="poky" path="sources/poky"/> <!-- thud revision -->
-      <project remote="oe" revision="4cd3a39f22a2712bfa8fc657d09fe2c7765a4005" name="meta-openembedded" path="sources/meta-openembedded"/> <!-- thud revision -->
-   -  <project remote="adigithub" revision="release/yocto-3.0.0" name="lnxdsp-adi-meta" path="sources/meta-adi"/>
-   -  <project remote="adigithub" revision="release/yocto-3.0.0" name="lnxdsp-scripts" path="sources">
-   +  <project remote="dte" revision="release/yocto-3.0.0" name="lnxdsp-adi-meta" path="sources/meta-adi"/>
-   +  <project remote="dte" revision="release/yocto-3.0.0" name="lnxdsp-scripts" path="sources">
+      <project remote="yocto" revision="..." name="poky" path="sources/poky"/>
+      <project remote="oe" revision="..." name="meta-openembedded" path="sources/meta-openembedded"/>
+   -  <project remote="adigithub" revision="main" name="lnxdsp-adi-meta" path="sources/meta-adi"/>
+   -  <project remote="adigithub" revision="main" name="lnxdsp-scripts" path="sources">
+   +  <project remote="customrepo" revision="main" name="lnxdsp-adi-meta" path="sources/meta-adi"/>
+   +  <project remote="customrepo" revision="main" name="lnxdsp-scripts" path="sources">
    	  <linkfile dest="setup-environment" src="setup-environment"/>
-      </project>>
+      </project>
 
-and sync the repo:
+Replace ``$YOUR_REPO_PATH`` with your Git server URL (e.g., ``https://github.com/yourorg`` or ``git://your-server.com``).
+
+Sync the repositories:
 
 .. code-block:: shell
 
    $ ./bin/repo sync
 
-Change u-boot and linux-kernel URI to point to your own repo
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Step 3: Configure U-Boot and Linux kernel repositories
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block:: shell
-
-   $ cd ~/linux-dsp-own-repos/sources/
-
-Apply the below modifications into your own build script, take ``adsp-sc589-ezkit`` as an example, the same patch should be applied into adsp-sc589-mini, adsp-sc584-ezkit, adsp-sc573-ezkit etc.
+Point U-Boot and Linux kernel recipes to your custom repositories by modifying ``conf/local.conf``:
 
 .. code-block:: diff
 
-   diff --git a/base/adsp-sc589-ezkit/local.conf b/base/adsp-sc589-ezkit/local.conf
-   index 260a16b..b3c69f1 100644
-   --- a/base/adsp-sc589-ezkit/local.conf
-   +++ b/base/adsp-sc589-ezkit/local.conf
-   @@ -21,6 +21,11 @@
-    # This sets the default machine to be adsp-sc589-ezkit if no other machine is selected:
-    MACHINE ?= "adsp-sc589-ezkit"
+.. code-block:: shell
 
-   +UBOOT_GIT_URI ?= "git://$YOUR_REPO_PATH/u-boot.git"
-   +UBOOT_BRANCH ?= "release/yocto-3.0.0"
-   +KERNEL_GIT_URI ?= "git://$YOUR_REPO_PATH/lnxdsp-linux.git"
-   +KERNEL_BRANCH ?= "release/yocto-3.0.0"
-   +
-    #
-    # Where to place downloads
-    #
+   # Add to conf/local.conf
+   UBOOT_GIT_URI = "git://$YOUR_REPO_PATH/u-boot.git"
+   UBOOT_BRANCH = "main"
+   KERNEL_GIT_URI = "git://$YOUR_REPO_PATH/lnxdsp-linux.git"
+   KERNEL_BRANCH = "main"
 
-Then you can start your development based on your own repos:
+Replace ``$YOUR_REPO_PATH`` with your repository locations and adjust branch names as needed.
+
+Step 4: Build with custom repositories
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Configure your build environment and start building:
+
+.. code-block:: shell
 
 .. code-block:: shell
 
    $ cd ~/linux-dsp-own-repos/
-   $ source setup-environment -m adsp-sc589-ezkit
-   Your build environment has been configured with:
+   $ source setup-environment -m adsp-sc598-som-ezkit
 
-   MACHINE=adsp-sc589-ezkit
+   # Build your target
+   $ bitbake adsp-sc5xx-minimal
 
-   You can now run 'bitbake <target>'
-   Some of common targets are:
-   u-boot-adi
-   linux-adi
-   adsp-sc5xx-full
-   adsp-sc5xx-minimal
+**Common build targets:**
 
-   $ bitbake ...
+* ``u-boot-adi`` - U-Boot bootloader
+* ``linux-adi`` - Linux kernel
+* ``adsp-sc5xx-minimal`` - Minimal root filesystem image
+* ``adsp-sc5xx-full`` - Full-featured root filesystem image
+
+**Benefits of using custom repositories:**
+
+* Maintain proprietary modifications
+* Implement custom versioning and branching strategies
+* Enable CI/CD integration with your development workflow
+* Control access and review processes
+
+----
+
+Hardware Configuration
+======================
 
 How do I allocate a peripheral to the SHARC?
-=============================================
+---------------------------------------------
 
-Default Peripheral allocation between SHARCs and ARM
------------------------------------------------------
+Default peripheral allocation between SHARC and ARM
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-By default, all peripherals are allocated to the ARM. In order to access a peripheral it is necessary for the **pinmux** for the peripheral to be configured correctly. The pinmux should only be configured by a single core and by default this is handled by the ARM, which is the booting core.
-Peripheral allocation is controlled by the device tree source file. The device tree source files are located in the Linux source repo in the ``/arch/arm/boot/dts`` folder. For the SC594 EZKIT there are two device tree source files, a generic one for the device family named ``sc59x.dtsi`` and a board specific one named ``sc594-som-ezkit.dts``.
+By default, all peripherals are allocated to the ARM core. The ARM core, as the booting processor, manages **pinmux** (pin multiplexing) configuration for all peripherals. Only one core should configure the pinmux to avoid conflicts.
 
-For ``Linkport0`` for example there will be an entry in both files. The ``sc594.dtsi`` file contains:
+Peripheral allocation is controlled through Linux device tree files, located in the kernel source at ``arch/arm/boot/dts`` (ARM) or ``arch/arm64/boot/dts/adi`` (ARM64). Each platform has:
+
+* A family-level device tree (e.g., ``sc59x.dtsi``)
+* A board-specific device tree (e.g., ``sc594-som-ezkit.dts``)
+
+**Example: Linkport0 device tree entries**
+
+Family-level device tree (``sc59x.dtsi``):
 
 .. code-block:: text
+
+.. code-block:: dts
 
    lp0: linkport@0 {
-   	compatible = "linkport0";
-   	interrupt-parent = <&gic>;
-   	interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>,
-   	             <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH>;
-   	clock-div = <1>;
-   	status = "disabled";
+       compatible = "linkport0";
+       interrupt-parent = <&gic>;
+       interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>,
+                    <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH>;
+       clock-div = <1>;
+       status = "disabled";
    };
 
-The ``sc594-som-ezkit.dts`` contains the following entry which overrides the above status and enables the linkport:
+Board-specific device tree (``sc594-som-ezkit.dts``) enables the peripheral:
 
 .. code-block:: text
 
+.. code-block:: dts
+
    &lp0 {
-   	pinctrl-names = "default";
-   	pinctrl-0 = <&lp0_default>;
-   	status = "okay";
+       pinctrl-names = "default";
+       pinctrl-0 = <&lp0_default>;
+       status = "okay";
    };
 
 Allocating a peripheral to SHARC
----------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Allocating a peripheral to SHARC requires changes to the device tree source file specific to the board. The ARM core is still required to configure the pinmux but should otherwise not interact with the peripheral. For example allocating ``Linkport0`` to the SHARC requires the following changes to ``sc594-som-ezkit.dts`` file. First disable Linkport0 in the device tree:
+To allocate a peripheral to SHARC cores, modify the board-specific device tree. The ARM core still configures the pinmux but doesn't interact with the peripheral otherwise.
+
+**Example: Allocating Linkport0 to SHARC**
+
+**Step 1:** Disable the peripheral in Linux by setting ``status = "disabled"`` in the board device tree:
 
 .. code-block:: text
+
+.. code-block:: dts
 
    &lp0 {
-   	pinctrl-names = "default";
-   	pinctrl-0 = <&lp0_default>;
-   	status = "disabled";
+       pinctrl-names = "default";
+       pinctrl-0 = <&lp0_default>;
+       status = "disabled";
    };
 
-Next it is necessary to specify the required pinmux for ``Linkport0``. For any peripherals not used by Linux this is handled by the ``icc`` driver:
+**Step 2:** Configure the pinmux for the peripheral using the ``icc`` (inter-core communication) driver:
 
 .. code-block:: text
+
+.. code-block:: dts
 
    &pinctrl0 {
-   	icc {
-   		icc_default: icc0@0 {
-   			adi,group = "lp0grp";
-   			adi,function = "lp0";
-   		};
-   	};
+       icc {
+           icc_default: icc0@0 {
+               adi,group = "lp0grp";
+               adi,function = "lp0";
+           };
+       };
    };
 
-Lastly, the pincontrol which was just created needs to be passed into the ``icc`` which will then set up the pinmux for ``Linkport0`` use and ensure the pins are reserved. The driver does not interact with the peripheral itself thereby reserving it for the SHARC:
+**Step 3:** Apply the pinmux configuration through the ``icc`` driver:
 
 .. code-block:: text
 
+.. code-block:: dts
+
    &icc0 {
-   	pinctrl-names = "default";
-   	pinctrl-0 = <&icc_default>;
-   	status = "okay";
+       pinctrl-names = "default";
+       pinctrl-0 = <&icc_default>;
+       status = "okay";
    };
 
-The pinmux for ``Linkport0`` is then configured at boot by Linux and can be used by a SHARC core without Linux accessing the device or the pins for any other purpose.
+**Result:** Linux configures the pinmux at boot but doesn't access the peripheral. The SHARC core can use Linkport0 exclusively without interference.
+
+.. note::
+   After modifying device trees, rebuild the kernel and deploy the updated device tree blob (DTB) to your target. The changes take effect on the next boot.
+
+**See also:** :doc:`Configuring System Memory <../development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>` for memory partitioning between cores.
+
+----
+
+Additional Resources
+====================
+
+* **Documentation**: :doc:`Development Guide <../development/Development>` | :doc:`Examples <../examples/Examples>`
+* **Support**: `EngineerZone Forum <https://ez.analog.com/linux-software-drivers>`_ | `GitHub Issues <https://github.com/analogdevicesinc/lnxdsp-adi-meta/issues>`_
+* **Release Information**: :doc:`5.0.1 Landing Page <../Linux-for-ADSP‐SC5xx-5.0.1-Landing-Page>` | :doc:`Older Releases <../Older-Releases>`

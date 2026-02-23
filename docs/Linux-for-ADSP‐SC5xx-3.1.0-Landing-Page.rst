@@ -18,10 +18,10 @@ The following boards are supported on this release.
      - Getting Started Guide
    * - `ADSP-SC598 SOM <https://www.analog.com/en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/EV-SC598-EZKIT.html>`_ and `EV-SOMCRR-EZKIT <https://www.analog.com/en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/ev-somcrr-ezkit.html>`_ carrier board
      - Rev A/B/C/D (DSP-SC598 SOM), Rev A (REV-SOMCRR-EZKIT)
-     - `Getting Started with ADSP-SC598 <getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-3.1.0)>`
+     - :doc:`Getting Started with ADSP-SC598 <getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-3.1.0)>`
    * - `ADSP-SC594 SOM <https://www.analog.com/en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/EV-SC594-SOM.html>`_ and `EV-SOMCRR-EZKIT <https://www.analog.com/en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/ev-somcrr-ezkit.html>`_ carrier board
      - 1.0 Rev B or later
-     - `Getting Started with ADSP-SC594 <getting-started/Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-3.1.0)>`
+     - :doc:`Getting Started with ADSP-SC594 <getting-started/Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-3.1.0)>`
    * - `ADSP-SC589-MINI <https://www.analog.com/en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/sharc-audio-module.html>`_
      - 1.5 or later
      - :doc:`Getting Started with ADSP-SC589 MINI <getting-started/Getting-Started-with-ADSP‐SC589‐MINI-(Linux-for-ADSP‐SC5xx-Processors-3.1.0)>`
@@ -30,10 +30,10 @@ The following boards are supported on this release.
      - :doc:`Getting Started with ADSP-SC589 EZ-KIT <getting-started/Getting-Started-with-ADSP‐SC589‐EZ‐KIT-(Linux-for-ADSP‐SC5xx-Processors-3.1.0)>`
    * - `ADSP-SC584 EZ-KIT <https://www.analog.com/en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/EVAL-ADSP-SC584.html>`_
      - 1.5 or later
-     - `Getting Started with ADSP-SC584 EZ-KIT <getting-started/Getting-Started-with-ADSP‐SC584-(Linux-for-ADSP‐SC5xx-Processors-3.1.0)>`
+     - :doc:`Getting Started with ADSP-SC584 EZ-KIT <getting-started/Getting-Started-with-ADSP‐SC584-(Linux-for-ADSP‐SC5xx-Processors-3.1.0)>`
    * - `ADSP-SC573 EZ-KIT <https://www.analog.com/en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/EVAL-ADSP-SC573.html>`_
      - 1.5 or later
-     - `Getting Started with ADSP-SC573 EZ-KIT <getting-started/Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-3.1.0)>`
+     - :doc:`Getting Started with ADSP-SC573 EZ-KIT <getting-started/Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-3.1.0)>`
 
 
 Building of the Linux software requires a host PC running a recent flavour Linux.

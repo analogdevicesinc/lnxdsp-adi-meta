@@ -29,16 +29,16 @@ Development Boards
      - Quick Start Guide
    * - **SC598-SOM**
      - Cortex-A55 + Dual SHARC+ @ 1GHz
-     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-5.0.0)>`
+     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)>`
    * - **SC594-SOM**
      - Cortex-A5 + Single SHARC+ @ 1GHz
-     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-5.0.0)>`
+     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)>`
    * - **SC589-MINI**
      - Cortex-A5 + Dual SHARC+ @ 500MHz
-     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC589‐MINI-(Linux-for-ADSP‐SC5xx-Processors-5.0.0)>`
+     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC589‐MINI-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)>`
    * - **SC573-EZ-KIT**
      - Cortex-A5 + Single SHARC+ @ 500MHz
-     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-5.0.0)>`
+     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)>`
 
 Quick Start
 -----------
@@ -47,7 +47,7 @@ Quick Start
 
 1. :doc:`Setup your host PC <getting-started/Setting-Up-Your-Host-PC>` - Install tools and configure environment
 2. **Choose your board** - Select from the processor guides above (SC598, SC594, SC589, or SC573)
-3. :doc:`Build Linux image <development/Yocto-Linux-Kernel-development>` - Use Yocto to create your custom image
+3. :doc:`Build and customize <development/Development>` - Use Yocto to create your custom image and develop applications
 4. :doc:`Run examples <examples/Examples>` - Try SHARC-ALSA, USB Audio, and more
 
 **Key Topics**: :doc:`Boot Process <boot/Boot-Sequence>` | :doc:`RPMsg <development/RPMsg>` | :doc:`Memory Configuration <development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>` | :doc:`Secure Boot <secure-boot/Secure-Boot-Support>`
@@ -58,9 +58,9 @@ Latest Release
 .. admonition:: Version 5.0.1 - Current Stable
    :class: tip
 
-   **Linux 6.1 LTS** | **Yocto Mickledore** | **Enhanced RPMsg** | **Secure Boot** | **New Audio Examples**
+   **Linux 6.12.38 (LTS)** | **Yocto Scarthgap** | **Enhanced RPMsg** | **Secure Boot** | **New Audio Examples**
 
-   :doc:`Full Release Notes → <Linux-for-ADSP‐SC5xx-5.0.1-Landing-Page>` | :doc:`Previous Releases <Linux-for-ADSP‐SC5xx-5.0.0-Landing-Page>`
+   `Full Release Notes <https://github.com/analogdevicesinc/lnxdsp-adi-meta/releases/tag/5.0.1-rel-1>`_ | :doc:`Older Releases <Older-Releases>`
 
 Quick Links
 -----------
@@ -68,7 +68,7 @@ Quick Links
 **Essential Documentation**
 
 * **Setup**: :doc:`Setting Up Your Host PC <getting-started/Setting-Up-Your-Host-PC>` | :doc:`Boot Sequence <boot/Boot-Sequence>`
-* **Development**: :doc:`Yocto Build System <development/Yocto-Linux-Kernel-development>` | :doc:`RPMsg Communication <development/RPMsg>`
+* **Development**: :doc:`Development Guide <development/Development>` | :doc:`Kernel Development <development/Yocto-Linux-Kernel-development>` | :doc:`RPMsg Communication <development/RPMsg>`
 * **Examples**: :doc:`SHARC-ALSA Audio <examples/SHARC‐ALSA-Example>` | :doc:`USB Audio Gadget <examples/USB-Gadget-Audio-Example>`
 * **Support**: :doc:`FAQ <faq/Frequently-Asked-Questions>` | `Forum <https://ez.analog.com/linux-software-drivers>`_ | `Issues <https://github.com/analogdevicesinc/lnxdsp-adi-meta/issues>`_
 
@@ -88,14 +88,14 @@ Documentation
    :titlesonly:
 
    5.0.1 Landing Page <Linux-for-ADSP‐SC5xx-5.0.1-Landing-Page>
-   5.0.0 Landing Page <Linux-for-ADSP‐SC5xx-5.0.0-Landing-Page>
+   Older Releases <Older-Releases>
    Examples <examples/Examples>
-   Development <development/Yocto-Linux-Kernel-development>
+   Development <development/Development>
    Boot Sequence <boot/Boot-Sequence>
    Benchmarks <benchmarks/Benchmarking>
    FAQ <faq/Frequently-Asked-Questions>
    Secure Boot <secure-boot/Secure-Boot-Support>
-   Test Reports <test-reports/Test-Report-(5.0.1)>
+   Test Reports <test-reports/Test-Reports>
 
 .. tip::
    🔍 **Quick Search**: Press :kbd:`Ctrl+K` to search documentation | For generic Linux kernel info, visit `docs.kernel.org <https://docs.kernel.org/>`_

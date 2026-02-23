@@ -2,18 +2,34 @@
 Yocto Linux Kernel development
 ==============================
 
-ADSP Linux Kernel for release 3.1.2 based on Linux 5.15.168.
+Introduction
+============
 
-Minimal requirements to compile Kernel `https://docs.kernel.org/process/changes.html <https://docs.kernel.org/process/changes.html>`_
+This guide helps you develop and customise the Linux kernel for ADSP-SC5xx processors. Whether you're debugging driver issues, adding new hardware support, or optimizing performance, this page walks you through compiling and rebuilding the kernel outside of the full Yocto build system.
 
-This steps applicable for all supported platforms and this is not complete guide for kernel development.
-There is plenty resource on kernel development online:
+While Yocto automates the entire build process, direct kernel development allows for faster iteration during development. You can quickly compile changes, test them on your hardware, and integrate them back into your Yocto layer once they're stable.
 
-`https://kernelnewbies.org/KernelBuild <https://kernelnewbies.org/KernelBuild>`_
+**What you'll learn:**
 
-`https://linux-kernel-labs.github.io/refs/heads/master/labs/arm_kernel_development.html <https://linux-kernel-labs.github.io/refs/heads/master/labs/arm_kernel_development.html>`_
+* How to obtain and compile the ADSP Linux kernel source
+* Building kernel images and device trees for different boards
+* Creating fitImage boot files with your custom kernel
+* Integrating your changes back into Yocto
 
-`https://www.raspberrypi.com/documentation/computers/linux_kernel.html <https://www.raspberrypi.com/documentation/computers/linux_kernel.html>`_
+Prerequisites
+-------------
+
+Before starting kernel development, ensure you have:
+
+* Cross-compilation toolchain installed (from the SDK or your host package manager)
+* Basic understanding of Linux kernel development concepts
+* Minimal build requirements: `kernel.org build requirements <https://docs.kernel.org/process/changes.html>`_
+
+**Additional kernel development resources:**
+
+* `Kernel Newbies - Kernel Build <https://kernelnewbies.org/KernelBuild>`_
+* `ARM Kernel Development Labs <https://linux-kernel-labs.github.io/refs/heads/master/labs/arm_kernel_development.html>`_
+* `Raspberry Pi Kernel Documentation <https://www.raspberrypi.com/documentation/computers/linux_kernel.html>`_
 
 ADSP Linux Kernel
 =================
