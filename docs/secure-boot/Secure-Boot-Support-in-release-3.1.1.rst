@@ -37,7 +37,7 @@ Getting Started
 ===============
 
 Prerequisites
-------------------------------------------------------------
+-------------
 
 System requirements and dependencies are the same as the standard (non-secure) distribution, with the addition of CCES for signing tools.
 
@@ -131,7 +131,7 @@ Build Linux image and SDK
 
 
 Building the SDK
-------------------------------------------------------------
+----------------
 
 
 * Build the SDK with:
@@ -754,7 +754,7 @@ Program the secure boot key
 
 
 Extract the Public key and copy it into the target
-------------------------------------------------------------
+---------------------------------------------------
 
 
 * cd into the directory where the keys were generated:
@@ -822,7 +822,7 @@ Extract the Public key and copy it into the target
 
 
 Program the key into the OTP flash memory
-------------------------------------------------------------
+------------------------------------------
 
 
 **Note:** This is a one-time, irreversible operation - the OTP (One-Time Programmable) Flash cannot be erased or rewritten.

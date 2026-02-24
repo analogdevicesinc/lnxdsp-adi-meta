@@ -700,7 +700,7 @@ Program the secure boot key
 
 
 Extract the Public key and copy it into the target
---------------------------------------------------
+---------------------------------------------------
 
 
 * Dump the Key Pair to verify the content
@@ -760,7 +760,7 @@ Extract the Public key and copy it into the target
 
 
 Program the key into the OTP flash memory
------------------------------------------
+------------------------------------------
 
 
 ```Terminal1: minicom```
