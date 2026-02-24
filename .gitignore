@@ -1,0 +1,22 @@
+# Virtual Environment
+documentation-env/
+documentation-venv/
+venv/
+env/
+.env/
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / Build folders
+dist/
+build/
+*.egg-info/
+docs/_build/
+
+# Log files
+*.log
+
+docs/build_output.txt
