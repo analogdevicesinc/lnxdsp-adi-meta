@@ -3,7 +3,7 @@
 This repository contains the Yocto meta layer that is used in the production of toolchains, uboot images, kernel and filesystem for ADSP-SC5xx EZ-KITs.
 
 ## Getting Started
-Please refer to this repo's wiki for guidance in using Linux for ADSP-SC5xx: https://github.com/analogdevicesinc/lnxdsp-adi-meta/wiki
+Please refer to this repo's documentation page for guidance in using Linux for ADSP-SC5xx: https://analogdevicesinc.github.io/lnxdsp-adi-meta/
 
 ### Quick Evaluation
 To quickly evaluate (i.e. build) what's on the 'main' branch, do:
@@ -31,7 +31,7 @@ What remains is picking a board to build for, e.g. the ADSP-SC598-SOM-EZKIT:
 source setup-environment -m adsp-sc598-som-ezkit
 bitbake adsp-sc5xx-minimal
 ```
-This will result in the `minimal` image being built. The [wiki](https://github.com/analogdevicesinc/lnxdsp-adi-meta/wiki) has detailed guides for building and loading the artefacts to all supported boards.
+This will result in the `minimal` image being built. The [documentation page](https://analogdevicesinc.github.io/lnxdsp-adi-meta/) has detailed guides for building and loading the artefacts to all supported boards.
 
 ## Licensing
 Please refer to the LICENSE.md file in this repository for more information regarding licensing.
