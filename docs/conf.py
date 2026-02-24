@@ -28,6 +28,7 @@ source_suffix = {
     '.md': 'markdown',
 }
 
+# TODO: Remove this once all orphan documents are either included in toctree or removed
 # Suppress warnings for orphan documents (not included in toctree)
 suppress_warnings = ['toc.not_included']
 
