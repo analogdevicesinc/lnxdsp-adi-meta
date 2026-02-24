@@ -40,4 +40,4 @@ Release Notes
 -------------
 
 Release Notes for the 5.0.1 release can be found `here <https://github.com/analogdevicesinc/lnxdsp-adi-meta/releases/tag/5.0.1-rel-1>`_.
-The test report for this page can be found in `here <test-reports/Test-Report-(5.0.1)>`.
+The test report for this page can be found :doc:`here <test-reports/Test-Report-(5.0.1)>`.

@@ -135,7 +135,8 @@ Setup the hardware
 
 Before installing the software on to the development board, ensure that the following cables are connected:
 
-<img src="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/96de8689-92a7-4440-9a67-2fb245c09fab" width="400">
+.. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/96de8689-92a7-4440-9a67-2fb245c09fab
+   :width: 400
 
   * Board connected to network via ethernet cable using J13 connector.
   * Board connected to host PC using USB micro cable, connected to USB/UART port on the development board
@@ -143,7 +144,8 @@ Before installing the software on to the development board, ensure that the foll
   * ICE is also connected to host PC via USB mini cable
   * The BOOT MODE selector on the SC589 board should be turned to "0".
 
-<img src="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/2522110a-a46f-47ed-82df-683f806aba5f" width="400">
+.. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/2522110a-a46f-47ed-82df-683f806aba5f
+   :width: 400
 
 
 ==============================================================

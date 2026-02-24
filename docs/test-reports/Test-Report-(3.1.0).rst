@@ -132,7 +132,7 @@ Test Report (3.1.0)
      - 
      - 
      - 
-   * - **EMAC1**<sup>1</sup>
+   * - **EMAC1** :sup:`1`
      - ➖
      - ➖
      - ➖
@@ -202,7 +202,7 @@ Test Report (3.1.0)
      - **N/A**
      - **N/A**
      - **N/A**
-   * - **eMMC Boot**<sup>3</sup>
+   * - **eMMC Boot** :sup:`3`
      - ➖
      - **N/A**
      - **N/A**
@@ -223,7 +223,7 @@ Test Report (3.1.0)
      - ✅
      - **N/A**
      - ✅
-   * - **OSPI**<sup>4</sup>
+   * - **OSPI** :sup:`4`
      - **N/A**
      - ✅
      - **N/A**
@@ -260,20 +260,19 @@ Test Report (3.1.0)
      - 
 
 
-<sup>✅: PASS</sup>
-
-<sup>❗: PASS with warning(s), see note</sup>
-
-<sup>**N/A**: Not Applicable</sup>
-
-<sup>➖:  Not Tested</sup>
+| ✅: PASS
+| ❗: PASS with warning(s), see note
+| **N/A**: Not Applicable
+| ➖:  Not Tested
 
 ---------------------------------------------------------
 
-<sup>1</sup>Currently, the driver can enumerate the IP and identify what is present, but the PHY is not configured/reset yet and so ethernet communications do not work.
+**Notes:**
 
-<sup>2</sup>There is a known issue on the SC589-MINI's watchdog which prevents the RCU driver/system from resetting properly
+1. Currently, the driver can enumerate the IP and identify what is present, but the PHY is not configured/reset yet and so ethernet communications do not work.
 
-<sup>3</sup>Currently, booting with the kernel and RFS on SD/eMMC is the only supported configuration, primarily due to hardware limitations on the SOM-CRR-EZKIT (so U-Boot must still be stored on the SPI flash)
+2. There is a known issue on the SC589-MINI's watchdog which prevents the RCU driver/system from resetting properly
 
-<sup>4</sup>OSPI is not currently working for MX66 chip under 5.15 kernel. OSPI (1S-8S-8S mode) does work for SC594 & IS25LX256
+3. Currently, booting with the kernel and RFS on SD/eMMC is the only supported configuration, primarily due to hardware limitations on the SOM-CRR-EZKIT (so U-Boot must still be stored on the SPI flash)
+
+4. OSPI is not currently working for MX66 chip under 5.15 kernel. OSPI (1S-8S-8S mode) does work for SC594 & IS25LX256

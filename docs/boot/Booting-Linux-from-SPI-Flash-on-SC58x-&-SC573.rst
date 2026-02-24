@@ -273,12 +273,9 @@ U-Boot loader files (``stage1-boot.ldr`` & ``stage2-boot.ldr``) on TFTP.
    => setenv serverip <SERVERIP>
    => setenv tftpserverip <SERVERIP>
 
-+--------------------------+--------------------------------------------+
-| :memo:                   | To find the IP address of your host Linux  |
-|                          | PC you can issue the ``ip addr`` command   |
-|                          | from the shell or console.                 |
-+==========================+============================================+
-+--------------------------+--------------------------------------------+
+.. note::
+
+   To find the IP address of your host Linux PC you can issue the ``ip addr`` command from the shell or console.
 
 If your network **supports** DHCP, run:
 
@@ -303,18 +300,9 @@ i.e. ``init_ethernet`` should now be
 prior to this change it was
 ``init_ethernet=mii info; dhcp; setenv serverip ${tftpserverip};``
 
-+--------------------------+--------------------------------------------+
-| :memo:                   | If flashing a board that had been          |
-|                          | previously programmed, it’s good to erase  |
-|                          | the whole flash before as sometimes        |
-|                          | previous U-Boot installations might leave  |
-|                          | remnants. You can do that by typing        |
-|                          | ``=>                                       |
-|                          |  sf probe ${sfdev}; sf erase 0 0x4000000`` |
-|                          | on the U-Boot prompt before proceeding to  |
-|                          | the following instructions                 |
-+==========================+============================================+
-+--------------------------+--------------------------------------------+
+.. note::
+
+   If flashing a board that had been previously programmed, it’s good to erase the whole flash before as sometimes previous U-Boot installations might leave remnants. You can do that by typing ``=> sf probe ${sfdev}; sf erase 0 0x4000000`` on the U-Boot prompt before proceeding to the following instructions
 
 Next, run the U-Boot update command to copy the U-Boot loader files from
 the host PC to the target board, and write it into flash:

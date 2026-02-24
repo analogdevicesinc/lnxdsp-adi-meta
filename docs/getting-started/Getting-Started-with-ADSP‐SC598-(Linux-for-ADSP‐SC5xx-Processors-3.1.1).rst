@@ -138,7 +138,8 @@ Setup the hardware
 
 Before installing the software on to the development board, ensure that the following cables are connected:
 
-<img src="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5471efe3-9cb0-44a1-a96e-72f453e1431f" width="400">
+.. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5471efe3-9cb0-44a1-a96e-72f453e1431f
+   :width: 400
 
   * Board connected to network via ethernet cable using J13 connector.
   * Board connected to host PC using USB micro cable, connected to USB/UART port on the development board
@@ -148,14 +149,16 @@ Before installing the software on to the development board, ensure that the foll
 
 On the carrier board is a set of micro switches labelled SW1.  These should all be set to the OFF position before continuing.
 
-<img src="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5e285aff-e67d-4d9c-8157-7f596c32134b" width="400">
+.. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5e285aff-e67d-4d9c-8157-7f596c32134b
+   :width: 400
 
 
   * The Power jumper JP1 on the EV-SC598-SOM board should be fitted so that it shorts the two pins closest to the edge.  This will enable the routing of power from the SOMCRR-EZKIT.
 
   * The BOOT MODE selector on the EV-SC598-SOM board should be turned to "0".
 
-<img src="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/16242018-95c7-4494-a471-d088a5f52d33" width="400">
+.. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/16242018-95c7-4494-a471-d088a5f52d33
+   :width: 400
 
 
 ==============================================================

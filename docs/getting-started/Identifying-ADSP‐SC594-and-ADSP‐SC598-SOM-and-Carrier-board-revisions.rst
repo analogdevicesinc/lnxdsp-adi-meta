@@ -4,9 +4,11 @@ SOM
 
 The revision number located on the top side of the board. On opposite side from USB UART port connector
 
-!`ADSP-SC598 SOM <https://raw.githubusercontent.com/wiki/analogdevicesinc/lnxdsp-adi-meta/images/som*adsp*sc598.jpg>`_
+.. image:: https://raw.githubusercontent.com/wiki/analogdevicesinc/lnxdsp-adi-meta/images/som_adsp_sc598.jpg
+   :alt: ADSP-SC598 SOM
 
-!`ADSP-SC598 SOM <https://raw.githubusercontent.com/wiki/analogdevicesinc/lnxdsp-adi-meta/images/som*board*revision.png>`_
+.. image:: https://raw.githubusercontent.com/wiki/analogdevicesinc/lnxdsp-adi-meta/images/som_board_revision.png
+   :alt: SOM Board Revision
 
 =======
 Carrier
@@ -14,6 +16,8 @@ Carrier
 
 Revision number are on bottom part of carrier board
 
-!`ADSP-SC598 SOM <https://raw.githubusercontent.com/wiki/analogdevicesinc/lnxdsp-adi-meta/images/carrier*ezkit.jpg>`*
+.. image:: https://raw.githubusercontent.com/wiki/analogdevicesinc/lnxdsp-adi-meta/images/carrier_ezkit.jpg
+   :alt: Carrier EZKIT
 
-!`ADSP-SC598 SOM <https://raw.githubusercontent.com/wiki/analogdevicesinc/lnxdsp-adi-meta/images/carrier*board*revision.png>`_
+.. image:: https://raw.githubusercontent.com/wiki/analogdevicesinc/lnxdsp-adi-meta/images/carrier_board_revision.png
+   :alt: Carrier Board Revision

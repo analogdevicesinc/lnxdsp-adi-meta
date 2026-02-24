@@ -2,7 +2,7 @@ name: Deploy Documentation to GitHub Pages
 
 on:
   push:
-    branches: [ main, documentation ]
+    branches: [ main ]
   workflow_dispatch:
 
 # NOTE: For multi-version support and PR previews, consider using gh-pages branch approach

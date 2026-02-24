@@ -39,4 +39,4 @@ Release Notes
 -------------
 
 Release Notes for the 3.1.2 release can be found `here <https://github.com/analogdevicesinc/lnxdsp-adi-meta/releases/tag/3.1.2-rel>`_.
-The test report for this page can be found in `here <test-reports/Test-Report-(3.1.0)>`.
+The test report for this page can be found :doc:`here <test-reports/Test-Report-(3.1.0)>`.
