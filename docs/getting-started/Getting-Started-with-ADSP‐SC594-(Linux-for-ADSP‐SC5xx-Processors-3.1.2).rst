@@ -138,10 +138,10 @@ Before installing the software on to the development board, ensure that the foll
 .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5471efe3-9cb0-44a1-a96e-72f453e1431f
    :width: 400
 
-  * Board connected to network via ethernet cable using J13 connector.
-  * Board connected to host PC using USB micro cable, connected to USB/UART port on the development board
-  * Board connected to the ICE 1000 or ICE 2000 via the DEBUG port on the board
-  * ICE is also connected to host PC via USB mini cable
+* Board connected to network via ethernet cable using J13 connector.
+* Board connected to host PC using USB micro cable, connected to USB/UART port on the development board
+* Board connected to the ICE 1000 or ICE 2000 via the DEBUG port on the board
+* ICE is also connected to host PC via USB mini cable
 
 
 On the carrier board is a set of micro switches labelled SW1.  These should all be set to the OFF position before continuing.
@@ -149,9 +149,9 @@ On the carrier board is a set of micro switches labelled SW1.  These should all 
 .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/40447d52-8dce-4a0d-8cd8-5c0ec4d00537
    :width: 400
 
-  * The Power jumper JP1 on the EV-SC594-SOM board should be fitted so that it shorts the two pins closest to the edge.  This will enable the routing of power from the SOMCRR-EZKIT.
+* The Power jumper JP1 on the EV-SC594-SOM board should be fitted so that it shorts the two pins closest to the edge.  This will enable the routing of power from the SOMCRR-EZKIT.
 
-  * The BOOT MODE selector on the EV-SC594-SOM board should be turned to "0".
+* The BOOT MODE selector on the EV-SC594-SOM board should be turned to "0".
 
 .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/b48d9b27-1c1a-4452-8936-e462d2f79cca
    :width: 400
@@ -449,7 +449,8 @@ If your network **supports** DHCP, run:
 
 <details closed>
   <summary>If your network does NOT support DHCP</summary>
-in the U-Boot console configure the board IP address you want the board to be assigned with (IPADDR) and remove "dhcp;" from the "init_ethernet" command.
+
+In the U-Boot console configure the board IP address you want the board to be assigned with (IPADDR) and remove "dhcp;" from the "init_ethernet" command.
 
 
 .. code-block:: shell

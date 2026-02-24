@@ -1,6 +1,6 @@
-======================
+=======================
 Setting Up Your Host PC
-======================
+=======================
 
 The build system is currently supported on host PCs running **Ubuntu 22.04 LTS 64-bit**.
 

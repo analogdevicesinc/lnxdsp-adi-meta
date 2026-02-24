@@ -37,7 +37,7 @@ Getting Started
 ===============
 
 Prerequisites
--------------
+------------------------------------------------------------
 
 System requirements and dependencies are the same as the standard (non-secure) distribution, with the addition of CCES for signing tools.
 
@@ -131,7 +131,7 @@ Build Linux image and SDK
 
 
 Building the SDK
-----------------
+------------------------------------------------------------
 
 
 * Build the SDK with:
@@ -171,10 +171,10 @@ Before installing the software on to the development board, ensure that the foll
    :width: 400
    :alt: Hardware setup
 
-  * Board connected to network via ethernet cable using J13 connector.
-  * Board connected to host PC using USB micro cable, connected to USB/UART port on the development board
-  * Board connected to the ICE 1000 or ICE 2000 via the DEBUG port on the board
-  * ICE is also connected to host PC via USB mini cable
+* Board connected to network via ethernet cable using J13 connector.
+* Board connected to host PC using USB micro cable, connected to USB/UART port on the development board
+* Board connected to the ICE 1000 or ICE 2000 via the DEBUG port on the board
+* ICE is also connected to host PC via USB mini cable
 
 
 On the carrier board is a set of micro switches labelled SW1.  These should all be set to the OFF position before continuing.
@@ -184,18 +184,17 @@ On the carrier board is a set of micro switches labelled SW1.  These should all 
    :alt: SW1 switches
 
 
-  * The Power jumper JP1 on the EV-SC598-SOM board should be fitted so that it shorts the two pins closest to the edge.  This will enable the routing of power from the SOMCRR-EZKIT.
+* The Power jumper JP1 on the EV-SC598-SOM board should be fitted so that it shorts the two pins closest to the edge.  This will enable the routing of power from the SOMCRR-EZKIT.
 
-  * The BOOT MODE selector on the EV-SC598-SOM board should be turned to "0".
+* The BOOT MODE selector on the EV-SC598-SOM board should be turned to "0".
 
 .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/16242018-95c7-4494-a471-d088a5f52d33
    :width: 400
    :alt: Boot mode selector
 
 
---------------------------------------------------------------
 Transfer, run and flash U-Boot on the board for the first time
---------------------------------------------------------------
+=======================================================================
 
 
 
@@ -205,7 +204,7 @@ Transfer, run and flash U-Boot on the board for the first time
 
 
 Transfer and run U-Boot on RAM
-==============================
+------------------------------
 
 
 Copy the U-Boot binary & loader files to the tftp directory:
@@ -360,7 +359,7 @@ At this point U-Boot will now be running in RAM on your target board. You should
 
 
 Flash (Unsigned) U-Boot to SPI Flash
-====================================
+------------------------------------
 
 
 In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot loader files (```stage1-boot.ldr````, ````stage1-boot-unsigned.ldr````, ````stage2-boot.ldr````, ````stage2-boot-unsigned.ldr```) on TFTP.
@@ -456,15 +455,14 @@ You will see an output similar to the one below:
 
 At this point the U-Boot binary is stored in flash. You can now disconnect the ICE-1000 or ICE-2000 from the development board and make sure to switch the BMODE to position 1. You will only need to reconnect this if your board fails to boot and you need to re-follow these instructions. **Do not reset the board at this stage.**
 
--------------
 Booting Linux
--------------
+=============
 
 
 Booting the minimal image from QSPI
-===================================
+-----------------------------------
 
-The U-Boot console is used to copy U-Boot (SPL and Proper), the minimal root filesystem image and the fitImage (which contains the kernel image and dtb file) into RAM and then write them to Flash. Copy the required files from ```<BUILD DIR>/tmp/deploy/images```` to your ````/tftpboot``` directory.
+The U-Boot console is used to copy U-Boot (SPL and Proper), the minimal root filesystem image and the fitImage (which contains the kernel image and dtb file) into RAM and then write them to Flash. Copy the required files from ``<BUILD DIR>/tmp/deploy/images`` to your ``/tftpboot`` directory.
 
 
 .. code-block:: shell
@@ -486,8 +484,8 @@ If your network **supports** DHCP, run:
 
 <details closed>
   <summary>If your network does NOT support DHCP</summary>
-in the U-Boot console configure the board IP address and remove "run init*ethernet;" from the "start*update_spi" command.
 
+In the U-Boot console configure the board IP address and remove "run init*ethernet;" from the "start*update_spi" command.
 
 .. code-block:: shell
 
@@ -756,7 +754,7 @@ Program the secure boot key
 
 
 Extract the Public key and copy it into the target
---------------------------------------------------
+------------------------------------------------------------
 
 
 * cd into the directory where the keys were generated:
@@ -770,7 +768,7 @@ Extract the Public key and copy it into the target
 * Dump the Key Pair to verify the content
 
 
-.. code-block:: shell
+.. code-block:: text
 
    openssl asn1parse -in testkey.der -inform der -dump
        0:d=0  hl=2 l= 119 cons: SEQUENCE
@@ -824,7 +822,7 @@ Extract the Public key and copy it into the target
 
 
 Program the key into the OTP flash memory
------------------------------------------
+------------------------------------------------------------
 
 
 **Note:** This is a one-time, irreversible operation - the OTP (One-Time Programmable) Flash cannot be erased or rewritten.
@@ -863,13 +861,12 @@ Program the key into the OTP flash memory
 
 Bravo, You have successfully programmed the secure boot key.
 
-----------------
 Using the System
-----------------
+================
 
 
 Running OP-TEE applications
-===========================
+---------------------------
 
 
 * Reboot your device then run ``xtest`` (**TEE sanity test suite**)
@@ -925,11 +922,11 @@ First of all, let's check the status of the ``tee-supplicant`` systemd service, 
 
 
 Using the SHARC Cores
-=====================
+---------------------
 
 
 Signing the SHARC firmware
---------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 First, copy the firmware files from ``/lib/firmware`` on the target system, to the host. Then, the following commands can be used to sign the firmware. Finally, transfer the signed files back to the target and place in ``/lib/firmware`` next to the original firmware.
@@ -942,7 +939,7 @@ First, copy the firmware files from ``/lib/firmware`` on the target system, to t
 
 
 Using the Signed Firmware
--------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 The following commands can then be used to load the signed firmware images.
@@ -1002,7 +999,7 @@ In order to communicate with the cores, we must first bind some RPMsg endpoints:
 
 
 Communicating with the SHARC Cores
-----------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 Finally, we can  communicate with the SHARC cores. For example:

@@ -138,11 +138,11 @@ Before installing the software on to the development board, ensure that the foll
 .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/f57cd6de-4bbd-4693-a805-66cecf8ea3af
    :width: 400
 
-  * Board connected to network via ethernet cable using J13 connector.
-  * Board connected to host PC using USB micro cable, connected to USB/UART port on the development board
-  * Board connected to the ICE 1000 or ICE 2000 via the DEBUG port on the board
-  * ICE is also connected to host PC via USB mini cable
-  * The BOOT MODE selector on the SC589 board should be turned to "0".
+* Board connected to network via ethernet cable using J13 connector.
+* Board connected to host PC using USB micro cable, connected to USB/UART port on the development board
+* Board connected to the ICE 1000 or ICE 2000 via the DEBUG port on the board
+* ICE is also connected to host PC via USB mini cable
+* The BOOT MODE selector on the SC589 board should be turned to "0".
 
 .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/7ca2ad5c-d87f-43c5-8f13-b84770aa8def
    :width: 400
@@ -439,8 +439,8 @@ If your network **supports** DHCP, run:
 
 <details closed>
   <summary>If your network does NOT support DHCP</summary>
-in the U-Boot console configure the board IP address you want the board to be assigned with (IPADDR) and remove "dhcp;" from the "init_ethernet" command.
 
+In the U-Boot console configure the board IP address you want the board to be assigned with (IPADDR) and remove "dhcp;" from the "init_ethernet" command.
 
 .. code-block:: shell
 

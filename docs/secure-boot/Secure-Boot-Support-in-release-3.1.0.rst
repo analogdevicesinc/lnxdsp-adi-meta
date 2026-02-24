@@ -120,10 +120,10 @@ Before installing the software on to the development board, ensure that the foll
    :width: 400
    :alt: Hardware setup
 
-  * Board connected to network via ethernet cable using J13 connector.
-  * Board connected to host PC using USB micro cable, connected to USB/UART port on the development board
-  * Board connected to the ICE 1000 or ICE 2000 via the DEBUG port on the board
-  * ICE is also connected to host PC via USB mini cable
+* Board connected to network via ethernet cable using J13 connector.
+* Board connected to host PC using USB micro cable, connected to USB/UART port on the development board
+* Board connected to the ICE 1000 or ICE 2000 via the DEBUG port on the board
+* ICE is also connected to host PC via USB mini cable
 
 
 On the carrier board is a set of micro switches labelled SW1.  These should all be set to the OFF position before continuing.
@@ -133,18 +133,17 @@ On the carrier board is a set of micro switches labelled SW1.  These should all 
    :alt: SW1 switches
 
 
-  * The Power jumper JP1 on the EV-SC598-SOM board should be fitted so that it shorts the two pins closest to the edge.  This will enable the routing of power from the SOMCRR-EZKIT.
+* The Power jumper JP1 on the EV-SC598-SOM board should be fitted so that it shorts the two pins closest to the edge.  This will enable the routing of power from the SOMCRR-EZKIT.
 
-  * The BOOT MODE selector on the EV-SC598-SOM board should be turned to "0".
+* The BOOT MODE selector on the EV-SC598-SOM board should be turned to "0".
 
 .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/16242018-95c7-4494-a471-d088a5f52d33
    :width: 400
    :alt: Boot mode selector
 
 
---------------------------------------------------------------
 Transfer, run and flash U-Boot on the board for the first time
---------------------------------------------------------------
+=======================================================================
 
 
 
@@ -154,7 +153,7 @@ Transfer, run and flash U-Boot on the board for the first time
 
 
 Transfer and run U-Boot on RAM
-==============================
+------------------------------
 
 
 Copy the U-Boot binary & loader files to the tftp directory:
@@ -404,15 +403,14 @@ You will see an output similar to the one below:
 At this point the U-Boot binary is stored in flash. You can now disconnect the ICE-1000 or ICE-2000 from the development board and make sure to switch the BMODE to position 1. You will only need to reconnect this if your board fails to boot and you need to re-follow these instructions.
 
 
--------------
 Booting Linux
--------------
+=============
 
 
 Booting the minimal image from QSPI
-===================================
+-----------------------------------
 
-The U-Boot console is used to copy U-Boot (SPL and Proper), the minimal root filesystem image and the fitImage (which contains the kernel image and dtb file) into RAM and then write them to Flash. Copy the required files from ```<BUILD DIR>/tmp/deploy/images```` to your ````/tftpboot``` directory.
+The U-Boot console is used to copy U-Boot (SPL and Proper), the minimal root filesystem image and the fitImage (which contains the kernel image and dtb file) into RAM and then write them to Flash. Copy the required files from ``<BUILD DIR>/tmp/deploy/images`` to your ``/tftpboot`` directory.
 
 
 .. code-block:: shell
@@ -434,8 +432,8 @@ If your network **supports** DHCP, run:
 
 <details closed>
   <summary>If your network does NOT support DHCP</summary>
-in the U-Boot console configure the board IP address and remove "run init*ethernet;" from the "start*update_spi" command.
 
+In the U-Boot console configure the board IP address and remove "run init*ethernet;" from the "start*update_spi" command.
 
 .. code-block:: shell
 
@@ -708,18 +706,18 @@ Extract the Public key and copy it into the target
 * Dump the Key Pair to verify the content
 
 
-.. code-block:: shell
+.. code-block:: text
 
-   openssl asn1parse -in testkey.der -inform der -dump         
-       0:d=0  hl=2 l= 119 cons: SEQUENCE          
+   openssl asn1parse -in testkey.der -inform der -dump
+       0:d=0  hl=2 l= 119 cons: SEQUENCE
        2:d=1  hl=2 l=   1 prim: INTEGER           :01
-       5:d=1  hl=2 l=  32 prim: OCTET STRING      
+       5:d=1  hl=2 l=  32 prim: OCTET STRING
          0000 - 87 e8 15 3c a6 7a bf 82-2a 21 1f 27 6f 81 1a ae   ...<.z..*!.'o...
          0010 - b2 cd e6 7d 03 a7 ab 1e-39 26 c0 57 97 b3 e2 54   ...}....9&.W...T
-      39:d=1  hl=2 l=  10 cons: cont [ 0 ]        
+      39:d=1  hl=2 l=  10 cons: cont [ 0 ]
       41:d=2  hl=2 l=   8 prim: OBJECT            :prime256v1
-      51:d=1  hl=2 l=  68 cons: cont [ 1 ]        
-      53:d=2  hl=2 l=  66 prim: BIT STRING        
+      51:d=1  hl=2 l=  68 cons: cont [ 1 ]
+      53:d=2  hl=2 l=  66 prim: BIT STRING
          0000 - 00 04 5a 06 5d 03 19 19-fe b5 ee 87 ed 47 6b 4e   ..Z.]........GkN
          0010 - e6 c9 59 21 6f d0 11 fa-77 ae 6b 99 51 45 49 b9   ..Y!o...w.k.QEI.
          0020 - ec 15 91 9c c0 0e 2e 3b-9f 44 c1 4f f6 a8 f8 0e   .......;.D.O....

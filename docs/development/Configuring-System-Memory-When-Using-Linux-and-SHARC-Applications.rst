@@ -329,7 +329,7 @@ Soft placement is available via a **PrefersMem** attribute. This allows an objec
 
 or via a .file_attr statement from assembly:
 
-.. code-block:: asm
+.. code-block:: text
 
    .file_attr prefersMem="internal";
    .file_attr prefersMem="external";

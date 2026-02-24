@@ -1,6 +1,6 @@
-======================================================
+============================================================
 Loading U-Boot without an ICE Debugger (USB Debug Agent)
-======================================================
+============================================================
 
 If a dedicated ICE debugger is not available, it is still possible to load firmware into memory using the USB Debug Agent port available on some carrier boards.
 
