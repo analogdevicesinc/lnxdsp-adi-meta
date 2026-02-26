@@ -41,6 +41,7 @@ IMAGE_INSTALL = " \
     spidev-test \
     spitools \
     mtd-utils \
+    mtd-utils-ubifs \
     e2fsprogs \
     ${ICC} \
     ${CRYPTO} \
@@ -54,7 +55,7 @@ EXTRA_USERS_PARAMS = "usermod -p '${PASSWD_ROOT}' root;"
 TOOLCHAIN_HOST_TASK:append = " nativesdk-openocd-adi"
 TOOLCHAIN_HOST_TASK:append = " nativesdk-ldr-adi"
 
-IMAGE_FSTYPES:append = " tar.xz jffs2 "
+IMAGE_FSTYPES:append = " tar.xz ubifs "
 
 #For some reason on poky-tiny, INIT_MANAGER="systemd" does not appear to work
 #For now, let's relink directly to systemd
@@ -94,9 +95,9 @@ do_create_programming_images(){
         cp ${DEPLOY_DIR_IMAGE}/fitImage ${PROG_DIR}/
     fi
 
-    # Copy rootfs.jffs2, rename to 'rootfs.jffs2'
-    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.jffs2 ]; then
-        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.jffs2 ${PROG_DIR}/rootfs.jffs2
+    # Copy rootfs.ubifs, rename to 'rootfs.ubifs'
+    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubifs ]; then
+        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubifs ${PROG_DIR}/rootfs.ubifs
     fi
 
     if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ext4 ]; then
