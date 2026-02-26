@@ -87,9 +87,17 @@ case "$ans" in
     flash_erase /dev/mtd2 0 0
     flashcp /usr/firmware/fitImage /dev/mtd2
 
-    echo "Installing Linux rootfs"
-    flash_erase /dev/mtd3 0 0
-    flashcp /usr/firmware/rootfs.jffs2 /dev/mtd3
+    echo "Formatting mtd3 as UBI..."
+    ubiformat /dev/mtd3 -y > /dev/null
+
+    echo "Attaching UBI device..."
+    ubiattach -m 3 -d 0 > /dev/null
+
+    echo "Creating UBI volume 'rootfs'..."
+    ubimkvol /dev/ubi0 -N rootfs -m > /dev/null
+
+    echo "Writing rootfs to UBI volume..."
+    ubiupdatevol /dev/ubi0_0 /usr/firmware/rootfs.ubifs > /dev/null
 
     sync
     echo "SPI install complete"
