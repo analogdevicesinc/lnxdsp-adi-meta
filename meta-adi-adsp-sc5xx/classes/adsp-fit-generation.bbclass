@@ -133,7 +133,7 @@ do_image_ext4[depends] += "\
      adsp-sc5xx-ramdisk:do_image_complete \
 "
 
-do_image_jffs2[depends] += "\
+do_image_ubifs[depends] += "\
      ${PN}:do_assemble_fitimage \
      adsp-sc5xx-ramdisk:do_image_complete \
 "
