@@ -1,0 +1,73 @@
+version: 5.0.0
+build_dir: adsp-sc598-som-ezkit-yocto-build
+sdk_path: /opt/adi-distro-glibc/5.0.0
+board_name: ADSP-SC598
+machine: adsp-sc598-som-ezkit
+machine_short: sc598-som-ezkit
+arch: cortexa55
+gdb_prefix: aarch64-adi_glibc-linux
+openocd_target: adspsc59x_a55
+ethernet_connector: J13
+som_revision: true
+som_revision_default: SOM Rev A/B/C/D with an EZkit Carrier rev D
+sdk_machine_note: true
+has_qspi_boot: true
+has_sdcard_boot: true
+hardware_image: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5471efe3-9cb0-44a1-a96e-72f453e1431f
+hardware_switches_image: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5e285aff-e67d-4d9c-8157-7f596c32134b
+boot_mode_note: The BOOT MODE selector on the EV-SC598-SOM board should be turned
+  to "0".
+ubuntu_version: 22.04 LTS
+git_branch: main
+manifest_file: release-5.0.0.xml
+uboot_version: '2023.04'
+openocd_version: 0.12.0
+file_extension: rootfs.tar.xz
+sdk_installer: adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa55-adsp-sc598-som-ezkit-toolchain-5.0.0.sh
+hardware_connections: |-
+  * Board connected to network via ethernet cable using J13 connector.
+  * Board connected to host PC using USB micro cable, connected to USB/UART port on the development board
+  * Board connected to the ICE 1000 or ICE 2000 via the DEBUG port on the board
+  * ICE is also connected to host PC via USB mini cable
+  * The BOOT MODE selector on the EV-SC598-SOM board should be turned to "0".
+sdk_example_files: |-
+  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa55-adsp-sc598-som-ezkit-toolchain-5.0.0.host.manifest
+  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa55-adsp-sc598-som-ezkit-toolchain-5.0.0-host.spdx.tar.zst
+  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa55-adsp-sc598-som-ezkit-toolchain-5.0.0.sh
+  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa55-adsp-sc598-som-ezkit-toolchain-5.0.0.target.manifest
+  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa55-adsp-sc598-som-ezkit-toolchain-5.0.0-target.spdx.tar.zst
+  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa55-adsp-sc598-som-ezkit-toolchain-5.0.0.testdata.json
+openocd_output: Open On-Chip Debugger 0.12.0...
+gdb_start_output: 0x000000000000352c in ?? ()
+gdb_load_spl_output: 'Loading sections... Transfer rate: 29 KB/sec'
+uboot_spl_message: |-
+  U-Boot SPL 2023.04
+  ADI Boot Mode: 0x0 (JTAG/BOOTROM)
+  SPL execution has completed.
+gdb_load_proper_output: 'Loading sections... Transfer rate: 28 KB/sec'
+uboot_proper_boot: |-
+  U-Boot 2023.04
+  CPU: ADSP ADSP-SC598
+  Hit any key to stop autoboot: 0
+  =>
+uboot_flash_output: |-
+  => run update_spi_uboot_only
+  Speed: 1000, full duplex
+  TFTP from server...
+  Bytes transferred = 115008 (1c140 hex)
+  SF: 115008 bytes @ 0x0 Written: OK
+linux_boot_output: |-
+  Starting services...
+  Analog Devices Yocto Distribution
+  login: root
+  Password: adi
+sdcard_boot_content: SD card boot instructions here...
+qspi_boot_content: QSPI boot instructions here...
+hardware_setup_extra: |-
+  On the carrier board is a set of micro switches labelled SW1. These should all be set to the OFF position before continuing.
+
+  .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5e285aff-e67d-4d9c-8157-7f596c32134b
+     :width: 400
+
+  * The Power jumper JP1 on the EV-SC598-SOM board should be fitted.
+  * The BOOT MODE selector on the EV-SC598-SOM board should be turned to "0".
