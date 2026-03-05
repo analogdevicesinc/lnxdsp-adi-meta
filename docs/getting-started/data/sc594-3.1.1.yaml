@@ -18,8 +18,8 @@ hardware_switches_image: https://github.com/analogdevicesinc/lnxdsp-adi-meta/ass
 boot_mode_note: The BOOT MODE selector on the EV-SC594-SOM board should be turned
   to "0".
 ubuntu_version: 20.04 LTS
-git_branch: release/yocto-3.1.1
-manifest_file: release-yocto-3.1.1.xml
+git_branch: main
+manifest_file: release-3.1.1.xml
 uboot_version: '2020.10'
 openocd_version: 0.10.0
 file_extension: tar.xz

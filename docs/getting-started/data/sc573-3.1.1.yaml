@@ -16,8 +16,8 @@ hardware_image: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/11002
 boot_mode_note: The BOOT MODE selector on the SC573 board should be turned to "0".
 hardware_image_2: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/fcf62f04-ebe3-469c-b271-2b5a6096182e
 ubuntu_version: 20.04 LTS
-git_branch: release/yocto-3.1.1
-manifest_file: release-yocto-3.1.1.xml
+git_branch: main
+manifest_file: release-3.1.1.xml
 uboot_version: '2020.10'
 openocd_version: 0.10.0
 file_extension: tar.xz
