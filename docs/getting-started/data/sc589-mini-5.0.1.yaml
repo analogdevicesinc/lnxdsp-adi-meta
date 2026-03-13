@@ -1,0 +1,62 @@
+version: 5.0.1
+build_dir: adsp-sc589-mini-yocto-build
+sdk_path: /opt/adi-distro-glibc/5.0.1
+board_name: ADSP-SC589-MINI
+machine: adsp-sc589-mini
+machine_short: sc589-mini
+arch: cortexa5t2hf-neon
+gdb_prefix: arm-adi_glibc-linux-gnueabi
+openocd_target: adspsc57x
+ethernet_connector: J13
+som_revision: false
+sdk_machine_note: false
+has_qspi_boot: false
+has_sdcard_boot: true
+hardware_image: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/sc589-mini-hardware.png
+boot_mode_note: The BOOT MODE selector should be turned to "0".
+ubuntu_version: 22.04 LTS
+git_branch: main
+manifest_file: release-5.0.1.xml
+uboot_version: '2023.04'
+openocd_version: 0.12.0
+file_extension: rootfs.tar.xz
+sdk_installer: adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc589-mini-toolchain-5.0.1.sh
+hardware_connections: |-
+  * Board connected to network via ethernet cable using J13 connector.
+  * Board connected to host PC using USB micro cable, connected to USB/UART port on the development board
+  * Board connected to the ICE 1000 or ICE 2000 via the DEBUG port on the board
+  * ICE is also connected to host PC via USB mini cable
+  * The BOOT MODE selector should be turned to "0".
+sdk_example_files: |-
+  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc589-mini-toolchain-5.0.1.host.manifest
+  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc589-mini-toolchain-5.0.1-host.spdx.tar.zst
+  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc589-mini-toolchain-5.0.1.sh
+  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc589-mini-toolchain-5.0.1.target.manifest
+  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc589-mini-toolchain-5.0.1-target.spdx.tar.zst
+  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc589-mini-toolchain-5.0.1.testdata.json
+openocd_output: Open On-Chip Debugger 0.12.0...
+gdb_start_output: 0x000000000000352c in ?? ()
+gdb_load_spl_output: 'Loading sections... Transfer rate: 29 KB/sec'
+uboot_spl_message: |-
+  U-Boot SPL 2023.04
+  ADI Boot Mode: 0x0 (JTAG/BOOTROM)
+  SPL execution has completed.
+gdb_load_proper_output: 'Loading sections... Transfer rate: 28 KB/sec'
+uboot_proper_boot: |-
+  U-Boot 2023.04
+  CPU: ADSP ADSP-SC589-MINI
+  Hit any key to stop autoboot: 0
+  =>
+uboot_flash_output: |-
+  => run update_spi_uboot_only
+  Speed: 1000, full duplex
+  TFTP from server...
+  Bytes transferred = 115008 (1c140 hex)
+  SF: 115008 bytes @ 0x0 Written: OK
+linux_boot_output: |-
+  Starting services...
+  Analog Devices Yocto Distribution
+  login: root
+  Password: adi
+sdcard_boot_content: SD card boot instructions here...
+qspi_boot_content: QSPI boot instructions here...
