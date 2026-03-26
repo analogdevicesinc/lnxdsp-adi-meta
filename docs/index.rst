@@ -50,7 +50,7 @@ Quick Start
 3. :doc:`Build and customize <development/Development>` - Use Yocto to create your custom image and develop applications
 4. :doc:`Run examples <examples/Examples>` - Try SHARC-ALSA, USB Audio, and more
 
-**Key Topics**: :doc:`Boot Process <boot/Boot-Sequence>` | :doc:`RPMsg <development/RPMsg>` | :doc:`Memory Configuration <development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>` | :doc:`Secure Boot <secure-boot/Secure-Boot-Support>`
+**Key Topics**: :doc:`Boot Process <development/Boot-Sequence>` | :doc:`RPMsg <development/RPMsg>` | :doc:`Memory Configuration <development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>` | :doc:`Secure Boot <secure-boot/Secure-Boot-Support>`
 
 Latest Release
 --------------
@@ -67,8 +67,8 @@ Quick Links
 
 **Essential Documentation**
 
-* **Setup**: :doc:`Setting Up Your Host PC <getting-started/Setting-Up-Your-Host-PC>` | :doc:`Boot Sequence <boot/Boot-Sequence>`
-* **Development**: :doc:`Development Guide <development/Development>` | :doc:`Kernel Development <development/Yocto-Linux-Kernel-development>` | :doc:`RPMsg Communication <development/RPMsg>`
+* **Setup**: :doc:`Setting Up Your Host PC <getting-started/Setting-Up-Your-Host-PC>` | :doc:`Boot Sequence <development/Boot-Sequence>`
+* **Development**: :doc:`Development Guide <development/Development>` | :doc:`Kernel Development <development/Linux-Kernel-Development>` | :doc:`RPMsg Communication <development/RPMsg>`
 * **Examples**: :doc:`SHARC-ALSA Audio <examples/SHARC‐ALSA-Example>` | :doc:`USB Audio Gadget <examples/USB-Gadget-Audio-Example>`
 * **Support**: :doc:`FAQ <faq/Frequently-Asked-Questions>` | `Forum <https://ez.analog.com/linux-software-drivers>`_ | `Issues <https://github.com/analogdevicesinc/lnxdsp-adi-meta/issues>`_
 
@@ -91,7 +91,6 @@ Documentation
    Older Releases <Older-Releases>
    Examples <examples/Examples>
    Development <development/Development>
-   Boot Sequence <boot/Boot-Sequence>
    Benchmarks <benchmarks/Benchmarking>
    FAQ <faq/Frequently-Asked-Questions>
    Secure Boot <secure-boot/Secure-Boot-Support>

@@ -1,4 +1,3 @@
-=============
 Boot Sequence
 =============
 
@@ -135,8 +134,6 @@ The firmware of the cores can be controlled from within Linux using the remotepr
 
 In More Detail
 ^^^^^^^^^^^^^^
-
-*Available* :doc:`here <core1bootlog>` *is an excerpt of Linux's output at boot, showing the startup of SHARC Core1*
 
 - Initial bring-up occurs within the probe function of the ADI remoteproc driver - `adi_remoteproc_probe <https://github.com/analogdevicesinc/lnxdsp-linux/blob/c4403f406eff867723e10acf414afdfe8132102f/drivers/remoteproc/adi_remoteproc.c#L809>`_. This makes a number of calls to the core Linux remoteproc driver:
 

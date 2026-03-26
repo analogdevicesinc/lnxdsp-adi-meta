@@ -29,8 +29,6 @@ The following boards are supported on this release.
      - 1.5 or later
      - :doc:`Getting Started with ADSP-SC573 EZ-KIT <getting-started/Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)>`
 
-If you do not have an ICE-1/2000 debugger, you can use :doc:`these <boot/Loading-u‐boot-without-an-ICE-debugger-(USB-Debug-Agent)>` steps with the quickstart guide for boards with a usb debug agent (USB DA) port.
-
 Building of the Linux software requires a host PC running a recent flavour Linux.
 Analog Devices uses `64-bit Ubuntu 22.04 LTS <https://discourse.ubuntu.com/t/jammy-jellyfish-release-notes/24668>`_ for its building and testing of Linux for ADSP-SC5xx.
 If you are new to Linux development we strongly recommend using a host PC with this installation of Linux.
@@ -41,3 +39,12 @@ Release Notes
 
 Release Notes for the 5.0.1 release can be found `here <https://github.com/analogdevicesinc/lnxdsp-adi-meta/releases/tag/5.0.1-rel-1>`_.
 The test report for this page can be found :doc:`here <test-reports/Test-Report-(5.0.1)>`.
+
+.. toctree::
+   :hidden:
+   :titlesonly:
+
+   getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)
+   getting-started/Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)
+   getting-started/Getting-Started-with-ADSP‐SC589‐MINI-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)
+   getting-started/Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)

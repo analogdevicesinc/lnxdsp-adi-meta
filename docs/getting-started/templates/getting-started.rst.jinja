@@ -1,12 +1,14 @@
-=======================
+Getting Started with {{ board_name }} ({{ version }})
+=====================================================
+
 Setting Up Your Host PC
-=======================
+-----------------------
 
 The build system is currently supported on host PCs running Ubuntu {{ ubuntu_version }} 64-bit. For setting up your host PC, please see the :doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>` page.
 
-====================
+--------------------
 Fetching the Sources
-====================
+--------------------
 
 The source is fully contained in the `Analog Devices Linux for ADSP repositories <https://github.com/analogdevicesinc?q=lnxdsp&type=all&language=&sort=>`_.
 
@@ -25,12 +27,12 @@ To install the sources:
       -m {{ manifest_file }}
    ./bin/repo sync
 
-==================
+------------------
 Building the Image
-==================
+------------------
 
 Preparing the buildtool
-=======================
+-----------------------
 
 Yocto requires the environment to be configured before building is possible. A setup-environment script in the {{ build_dir }} folder contains all the required environment settings for your build target.
 Source the setup script for your board:
@@ -57,11 +59,11 @@ Change the following in your configuration file within the build directory (conf
    SOM_REV = "<SOM revision>"
    CRR_REV = "<Carrier Revision>"
 
-The default configuration is valid for {{ som_revision_default }}. `Guide to identify SOM and EZKit Carrier revision numbers <Identifying-ADSP‐SC594-and-ADSP‐SC598-SOM-and-Carrier-board-revisions.html>`_
+The default configuration is valid for {{ som_revision_default }}. `Guide to identify SOM and EZKit Carrier revision numbers <../faq/Frequently-Asked-Questions.html#how-do-i-identify-my-som-and-carrier-board-revisions>`_
 {% endif %}
 
 Building the example
-====================
+--------------------
 
 You can build two different versions of the root file system; minimal and full.
 To build the example images invoke bitbake from within the build directory created previously.
@@ -78,7 +80,7 @@ When the build completes you will see a warning that the ELF binary has relocati
    Building a Linux distribution with Yocto is a significantly demanding process, both in CPU and network usage. A full build from scratch is estimated to take around 170 minutes for an 11th Gen Intel Core i5-11500T with 16 GB of RAM and a stable, fast Internet connection. This estimate can go up significantly for a poorer Internet connection or CPU resources, so set aside plenty of time for a clean build.
 
 Building the SDK
-================
+----------------
 
 The SDK will provide you with the cross toolchain needed to develop application for the target board, alongside various miscellaneous tools. Notably, it will provide you with OpenOCD and GDB, which you can use to run and flash U-Boot on the board.
 
@@ -108,13 +110,14 @@ When the build has completed you will find a set of files in the ``<BUILD_DIR>/t
 
    ls tmp/deploy/sdk
 
-{{sdk_example_files | indent(3, True)}}
+.. code-block:: text
 
+{{sdk_example_files | indent(3, True)}}
 
 The ``{{ sdk_installer }}`` is a self-extracting archive containing the SDK.
 
 Installing the SDK
-==================
+------------------
 
 Invoke the self-extracting archive.
 It will default to installing to ``{{ sdk_path }}`` but gives you the option to select your own install folder during the installation.
@@ -123,8 +126,11 @@ For the minimal image on {{ board_name }}
 .. code-block:: shell
 
    ./{{ sdk_installer }}
+
+.. code-block:: text
+
    Analog Devices Inc Reference Distro (glibc) SDK installer version {{ version }}
-   =======================================================================
+   --------------------------------------------------------------------------
    Enter target directory for SDK (default: {{ sdk_path }}):
    You are about to install the SDK to "{{ sdk_path }}". Proceed [Y/n]?
    Extracting SDK....................................................................................................................done
@@ -135,9 +141,9 @@ For the minimal image on {{ board_name }}
 
 Your SDK is now installed.
 
-==================
+------------------
 Setup the hardware
-==================
+------------------
 
 Before installing the software on to the development board, ensure that the following cables are connected:
 
@@ -151,16 +157,16 @@ Before installing the software on to the development board, ensure that the foll
 
 {% endif %}
 
-==============================================================
+--------------------------------------------------------------
 Transfer, run and flash U-Boot on the board for the first time
-==============================================================
+--------------------------------------------------------------
 
 .. note::
 
    It's always good practice to erase the contents of ``/tftpboot/`` before running and/or flashing a new build of U-Boot or Linux. You can do so by executing ``rm /tftpboot/*`` on your host PC before proceeding
 
 Transfer and run U-Boot on RAM
-==============================
+------------------------------
 
 Copy the U-Boot binary & loader files to the tftp directory:
 
@@ -244,7 +250,7 @@ At this point U-Boot will now be running in RAM on your target board. You should
 {{uboot_proper_boot | indent(3, True)}}
 
 Flash U-Boot to SPI Flash
-=========================
+-------------------------
 
 In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot loader files (``stage1-boot.ldr`` & ``stage2-boot.ldr``) on TFTP.
 
@@ -301,14 +307,14 @@ In order to store the ``tftpserverip`` and the DHCP or otherwise assigned IP add
 
 At this point the U-Boot binary is stored in flash. You can now disconnect the ICE-1000 or ICE-2000 from the development board and make sure to switch the BMODE to position 1. You will only need to reconnect this if your board fails to boot and you need to re-follow these instructions.
 
-=============
+-------------
 Booting Linux
-=============
+-------------
 
 {% if has_qspi_boot %}
 
 Booting the minimal image from QSPI
-===================================
+-----------------------------------
 
 {{ qspi_boot_content }}
 
@@ -316,7 +322,7 @@ Booting the minimal image from QSPI
 {% endif %}
 
 Network Booting
-===============
+---------------
 
 In order to boot Linux via the network, the TFTP server should be setup as indicated in the :doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>` page, and a copy of the fitImage should be copied into the ``/tftpboot`` directory.
 
@@ -347,7 +353,7 @@ Next, on the target, from u-boot, run the following command:
 {% if has_sdcard_boot %}
 
 Booting Linux Using SD Card
-===========================
+---------------------------
 
 {{ sdcard_boot_content }}
 
@@ -355,7 +361,7 @@ Booting Linux Using SD Card
 {% endif %}
 
 Booting Linux from USB Mass Storage
-===================================
+-----------------------------------
 
 Formatting the USB storage device
 ---------------------------------

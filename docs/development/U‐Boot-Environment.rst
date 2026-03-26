@@ -1,11 +1,14 @@
+U-Boot Environment
+==================
+
 Introduction
-============
+------------
 
 This page contains information about using and working with the U-Boot
 environment.
 
 About the Environment
-=====================
+---------------------
 
 The U-Boot envionrment is a text-based key-value store within U-Boot,
 used to store information such as board-specific commands, run-time
@@ -30,10 +33,10 @@ Variables <https://docs.u-boot.org/en/latest/usage/environment.html>`__
 in the U-Boot docs.
 
 Interacting with the Environment
-================================
+--------------------------------
 
 ``env`` command
----------------
+~~~~~~~~~~~~~~~
 
 U-Boot provides the ``env`` command to interact with the environment.
 The basic commands are:
@@ -63,7 +66,7 @@ The ``edit <name>`` command is also provided to interactively edit the
 contents of environment variable ``name``.
 
 Using Environment Variables
----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 There are two main ways to use environment variables: - The ``run``
 command will execute the contents of a variable. For example, the
@@ -73,7 +76,7 @@ similarly to Unix shells. For example, ``tftpboot ${tftpserverip}`` will
 boot using the IP stored in ``tftpserverip`` as the server address.
 
 The Persistent Environment
-==========================
+--------------------------
 
 By default, the environment is stored on the SPI Flash on ADSP boards.
 The default location varies by board:
@@ -105,7 +108,7 @@ using:
    => env save
 
 The Default Environment
-=======================
+-----------------------
 
 As previously described, when U-Boot is unable to load a valid
 environment from the persistent storage, it will load the default
@@ -121,3 +124,27 @@ the relevant board file - for example, for SC598, in
 The default environment can also be manually loaded using the
 ``env default`` command, described in ```env``
 command <#env-command>`__.
+
+Setting Default Boot Method
+----------------------------
+
+In order to change the default boot method (i.e., boot used by autoboot or executed after issuing ``boot`` within U-Boot shell), run the following within U-Boot:
+
+.. code-block:: shell
+
+   => setenv bootcmd <boot method>
+   => saveenv
+
+Boot method can be set to the following:
+
+* ``spiboot``
+* ``ramboot``
+* ``nfsboot``
+* ``mmcboot``
+* ``usbboot``
+
+Important Notes
+~~~~~~~~~~~~~~~
+
+* ``sfdev`` must be set when trying to boot with spiboot. Default QSPI usually requires sfdev to be ``2:1``
+* ``usbboot`` must be defined as per the USB boot guide prior to attempting boot with this method
