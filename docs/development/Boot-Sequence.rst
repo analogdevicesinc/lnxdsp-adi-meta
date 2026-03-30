@@ -130,7 +130,7 @@ After the system has booted the kernel and mounted the initramfs, the remoteproc
 
 The rpmsg interface is then brought online to enable communication with the cores, creating a communication channel for each core.
 
-The firmware of the cores can be controlled from within Linux using the remoteproc interface, under ``/sys/class/remoteproc/remoteproc<core n>/:doc:``. For example usage, see `"Using Linux (remoteproc)" <../examples/SHARC‐ALSA-Example>` in the SHARC-ALSA example.
+The firmware of the cores can be controlled from within Linux using the remoteproc interface, under ``/sys/class/remoteproc/remoteproc<core n>/``. For example usage, see the "Using Linux (remoteproc)" section in the :doc:`../examples/SHARC‐ALSA-Example`.
 
 In More Detail
 ^^^^^^^^^^^^^^

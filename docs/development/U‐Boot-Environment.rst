@@ -51,8 +51,8 @@ The basic commands are:
    ``name`` to their default values, or reset the entire environment if
    ``-a`` specified.
 
-   *(Note: only modifies the in-memory copy - also run ``saveenv`` to
-   reset the persistent copy)*
+   *Note: only modifies the in-memory copy - also run* ``saveenv`` *to
+   reset the persistent copy*
 
 -  ``env load`` and ``env save`` (alias ``saveenv``) - load/save the
    environment from persistent storage - uses the SPI Flash on ADSP
@@ -122,8 +122,8 @@ the relevant board file - for example, for SC598, in
 `sc598-som.h <https://github.com/analogdevicesinc/lnxdsp-u-boot/blob/main/include/configs/sc598-som.h#L141>`__.
 
 The default environment can also be manually loaded using the
-``env default`` command, described in ```env``
-command <#env-command>`__.
+``env default`` command, described in the `env command <#env-command>`__
+section.
 
 Setting Default Boot Method
 ----------------------------
