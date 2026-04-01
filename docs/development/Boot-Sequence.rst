@@ -1,4 +1,3 @@
-=============
 Boot Sequence
 =============
 
@@ -131,12 +130,10 @@ After the system has booted the kernel and mounted the initramfs, the remoteproc
 
 The rpmsg interface is then brought online to enable communication with the cores, creating a communication channel for each core.
 
-The firmware of the cores can be controlled from within Linux using the remoteproc interface, under ``/sys/class/remoteproc/remoteproc<core n>/:doc:``. For example usage, see `"Using Linux (remoteproc)" <../examples/SHARC‐ALSA-Example>` in the SHARC-ALSA example.
+The firmware of the cores can be controlled from within Linux using the remoteproc interface, under ``/sys/class/remoteproc/remoteproc<core n>/``. For example usage, see the "Using Linux (remoteproc)" section in the :doc:`../examples/SHARC‐ALSA-Example`.
 
 In More Detail
 ^^^^^^^^^^^^^^
-
-*Available* :doc:`here <core1bootlog>` *is an excerpt of Linux's output at boot, showing the startup of SHARC Core1*
 
 - Initial bring-up occurs within the probe function of the ADI remoteproc driver - `adi_remoteproc_probe <https://github.com/analogdevicesinc/lnxdsp-linux/blob/c4403f406eff867723e10acf414afdfe8132102f/drivers/remoteproc/adi_remoteproc.c#L809>`_. This makes a number of calls to the core Linux remoteproc driver:
 

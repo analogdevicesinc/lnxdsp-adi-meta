@@ -40,3 +40,12 @@ Release Notes
 
 Release Notes for the 3.1.2 release can be found `here <https://github.com/analogdevicesinc/lnxdsp-adi-meta/releases/tag/3.1.2-rel>`_.
 The test report for this page can be found :doc:`here <test-reports/Test-Report-(3.1.0)>`.
+
+.. toctree::
+   :hidden:
+   :titlesonly:
+
+   getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-3.1.2)
+   getting-started/Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-3.1.2)
+   getting-started/Getting-Started-with-ADSP‐SC589‐MINI-(Linux-for-ADSP‐SC5xx-Processors-3.1.2)
+   getting-started/Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-3.1.2)

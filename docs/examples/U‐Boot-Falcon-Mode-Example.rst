@@ -1,61 +1,64 @@
+U-Boot Falcon Mode Example
+==========================
+
 Introduction
-============
+------------
 
-This page provides instructions for using U-Boot Falcon Mode/ADI
-Fastboot on ADSP-SC59X boards.
+This page provides instructions for using U-Boot Falcon Mode and ADI Fastboot on ADSP-SC59x boards.
 
-+--------------------------+--------------------------------------------+
-| :memo:                   | The Falcon Mode feature is supported on    |
-|                          | versions Linux for ADSP-SC5xx Processors   |
-|                          | 3.0.0 and later, and on SC59x.             |
-+==========================+============================================+
-+--------------------------+--------------------------------------------+
+.. note::
+
+   The Falcon Mode feature is supported on Linux for ADSP-SC5xx Processors version 3.0.0 and later, and on SC59x platforms.
 
 What is Falcon Mode?
---------------------
+~~~~~~~~~~~~~~~~~~~~
 
-It is described in the upstream repo of U-Boot: `U-Boot Falcon
-Mode <https://github.com/ARM-software/u-boot/blob/master/doc/README.falcon>`__.
-In short, it’s a way to shorten the boot time by allowing the SPL
-(Secondary Program Loader) to boot the kernel directly, without loading
-the full bootloader.
+Falcon Mode is a U-Boot feature that shortens boot time by allowing the Secondary Program Loader (SPL) to boot the Linux kernel directly, bypassing the full U-Boot bootloader. For more details, see the `U-Boot Falcon Mode documentation <https://github.com/ARM-software/u-boot/blob/master/doc/README.falcon>`_.
 
 Requirements
 ------------
 
-You must use Linux for ADSP-SC5xx Processors 3.0.0 or later on an SC59x
-board.
+* Linux for ADSP-SC5xx Processors version 3.0.0 or later
+* ADSP-SC59x development board
 
-Build U-Boot with Falcon Mode support
-=====================================
+Building U-Boot with Falcon Mode
+---------------------------------
 
-When following the Getting Start guides, and specifically right after
-sourcing the setup script, i.e.
+Step 1: Configure Build System
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: shell
+After following the Getting Started guides and sourcing the setup script:
 
-   $ source setup-environment -m adsp-sc598-som-ezkit
+.. code-block:: shell
 
-a build folder along with a local build configuration file is created,
-under ``$PROJECT_DIR/build/conf/local.conf``. Edit this file with your
-favourite text editor, and append the following two lines to it:
+   source setup-environment -m adsp-sc598-som-ezkit
 
-.. code:: shell
+A build folder and local configuration file will be created at ``$PROJECT_DIR/build/conf/local.conf``.
+
+Step 2: Enable Falcon Mode
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Edit ``conf/local.conf`` and append the following lines:
+
+.. code-block:: shell
 
    MACHINE_FEATURES:remove = " spl"
    MACHINE_FEATURES:append = " falcon"
 
-and proceed to building and flashing the image, as usual and as seen on
-the Getting Started guides.
+Step 3: Build and Flash
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Proceed with building and flashing the image as described in the Getting Started guides.
 
 Booting with Falcon Mode
-========================
+-------------------------
 
-When U-Boot with Falcon Mode support has been built and flashed onto the
-board, the default behaviour will be booting the default mode (SPI boot,
-if unchanged) straight from the SPL, e.g.:
+Default Falcon Mode Behavior
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: shell
+When U-Boot with Falcon Mode support is flashed onto the board, the default behavior is to boot directly from SPL using the configured boot method (typically SPI boot):
+
+.. code-block:: text
 
    U-Boot SPL 2020.10 (Apr 12 2023 - 18:48:14 +0000)
    ADI Boot Mode: 0x1 (QSPI Master)
@@ -74,9 +77,9 @@ if unchanged) straight from the SPL, e.g.:
       Verifying Hash Integrity ... sha1+ sha1,rsa2048:dev- OK
       Loading ramdisk from 0x965a1e50 to 0x9c000000
    ## Loading fdt from FIT Image at 96000000 ...
-      Using 'conf-1' configuration 
+      Using 'conf-1' configuration
       Verifying Hash Integrity ... OK
-      Trying 'fdt-2' fdt subimage  
+      Trying 'fdt-2' fdt subimage
       Verifying Hash Integrity ... sha1+ sha1,rsa2048:dev- OK
       Loading fdt from 0x9659ac00 to 0x99000000
    [    0.000000] Booting Linux on physical CPU 0x0000000000 [0x412fd050]
@@ -86,20 +89,20 @@ if unchanged) straight from the SPL, e.g.:
    [    0.000000] printk: bootconsole [adi_uart0] enabled
    [    0.000000] efi: UEFI not found.
 
-You can still fall back to U-Boot Proper by holding down the push button
-``PB1`` on the target (carrier) board during reset/booting:
+Fallback to U-Boot Proper
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You will then be able to use the full U-Boot:
+You can bypass Falcon Mode and fall back to full U-Boot by holding down the push button ``PB1`` on the carrier board during reset/boot:
 
-.. code:: shell
+.. code-block:: text
 
    U-Boot SPL 2020.10 (Apr 12 2023 - 18:48:14 +0000)
    Pushbutton helding during boot -- entering U-Boot ProperADI Boot Mode: 0x1 (QSPI Master)
    Trying to boot from BOOTROM
-    
-    
+
+
    U-Boot 2020.10 (Apr 12 2023 - 18:48:14 +0000)
-    
+
    CPU:   ADSP ADSP-SC598-0.0 (spi slave boot)
    Model: ADI sc598-som-ezkit
    DRAM:  224 MiB
@@ -114,64 +117,61 @@ You will then be able to use the full U-Boot:
    Hit any key to stop autoboot:  0
 
 ADI Fastboot
-============
+------------
 
-Yocto release 5.0.0 introduces ADI Fastboot, which utilizes u-boot
-falcon mode and kernel modifications to produce the fastest possible
-boot times, allowing the hardware to be initialized as soon as possible
-for userspace applications to be run.
+Overview
+~~~~~~~~
 
-Currently Supported boards: \* ADSP-SC598-SOM-EZKIT
+Yocto release 5.0.0 introduces ADI Fastboot, which combines U-Boot Falcon Mode with kernel modifications to achieve the fastest possible boot times, enabling hardware initialization and userspace application execution with minimal delay.
 
-U-boot modifications
---------------------
+**Currently supported boards:**
 
-SOMs with the EZKIT carrier will default to utilizing the OSPI flash
-(device 0) on bus 0 as the SPI flash memory of choice for booting
-(Standard configuration utilizes QSPI present on the SOM). This is
-coupled with DMA and highest possible frequencies to achieve extremely
-fast transactions.
+* ADSP-SC598-SOM-EZKIT
 
-Due to this, we need to flash the OSPI located on the EZKIT carrier via
-uboot.
+U-Boot Configuration
+~~~~~~~~~~~~~~~~~~~~
 
-Once u-boot is loaded via GDB, proceed with the following:
+SOMs with the EZKIT carrier default to using OSPI flash (device 0 on bus 0) for booting, instead of the standard QSPI configuration present on the SOM. This is coupled with DMA and maximum clock frequencies to achieve extremely fast transactions.
 
-::
+Flash the OSPI on the EZKIT carrier via U-Boot. Once U-Boot is loaded via GDB, execute:
+
+.. code-block:: shell
 
    => run update_spi_uboot_only
    => setenv sfdev 0:0; run update_spi_fit
 
-This will now result in a flashed uboot on qspi and the fitImage on the
-OSPI
+This will flash U-Boot to QSPI and the fitImage to OSPI.
 
-Linux kernel modifications
---------------------------
+Kernel Configuration
+~~~~~~~~~~~~~~~~~~~~
 
-Linux kernel has been trimmed to achieve a minimal overall boot time.
-The following drivers/devices have been disabled:
+The Linux kernel has been trimmed to achieve minimal boot time. The following drivers and devices are disabled:
 
--  Crypto (CRC and PKTE)
--  SHARC (both cores and remoteproc)
--  eMMC
--  QSPI
--  USB
--  gptimers
--  TRU
--  HADC
--  SPORT
--  Ethernet
--  SRAM
--  Watchdog
+* Crypto (CRC and PKTE)
+* SHARC (both cores and remoteproc)
+* eMMC
+* QSPI
+* USB
+* gptimers
+* TRU
+* HADC
+* SPORT
+* Ethernet
+* SRAM
+* Watchdog
 
-Following is what an expected kernel boot should be:
+Expected Boot Output
+~~~~~~~~~~~~~~~~~~~~
 
-.. code:: shell
+The following is example kernel boot output for ADI Fastboot:
 
-   [2025-08-08 12:17:04.393] ADI Boot Mode: 0x1 (QSPI Master)                                                                                                                                                                                                                                                           [122/1838][2025-08-08 12:17:04.398] Trying to boot from SPI
+.. code-block:: text
+
+   [2025-08-08 12:17:04.393] ADI Boot Mode: 0x1 (QSPI Master)
+   [2025-08-08 12:17:04.398] Trying to boot from SPI
    [2025-08-08 12:17:04.398] Probe @41666666Hz
    [2025-08-08 12:17:04.415] ?6
-                                                                                             [2025-08-08 12:17:04.513] Read ID via 1x SPI: c2 85 3b
+   [2025-08-08 12:17:04.513] Read ID via 1x SPI: c2 85 3b
    [2025-08-08 12:17:04.513] Configure MX66LM1G45: OPI DTR = on
    [2025-08-08 12:17:04.519] Read ID via 8x OPI+DTR: c2 85 3b
    [2025-08-08 12:17:04.519]       Success: ID Match!
@@ -191,7 +191,7 @@ Following is what an expected kernel boot should be:
    [2025-08-08 12:17:06.388]    Trying 'fdt-2' fdt subimage
    [2025-08-08 12:17:06.388]    Loading fdt from 0x963ef428 to 0x99000000
    [2025-08-08 12:17:06.442] Booting Linux on physical CPU 0x0000000000 [0x412fd050]
-   [2025-08-08 12:17:06.442] Linux version 6.12.0-yocto-standard-00079-g89984f318ee7 (oe-user@oe-host) (aarch64-adi_glibc-linux-gcc (GCC) 13.2.0, GNU ld (GNU Bin5
+   [2025-08-08 12:17:06.442] Linux version 6.12.0-yocto-standard-00079-g89984f318ee7 (oe-user@oe-host) (aarch64-adi_glibc-linux-gcc (GCC) 13.2.0, GNU ld (GNU Binutils) 2.40.0.20230214) #1 SMP PREEMPT Thu Aug  8 12:02:01 UTC 2025
    [2025-08-08 12:17:06.464] Machine model: ADI 64-bit SC598 SOM EZ Kit
    [2025-08-08 12:17:06.464] earlycon: adi_uart0 at MMIO 0x0000000031003000 (options '')
    [2025-08-08 12:17:06.470] printk: legacy bootconsole [adi_uart0] enabled
@@ -282,7 +282,7 @@ Following is what an expected kernel boot should be:
    [2025-08-08 12:17:06.955] CPU features: detected: LSE atomic instructions
    [2025-08-08 12:17:06.960] CPU features: detected: Speculative Store Bypassing Safe (SSBS)
    [2025-08-08 12:17:06.966] alternatives: applying system-wide alternatives
-   [2025-08-08 12:17:06.972] Memory: 206140K/229632K available (5568K kernel code, 812K rwdata, 1892K rodata, 1856K init, 479K bss, 21468K reserved, 0K cma-reser)
+   [2025-08-08 12:17:06.972] Memory: 206140K/229632K available (5568K kernel code, 812K rwdata, 1892K rodata, 1856K init, 479K bss, 21468K reserved, 0K cma-reserved)
    [2025-08-08 12:17:06.984] devtmpfs: initialized
    [2025-08-08 12:17:06.993] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
    [2025-08-08 12:17:06.999] futex hash table entries: 256 (order: 2, 16384 bytes, linear)
@@ -365,5 +365,11 @@ Following is what an expected kernel boot should be:
    [2025-08-08 12:17:07.929]
    [2025-08-08 12:17:07.929] adsp-sc598-som-ezkit login:
 
-Approximate expected boot time is ~3-4s after plugging the board to
-power/reset.
+**Expected boot time:** Approximately 3-4 seconds after powering on or resetting the board.
+
+References
+----------
+
+* `U-Boot Falcon Mode Documentation <https://github.com/ARM-software/u-boot/blob/master/doc/README.falcon>`_
+* :doc:`Boot Sequence <../development/Boot-Sequence>` - Detailed boot process information
+* :doc:`Booting Benchmarks <../benchmarks/Booting-Benchmark-Figures>` - Boot time measurements

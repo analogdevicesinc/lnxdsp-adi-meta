@@ -22,15 +22,11 @@ needs_extensions = {
     'adi_doctools': '0.3'
 }
 
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'documentation-venv']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'documentation-venv', 'BUILD.md', 'getting-started/README-TEMPLATE-SYSTEM.md']
 source_suffix = {
     '.rst': 'restructuredtext',
     '.md': 'markdown',
 }
-
-# TODO: Remove this once all orphan documents are either included in toctree or removed
-# Suppress warnings for orphan documents (not included in toctree)
-suppress_warnings = ['toc.not_included']
 
 # -- External docs configuration ----------------------------------------------
 

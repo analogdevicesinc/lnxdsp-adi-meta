@@ -122,7 +122,7 @@ being compiled:
      EXPORTS rust/exports_helpers_generated.h
      RUSTC L rust/bindings.o
 
-Once this is done, follow the custom fitImage compilation guide `here <Yocto-Linux-Kernel-development>` and generate your own fitImage.
+Once this is done, follow the custom fitImage compilation guide in :doc:`Linux-Kernel-Development` and generate your own fitImage.
 
 Proceed to boot into the fitImage from your preferred boot method. Once in, you should be able to spot the following in the kernel logs:
 
@@ -141,4 +141,4 @@ References
 
 * https://www.kernel.org/doc/html/v6.1/rust/quick-start.html
 * https://docs.kernel.org/rust/quick-start.html
-* :doc:`Yocto-Linux-Kernel-development`
+* :doc:`Linux-Kernel-Development`

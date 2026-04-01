@@ -2,6 +2,15 @@
 Benchmarking
 ============
 
-Starting with version 3.1.0, a number of performance benchmarks will be shared as a reference of the distro's capabilites. Right now, the following are available:
+Performance benchmarks are provided as a reference for the distribution's capabilities. The following benchmarks are available:
 
-* :doc:`RPMsg <RPMsg-Benchmark-Figures>`
+* :doc:`RPMsg <RPMsg-Benchmark-Figures>` - Inter-processor communication performance
+* :doc:`Booting <Booting-Benchmark-Figures>` - Boot time measurements
+
+.. toctree::
+   :maxdepth: 0
+   :hidden:
+   :titlesonly:
+
+   RPMsg-Benchmark-Figures
+   Booting-Benchmark-Figures

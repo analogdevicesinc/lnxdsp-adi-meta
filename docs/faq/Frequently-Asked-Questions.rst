@@ -2,47 +2,24 @@
 Frequently Asked Questions
 ===========================
 
-Introduction
-============
+This page answers common questions about developing with Linux for ADSP-SC5xx processors. For additional support, visit the `EngineerZone forum <https://ez.analog.com/linux-software-drivers>`_ or check the `GitHub issues <https://github.com/analogdevicesinc/lnxdsp-adi-meta/issues>`_.
 
-This page answers common questions about developing with Linux for ADSP-SC5xx processors. Whether you're customizing your filesystem, debugging SHARC applications, or configuring peripherals, you'll find practical solutions and best practices here.
+How do I add packages to my Linux filesystem?
+----------------------------------------------
 
-The FAQ is organized by topic to help you quickly find relevant information. For additional support, visit the `EngineerZone forum <https://ez.analog.com/linux-software-drivers>`_ or check the `GitHub issues <https://github.com/analogdevicesinc/lnxdsp-adi-meta/issues>`_.
+Adding Custom Packages
+~~~~~~~~~~~~~~~~~~~~~~
 
-**Quick Navigation:**
-
-* `Yocto and Build System`_
-* `Debugging SHARC Applications`_
-* `Custom Development Repositories`_
-* `Hardware Configuration`_
-
-----
-
-Yocto and Build System
-======================
-
-How do I add packages to my own Linux filesystem?
---------------------------------------------------
-
-Let's try, for example, to add the package ``ethtool`` to your own target adsp-custom-ramdisk image.
-
-Find the Yocto Project recipe
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-You can add your own packages instead of ``ethtool``. The first step is to find the Yocto Project recipe for your desired package. The best way to locate recipes is through the `OpenEmbedded Layer Index <https://layers.openembedded.org/layerindex/branch/master/recipes/>`_.
-
-The example below demonstrates how to search for packages on the OpenEmbedded Layer Index:
+To add a package (for example, ``ethtool``) to your target image, first locate the Yocto Project recipe through the `OpenEmbedded Layer Index <https://layers.openembedded.org/layerindex/branch/master/recipes/>`_.
 
 .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/7bfec7fc-df8f-4bad-819c-a7484dbb2075
    :width: 600
    :alt: OpenEmbedded Layer Index search example
 
-Add the package to the filesystem
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Method 1: Using local.conf (Recommended)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Method 1: Using local.conf (Recommended)**
-
-After finding the recipe name, add it to your image by appending this line to ``conf/local.conf``:
+Add the package to your image by appending this line to ``conf/local.conf``:
 
 .. code-block:: shell
 
@@ -51,9 +28,10 @@ After finding the recipe name, add it to your image by appending this line to ``
 .. note::
    Always include a space before the package name when using ``:append`` to avoid concatenation with the previous entry.
 
-**Method 2: Using a custom recipe**
+Method 2: Using a Custom Recipe
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Alternatively, add the package directly to your custom recipe file. For example, this patch adds ``ethtool`` to the ``adsp-custom-ramdisk`` filesystem:
+Alternatively, add the package directly to your custom recipe file:
 
 .. code-block:: diff
 
@@ -69,8 +47,8 @@ Alternatively, add the package directly to your custom recipe file. For example,
    "
    DISTRO_FEATURES = " ram"
 
-Build the target images
-~~~~~~~~~~~~~~~~~~~~~~~~
+Build the Image
+~~~~~~~~~~~~~~~
 
 Build your image to include the new package:
 
@@ -80,22 +58,18 @@ Build your image to include the new package:
 
 The package will be deployed into the Linux filesystem during the build process.
 
-**See also:** :doc:`Yocto Linux Kernel Development <../development/Yocto-Linux-Kernel-development>`
+**See also:** :doc:`Linux Kernel Development <../development/Linux-Kernel-Development>`
 
-----
+How do I debug a SHARC application while running Linux on ARM?
+---------------------------------------------------------------
 
-Debugging SHARC Applications
-=============================
+Overview
+~~~~~~~~
 
-How do I debug a SHARC application whilst running Linux on the ARM core?
--------------------------------------------------------------------------
+When debugging SHARC applications using CrossCore Embedded Studio (CCES) while Linux runs on the ARM core, you must configure the debug session carefully to avoid interfering with Linux execution. Since the ARM core boots first and starts Linux, the system is already running when you connect the debugger.
 
-When debugging SHARC applications using CrossCore Embedded Studio (CCES) while Linux runs on the ARM core, you must configure the debug session carefully to avoid interfering with Linux execution.
-
-Since the ARM core boots first and starts Linux, the system is already running when you connect the debugger. The following settings are essential for safe SHARC debugging.
-
-Overview: Required debug session settings
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Required Debug Session Settings
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To debug SHARC cores safely while Linux runs on ARM:
 
@@ -103,8 +77,8 @@ To debug SHARC cores safely while Linux runs on ARM:
 2. **Disable processor reset** - Keeps Linux running
 3. **Disable semihosting** - Avoids interference with Linux system calls
 
-Step 1: Do not load any preloads or applications to the ARM core
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Step 1: Do Not Load ARM Core Applications
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **Problem:** By default, CCES attempts to load applications onto the ARM core, which overwrites the L2 and L3 memory used by Linux.
 
@@ -117,7 +91,7 @@ Step 1: Do not load any preloads or applications to the ARM core
 .. note::
    This assumes you're using the default memory configuration or have correctly partitioned memory between cores. See :doc:`Configuring System Memory <../development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>`.
 
-Step 2: Disable processor reset on reload
+Step 2: Disable Processor Reset on Reload
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **Problem:** CCES resets the entire processor when starting a debug session, which erases Linux from memory.
@@ -127,7 +101,7 @@ Step 2: Disable processor reset on reload
 * Uncheck **"Reset on reload"**
 * This allows the debug session to attach without resetting the system
 
-Step 3: Disable semihosting
+Step 3: Disable Semihosting
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **Problem:** CCES uses ARM Supervisor Call (SVC) instructions for host communication. Linux also uses these instructions for system calls, causing severe performance degradation or crashes when semihosting is enabled.
@@ -139,49 +113,44 @@ Step 3: Disable semihosting
 
 **Result:** Linux continues running normally while you debug SHARC applications.
 
-----
+How do I use my own development repositories?
+----------------------------------------------
 
-Custom Development Repositories
-================================
-
-How do I develop Linux for ADSP-SC5xx with my own repositories?
-----------------------------------------------------------------
-
-This guide explains how to configure your Yocto build to use custom Git repositories for development, allowing you to work with your own forks or private repositories.
+This guide explains how to configure your Yocto build to use custom Git repositories, allowing you to work with your own forks or private repositories.
 
 Prerequisites
 ~~~~~~~~~~~~~
 
 Ensure your host PC is properly configured: :doc:`Setting Up Your Host PC <../getting-started/Setting-Up-Your-Host-PC>`.
 
-Step 1: Download source code
+Step 1: Download Source Code
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: shell
 
-   $ mkdir ~/linux-dsp-own-repos
-   $ cd ~/linux-dsp-own-repos
-   $ mkdir bin
-   $ curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ./bin/repo
-   $ chmod a+x ./bin/repo
-   $ ./bin/repo init \
-    -u https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git \
-    -b main \
-    -m release-5.0.1.xml
+   mkdir ~/linux-dsp-own-repos
+   cd ~/linux-dsp-own-repos
+   mkdir bin
+   curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ./bin/repo
+   chmod a+x ./bin/repo
+   ./bin/repo init \
+      -u https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git \
+      -b main \
+      -m release-5.0.1.xml
 
 .. note::
    Replace ``release-5.0.1.xml`` with your desired release version.
 
-Step 2: Configure manifest to use your repositories
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Step 2: Configure Manifest
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Modify the repo manifest to point to your custom repositories for ``lnxdsp-adi-meta`` and ``lnxdsp-scripts``:
 
 .. code-block:: shell
 
-   $ cd ~/linux-dsp-own-repos/.repo/manifests/
+   cd ~/linux-dsp-own-repos/.repo/manifests/
 
-Apply the below modifications into the ``lnxdsp-repo-manifest``
+Apply the following modifications to ``lnxdsp-repo-manifest``:
 
 .. code-block:: diff
 
@@ -211,14 +180,12 @@ Sync the repositories:
 
 .. code-block:: shell
 
-   $ ./bin/repo sync
+   ./bin/repo sync
 
-Step 3: Configure U-Boot and Linux kernel repositories
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Step 3: Configure Kernel and U-Boot Repositories
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Point U-Boot and Linux kernel recipes to your custom repositories by modifying ``conf/local.conf``:
-
-.. code-block:: diff
 
 .. code-block:: shell
 
@@ -230,20 +197,18 @@ Point U-Boot and Linux kernel recipes to your custom repositories by modifying `
 
 Replace ``$YOUR_REPO_PATH`` with your repository locations and adjust branch names as needed.
 
-Step 4: Build with custom repositories
+Step 4: Build with Custom Repositories
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Configure your build environment and start building:
 
 .. code-block:: shell
 
-.. code-block:: shell
-
-   $ cd ~/linux-dsp-own-repos/
-   $ source setup-environment -m adsp-sc598-som-ezkit
+   cd ~/linux-dsp-own-repos/
+   source setup-environment -m adsp-sc598-som-ezkit
 
    # Build your target
-   $ bitbake adsp-sc5xx-minimal
+   bitbake adsp-sc5xx-minimal
 
 **Common build targets:**
 
@@ -259,16 +224,11 @@ Configure your build environment and start building:
 * Enable CI/CD integration with your development workflow
 * Control access and review processes
 
-----
+How do I allocate a peripheral to the SHARC cores?
+---------------------------------------------------
 
-Hardware Configuration
-======================
-
-How do I allocate a peripheral to the SHARC?
----------------------------------------------
-
-Default peripheral allocation between SHARC and ARM
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Understanding Peripheral Allocation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 By default, all peripherals are allocated to the ARM core. The ARM core, as the booting processor, manages **pinmux** (pin multiplexing) configuration for all peripherals. Only one core should configure the pinmux to avoid conflicts.
 
@@ -277,11 +237,10 @@ Peripheral allocation is controlled through Linux device tree files, located in 
 * A family-level device tree (e.g., ``sc59x.dtsi``)
 * A board-specific device tree (e.g., ``sc594-som-ezkit.dts``)
 
-**Example: Linkport0 device tree entries**
+Example: Default Configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Family-level device tree (``sc59x.dtsi``):
-
-.. code-block:: text
 
 .. code-block:: dts
 
@@ -296,8 +255,6 @@ Family-level device tree (``sc59x.dtsi``):
 
 Board-specific device tree (``sc594-som-ezkit.dts``) enables the peripheral:
 
-.. code-block:: text
-
 .. code-block:: dts
 
    &lp0 {
@@ -306,7 +263,7 @@ Board-specific device tree (``sc594-som-ezkit.dts``) enables the peripheral:
        status = "okay";
    };
 
-Allocating a peripheral to SHARC
+Allocating a Peripheral to SHARC
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To allocate a peripheral to SHARC cores, modify the board-specific device tree. The ARM core still configures the pinmux but doesn't interact with the peripheral otherwise.
@@ -314,8 +271,6 @@ To allocate a peripheral to SHARC cores, modify the board-specific device tree. 
 **Example: Allocating Linkport0 to SHARC**
 
 **Step 1:** Disable the peripheral in Linux by setting ``status = "disabled"`` in the board device tree:
-
-.. code-block:: text
 
 .. code-block:: dts
 
@@ -326,8 +281,6 @@ To allocate a peripheral to SHARC cores, modify the board-specific device tree. 
    };
 
 **Step 2:** Configure the pinmux for the peripheral using the ``icc`` (inter-core communication) driver:
-
-.. code-block:: text
 
 .. code-block:: dts
 
@@ -341,8 +294,6 @@ To allocate a peripheral to SHARC cores, modify the board-specific device tree. 
    };
 
 **Step 3:** Apply the pinmux configuration through the ``icc`` driver:
-
-.. code-block:: text
 
 .. code-block:: dts
 
@@ -359,11 +310,31 @@ To allocate a peripheral to SHARC cores, modify the board-specific device tree. 
 
 **See also:** :doc:`Configuring System Memory <../development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>` for memory partitioning between cores.
 
-----
+How do I identify my SOM and Carrier board revisions?
+------------------------------------------------------
 
-Additional Resources
-====================
+SOM Board Revision
+~~~~~~~~~~~~~~~~~~
 
-* **Documentation**: :doc:`Development Guide <../development/Development>` | :doc:`Examples <../examples/Examples>`
-* **Support**: `EngineerZone Forum <https://ez.analog.com/linux-software-drivers>`_ | `GitHub Issues <https://github.com/analogdevicesinc/lnxdsp-adi-meta/issues>`_
-* **Release Information**: :doc:`5.0.1 Landing Page <../Linux-for-ADSP‐SC5xx-5.0.1-Landing-Page>` | :doc:`Older Releases <../Older-Releases>`
+The revision number is located on the top side of the SOM board, on the opposite side from the USB UART port connector.
+
+.. image:: https://raw.githubusercontent.com/wiki/analogdevicesinc/lnxdsp-adi-meta/images/som_adsp_sc598.jpg
+   :alt: ADSP-SC598 SOM
+   :width: 600
+
+.. image:: https://raw.githubusercontent.com/wiki/analogdevicesinc/lnxdsp-adi-meta/images/som_board_revision.png
+   :alt: SOM Board Revision
+   :width: 600
+
+Carrier Board Revision
+~~~~~~~~~~~~~~~~~~~~~~
+
+Revision numbers are on the bottom part of the carrier board.
+
+.. image:: https://raw.githubusercontent.com/wiki/analogdevicesinc/lnxdsp-adi-meta/images/carrier_ezkit.jpg
+   :alt: Carrier EZKIT
+   :width: 600
+
+.. image:: https://raw.githubusercontent.com/wiki/analogdevicesinc/lnxdsp-adi-meta/images/carrier_board_revision.png
+   :alt: Carrier Board Revision
+   :width: 600
