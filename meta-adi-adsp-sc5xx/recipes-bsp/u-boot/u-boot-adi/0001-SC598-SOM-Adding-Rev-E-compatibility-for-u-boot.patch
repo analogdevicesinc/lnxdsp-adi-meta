@@ -1,7 +1,7 @@
-From 8b41eb305f5acea2191f619598d1fea9ad31cd01 Mon Sep 17 00:00:00 2001
+From 30f20303c0a83affb14a5997189d89362b45c4c7 Mon Sep 17 00:00:00 2001
 From: Caleb Ethridge <caleb.ethridge@analog.com>
-Date: Fri, 5 Sep 2025 09:43:37 -0400
-Subject: [PATCH] 0001-SC598-SOM-Adding-Rev-E-compatibility-for-u-boot
+Date: Wed, 8 Apr 2026 10:58:17 -0400
+Subject: [PATCH] SC598 SOM Adding Rev E compatibility for u boot
 
 - Adding checks to make sure valid gpio descriptors are obtained
  before attempting to set value. This allows uboot to avoid crashing
@@ -12,20 +12,19 @@ Subject: [PATCH] 0001-SC598-SOM-Adding-Rev-E-compatibility-for-u-boot
 NOTE: SPL doesnt print UART output when loaded for the first time
 
 Signed-off-by: Utsav Agarwal <utsav.agarwal@analog.com>
-
 ---
- arch/arm/dts/sc598-som.dtsi              | 75 ++++++++++++------------
- arch/arm/dts/sc5xx.dtsi                  | 51 ++++++++--------
- arch/arm/mach-sc5xx/sc59x/sc59x-shared.c | 56 +++++++++++++++---
+ arch/arm/dts/sc598-som.dtsi              | 71 ++++++++++++------------
+ arch/arm/dts/sc5xx.dtsi                  | 51 ++++++++---------
+ arch/arm/mach-sc5xx/sc59x/sc59x-shared.c | 56 ++++++++++++++++---
  configs/sc598-som-ezkit-spl_defconfig    |  1 +
  drivers/gpio/adp5588_gpio.c              |  4 +-
- 5 files changed, 115 insertions(+), 72 deletions(-)
+ 5 files changed, 113 insertions(+), 70 deletions(-)
 
 diff --git a/arch/arm/dts/sc598-som.dtsi b/arch/arm/dts/sc598-som.dtsi
-index 02b46e5fff..e526eb1b6a 100644
+index 012ebef16e..e526eb1b6a 100644
 --- a/arch/arm/dts/sc598-som.dtsi
 +++ b/arch/arm/dts/sc598-som.dtsi
-@@ -128,87 +128,88 @@
+@@ -128,43 +128,35 @@
  };
  
  &i2c2{
@@ -82,7 +81,7 @@ index 02b46e5fff..e526eb1b6a 100644
  			output-high;
  			line-name = "spi2d2-d3-en";
  			u-boot,dm-pre-reloc;
- 		};
+@@ -172,43 +164,52 @@
  
  		spi2flash-cs {
  			gpio-hog;
@@ -150,7 +149,7 @@ index 02b46e5fff..e526eb1b6a 100644
  };
  
 diff --git a/arch/arm/dts/sc5xx.dtsi b/arch/arm/dts/sc5xx.dtsi
-index 2e4298743f..5a90dca2b1 100644
+index d8c3588b3e..7c3a1c6ed5 100644
 --- a/arch/arm/dts/sc5xx.dtsi
 +++ b/arch/arm/dts/sc5xx.dtsi
 @@ -92,6 +92,30 @@
@@ -227,7 +226,7 @@ index 2e4298743f..5a90dca2b1 100644
  	};
  };
 diff --git a/arch/arm/mach-sc5xx/sc59x/sc59x-shared.c b/arch/arm/mach-sc5xx/sc59x/sc59x-shared.c
-index 1f0afce07c..3735715d08 100644
+index 4082e75c5c..cb891ca87e 100644
 --- a/arch/arm/mach-sc5xx/sc59x/sc59x-shared.c
 +++ b/arch/arm/mach-sc5xx/sc59x/sc59x-shared.c
 @@ -29,17 +29,37 @@ int adi_enable_ethernet_softconfig(void)
@@ -259,7 +258,7 @@ index 1f0afce07c..3735715d08 100644
 +	}
  
  	dm_gpio_set_value(eth1, 1);
- 	dm_gpio_set_value(eth1_reset, 0);
+ 	dm_gpio_set_value(eth1_reset, 1);
  	dm_gpio_set_value(gige_reset, 1);
  #elif defined(CONFIG_ADI_CARRIER_SOMCRR_EZLITE)
 -	gpio_hog_lookup_name("eth0-reset", &gige_reset);
@@ -301,7 +300,7 @@ index 1f0afce07c..3735715d08 100644
 +	}
  
  	dm_gpio_set_value(eth1, 1);
- 	dm_gpio_set_value(eth1_reset, 0);
+ 	dm_gpio_set_value(eth1_reset, 1);
  	dm_gpio_set_value(gige_reset, 0);
  #elif defined(CONFIG_ADI_CARRIER_SOMCRR_EZLITE)
 -	gpio_hog_lookup_name("eth0-reset", &gige_reset);
@@ -346,6 +345,3 @@ index caf407aa51..44d9344c6b 100644
 -};
 \ No newline at end of file
 +};
--- 
-2.34.1
-
