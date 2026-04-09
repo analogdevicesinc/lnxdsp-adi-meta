@@ -4,7 +4,7 @@ inherit autotools
 
 require ${COREBASE}/meta/recipes-bsp/u-boot/u-boot.inc
 
-FILESEXTRAPATHS:prepend := "${THISDIR}/u-boot-adi:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/u-boot-adi:${THISDIR}/u-boot-adi/debug-cfg:"
 
 UBOOT_GIT_URI ?= "git://github.com/analogdevicesinc/u-boot.git"
 UBOOT_GIT_PROTOCOL ?= "https"
@@ -41,6 +41,16 @@ UBOOT_BRANCH ?= "adi-u-boot-2025.10.y"
 BMODE_FORCE_EMMC = "${@bb.utils.contains('DISTRO_FEATURES', \
                    'bmode_force_emmc', 'file://bmode_force_emmc.cfg', '', d)}"
 
+# Debug build option: enable additional debug features (such as storing the
+# U-Boot environment in SPI flash).
+DEBUG_CFG = ""
+DEBUG_CFG:adsp-sc573-ezlite = " file://debug_sc573-ezlite.cfg"
+DEBUG_CFG:adsp-sc589-mini = " file://debug_sc589-mini.cfg"
+DEBUG_CFG:adsp-sc594-som-ezkit = " file://debug_sc594-som-ezkit.cfg"
+DEBUG_CFG:adsp-sc594-som-ezlite = " file://debug_sc594-som-ezlite.cfg"
+DEBUG_CFG:adsp-sc598-som-ezkit = " file://debug_sc598-som-ezkit.cfg"
+DEBUG_CFG:adsp-sc598-som-ezlite = " file://debug_sc598-som-ezlite.cfg"
+
 SRC_URI += " \
 	${UBOOT_GIT_URI};protocol=${UBOOT_GIT_PROTOCOL};branch=${UBOOT_BRANCH} \
 	${UBOOT_WDT} \
@@ -52,6 +62,7 @@ SRC_URI:append:adsp-sc598-som-ezkit = "${@d.getVar('SDCARD_PATCH') if (bb.utils.
 SRC_URI:append = "${@d.getVar('USB_PATCH') if (bb.utils.to_boolean(d.getVar('ADSP_SC59X_USB'))) else ''}"
 
 SRC_URI:append = "${@' file://0002-developer-mode-enable.patch' if bb.utils.to_boolean(d.getVar('DEVELOPER_MODE')) else '' }"
+SRC_URI:append = "${@bb.utils.contains('ADSP_SC5XX_DEBUG', '1', '${DEBUG_CFG}', '', d)}"
 
 LICENSE = "GPL-2.0-or-later"
 LIC_FILES_CHKSUM = "file://Licenses/README;md5=2ca5f2c35c8cc335f0a19756634782f1"
