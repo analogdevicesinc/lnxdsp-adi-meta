@@ -1,0 +1,198 @@
+From cb9bb9853c1ec3f04cb5e8679e34fb6efbb1cd19 Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Thu, 9 Apr 2026 10:40:06 -0400
+Subject: [PATCH] u-boot debug build to save env
+
+---
+ configs/sc573-ezlite_defconfig         | 4 ++++
+ configs/sc584-ezkit_defconfig          | 5 +++++
+ configs/sc589-ezkit_defconfig          | 5 +++++
+ configs/sc589-mini_defconfig           | 5 +++++
+ configs/sc594-som-ezkit-spl_defconfig  | 4 ++++
+ configs/sc594-som-ezlite-spl_defconfig | 4 ++++
+ configs/sc598-som-ezkit-spl_defconfig  | 4 ++++
+ configs/sc598-som-ezlite-spl_defconfig | 4 ++++
+ 8 files changed, 35 insertions(+)
+
+diff --git a/configs/sc573-ezlite_defconfig b/configs/sc573-ezlite_defconfig
+index 802f0e52400..f165673e01e 100644
+--- a/configs/sc573-ezlite_defconfig
++++ b/configs/sc573-ezlite_defconfig
+@@ -3,6 +3,9 @@ CONFIG_SYS_ARM_CACHE_WRITETHROUGH=y
+ CONFIG_ARCH_SC5XX=y
+ CONFIG_SYS_MALLOC_LEN=0x100000
+ CONFIG_SPL_GPIO=y
++CONFIG_ENV_SIZE=0x4000
++CONFIG_ENV_OFFSET=0xC0000
++CONFIG_ENV_SECT_SIZE=0x4000
+ CONFIG_DM_GPIO=y
+ CONFIG_SPL_SERIAL=y
+ CONFIG_SPL_SYS_MALLOC_F_LEN=0x10000
+@@ -46,6 +49,7 @@ CONFIG_CMD_FS_GENERIC=y
+ CONFIG_SPL_OF_CONTROL=y
+ CONFIG_OF_EMBED=y
+ CONFIG_ENV_OVERWRITE=y
++CONFIG_ENV_IS_IN_SPI_FLASH=y
+ CONFIG_USE_HOSTNAME=y
+ CONFIG_HOSTNAME="sc573-ezlite"
+ CONFIG_NET_RETRY_COUNT=20
+diff --git a/configs/sc584-ezkit_defconfig b/configs/sc584-ezkit_defconfig
+index 471f38fbb70..268eb6812a2 100644
+--- a/configs/sc584-ezkit_defconfig
++++ b/configs/sc584-ezkit_defconfig
+@@ -3,6 +3,9 @@ CONFIG_SYS_ARM_CACHE_WRITETHROUGH=y
+ CONFIG_ARCH_SC5XX=y
+ CONFIG_SYS_MALLOC_LEN=0x100000
+ CONFIG_SPL_GPIO=y
++CONFIG_ENV_SIZE=0x4000
++CONFIG_ENV_OFFSET=0xC0000
++CONFIG_ENV_SECT_SIZE=0x4000
+ CONFIG_DM_GPIO=y
+ CONFIG_SPL_SERIAL=y
+ CONFIG_SPL_STACK=0x200C0000
+@@ -51,6 +54,8 @@ CONFIG_CMD_FS_GENERIC=y
+ CONFIG_SPL_OF_CONTROL=y
+ CONFIG_OF_EMBED=y
+ CONFIG_ENV_OVERWRITE=y
++CONFIG_ENV_IS_IN_SPI_FLASH=y
++CONFIG_ENV_SPI_MAX_HZ=10000000
+ CONFIG_USE_HOSTNAME=y
+ CONFIG_HOSTNAME="sc584-ezkit"
+ CONFIG_NET_RETRY_COUNT=20
+diff --git a/configs/sc589-ezkit_defconfig b/configs/sc589-ezkit_defconfig
+index f5e3c7e28b3..1b19c5767b4 100644
+--- a/configs/sc589-ezkit_defconfig
++++ b/configs/sc589-ezkit_defconfig
+@@ -5,6 +5,9 @@ CONFIG_SYS_MALLOC_LEN=0x100000
+ CONFIG_SPL_GPIO=y
+ CONFIG_CUSTOM_SYS_INIT_SP_ADDR=0xC203F000
+ CONFIG_SF_DEFAULT_SPEED=1000000
++CONFIG_ENV_SIZE=0x4000
++CONFIG_ENV_OFFSET=0xC0000
++CONFIG_ENV_SECT_SIZE=0x4000
+ CONFIG_DM_GPIO=y
+ CONFIG_SPL_SERIAL=y
+ CONFIG_SPL_STACK=0x200C0000
+@@ -55,6 +58,8 @@ CONFIG_CMD_FS_GENERIC=y
+ CONFIG_SPL_OF_CONTROL=y
+ CONFIG_OF_EMBED=y
+ CONFIG_ENV_OVERWRITE=y
++CONFIG_ENV_IS_IN_SPI_FLASH=y
++CONFIG_ENV_SPI_MAX_HZ=10000000
+ CONFIG_USE_HOSTNAME=y
+ CONFIG_HOSTNAME="sc589-ezkit"
+ CONFIG_NET_RETRY_COUNT=20
+diff --git a/configs/sc589-mini_defconfig b/configs/sc589-mini_defconfig
+index 3ecdee91892..51027ff1ce0 100644
+--- a/configs/sc589-mini_defconfig
++++ b/configs/sc589-mini_defconfig
+@@ -4,6 +4,9 @@ CONFIG_ARCH_SC5XX=y
+ CONFIG_SYS_MALLOC_LEN=0x100000
+ CONFIG_SPL_GPIO=y
+ CONFIG_CUSTOM_SYS_INIT_SP_ADDR=0xC203F000
++CONFIG_ENV_SIZE=0x10000
++CONFIG_ENV_OFFSET=0xC0000
++CONFIG_ENV_SECT_SIZE=0x10000
+ CONFIG_DM_GPIO=y
+ CONFIG_SPL_SERIAL=y
+ CONFIG_SPL_STACK=0x200C0000
+@@ -52,6 +55,8 @@ CONFIG_CMD_FS_GENERIC=y
+ CONFIG_SPL_OF_CONTROL=y
+ CONFIG_OF_EMBED=y
+ CONFIG_ENV_OVERWRITE=y
++CONFIG_ENV_IS_IN_SPI_FLASH=y
++CONFIG_ENV_SPI_MAX_HZ=10000000
+ CONFIG_USE_HOSTNAME=y
+ CONFIG_HOSTNAME="sc589-mini"
+ CONFIG_NET_RETRY_COUNT=20
+diff --git a/configs/sc594-som-ezkit-spl_defconfig b/configs/sc594-som-ezkit-spl_defconfig
+index 0cbce440e01..5cf2bec276e 100644
+--- a/configs/sc594-som-ezkit-spl_defconfig
++++ b/configs/sc594-som-ezkit-spl_defconfig
+@@ -4,6 +4,9 @@ CONFIG_ARCH_SC5XX=y
+ CONFIG_SYS_MALLOC_LEN=0x100000
+ CONFIG_SPL_GPIO=y
+ CONFIG_CUSTOM_SYS_INIT_SP_ADDR=0x8203f000
++CONFIG_ENV_SIZE=0x10000
++CONFIG_ENV_OFFSET=0xF0000
++CONFIG_ENV_SECT_SIZE=0x10000
+ CONFIG_DM_GPIO=y
+ CONFIG_SPL_DM_SPI=y
+ CONFIG_SPL_SERIAL=y
+@@ -38,6 +41,7 @@ CONFIG_CMD_EXT4=y
+ CONFIG_CMD_FAT=y
+ CONFIG_OF_EMBED=y
+ CONFIG_ENV_OVERWRITE=y
++CONFIG_ENV_IS_IN_SPI_FLASH=y
+ CONFIG_USE_HOSTNAME=y
+ CONFIG_HOSTNAME="sc594-som-ezkit"
+ CONFIG_NET_RETRY_COUNT=20
+diff --git a/configs/sc594-som-ezlite-spl_defconfig b/configs/sc594-som-ezlite-spl_defconfig
+index 34f9c65ebe0..909cde31179 100644
+--- a/configs/sc594-som-ezlite-spl_defconfig
++++ b/configs/sc594-som-ezlite-spl_defconfig
+@@ -3,6 +3,9 @@ CONFIG_SYS_ARM_CACHE_WRITETHROUGH=y
+ CONFIG_ARCH_SC5XX=y
+ CONFIG_SYS_MALLOC_LEN=0x100000
+ CONFIG_SPL_GPIO=y
++CONFIG_ENV_SIZE=0x10000
++CONFIG_ENV_OFFSET=0xF0000
++CONFIG_ENV_SECT_SIZE=0x20000
+ CONFIG_DM_GPIO=y
+ CONFIG_SPL_DM_SPI=y
+ CONFIG_SPL_SERIAL=y
+@@ -43,6 +46,7 @@ CONFIG_CMD_FAT=y
+ # CONFIG_DOS_PARTITION is not set
+ CONFIG_OF_EMBED=y
+ CONFIG_ENV_OVERWRITE=y
++CONFIG_ENV_IS_IN_SPI_FLASH=y
+ CONFIG_USE_HOSTNAME=y
+ CONFIG_HOSTNAME="sc594-som-ezlite"
+ CONFIG_NET_RETRY_COUNT=20
+diff --git a/configs/sc598-som-ezkit-spl_defconfig b/configs/sc598-som-ezkit-spl_defconfig
+index a1a200092a1..c77ef82c28f 100644
+--- a/configs/sc598-som-ezkit-spl_defconfig
++++ b/configs/sc598-som-ezkit-spl_defconfig
+@@ -4,6 +4,9 @@ CONFIG_COUNTER_FREQUENCY=31250000
+ CONFIG_ARCH_SC5XX=y
+ CONFIG_SYS_MALLOC_LEN=0x100000
+ CONFIG_SPL_GPIO=y
++CONFIG_ENV_SIZE=0x10000
++CONFIG_ENV_OFFSET=0xF0000
++CONFIG_ENV_SECT_SIZE=0x10000
+ CONFIG_DM_GPIO=y
+ CONFIG_SPL_DM_SPI=y
+ CONFIG_SPL_SERIAL=y
+@@ -61,6 +64,7 @@ CONFIG_CMD_EXT4_WRITE=y
+ CONFIG_CMD_FAT=y
+ CONFIG_OF_EMBED=y
+ CONFIG_ENV_OVERWRITE=y
++CONFIG_ENV_IS_IN_SPI_FLASH=y
+ CONFIG_USE_HOSTNAME=y
+ CONFIG_HOSTNAME="sc598-som-ezkit"
+ CONFIG_NET_RETRY_COUNT=20
+diff --git a/configs/sc598-som-ezlite-spl_defconfig b/configs/sc598-som-ezlite-spl_defconfig
+index b96ae6d33fc..2fde6bdb89e 100644
+--- a/configs/sc598-som-ezlite-spl_defconfig
++++ b/configs/sc598-som-ezlite-spl_defconfig
+@@ -4,6 +4,9 @@ CONFIG_COUNTER_FREQUENCY=31250000
+ CONFIG_ARCH_SC5XX=y
+ CONFIG_SYS_MALLOC_LEN=0x100000
+ CONFIG_SPL_GPIO=y
++CONFIG_ENV_SIZE=0x10000
++CONFIG_ENV_OFFSET=0xF0000
++CONFIG_ENV_SECT_SIZE=0x10000
+ CONFIG_DM_GPIO=y
+ CONFIG_SPL_DM_SPI=y
+ CONFIG_SPL_SERIAL=y
+@@ -60,6 +63,7 @@ CONFIG_CMD_EXT4=y
+ CONFIG_CMD_EXT4_WRITE=y
+ CONFIG_OF_EMBED=y
+ CONFIG_ENV_OVERWRITE=y
++CONFIG_ENV_IS_IN_SPI_FLASH=y
+ CONFIG_USE_HOSTNAME=y
+ CONFIG_HOSTNAME="sc598-som-ezlite"
+ CONFIG_NET_RETRY_COUNT=20
+-- 
+2.34.1
+
