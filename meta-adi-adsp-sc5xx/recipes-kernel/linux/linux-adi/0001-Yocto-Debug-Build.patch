@@ -1,0 +1,104 @@
+From 18c006793f4e4365a28ab8976e816c646a3aaec1 Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Thu, 9 Apr 2026 10:59:40 -0400
+Subject: [PATCH] Yocto Debug Build
+
+---
+ arch/arm/boot/dts/adi/sc573-ezlite.dts      | 2 +-
+ arch/arm/boot/dts/adi/sc589-mini.dts        | 2 +-
+ arch/arm/boot/dts/adi/sc594-som.dtsi        | 4 ++--
+ arch/arm64/boot/dts/adi/sc598-som-ezkit.dts | 2 +-
+ arch/arm64/boot/dts/adi/sc598-som-revD.dtsi | 2 +-
+ arch/arm64/boot/dts/adi/sc598-som-revE.dtsi | 2 +-
+ 6 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/arch/arm/boot/dts/adi/sc573-ezlite.dts b/arch/arm/boot/dts/adi/sc573-ezlite.dts
+index 181804eeb9d5..bce501397670 100644
+--- a/arch/arm/boot/dts/adi/sc573-ezlite.dts
++++ b/arch/arm/boot/dts/adi/sc573-ezlite.dts
+@@ -157,7 +157,7 @@ partition@0 {
+ 
+ 		partition@1 {
+ 			label = "u-boot";
+-			reg = <0x20000 0xb0000>;
++			reg = <0x20000 0xa0000>;
+ 		};
+ 
+ 		partition@2 {
+diff --git a/arch/arm/boot/dts/adi/sc589-mini.dts b/arch/arm/boot/dts/adi/sc589-mini.dts
+index 32a6e685282c..2940b3d5b6ae 100644
+--- a/arch/arm/boot/dts/adi/sc589-mini.dts
++++ b/arch/arm/boot/dts/adi/sc589-mini.dts
+@@ -142,7 +142,7 @@ partition@0 {
+ 
+ 		partition@1 {
+ 			label = "u-boot";
+-			reg = <0x20000 0xb0000>;
++			reg = <0x20000 0xa0000>;
+ 		};
+ 
+ 		partition@2 {
+diff --git a/arch/arm/boot/dts/adi/sc594-som.dtsi b/arch/arm/boot/dts/adi/sc594-som.dtsi
+index 2e5539429d6b..0c07f37070b8 100644
+--- a/arch/arm/boot/dts/adi/sc594-som.dtsi
++++ b/arch/arm/boot/dts/adi/sc594-som.dtsi
+@@ -161,7 +161,7 @@ qspi_0: partition@0 {
+ 
+ 		qspi_1: partition@1 {
+ 			label = "u-boot";
+-			reg = <0x40000 0xc0000>;
++			reg = <0x40000 0xb0000>;
+ 		};
+ 
+ 		qspi_2: partition@3 {
+@@ -212,7 +212,7 @@ ospi_0: partition@0 {
+ 
+ 			ospi_1: partition@1 {
+ 				label = "u-boot";
+-				reg = <0x40000 0xc0000>;
++				reg = <0x40000 0xb0000>;
+ 			};
+ 
+ 			ospi_2: partition@3 {
+diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
+index a5cd60dac238..b2f18583484a 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
++++ b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
+@@ -53,7 +53,7 @@ ospi_0: partition@0 {
+ 
+ 			ospi_1: partition@1 {
+ 				label = "u-boot";
+-				reg = <0x40000 0xc0000>;
++				reg = <0x40000 0xb0000>;
+ 			};
+ 
+ 			ospi_2: partition@2 {
+diff --git a/arch/arm64/boot/dts/adi/sc598-som-revD.dtsi b/arch/arm64/boot/dts/adi/sc598-som-revD.dtsi
+index ce641c888db1..4388d6627cae 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som-revD.dtsi
++++ b/arch/arm64/boot/dts/adi/sc598-som-revD.dtsi
+@@ -99,7 +99,7 @@ qspi_0@0 {
+ 
+ 			qspi_1@40000 {
+ 				label = "u-boot";
+-				reg = <0x00040000 0xc0000>;
++				reg = <0x00040000 0xb0000>;
+ 			};
+ 
+ 			qspi_2@100000 {
+diff --git a/arch/arm64/boot/dts/adi/sc598-som-revE.dtsi b/arch/arm64/boot/dts/adi/sc598-som-revE.dtsi
+index 46bb19af093e..b0046807c15a 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som-revE.dtsi
++++ b/arch/arm64/boot/dts/adi/sc598-som-revE.dtsi
+@@ -98,7 +98,7 @@ qspi_0@0 {
+ 
+ 			qspi_1@40000 {
+ 				label = "u-boot";
+-				reg = <0x00040000 0xC0000>;
++				reg = <0x00040000 0xB0000>;
+ 			};
+ 
+ 			qspi_2@100000 {
+-- 
+2.34.1
+
