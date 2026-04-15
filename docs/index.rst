@@ -75,7 +75,7 @@ Quick Links
 Resources
 ---------
 
-**Source Code**: `lnxdsp-adi-meta <https://github.com/analogdevicesinc/lnxdsp-adi-meta>`_ | `linux-adi <https://github.com/analogdevicesinc/linux-adi>`_ | `u-boot-adi <https://github.com/analogdevicesinc/u-boot-adi>`_
+**Source Code**: `lnxdsp-adi-meta <https://github.com/analogdevicesinc/lnxdsp-adi-meta>`_ | `linux-adi <https://github.com/analogdevicesinc/linux>`_ | `u-boot-adi <https://github.com/analogdevicesinc/u-boot>`_
 
 **Support**: `Hardware Docs <https://www.analog.com/en/products/adsp-sc598.html>`_ | `EngineerZone <https://ez.analog.com/linux-software-drivers>`_ | `Technical Support <https://www.analog.com/en/support/technical-support.html>`_
 
