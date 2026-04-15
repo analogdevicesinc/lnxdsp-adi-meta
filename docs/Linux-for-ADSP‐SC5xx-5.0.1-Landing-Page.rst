@@ -40,6 +40,14 @@ Release Notes
 Release Notes for the 5.0.1 release can be found `here <https://github.com/analogdevicesinc/lnxdsp-adi-meta/releases/tag/5.0.1-rel-1>`_.
 The test report for this page can be found :doc:`here <test-reports/Test-Report-(5.0.1)>`.
 
+Guides
+------
+
+* :doc:`Getting Started with ADSP-SC598 <getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)>`
+* :doc:`Getting Started with ADSP-SC594 <getting-started/Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)>`
+* :doc:`Getting Started with ADSP-SC589-MINI <getting-started/Getting-Started-with-ADSP‐SC589‐MINI-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)>`
+* :doc:`Getting Started with ADSP-SC573 <getting-started/Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)>`
+
 .. toctree::
    :hidden:
    :titlesonly:
