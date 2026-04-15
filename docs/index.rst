@@ -87,7 +87,7 @@ Documentation
    :hidden:
    :titlesonly:
 
-   5.0.1 Landing Page <Linux-for-ADSP‐SC5xx-5.0.1-Landing-Page>
+   Linux for ADSP SC5xx 5.0.1 <Linux-for-ADSP‐SC5xx-5.0.1-Landing-Page>
    Older Releases <Older-Releases>
    Examples <examples/Examples>
    Development <development/Development>
