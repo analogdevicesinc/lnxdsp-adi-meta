@@ -41,6 +41,8 @@ SRC_URI += " \
 "
 
 SRC_URI:append:adsp-sc598-som-ezkit = "${@d.getVar('SDCARD_PATCH') if (bb.utils.to_boolean(d.getVar('ADSP_SC598_SDCARD'))) else ''}"
+SRC_URI:append:adsp-sc598-som-ezkit = "${@' file://0001-sc594-sc598-usb-support.patch' if bb.utils.to_boolean(d.getVar('ADSP_SC59X_USB')) else '' }"
+SRC_URI:append:adsp-sc594-som-ezkit = "${@' file://0001-sc594-sc598-usb-support.patch' if bb.utils.to_boolean(d.getVar('ADSP_SC59X_USB')) else '' }"
 
 SRC_URI:append = "${@' file://0002-developer-mode-enable.patch' if bb.utils.to_boolean(d.getVar('DEVELOPER_MODE')) else '' }"
 

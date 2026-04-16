@@ -165,6 +165,50 @@ case "$MACHINE_MODEL" in
     ;;
 esac
 
+echo "Install U-Boot to USB"
+echo
+echo "This will erase and program the USB."
+printf "Continue? [y/N]: "
+
+read -r ans
+
+case "$ans" in
+  y|Y)
+    echo "Installing to USB..."
+
+    echo "Partitioning USB..."
+    # Create DOS MBR partition table with two primary partitions
+    # Partition 1: 32MB for fitImage (should be more than enough)
+    # Partition 2: Remainder for rootfs
+    echo -e 'o\nn\np\n1\n\n+32M\nn\np\n2\n\n\nw' | fdisk /dev/sda > /dev/null
+
+    # Wait for partition table to be re-read
+    sleep 2
+    partprobe /dev/sda || true > /dev/null
+    sleep 1
+
+    echo "Formatting USB partition 1 as ext4..."
+    mke2fs -F -t ext4 -L "BOOT" /dev/sda1 > /dev/null
+
+    echo "Writing fitImage to USB partition 1..."
+    mkdir -p /tmp/boot_mount > /dev/null
+    mount /dev/sda1 /tmp/boot_mount > /dev/null
+    cp /usr/firmware/fitImage /tmp/boot_mount/ > /dev/null
+    sync
+    umount /tmp/boot_mount > /dev/null
+    rmdir /tmp/boot_mount > /dev/null
+
+    echo "Writing rootfs image to USB partition 2..."
+    dd if=/usr/firmware/rootfs.ext4 of=/dev/sda2 bs=512 > /dev/null
+
+    sync
+    echo "USB install complete"
+    ;;
+  *)
+    echo "Skipping USB install"
+    ;;
+esac
+
 echo
 echo "Set the switch S1 to position 1 (SPI boot)."
 echo "Waiting for switch..."
