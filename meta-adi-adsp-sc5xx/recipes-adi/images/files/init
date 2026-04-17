@@ -1,0 +1,228 @@
+#!/bin/sh
+
+mount -t proc proc /proc
+mount -t sysfs sys /sys
+mount -t devtmpfs devtmpfs /dev
+
+set -e
+
+RCU0_STAT=0x3108C004
+BITP_RCU_STAT_BMODE=8
+BITM_RCU_STAT_BMODE=0x00000F00
+SPI_BMODE=1 #SPI Master Boot
+
+echo
+echo "======== SPI Flash Installer ========"
+echo "Install U-Boot to SPI Flash"
+echo
+echo "This will erase and program SPI flash."
+printf "Continue? [y/i/N]:"
+
+read -r ans
+
+case "$ans" in
+  i|I)
+    echo "Interactive SPI flash programming..."
+    echo
+
+    # U-Boot SPL (mtd0)
+    printf "Install U-Boot SPL to mtd0? [y/N]: "
+    read -r spl_ans
+    if [ "$spl_ans" = "y" ] || [ "$spl_ans" = "Y" ]; then
+      echo "Installing U-boot SPL..."
+      flash_erase /dev/mtd0 0 0
+      flashcp /usr/firmware/u-boot-spl.ldr /dev/mtd0
+    fi
+
+    # U-Boot (mtd1)
+    printf "Install U-Boot to mtd1? [y/N]: "
+    read -r uboot_ans
+    if [ "$uboot_ans" = "y" ] || [ "$uboot_ans" = "Y" ]; then
+      echo "Installing U-boot..."
+      flash_erase /dev/mtd1 0 0
+      flashcp /usr/firmware/u-boot.ldr /dev/mtd1
+    fi
+
+    # Linux kernel (mtd2)
+    printf "Install Linux kernel (fitImage) to mtd2? [y/N]: "
+    read -r kernel_ans
+    if [ "$kernel_ans" = "y" ] || [ "$kernel_ans" = "Y" ]; then
+      echo "Installing Linux kernel..."
+      flash_erase /dev/mtd2 0 0
+      flashcp /usr/firmware/fitImage /dev/mtd2
+    fi
+
+    # Rootfs (mtd3)
+    printf "Install rootfs to mtd3? [y/N]: "
+    read -r rootfs_ans
+    if [ "$rootfs_ans" = "y" ] || [ "$rootfs_ans" = "Y" ]; then
+      echo "Formatting mtd3 as UBI..."
+      ubiformat /dev/mtd3 -y > /dev/null
+
+      echo "Attaching UBI device..."
+      ubiattach -m 3 -d 0 > /dev/null
+
+      echo "Creating UBI volume 'rootfs'..."
+      ubimkvol /dev/ubi0 -N rootfs -m > /dev/null
+
+      echo "Writing rootfs to UBI volume..."
+      ubiupdatevol /dev/ubi0_0 /usr/firmware/rootfs.ubifs > /dev/null
+    fi
+
+    sync
+    echo "Interactive SPI install complete"
+    ;;
+  y|Y)
+    echo "Installing to SPI flash..."
+
+    echo "Installing U-boot SPL..."
+    flash_erase /dev/mtd0 0 0
+    flashcp /usr/firmware/u-boot-spl.ldr /dev/mtd0
+
+    echo "Installing U-boot..."
+    flash_erase /dev/mtd1 0 0
+    flashcp /usr/firmware/u-boot.ldr /dev/mtd1
+
+    echo "Installing Linux kernel"
+    flash_erase /dev/mtd2 0 0
+    flashcp /usr/firmware/fitImage /dev/mtd2
+
+    echo "Formatting mtd3 as UBI..."
+    ubiformat /dev/mtd3 -y > /dev/null
+
+    echo "Attaching UBI device..."
+    ubiattach -m 3 -d 0 > /dev/null
+
+    echo "Creating UBI volume 'rootfs'..."
+    ubimkvol /dev/ubi0 -N rootfs -m > /dev/null
+
+    echo "Writing rootfs to UBI volume..."
+    ubiupdatevol /dev/ubi0_0 /usr/firmware/rootfs.ubifs > /dev/null
+
+    sync
+    echo "SPI install complete"
+    ;;
+  *)
+    echo "Skipping SPI install"
+    ;;
+esac
+
+echo
+echo "======== Emmc Installer ========"
+
+# Check if machine supports eMMC programming (only SC598 platforms)
+MACHINE_MODEL=$(cat /proc/device-tree/model 2>/dev/null | tr -d '\0' || echo "unknown")
+case "$MACHINE_MODEL" in
+  *"SC598"*)
+    echo "Install U-Boot to EMMC"
+    echo
+    echo "This will erase and program EMMC."
+    printf "Continue? [y/N]: "
+
+    read -r ans
+
+    case "$ans" in
+      y|Y)
+        echo "Installing to EMMC..."
+
+        echo "Partitioning eMMC..."
+        # Create DOS MBR partition table with two primary partitions
+        # Partition 1: 32MB for fitImage (should be more than enough)
+        # Partition 2: Remainder for rootfs
+        echo -e 'o\nn\np\n1\n\n+32M\nn\np\n2\n\n\nw' | fdisk /dev/mmcblk0 > /dev/null
+
+        # Wait for partition table to be re-read
+        sleep 2
+        partprobe /dev/mmcblk0 || true > /dev/null
+        sleep 1
+
+        echo "Formatting eMMC partition 1 as ext4..."
+        mke2fs -F -t ext4 -L "BOOT" /dev/mmcblk0p1 > /dev/null
+
+        echo "Writing fitImage to eMMC partition 1..."
+        mkdir -p /tmp/boot_mount > /dev/null
+        mount /dev/mmcblk0p1 /tmp/boot_mount > /dev/null
+        cp /usr/firmware/fitImage /tmp/boot_mount/ > /dev/null
+        sync
+        umount /tmp/boot_mount > /dev/null
+        rmdir /tmp/boot_mount > /dev/null
+
+        echo "Writing rootfs image to eMMC partition 2..."
+        dd if=/usr/firmware/rootfs.ext4 of=/dev/mmcblk0p2 bs=512 > /dev/null
+
+        sync
+        echo "EMMC install complete"
+        ;;
+      *)
+        echo "Skipping EMMC install"
+        ;;
+    esac
+    ;;
+  *)
+    echo "eMMC programming is only supported on adsp-sc598-som-ezkit and adsp-sc598-som-ezlite machines."
+    echo "Current machine: $MACHINE_MODEL"
+    echo "Skipping eMMC installer."
+    ;;
+esac
+
+echo "Install U-Boot to USB"
+echo
+echo "This will erase and program the USB."
+printf "Continue? [y/N]: "
+
+read -r ans
+
+case "$ans" in
+  y|Y)
+    echo "Installing to USB..."
+
+    echo "Partitioning USB..."
+    # Create DOS MBR partition table with two primary partitions
+    # Partition 1: 32MB for fitImage (should be more than enough)
+    # Partition 2: Remainder for rootfs
+    echo -e 'o\nn\np\n1\n\n+32M\nn\np\n2\n\n\nw' | fdisk /dev/sda > /dev/null
+
+    # Wait for partition table to be re-read
+    sleep 2
+    partprobe /dev/sda || true > /dev/null
+    sleep 1
+
+    echo "Formatting USB partition 1 as ext4..."
+    mke2fs -F -t ext4 -L "BOOT" /dev/sda1 > /dev/null
+
+    echo "Writing fitImage to USB partition 1..."
+    mkdir -p /tmp/boot_mount > /dev/null
+    mount /dev/sda1 /tmp/boot_mount > /dev/null
+    cp /usr/firmware/fitImage /tmp/boot_mount/ > /dev/null
+    sync
+    umount /tmp/boot_mount > /dev/null
+    rmdir /tmp/boot_mount > /dev/null
+
+    echo "Writing rootfs image to USB partition 2..."
+    dd if=/usr/firmware/rootfs.ext4 of=/dev/sda2 bs=512 > /dev/null
+
+    sync
+    echo "USB install complete"
+    ;;
+  *)
+    echo "Skipping USB install"
+    ;;
+esac
+
+echo
+echo "Set the switch S1 to position 1 (SPI boot)."
+echo "Waiting for switch..."
+
+while true; do
+    val=$(devmem $RCU0_STAT 32)
+    mode=$(( (val & BITM_RCU_STAT_BMODE) >> BITP_RCU_STAT_BMODE))
+
+    if [ "$mode" -eq "$SPI_BMODE" ]; then
+        echo "SPI boot mode detected."
+        echo "Rebooting..."
+        reboot -f
+        exit 0
+    fi
+
+    sleep 1
+done

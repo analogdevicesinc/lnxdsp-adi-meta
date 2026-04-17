@@ -22,18 +22,18 @@ Signed-off-by: UtsavAgarwalADI <utsav.agarwal@analog.com>
  2 files changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/adi/sc5xx-asoc-card.c b/sound/soc/adi/sc5xx-asoc-card.c
-index 675d6ba97c47..86bb1dfe7d9e 100644
+index 40b13e296dca..520676678bf5 100644
 --- a/sound/soc/adi/sc5xx-asoc-card.c
 +++ b/sound/soc/adi/sc5xx-asoc-card.c
-@@ -359,7 +359,6 @@ static int __maybe_unused sc5xx_adau1979_init(struct snd_soc_pcm_runtime *rtd)
+@@ -358,7 +358,6 @@ static int __maybe_unused sc5xx_adau1979_init(struct snd_soc_pcm_runtime *rtd)
+ 			ADAU1977_SYSCLK_SRC_MCLK, 24576000, SND_SOC_CLOCK_IN);
  }
- 
  
 -#if IS_ENABLED(CONFIG_SND_SC5XX_ADAU1372)
  static struct snd_soc_dai_link_component adau1372_codec_component[] = {
  	{
  		.name = NULL,
-@@ -367,7 +366,6 @@ static struct snd_soc_dai_link_component adau1372_codec_component[] = {
+@@ -366,7 +365,6 @@ static struct snd_soc_dai_link_component adau1372_codec_component[] = {
  		.dai_name = "adau1372",
  	},
  };
@@ -41,15 +41,15 @@ index 675d6ba97c47..86bb1dfe7d9e 100644
  
  static struct snd_soc_dai_link_component adau1962_codec_component[] = {
  	{
-@@ -378,7 +376,6 @@ static struct snd_soc_dai_link_component adau1962_codec_component[] = {
+@@ -376,7 +374,6 @@ static struct snd_soc_dai_link_component adau1962_codec_component[] = {
+ 	},
  };
- 
  
 -#if IS_ENABLED(CONFIG_SND_SC5XX_ADAU1979)
  static struct snd_soc_dai_link_component adau1979_codec_component[] = {
  	{
  		.name = NULL,
-@@ -386,14 +383,13 @@ static struct snd_soc_dai_link_component adau1979_codec_component[] = {
+@@ -384,14 +381,13 @@ static struct snd_soc_dai_link_component adau1979_codec_component[] = {
  		.dai_name = "adau1977-hifi",
  	},
  };
@@ -77,6 +77,3 @@ index e843b9387cc4..51c9c0d0f2ec 100644
  	return sport;
  
  err_free_data:
--- 
-2.34.1
-

@@ -6,7 +6,7 @@ require linux-adi.inc sharc_audio.inc ${USB_AUDIO}
 LICENSE="GPL-2.0-only"
 LIC_FILES_CHKSUM="file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
-DEPENDS += "u-boot-mkimage-native dtc-native"
+DEPENDS += "u-boot-mkimage-native dtc-native u-boot-adi"
 
 # Include kernel configuration fragments
 SRC_URI:append="\
@@ -16,9 +16,9 @@ SRC_URI:append="\
 "
 
 PV="6.12"
-KERNEL_BRANCH = "adsp-main-6.12"
+KERNEL_BRANCH = "adsp-6.12.0-y"
 
-SRCREV="7da0cef491e39b2a61040e54b937455cdce22d22"
+SRCREV="${AUTOREV}"
 KERNEL_VERSION_SANITY_SKIP = "1"
 LINUX_VERSION="${PV}"
 
@@ -26,11 +26,9 @@ LINUX_VERSION="${PV}"
 SRC_URI:append:adsp-sc594-som-ezkit = " file://feature/cfg/snd_ezkit.scc"
 SRC_URI:append:adsp-sc589-ezkit = " file://feature/cfg/snd_ezkit.scc"
 SRC_URI:append:adsp-sc584-ezkit = " file://feature/cfg/snd_ezkit.scc"
-SRC_URI:append:adsp-sc573-ezkit = " file://feature/cfg/snd_ezkit.scc"
+SRC_URI:append:adsp-sc573-ezlite = " file://feature/cfg/snd_ezkit.scc"
 SRC_URI:append:adsp-sc589-mini = " file://feature/cfg/snd_mini.scc"
 SRC_URI:append:adsp-sc598-som-ezkit = "${@d.getVar('SDCARD_PATCH') if (bb.utils.to_boolean(d.getVar('ADSP_SC598_SDCARD'))) else ''}"
-
-SRC_URI:append:adsp-sc598-som-ezkit = "${@bb.utils.contains_any('MACHINE_FEATURES', 'falcon', d.getVar('FALCON_PATCH'), '', d)}"
 
 SRC_URI:append:adsp-sc598-som-ezkit = ' file://0001-SC598-fix-stmmac-dma-split-header-crash.patch'
 SRC_URI:append:adsp-sc598-som-ezkit = "${@bb.utils.contains('CMA_PATCH', '1', ' file://enable_cma.cfg', '', d)}"
@@ -39,3 +37,4 @@ SRC_URI:append = ' file://0001-snd-sc5xx-Matching-implementation-to-legacy.patch
 do_install:append(){
 	rm -rf ${D}/lib/modules/*-yocto-standard/modules.builtin.modinfo
 }
+

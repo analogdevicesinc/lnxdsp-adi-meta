@@ -1,6 +1,6 @@
-From fee1e6308ea86e2e8c3b755cfa1dc8d41b61aa42 Mon Sep 17 00:00:00 2001
-From: Greg Malysa <greg.malysa@timesys.com>
-Date: Wed, 5 Oct 2022 19:41:32 -0400
+From 1b88676ed191b38bdcb8454bcfc05f688a097a86 Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Mon, 9 Feb 2026 10:23:58 -0500
 Subject: [PATCH] Enable watchdog patch
 
 ---
@@ -8,16 +8,16 @@ Subject: [PATCH] Enable watchdog patch
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/arm/dts/sc5xx.dtsi b/arch/arm/dts/sc5xx.dtsi
-index e4b3b02bef..3edb4527b6 100644
+index 9d346ae62e0..8d687b19473 100644
 --- a/arch/arm/dts/sc5xx.dtsi
 +++ b/arch/arm/dts/sc5xx.dtsi
-@@ -129,7 +129,7 @@
+@@ -163,7 +163,7 @@
  					<0x31008000 0x1000>;
  			reg-names = "rcu", "sec", "wdt";
  			clock-names = "sclk0";
 -			status = "disabled";
 +			status = "okay";
- 			u-boot,dm-pre-reloc;
+ 			bootph-pre-ram;
  		};
  
 -- 
