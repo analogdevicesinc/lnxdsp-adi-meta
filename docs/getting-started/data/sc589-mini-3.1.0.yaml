@@ -12,7 +12,7 @@ som_revision: false
 sdk_machine_note: false
 has_qspi_boot: false
 has_sdcard_boot: true
-hardware_image: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/sc589-mini-hardware.png
+hardware_image: /images/sc589-mini-setup.png
 boot_mode_note: The BOOT MODE selector should be turned to "0".
 ubuntu_version: 20.04 LTS
 git_branch: release/yocto-3.1.0
