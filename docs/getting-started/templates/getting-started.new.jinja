@@ -1,0 +1,603 @@
+Getting Started with {{ board_name }} ({{ version }})
+=====================================================
+
+Setting Up Your Host PC
+-----------------------
+
+The build system is currently supported on host PCs running Ubuntu {{ ubuntu_version }} 64-bit. For setting up your host PC, please see the :doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>` page.
+
+--------------------
+Fetching the Sources
+--------------------
+
+The source is fully contained in the `Analog Devices Linux for ADSP repositories <https://github.com/analogdevicesinc?q=lnxdsp&type=all&language=&sort=>`_.
+
+To install the sources:
+
+.. code-block:: shell
+
+   mkdir ~/{{ build_dir }}
+   cd ~/{{ build_dir }}
+   mkdir bin
+   curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ./bin/repo
+   chmod a+x ./bin/repo
+   ./bin/repo init \
+      -u https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git \
+      -b {{ git_branch }} \
+      -m {{ manifest_file }}
+   ./bin/repo sync
+
+------------------
+Building the Image
+------------------
+
+Preparing the buildtool
+-----------------------
+
+Yocto requires the environment to be configured before building is possible. A setup-environment script in the {{ build_dir }} folder contains all the required environment settings for your build target.
+Source the setup script for your board:
+
+.. code-block:: shell
+
+   source setup-environment -m {{ machine }}
+
+Sourcing the script will configure your build environment and create a build folder along with a local build configuration file. See the Yocto Manual for further details.
+
+.. note::
+
+   Note that the build environment needs to be sourced once only before building. If later working in a different terminal, the ``setup-environment`` script should be sourced again. If sourcing the ``setup-environment`` script is done without specifying the machine, Yocto will reuse the previous configuration settings and retain any changes made to the files in the ``conf`` folder
+
+{% if som_revision %}
+
+Check and select the appropriate revision
+------------------------------------------
+
+Change the following in your configuration file within the build directory (conf/local.conf):
+
+.. code-block:: shell
+
+   SOM_REV = "<SOM revision>"
+   CRR_REV = "<Carrier Revision>"
+
+The default configuration is valid for {{ som_revision_default }}. `Guide to identify SOM and EZKit Carrier revision numbers <../faq/Frequently-Asked-Questions.html#how-do-i-identify-my-som-and-carrier-board-revisions>`_
+{% endif %}
+
+Building the example
+--------------------
+
+You can build two different versions of the root file system; minimal and full.
+To build the example images invoke bitbake from within the build directory created previously.
+
+.. code-block:: shell
+
+   bitbake adsp-sc5xx-minimal
+   bitbake adsp-sc5xx-full
+
+When the build completes you will see a warning that the ELF binary has relocations in .text. It is OK to ignore this warning
+
+.. note::
+
+   Building a Linux distribution with Yocto is a significantly demanding process, both in CPU and network usage. A full build from scratch is estimated to take around 170 minutes for an 11th Gen Intel Core i5-11500T with 16 GB of RAM and a stable, fast Internet connection. This estimate can go up significantly for a poorer Internet connection or CPU resources, so set aside plenty of time for a clean build.
+
+Building the SDK
+----------------
+
+The SDK will provide you with the cross toolchain needed to develop application for the target board, alongside various miscellaneous tools. Notably, it will provide you with OpenOCD and GDB, which you can use to run and flash U-Boot on the board.
+
+The SDK can be built for the ``adsp-sc5xx-minimal`` image or the ``adsp-sc5xx-full`` image. To build the SDK for the ``adsp-sc5xx-minimal`` image invoke bitbake from within the build directory created previously.
+
+.. code-block:: shell
+
+   bitbake adsp-sc5xx-minimal -c populate_sdk
+
+or for the adsp-sc5xx-full image
+
+.. code-block:: shell
+
+   bitbake adsp-sc5xx-full -c populate_sdk
+
+
+{% if sdk_machine_note %}
+
+.. note::
+
+   Set ``SDKMACHINE ??= "aarch64"`` in ``conf/local.conf`` or other architecture as needed to target another non-x86 host to run these tools
+{% endif %}
+
+When the build has completed you will find a set of files in the ``<BUILD_DIR>/tmp/deploy/sdk`` directory. For example, the minimal image on {{ board_name }}:
+
+.. code-block:: shell
+
+   ls tmp/deploy/sdk
+
+.. code-block:: text
+
+{{sdk_example_files | indent(3, True)}}
+
+The ``{{ sdk_installer }}`` is a self-extracting archive containing the SDK.
+
+Installing the SDK
+------------------
+
+Invoke the self-extracting archive.
+It will default to installing to ``{{ sdk_path }}`` but gives you the option to select your own install folder during the installation.
+For the minimal image on {{ board_name }}
+
+.. code-block:: shell
+
+   ./{{ sdk_installer }}
+
+.. code-block:: text
+
+   Analog Devices Inc Reference Distro (glibc) SDK installer version {{ version }}
+   --------------------------------------------------------------------------
+   Enter target directory for SDK (default: {{ sdk_path }}):
+   You are about to install the SDK to "{{ sdk_path }}". Proceed [Y/n]?
+   Extracting SDK....................................................................................................................done
+   Setting it up...done
+   SDK has been successfully set up and is ready to be used.
+   Each time you wish to use the SDK in a new shell session, you need to source the environment setup script e.g.
+    $ . {{ sdk_path }}/environment-setup-{{ arch }}-adi_glibc-linux
+
+Your SDK is now installed.
+
+------------------
+Setup the hardware
+------------------
+
+Before installing the software on to the development board, ensure that the following cables are connected:
+
+.. image:: {{ hardware_image }}
+   :width: 400
+
+{{ hardware_connections }}
+
+{% if hardware_setup_extra %}
+{{ hardware_setup_extra }}
+
+{% endif %}
+
+Programming the board for the first time
+--------------------------------------------------------------
+
+.. note::
+
+   It's always good practice to erase the contents of the folders mentioned below before running and/or flashing a new build of U-Boot or Linux. You can do so by executing ``rm /<folder>/*`` on your host PC before proceeding.
+   This will erase the contents of the folders but not the folders themselves.
+
+------------------------------
+Bootstrapping to Linux
+------------------------------
+
+The programming sequence uses nfsboot to bootstrap to Linux, and from there program all boot medias available. Before beginning, follow these steps.
+
+Populate the NFS file system with the files for booting:
+
+.. code-block:: shell
+
+   sudo tar -xf tmp/deploy/images/adsp-sc5xx-full={{ machine }}.rootfs.tar.xz -C /romfs
+
+.. note::
+   The directory for this extraction is `/romfs` if you followed the directions in :doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>`.
+   Also, the adsp-sc5xx-minimal image can also be used, but will not include installed some of the debugging tools that the full image will have
+   if there are problems.
+
+Copy the programming files into the /usr/firmware directory in the NFS filesystem 
+
+.. code-block:: shell
+
+   sudo cp tmp/deploy/images/programming-images/adsp-sc5xx-minimal/* /romfs/usr/firmware
+
+------------------------------
+Starting the Python webserver
+------------------------------
+
+Start the python web server to serve the files
+
+.. code-block:: shell
+
+   cd <folder> 
+   python3 -m http.server 8000
+
+.. note::
+   The python web server can be run directly from the images/programming-images directory, however it is advised to copy the images to another directory and serve them from that folder,
+   as the images in the tmp/deploy directory are overwritten with each new build
+
+--------------------------------
+Setting Up Terminal Connections
+--------------------------------
+
+The console output from U-Boot and later on Linux will appear on the USB serial port configured in minicom earlier so open up minicom.
+
+**Terminal1: minicom**
+
+.. code-block:: shell
+
+   sudo minicom
+
+In a separate console launch OpenOCD and connect to the development board.
+
+**Terminal2: OpenOCD**
+
+.. code-block:: shell
+
+   sdk_usr={{ sdk_path }}/sysroots/x86_64-adi_glibc_sdk-linux/usr/
+   $sdk_usr/bin/openocd -f $sdk_usr/share/openocd/scripts/interface/<ICE>.cfg -f $sdk_usr/share/openocd/scripts/target/{{ openocd_target }}.cfg
+
+Where ``<ICE>`` should be replaced with ``ice1000`` or ``ice2000`` depending on your hardware.
+When successful you should see a message similar to the console output below
+
+**Terminal2: OpenOCD**
+
+.. code-block:: shell
+
+{{openocd_output | indent(3, True)}}
+
+In a third console window launch GDB and type ``target extended-remote :3333``. This will make GDB to connect to the gdbserver on the local host using port 3333. Then, load the U-Boot SPL into RAM by typing ``load``. Hit ``Ctrl+C`` to interrupt thereafter.
+
+**Terminal3: GDB**
+
+.. code-block:: shell
+
+   cd build/tmp/deploy/images/programming-images/adsp-sc5xx-minimal  # or wherever the Python webserver is serving from
+   {{ sdk_path }}/sysroots/x86_64-adi_glibc_sdk-linux/usr/bin/{{ gdb_prefix }}/{{ gdb_prefix }}-gdb u-boot-spl-{{ machine_short }}.elf
+   ...
+   (gdb) target extended-remote :3333
+   Remote debugging using :3333
+   {{ gdb_start_output }}
+   (gdb) load
+{{gdb_load_spl_output | indent(3, True)}}
+   (gdb) c
+   Continuing.
+   ^C
+   Program received signal SIGINT, Interrupt.
+
+You will see a message on Terminal 1 running minicom, informing you that you can now load U-Boot Proper
+
+**Terminal1: minicom**
+
+.. code-block:: shell
+
+{{uboot_spl_message | indent(3, True)}}
+
+Now, load U-Boot Proper into RAM.
+
+**Terminal3: GDB**
+
+.. code-block:: shell
+
+   (gdb) load u-boot-proper-{{ machine_short }}.elf
+{{gdb_load_proper_output | indent(3, True)}}
+   (gdb) c
+   Continuing.
+
+At this point U-Boot will now be running in RAM on your target board. You should see U-Boot booting in the minicom console (Terminal 1). Press a key to interrupt the boot process before the countdown terminates:
+
+**Terminal1: minicom**
+
+.. code-block:: shell
+
+{{uboot_proper_boot | indent(3, True)}}
+
+-------------------------
+Programming Images
+-------------------------
+
+In the U-Boot console, set the IP address of the Linux PC that hosts the Python webserver, and the IP address of the board itself, if not using dhcp.
+
+**Terminal1: minicom**
+
+.. code-block:: shell
+
+   => setenv serverip <SERVERIP>
+   => setenv ipaddr <IPADDR>
+
+.. note::
+
+   To find the IP address of your host Linux PC you can issue the ``ip addr`` command from the shell or console.
+
+If your network **supports** DHCP, run:
+
+.. code-block:: shell
+
+   => dhcp
+
+Start the boot to Linux using nfsboot, and wait for the login prompt.
+
+.. code-block:: shell
+
+   => run nfsboot
+   ...
+   ...
+   {{ machine }} login:
+
+After logging in, run the following command:
+
+.. code-block:: shell
+
+   /usr/firmware/init
+
+This will call the programming script which will walk you through programming the boot media on the board
+
+{% if has_qspi_boot %}
+
+The first images to be programmed are the SPI flash images. The terminal will prompt asking approval to program the SPI flash.
+
+.. code-block:: shell
+
+   ======== SPI Flash Installer ========                                                                                                                                                               
+   Install U-Boot to SPI Flash                                                                                                                                                                         
+                                                                                                                                                                                                      
+   This will erase and program SPI flash.                                                                                                                                                              
+   Continue? [y/i/N]:
+
+Select y to program everything, or i to enter interactive mode (to selectively program certain partitions on the SPI flash).
+The default for this and all programming prompts is N for no.
+
+{% endif %}
+
+{% if has_emmc_boot %}
+
+The init script will then move on to the mmc programming
+
+.. code-block:: shell
+
+   ======== Emmc Installer ========                                                                                                                                                                    
+   Install U-Boot to EMMC                                                                                                                                                                              
+                                                                                                                                                                                                      
+   This will erase and program EMMC.                                                                                                                                                                   
+   Continue? [y/N]:
+
+Select y to program the eMMC, or N to skip programming.
+
+{% endif %}
+
+{% if has_usb_boot %}
+
+The init script will then move on to the USB programming
+
+.. code-block:: shell
+
+   Install U-Boot to USB                                                                                                                                                                               
+                                                                                                                                                                                                    
+   This will erase and program the USB.                                                                                                                                                                
+   Continue? [y/N]:
+
+Select y to program the USB, or N to skip programming.
+
+{% endif %}
+
+Booting Linux after programming
+-------------------------------
+
+{% if has_qspi_boot %}
+
+-----------------------------------
+Booting the minimal image from QSPI
+-----------------------------------
+
+The default boot method for the {{ machine }} is SPI boot. Turn the bootmode selector to 1, and reset the board.
+The board should now automatically boot to the Linux login.
+
+{% endif %}
+
+Network Booting
+---------------
+
+In order to boot Linux via the network, the Python web server should be setup as indicated above with the fitImage populated for booting.
+
+--------
+NFS Boot
+--------
+
+In order to boot Linux via NFS, the NFS server should be setup as indicated in `Setting Up Your Host PC: Configure NFS Server <Setting-Up-Your-Host-PC.html#configure-nfs-server>`_.
+
+The root filesystem should then be copied to ``/romfs``.
+
+.. code-block:: shell
+
+   sudo tar -xf tmp/deploy/images/{{ machine }}/adsp-sc5xx-full-{{ machine }}.{{ file_extension }} -C /romfs
+
+Next, on the target, from u-boot, run the following commands:
+
+.. code-block:: shell
+
+   => setenv ipaddr <IPADDR>
+   => setenv serverip <SERVERIP>
+   => run nfsboot
+   ......
+   ......
+{{linux_boot_output | indent(3, True)}}
+
+{% if has_emmc_boot %}
+
+Booting Linux Using eMMC
+---------------------------
+{% if sc598_sdcard %}
+If booting Linux off the eMMC, make sure to build without the `ADSP_SC598_SDCARD` selected (this is the default setting), so that the eMMC is selected as the mmc device.
+
+{% endif %}
+
+Program the eMMC using the init script mmc instructions above.
+
+---------------------------------
+Booting from the eMMC
+---------------------------------
+
+Now, boot to U-boot and interrupt autoboot to drop to the shell and enter the following command
+
+.. code-block:: shell
+
+   => run mmcboot
+
+{% endif %}
+
+{% if has_sdcard_boot %}
+
+Booting Linux Using SD Card
+---------------------------
+{% if sc598_sdcard %}
+If booting Linux off the SD card, make sure to build with the `ADSP_SC598_SDCARD` selected. When the `ADSP_SC598_SDCARD` is selected, the SD card replaces the eMMC as the mmc device in Linux, and will automatically be programmed if `Y` is entered during the
+mmc part of the init script.
+
+{% endif %}
+
+Program the SD card using the init script mmc instructions above.
+
+Alternatively, the SD card can be programmed by the host PC before being inserted into the board.
+
+---------------------------------
+Formatting the SD card
+---------------------------------
+
+.. code-block:: shell
+
+   sudo fdisk /dev/mmcblk0                                                                                                                                                     
+                                                                                                                                                                                                      
+   Welcome to fdisk (util-linux 2.39.3).                                                                                                                                                               
+   Changes will remain in memory only, until you decide to write them.                                                                                                                                 
+   Be careful before using the write command.                                                                                                                                                          
+                                                                                                                                                                                                      
+                                                                                                                                                                                                      
+   Command (m for help): n                                                                                                                                                                             
+   Partition type                                                                                                                                                                                      
+      p   primary (0 primary, 0 extended, 4 free)                                                                                                                                                      
+      e   extended (container for logical partitions)                                                                                                                                                  
+   Select (default p): p                                                                                                                                                                               
+   Partition number (1-4, default 1): 1                                                                                                                                                                
+   First sector (2048-15269887, default 2048):                                                                                                                                                         
+   Last sector, +/-sectors or +/-size{K,M,G,T,P} (2048-15269887, default 15269887): +32M                                                                                                               
+                                                                                                                                                                                                      
+   Created a new partition 1 of type 'Linux' and of size 32 MiB.                                                                                                                                       
+   Partition #1 contains a ext4 signature.
+                                                                                                                                                                                                      
+   Command (m for help): n                                                                                                                                                                             
+   Partition type                                                                                                                                                                                      
+      p   primary (1 primary, 0 extended, 3 free)                                                                                                                                                      
+      e   extended (container for logical partitions)                                                                                                                                                  
+   Select (default p): p                                                                                                                                                                               
+   Partition number (2-4, default 2): 2                                                                                                                                                                
+   First sector (67584-15269887, default 67584):                                                                                                                                                       
+   Last sector, +/-sectors or +/-size{K,M,G,T,P} (67584-15269887, default 15269887):                                                                                                                   
+                                                                                                                                                                                                      
+   Created a new partition 2 of type 'Linux' and of size 7.2 GiB.                                                                                                                                      
+   Partition #2 contains a ext4 signature.                                                                                                                                               
+                                                                                                                                                                                                      
+   Command (m for help): w
+
+---------------------------------
+Programming the SD card
+---------------------------------
+
+.. code-block:: shell
+
+   mke2fs -F -t ext4 -L "BOOT" /dev/mmcblk0p1
+   mkdir -p /tmp/boot_mount
+   mount /dev/mmcblk0p1 /tmp/boot_mount
+   cp fitImage /tmp/boot_mount
+   sync
+   umount /tmp/boot_mount
+
+   dd if=rootfs.ext4 of=/dev/mmcblk0p2 bs=512
+
+   sync
+
+---------------------------------
+Booting from the SD card
+---------------------------------
+
+Now, boot to U-boot and interrupt autoboot to drop to the shell and enter the following command
+
+.. code-block:: shell
+
+   => run mmcboot
+
+{% endif %}
+
+Booting Linux from USB Mass Storage
+-----------------------------------
+
+---------------------------------
+Formatting the USB storage device
+---------------------------------
+{% if s9x_usb %}
+
+.. note::
+   Make sure to set the variable `ADSP_SC59X_USB` in the local.conf when building to enable the USB before attempting to boot.
+
+{% endif %}
+
+The USB can be programmed by the init script from the instructions mentioned above if plugged into the board. However, the USB can also be formatted by the host PC before
+plugging into the board as well, following the instructions below.
+
+The first step is to format the USB stick to a format that U-Boot supports.
+
+To do this, follow the commands below. The example code in this section assumes that the USB device is reported to be ``/dev/sda``. Ensure that you change these commands to use your device.
+
+.. note::
+
+   You can use ``sudo fdisk -l`` to list the available devices and partitions, in order to locate the USB device.
+
+.. code-block:: shell
+
+   sudo fdisk /dev/sda                                                                                                                                                   
+                                                                                                                                                                                                      
+   Welcome to fdisk (util-linux 2.39.3).                                                                                                                                                               
+   Changes will remain in memory only, until you decide to write them.                                                                                                                                 
+   Be careful before using the write command.                                                                                                                                                          
+                                                                                                                                                                                                      
+                                                                                                                                                                                                      
+   Command (m for help): n                                                                                                                                                                             
+   Partition type                                                                                                                                                                                      
+      p   primary (0 primary, 0 extended, 4 free)                                                                                                                                                      
+      e   extended (container for logical partitions)                                                                                                                                                  
+   Select (default p): p                                                                                                                                                                               
+   Partition number (1-4, default 1): 1                                                                                                                                                                
+   First sector (2048-15269887, default 2048):                                                                                                                                                         
+   Last sector, +/-sectors or +/-size{K,M,G,T,P} (2048-15269887, default 15269887): +32M                                                                                                               
+                                                                                                                                                                                                      
+   Created a new partition 1 of type 'Linux' and of size 32 MiB.                                                                                                                                       
+   Partition #1 contains a ext4 signature.
+                                                                                                                                                                                                      
+   Command (m for help): n                                                                                                                                                                             
+   Partition type                                                                                                                                                                                      
+      p   primary (1 primary, 0 extended, 3 free)                                                                                                                                                      
+      e   extended (container for logical partitions)                                                                                                                                                  
+   Select (default p): p                                                                                                                                                                               
+   Partition number (2-4, default 2): 2                                                                                                                                                                
+   First sector (67584-15269887, default 67584):                                                                                                                                                       
+   Last sector, +/-sectors or +/-size{K,M,G,T,P} (67584-15269887, default 15269887):                                                                                                                   
+                                                                                                                                                                                                      
+   Created a new partition 2 of type 'Linux' and of size 7.2 GiB.                                                                                                                                      
+   Partition #2 contains a ext4 signature.                                                                                                                                               
+                                                                                                                                                                                                      
+   Command (m for help): w
+
+-----------------------------------
+Copying to the USB storage device
+-----------------------------------
+
+.. code-block:: shell
+
+   mke2fs -F -t ext4 -L "BOOT" /dev/sda1
+   mkdir -p /tmp/boot_mount
+   mount /dev/sda1 /tmp/boot_mount
+   cp fitImage /tmp/boot_mount
+   sync
+   umount /tmp/boot_mount
+
+   dd if=rootfs.ext4 of=/dev/sda2 bs=512
+
+   sync
+
+-----------------------------------
+Booting from the USB storage device
+-----------------------------------
+
+Now, boot to U-boot and interrupt autoboot to drop to the shell and enter the following command
+
+.. code-block:: shell
+
+   => run usbboot
+
+Now the rootfs is set to be your USB storage device, and the amount of space is the size of the partition created earlier on the device.
