@@ -165,7 +165,7 @@ case "$MACHINE_MODEL" in
     ;;
 esac
 
-echo "Install U-Boot to USB"
+echo "======== USB Installer ========"
 echo
 echo "This will erase and program the USB."
 printf "Continue? [y/N]: "
