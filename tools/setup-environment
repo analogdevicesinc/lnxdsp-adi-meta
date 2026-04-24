@@ -275,6 +275,16 @@ EOF
 EOF
     fi
 
+if [[ "$MACHINE" == "adsp-sc598-som-ezkit" || "$MACHINE" == "adsp-sc598-som-ezlite" || "$MACHINE" == "adsp-sc594-som-ezkit" || "$MACHINE" == "adsp-sc594-som-ezlite" ]]; then
+        # Add the (disabled by default) USB option for SC598 and SC594 SOMs
+        cat >> "conf/local.conf" <<EOF
+# Enable USB
+# Uncomment the following line to enable USB support from U-boot and Linux kernel
+# ADSP_SC59X_USB = "1"
+
+EOF
+    fi
+
         # Add the (disabled by default) CMA kernel config options
         cat >> "conf/local.conf" <<EOF
 # Enable CMA
