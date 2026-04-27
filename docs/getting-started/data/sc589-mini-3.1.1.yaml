@@ -6,13 +6,13 @@ machine: adsp-sc589-mini
 machine_short: sc589-mini
 arch: cortexa5t2hf-neon
 gdb_prefix: arm-adi_glibc-linux-gnueabi
-openocd_target: adspsc57x
+openocd_target: adspsc58x
 ethernet_connector: J13
 som_revision: false
 sdk_machine_note: false
 has_qspi_boot: false
 has_sdcard_boot: true
-hardware_image: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/sc589-mini-hardware.png
+hardware_image: /images/sc589-mini-setup.png
 boot_mode_note: The BOOT MODE selector should be turned to "0".
 ubuntu_version: 20.04 LTS
 git_branch: main
