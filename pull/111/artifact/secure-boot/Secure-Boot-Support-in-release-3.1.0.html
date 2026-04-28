@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="Create directory to store the keys" name="description" />
+
+    <title>Secure Boot Support (Release 3.1.0) &#8212; ADSP Processors  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8e8a900e" />
+    <link rel="stylesheet" type="text/css" href="../_static/app.min.css?v=ac863bf0" />
+    <script async="async" src="../_static/app.umd.js?v=09b0c6bc"></script>
+    <link rel="icon" href="../_static/icon.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Test Reports" href="../test-reports/Test-Reports.html" />
+    <link rel="prev" title="Secure Boot Support (Release 3.1.1)" href="Secure-Boot-Support-in-release-3.1.1.html" />
+   
+  
+  
+  <meta name="repository" content="adsp">
+  <meta name="version" content="">
+  
+    <meta name="page_source_suffix" content=".rst">
+  
+  
+  
+
+
+<style>
+  body {
+    
+  }
+
+  body.dark {
+    
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body:not(.light) {
+      
+    }
+  }
+</style>
+  </head>
+  
+    <body>
+  
+  <input type="checkbox" id="input-show-toc">
+  <input type="checkbox" id="input-show-localtoc">
+  <input type="checkbox" id="input-show-repotoc">
+
+  
+  <div class="search-area">
+    <form action="" method="get">
+      <input type="text" name="q" aria-labelledby="search-documentation" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" role="search" placeholder="Search"/>
+      <button class="icon"></button>
+    </form>
+  </div>
+  
+
+  <header>
+    <div id="left">
+      <label id="show-sidebar" class="icon" for="input-show-toc" title="Show/hide index"></label>
+    </div>
+    <div id="right">
+      <span>
+        <a id="logo-org" href="https://analog.com" aria-label="Analog Devices Inc. landing page"></a>
+        <div class="vertical-divider"></div>
+        
+        <label id="show-repotoc" for="input-show-repotoc" title="Show/hide docs">Docs</label>
+        
+        <a id="logo" href="../index.html">
+          <div>ADSP Processors</div>
+        </a>
+      </span>
+      <span class="reverse">
+        <label id="show-localtoc" class="icon" for="input-show-localtoc" title="Show/hide contents"></label>
+      </span>
+    </div>
+  </header>
+
+
+  <div class="repotoc-tree overlay">
+    <root/>
+
+  </div>
+    <div class="localtoc">
+      <div class="tocwrapper">
+        <div class="header localtoc-header">
+          <a id="scroll-up" href="#top-anchor" title="Back to top"></a>
+        </div>
+        <nav>
+          <ul>
+<li><a class="reference internal" href="#">Secure Boot Support (Release 3.1.0)</a><ul>
+<li><a class="reference internal" href="#getting-started">Getting started</a></li>
+<li><a class="reference internal" href="#keys-generation">keys generation</a></li>
+<li><a class="reference internal" href="#build-linux-image-and-sdk">Build Linux image and SDK</a></li>
+<li><a class="reference internal" href="#setup-the-hardware">Setup the hardware</a></li>
+<li><a class="reference internal" href="#transfer-run-and-flash-u-boot-on-the-board-for-the-first-time">Transfer, run and flash U-Boot on the board for the first time</a><ul>
+<li><a class="reference internal" href="#transfer-and-run-u-boot-on-ram">Transfer and run U-Boot on RAM</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#flash-u-boot-to-spi-flash">Flash U-Boot to SPI Flash</a></li>
+<li><a class="reference internal" href="#booting-linux">Booting Linux</a><ul>
+<li><a class="reference internal" href="#booting-the-minimal-image-from-qspi">Booting the minimal image from QSPI</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#program-the-secure-boot-key">Program the secure boot key</a><ul>
+<li><a class="reference internal" href="#extract-the-public-key-and-copy-it-into-the-target">Extract the Public key and copy it into the target</a></li>
+<li><a class="reference internal" href="#program-the-key-into-the-otp-flash-memory">Program the key into the OTP flash memory</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#running-op-tee-applications">Running OP-TEE applications</a></li>
+<li><a class="reference internal" href="#load-sharc-images-from-linux">Load SHARC images from Linux</a><ul>
+<li><a class="reference internal" href="#sharc-images-signing">SHARC images signing</a></li>
+<li><a class="reference internal" href="#id1">Load SHARC images from Linux</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </nav>
+      </div>
+    </div>
+
+  
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+    <a id="no-logo" href="../index.html">
+      ADSP Processors
+    </a><input id="input-switch-toc" type="checkbox">
+<label id="show-repotoc" for="input-switch-toc">
+All content
+</label>
+<label id="show-toc" for="input-switch-toc">
+Content on this topic
+</label>
+<div class="repotoc-tree">
+  <root/>
+
+</div>
+<div class="toc-tree">
+  <ul class="current">
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-1" id="toctree-collapse-1"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.0.1-Landing-Page.html">Linux for ADSP SC5xx 5.0.1</a><label for="toctree-collapse-1"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC598 (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC594 (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC589-MINI (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC573 (5.0.1)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2" id="toctree-collapse-2"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.x.x-Landing-Page.html"> Linux for ADSP SC5xx 5.x.x</a><label for="toctree-collapse-2"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC598 (5.x.x)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC594 (5.x.x)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC589-MINI (5.x.x)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC573 (5.x.x)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3" id="toctree-collapse-3"/><div class="collapse"><a class="reference internal" href="../Older-Releases.html">Older Releases</a><label for="toctree-collapse-3"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-1" id="toctree-collapse-3-1"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.0.0-Landing-Page.html">Linux for ADSP-SC5xx Processors 5.0.0</a><label for="toctree-collapse-3-1"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC598 (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC594 (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC589-MINI (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC573 (5.0.0)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-2" id="toctree-collapse-3-2"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.2-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.2</a><label for="toctree-collapse-3-2"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC598 (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC594 (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC589-MINI (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC573 (3.1.2)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-3" id="toctree-collapse-3-3"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.1-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.1</a><label for="toctree-collapse-3-3"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC598 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC594 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC589-MINI (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90EZ%E2%80%90KIT-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC589-EZ-KIT (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC584-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC584 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC573 (3.1.1)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-4" id="toctree-collapse-3-4"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.0-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.0</a><label for="toctree-collapse-3-4"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC598 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC594 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC589-MINI (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90EZ%E2%80%90KIT-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC589-EZ-KIT (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC584-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC584 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC573 (3.1.0)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-4" id="toctree-collapse-4"/><div class="collapse"><a class="reference internal" href="../examples/Examples.html">Examples</a><label for="toctree-collapse-4"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples/SHARC%E2%80%90ALSA-Example.html">SHARC-ALSA Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/USB-Gadget-Audio-Example.html">USB Gadget Audio Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/The-Kitchen-Sink.html">The Kitchen Sink</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/U%E2%80%90Boot-Falcon-Mode-Example.html">U-Boot Falcon Mode Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-5" id="toctree-collapse-5"/><div class="collapse"><a class="reference internal" href="../development/Development.html">Development</a><label for="toctree-collapse-5"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Setting-Up-Your-Host-PC.html">Setting Up Your Host PC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Debugging-without-ICE-Hardware.html">Debugging without ICE Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Boot-Sequence.html">Boot Sequence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/U%E2%80%90Boot-Environment.html">U-Boot Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Linux-Kernel-Development.html">Linux Kernel Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Compiling-and-running-a-Rust-kernel.html">Compiling and running a Rust kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/RPMsg.html">RPMsg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/RPMsg%E2%80%90Lite.html">RPMsg-Lite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications.html">Configuring System Memory When Using Linux and SHARC Applications</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-6" id="toctree-collapse-6"/><div class="collapse"><a class="reference internal" href="../benchmarks/Benchmarking.html">Benchmarks</a><label for="toctree-collapse-6"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../benchmarks/RPMsg-Benchmark-Figures.html">RPMsg Benchmark Figures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../benchmarks/Booting-Benchmark-Figures.html">Booting Benchmark Figures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/Frequently-Asked-Questions.html">FAQ</a></li>
+<li class="toctree-l1 current"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-7" id="toctree-collapse-7" checked=""/><div class="collapse"><a class="reference internal" href="Secure-Boot-Support.html">Secure Boot</a><label for="toctree-collapse-7"><div class="icon"></div></label></div><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Secure-Boot-Support-in-release-3.1.1.html">Secure Boot Support (Release 3.1.1)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Secure Boot Support (Release 3.1.0)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-8" id="toctree-collapse-8"/><div class="collapse"><a class="reference internal" href="../test-reports/Test-Reports.html">Test Reports</a><label for="toctree-collapse-8"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%285.0.1%29.html">Test Report (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%285.0.0%29.html">Test Report (5.0.0)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%283.1.0%29.html">Test Report (3.1.0)</a></li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+        </div>
+      </div>
+
+  <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper" id="top-anchor">
+          <div class="body-header">
+  <nav class="breadcrumb"><ol><li><a href="Secure-Boot-Support.html">Secure Boot Support</a></li></ol></nav>
+</div>
+          <div class="body" role="main">
+            
+  <section id="secure-boot-support-release-3-1-0">
+<h1>Secure Boot Support (Release 3.1.0)<a class="headerlink" href="#secure-boot-support-release-3-1-0" title="Link to this heading"></a></h1>
+<section id="getting-started">
+<h2>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
+</section>
+<section id="keys-generation">
+<h2>keys generation<a class="headerlink" href="#keys-generation" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Create directory to store the keys</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/adi-testkeys
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Generate key Pair for LDR images signing using <code class="docutils literal notranslate"><span class="pre">adi_signtool</span></code></p></li>
+</ul>
+<p><strong>Note:</strong> install <a class="icon link reference external" href="https://www.analog.com/en/design-center/evaluation-hardware-and-software/software/adswt-cces.html#software-relatedsoftware" target="_blank">CCES (CrossCore Embedded Studio)</a> package on your host machine.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/opt/adi-testkeys
+/opt/analog/cces/2.11.1/adi_signtool<span class="w"> </span>genkeypair<span class="w"> </span>-algo<span class="w"> </span>ecdsa256<span class="w"> </span>-outfile<span class="w"> </span>testkey.der
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Generate key and certificate for verified boot</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>openssl<span class="w"> </span>genrsa<span class="w"> </span>-F4<span class="w"> </span>-out<span class="w"> </span>dev.key<span class="w"> </span><span class="m">2048</span>
+openssl<span class="w"> </span>req<span class="w"> </span>-batch<span class="w"> </span>-new<span class="w"> </span>-x509<span class="w"> </span>-key<span class="w"> </span>dev.key<span class="w"> </span>-out<span class="w"> </span>dev.crt
+</pre></div>
+</div>
+</section>
+<section id="build-linux-image-and-sdk">
+<h2>Build Linux image and SDK<a class="headerlink" href="#build-linux-image-and-sdk" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Fetch the sources</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./bin/repo<span class="w"> </span>init<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-u<span class="w"> </span>https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-b<span class="w"> </span>develop/yocto-3.1.0<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-m<span class="w"> </span>develop-yocto-3.1.0.xml
+./bin/repo<span class="w"> </span>sync<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Preparing the build work directory</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>setup-environment<span class="w"> </span>--machine<span class="w"> </span>adsp-sc598-som-ezkit<span class="w"> </span>--distro<span class="w"> </span>adi-security<span class="w"> </span>--builddir<span class="w"> </span>adsp-build
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Add the following lines into <code class="docutils literal notranslate"><span class="pre">conf/local.conf</span></code></p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">ADI_SIGNTOOL_KEY</span><span class="o">=</span><span class="s2">&quot;/opt/adi-testkeys/testkey.der&quot;</span>
+<span class="nv">ADI_SIGNTOOL_PATH</span><span class="o">=</span><span class="s2">&quot;/opt/analog/cces/2.11.1/adi_signtool&quot;</span>
+
+<span class="nv">UBOOT_SIGN_KEYDIR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/opt/adi-testkeys/&quot;</span>
+<span class="nv">UBOOT_SIGN_KEYNAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;dev&quot;</span>
+<span class="nv">UBOOT_MKIMAGE_DTCOPTS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;-I dts -O dtb -p 2000&quot;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Building the Linux image</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bitbake<span class="w"> </span>adsp-sc5xx-minimal
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Building the SDK</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bitbake<span class="w"> </span>adsp-sc5xx-minimal<span class="w"> </span>-c<span class="w"> </span>populate_sdk
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Install the SDK</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>tmp/deploy/sdk
+sudo<span class="w"> </span>./adi-security-glibc-x86_64-adsp-sc5xx-minimal-cortexa55-adsp-sc598-som-ezkit-toolchain-3.1.0.sh
+Analog<span class="w"> </span>Devices<span class="w"> </span>Inc<span class="w"> </span>Reference<span class="w"> </span>Distro<span class="w"> </span><span class="o">(</span>glibc<span class="o">)</span><span class="w"> </span>SDK<span class="w"> </span>installer<span class="w"> </span>version<span class="w"> </span><span class="m">3</span>.1.0
+<span class="o">=======================================================================</span>
+Enter<span class="w"> </span>target<span class="w"> </span>directory<span class="w"> </span><span class="k">for</span><span class="w"> </span>SDK<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span>/opt/adi-security/3.1.0<span class="o">)</span>:
+You<span class="w"> </span>are<span class="w"> </span>about<span class="w"> </span>to<span class="w"> </span>install<span class="w"> </span>the<span class="w"> </span>SDK<span class="w"> </span>to<span class="w"> </span><span class="s2">&quot;/opt/adi-security/3.1.0&quot;</span>.<span class="w"> </span>Proceed<span class="w"> </span><span class="o">[</span>Y/n<span class="o">]</span>?<span class="w"> </span>Y
+Extracting<span class="w"> </span>SDK......................................................................................................................done
+Setting<span class="w"> </span>it<span class="w"> </span>up...done
+SDK<span class="w"> </span>has<span class="w"> </span>been<span class="w"> </span>successfully<span class="w"> </span><span class="nb">set</span><span class="w"> </span>up<span class="w"> </span>and<span class="w"> </span>is<span class="w"> </span>ready<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>used.
+Each<span class="w"> </span><span class="nb">time</span><span class="w"> </span>you<span class="w"> </span>wish<span class="w"> </span>to<span class="w"> </span>use<span class="w"> </span>the<span class="w"> </span>SDK<span class="w"> </span><span class="k">in</span><span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>shell<span class="w"> </span>session,<span class="w"> </span>you<span class="w"> </span>need<span class="w"> </span>to<span class="w"> </span><span class="nb">source</span><span class="w"> </span>the<span class="w"> </span>environment<span class="w"> </span>setup<span class="w"> </span>script<span class="w"> </span>e.g.
+<span class="w"> </span>$<span class="w"> </span>.<span class="w"> </span>/opt/adi-security/3.1.0/environment-setup-cortexa55-adi_glibc-linux
+</pre></div>
+</div>
+</section>
+<section id="setup-the-hardware">
+<h2>Setup the hardware<a class="headerlink" href="#setup-the-hardware" title="Link to this heading"></a></h2>
+<p>Before installing the software on to the development board, ensure that the following cables are connected:</p>
+<a class="reference internal image-reference" href="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5471efe3-9cb0-44a1-a96e-72f453e1431f"><img alt="Hardware setup" src="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5471efe3-9cb0-44a1-a96e-72f453e1431f" width="400" />
+</a>
+<ul class="simple">
+<li><p>Board connected to network via ethernet cable using J13 connector.</p></li>
+<li><p>Board connected to host PC using USB micro cable, connected to USB/UART port on the development board</p></li>
+<li><p>Board connected to the ICE 1000 or ICE 2000 via the DEBUG port on the board</p></li>
+<li><p>ICE is also connected to host PC via USB mini cable</p></li>
+</ul>
+<p>On the carrier board is a set of micro switches labelled SW1.  These should all be set to the OFF position before continuing.</p>
+<a class="reference internal image-reference" href="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5e285aff-e67d-4d9c-8157-7f596c32134b"><img alt="SW1 switches" src="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5e285aff-e67d-4d9c-8157-7f596c32134b" width="400" />
+</a>
+<ul class="simple">
+<li><p>The Power jumper JP1 on the EV-SC598-SOM board should be fitted so that it shorts the two pins closest to the edge.  This will enable the routing of power from the SOMCRR-EZKIT.</p></li>
+<li><p>The BOOT MODE selector on the EV-SC598-SOM board should be turned to “0”.</p></li>
+</ul>
+<a class="reference internal image-reference" href="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/16242018-95c7-4494-a471-d088a5f52d33"><img alt="Boot mode selector" src="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/16242018-95c7-4494-a471-d088a5f52d33" width="400" />
+</a>
+</section>
+<section id="transfer-run-and-flash-u-boot-on-the-board-for-the-first-time">
+<h2>Transfer, run and flash U-Boot on the board for the first time<a class="headerlink" href="#transfer-run-and-flash-u-boot-on-the-board-for-the-first-time" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It’s always good practice to erase the contents of <code class="docutils literal notranslate"><span class="pre">/tftpboot/</span></code> before running and/or flashing a new build of U-Boot or Linux. You can do so by executing <code class="docutils literal notranslate"><span class="pre">rm</span> <span class="pre">/tftpboot/*</span></code> on your host PC before proceeding</p>
+</div>
+<section id="transfer-and-run-u-boot-on-ram">
+<h3>Transfer and run U-Boot on RAM<a class="headerlink" href="#transfer-and-run-u-boot-on-ram" title="Link to this heading"></a></h3>
+<p>Copy the U-Boot binary &amp; loader files to the tftp directory:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/u-boot-proper-sc598-som-ezkit.elf<span class="w"> </span>/tftpboot/
+cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/u-boot-spl-sc598-som-ezkit.elf<span class="w"> </span>/tftpboot/
+cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot.ldr<span class="w"> </span>/tftpboot/
+cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot-unsigned.ldr<span class="w"> </span>/tftpboot/
+cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot.ldr<span class="w"> </span>/tftpboot/
+cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot-unsigned.ldr<span class="w"> </span>/tftpboot/
+</pre></div>
+</div>
+<p>The console output from U-Boot and later on Linux will appear on the USB serial port configured in minicom earlier so open up minicom.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`Terminal1:</span> <span class="pre">minicom`</span></code></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>minicom
+</pre></div>
+</div>
+<p>In a separate console launch OpenOCD and connect to the development board.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`Terminal2:</span> <span class="pre">OpenOCD`</span></code></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">sdk_usr</span><span class="o">=</span>/opt/adi-security/3.1.0/sysroots/x86_64-adi_glibc_sdk-linux/usr/
+<span class="nv">$sdk_usr</span>/bin/openocd<span class="w"> </span>-f<span class="w"> </span><span class="nv">$sdk_usr</span>/share/openocd/scripts/interface/&lt;ICE&gt;.cfg<span class="w"> </span>-f<span class="w"> </span><span class="nv">$sdk_usr</span>/share/openocd/scripts/target/adspsc59x_a55.cfg
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">`&lt;ICE&gt;``</span></code> should be replaced with <code class="docutils literal notranslate"><span class="pre">``ice1000``</span></code> or <code class="docutils literal notranslate"><span class="pre">``ice2000`</span></code> depending on your hardware.
+When successful you should see a message similar to the console output below</p>
+<p><code class="docutils literal notranslate"><span class="pre">`Terminal2:</span> <span class="pre">OpenOCD`</span></code></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Open<span class="w"> </span>On-Chip<span class="w"> </span>Debugger<span class="w"> </span><span class="o">(</span>PKGVERSION<span class="o">)</span><span class="w">  </span>OpenOCD<span class="w"> </span><span class="m">0</span>.10.0-gf73da81ab<span class="w"> </span><span class="o">(</span><span class="m">2023</span>-10-12-17:05<span class="o">)</span>
+Licensed<span class="w"> </span>under<span class="w"> </span>GNU<span class="w"> </span>GPL<span class="w"> </span>v2
+Report<span class="w"> </span>bugs<span class="w"> </span>to<span class="w"> </span>&lt;processor.tools.support@analog.com&gt;
+Info<span class="w"> </span>:<span class="w"> </span>only<span class="w"> </span>one<span class="w"> </span>transport<span class="w"> </span>option<span class="p">;</span><span class="w"> </span>autoselect<span class="w"> </span><span class="s1">&#39;jtag&#39;</span>
+adapter<span class="w"> </span>speed:<span class="w"> </span><span class="m">5000</span><span class="w"> </span>kHz
+
+Info<span class="w"> </span>:<span class="w"> </span>halt<span class="w"> </span>and<span class="w"> </span>restart<span class="w"> </span>using<span class="w"> </span>CTI<span class="w"> </span>enabled
+Info<span class="w"> </span>:<span class="w"> </span>Listening<span class="w"> </span>on<span class="w"> </span>port<span class="w"> </span><span class="m">6666</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>tcl<span class="w"> </span>connections
+Info<span class="w"> </span>:<span class="w"> </span>Listening<span class="w"> </span>on<span class="w"> </span>port<span class="w"> </span><span class="m">4444</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>telnet<span class="w"> </span>connections
+Info<span class="w"> </span>:<span class="w"> </span>ICE-1000<span class="w"> </span>firmware<span class="w"> </span>version<span class="w"> </span>is<span class="w"> </span><span class="m">1</span>.0.2
+Info<span class="w"> </span>:<span class="w"> </span>clock<span class="w"> </span>speed<span class="w"> </span><span class="m">5000</span><span class="w"> </span>kHz
+Info<span class="w"> </span>:<span class="w"> </span>JTAG<span class="w"> </span>tap:<span class="w"> </span>adspsc59x.adjc<span class="w"> </span>tap/device<span class="w"> </span>found:<span class="w"> </span>0x0282e0cb<span class="w"> </span><span class="o">(</span>mfg:<span class="w"> </span>0x065<span class="w"> </span><span class="o">(</span>Analog<span class="w"> </span>Devices<span class="o">)</span>,<span class="w"> </span>part:<span class="w"> </span>0x282e,<span class="w"> </span>ver:<span class="w"> </span>0x0<span class="o">)</span>
+Info<span class="w"> </span>:<span class="w"> </span>JTAG<span class="w"> </span>tap:<span class="w"> </span>adspsc59x.cpu<span class="w"> </span>enabled
+Info<span class="w"> </span>:<span class="w"> </span>DAP<span class="w"> </span>adspsc59x.cpu<span class="w"> </span>DPIDR<span class="w"> </span>indicates<span class="w"> </span>ADIv6<span class="w"> </span>protocol<span class="w"> </span>is<span class="w"> </span>being<span class="w"> </span>used
+Info<span class="w"> </span>:<span class="w"> </span>adspsc59x.cpu:<span class="w"> </span>hardware<span class="w"> </span>has<span class="w"> </span><span class="m">6</span><span class="w"> </span>breakpoints,<span class="w"> </span><span class="m">4</span><span class="w"> </span>watchpoints
+Info<span class="w"> </span>:<span class="w"> </span>starting<span class="w"> </span>gdb<span class="w"> </span>server<span class="w"> </span><span class="k">for</span><span class="w"> </span>adspsc59x.cpu<span class="w"> </span>on<span class="w"> </span><span class="m">3333</span>
+Info<span class="w"> </span>:<span class="w"> </span>Listening<span class="w"> </span>on<span class="w"> </span>port<span class="w"> </span><span class="m">3333</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>gdb<span class="w"> </span>connections
+</pre></div>
+</div>
+<p>In a third console window launch GDB and type <code class="docutils literal notranslate"><span class="pre">`target</span> <span class="pre">extended-remote</span> <span class="pre">:3333``</span></code>. This will make GDB to connect to the gdbserver on the local host using port 3333. Then, load the U-Boot SPL into RAM by typing <code class="docutils literal notranslate"><span class="pre">``load``</span></code>. Hit <code class="docutils literal notranslate"><span class="pre">``Ctrl+C`</span></code> to interrupt thereafter.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`Terminal3:</span> <span class="pre">GDB`</span></code></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/tftpboot
+/opt/adi-security/3.1.0/sysroots/x86_64-adi_glibc_sdk-linux/usr/bin/aarch64-adi_glibc-linux/aarch64-adi_glibc-linux-gdb<span class="w"> </span>u-boot-spl-sc598-som-ezkit.elf
+...
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>target<span class="w"> </span>extended-remote<span class="w"> </span>:3333
+Remote<span class="w"> </span>debugging<span class="w"> </span>using<span class="w"> </span>:3333
+0x000000000000352c<span class="w"> </span><span class="k">in</span><span class="w"> </span>??<span class="w"> </span><span class="o">()</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>load
+Loading<span class="w"> </span>section<span class="w"> </span>.text,<span class="w"> </span>size<span class="w"> </span>0xe430<span class="w"> </span>lma<span class="w"> </span>0x20080000
+Loading<span class="w"> </span>section<span class="w"> </span>.rodata,<span class="w"> </span>size<span class="w"> </span>0x1d97<span class="w"> </span>lma<span class="w"> </span>0x2008e430
+Loading<span class="w"> </span>section<span class="w"> </span>.dtb.init.rodata,<span class="w"> </span>size<span class="w"> </span>0x1d60<span class="w"> </span>lma<span class="w"> </span>0x200901d0
+Loading<span class="w"> </span>section<span class="w"> </span>.data,<span class="w"> </span>size<span class="w"> </span>0xad1<span class="w"> </span>lma<span class="w"> </span>0x20091f30
+Loading<span class="w"> </span>section<span class="w"> </span>__u_boot_list,<span class="w"> </span>size<span class="w"> </span>0x1468<span class="w"> </span>lma<span class="w"> </span>0x20092a08
+Start<span class="w"> </span>address<span class="w"> </span>0x0000000020080000,<span class="w"> </span>load<span class="w"> </span>size<span class="w"> </span><span class="m">81504</span>
+Transfer<span class="w"> </span>rate:<span class="w"> </span><span class="m">30</span><span class="w"> </span>KB/sec,<span class="w"> </span><span class="m">10188</span><span class="w"> </span>bytes/write.
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>c
+Continuing.
+^C
+Program<span class="w"> </span>received<span class="w"> </span>signal<span class="w"> </span>SIGINT,<span class="w"> </span>Interrupt.
+</pre></div>
+</div>
+<p>You will see a message on Terminal 1 running minicom, informing you that you can now load U-Boot Proper</p>
+<p><code class="docutils literal notranslate"><span class="pre">`Terminal1:</span> <span class="pre">minicom`</span></code></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>U-Boot<span class="w"> </span>SPL<span class="w"> </span><span class="m">2023</span>.04<span class="w"> </span><span class="o">(</span>Sep<span class="w"> </span><span class="m">21</span><span class="w"> </span><span class="m">2023</span><span class="w"> </span>-<span class="w"> </span><span class="m">13</span>:39:40<span class="w"> </span>+0000<span class="o">)</span>
+ADI<span class="w"> </span>Boot<span class="w"> </span>Mode:<span class="w"> </span>0x0<span class="w"> </span><span class="o">(</span>JTAG/BOOTROM<span class="o">)</span>
+SPL<span class="w"> </span>execution<span class="w"> </span>has<span class="w"> </span>completed.<span class="w">  </span>Please<span class="w"> </span>load<span class="w"> </span>U-Boot<span class="w"> </span>Proper<span class="w"> </span>via<span class="w"> </span>JTAG
+</pre></div>
+</div>
+<p>Now, load U-Boot Proper into RAM.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`Terminal3:</span> <span class="pre">GDB`</span></code></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>load<span class="w"> </span>u-boot-proper-sc598-som-ezkit.elf
+Loading<span class="w"> </span>section<span class="w"> </span>.text,<span class="w"> </span>size<span class="w"> </span>0x188<span class="w"> </span>lma<span class="w"> </span>0x96000000
+Loading<span class="w"> </span>section<span class="w"> </span>.efi_runtime,<span class="w"> </span>size<span class="w"> </span>0xb80<span class="w"> </span>lma<span class="w"> </span>0x96000188
+Loading<span class="w"> </span>section<span class="w"> </span>.text_rest,<span class="w"> </span>size<span class="w"> </span>0x6c348<span class="w"> </span>lma<span class="w"> </span>0x96001000
+Loading<span class="w"> </span>section<span class="w"> </span>.rodata,<span class="w"> </span>size<span class="w"> </span>0x15e51<span class="w"> </span>lma<span class="w"> </span>0x9606d348
+Loading<span class="w"> </span>section<span class="w"> </span>.hash,<span class="w"> </span>size<span class="w"> </span>0x18<span class="w"> </span>lma<span class="w"> </span>0x960831a0
+Loading<span class="w"> </span>section<span class="w"> </span>.dtb.init.rodata,<span class="w"> </span>size<span class="w"> </span>0x25b0<span class="w"> </span>lma<span class="w"> </span>0x960831c0
+Loading<span class="w"> </span>section<span class="w"> </span>.data,<span class="w"> </span>size<span class="w"> </span>0x4678<span class="w"> </span>lma<span class="w"> </span>0x96085770
+Loading<span class="w"> </span>section<span class="w"> </span>.got,<span class="w"> </span>size<span class="w"> </span>0x8<span class="w"> </span>lma<span class="w"> </span>0x96089de8
+Loading<span class="w"> </span>section<span class="w"> </span>.got.plt,<span class="w"> </span>size<span class="w"> </span>0x18<span class="w"> </span>lma<span class="w"> </span>0x96089df0
+Loading<span class="w"> </span>section<span class="w"> </span>__u_boot_list,<span class="w"> </span>size<span class="w"> </span>0x3b40<span class="w"> </span>lma<span class="w"> </span>0x96089e08
+Loading<span class="w"> </span>section<span class="w"> </span>.efi_runtime_rel,<span class="w"> </span>size<span class="w"> </span>0x1b0<span class="w"> </span>lma<span class="w"> </span>0x9608d948
+Loading<span class="w"> </span>section<span class="w"> </span>.rela.dyn,<span class="w"> </span>size<span class="w"> </span>0xd8f0<span class="w"> </span>lma<span class="w"> </span>0x9608daf8
+Start<span class="w"> </span>address<span class="w"> </span>0x0000000096000000,<span class="w"> </span>load<span class="w"> </span>size<span class="w"> </span><span class="m">635105</span>
+Transfer<span class="w"> </span>rate:<span class="w"> </span><span class="m">28</span><span class="w"> </span>KB/sec,<span class="w"> </span><span class="m">13231</span><span class="w"> </span>bytes/write.
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>c
+Continuing.
+</pre></div>
+</div>
+<p>At this point U-Boot will now be running in RAM on your target board. You should see U-Boot booting in the minicom console (Terminal 1). Press a key to interrupt the boot process before the countdown terminates:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`Terminal1:</span> <span class="pre">minicom`</span></code></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>U-Boot<span class="w"> </span><span class="m">2023</span>.04<span class="w"> </span><span class="o">(</span>Sep<span class="w"> </span><span class="m">21</span><span class="w"> </span><span class="m">2023</span><span class="w"> </span>-<span class="w"> </span><span class="m">13</span>:39:40<span class="w"> </span>+0000<span class="o">)</span>
+
+CPU:<span class="w">   </span>ADSP<span class="w"> </span>ADSP-SC598-0.0<span class="w"> </span><span class="o">(</span>spi<span class="w"> </span>slave<span class="w"> </span>boot<span class="o">)</span>
+Model:<span class="w"> </span>ADI<span class="w"> </span>sc598-som-ezkit
+DRAM:<span class="w">  </span><span class="m">224</span><span class="w"> </span>MiB
+Core:<span class="w">  </span><span class="m">142</span><span class="w"> </span>devices,<span class="w"> </span><span class="m">22</span><span class="w"> </span>uclasses,<span class="w"> </span>devicetree:<span class="w"> </span>embed
+MMC:<span class="w">   </span>mmc@310C7000:<span class="w"> </span><span class="m">0</span>
+Loading<span class="w"> </span>Environment<span class="w"> </span>from<span class="w"> </span>SPIFlash...<span class="w"> </span>SF:<span class="w"> </span>Detected<span class="w"> </span>is25lp512<span class="w"> </span>with<span class="w"> </span>page<span class="w"> </span>size<span class="w"> </span><span class="m">256</span><span class="w"> </span>Bytes,<span class="w"> </span>erase<span class="w"> </span>size<span class="w"> </span><span class="m">4</span><span class="w"> </span>KiB,<span class="w"> </span>total<span class="w"> </span><span class="m">64</span><span class="w"> </span>MiB
+OK
+In:<span class="w">    </span>serial@0x31003000
+Out:<span class="w">   </span>serial@0x31003000
+Err:<span class="w">   </span>serial@0x31003000
+Net:<span class="w">   </span>eth0:<span class="w"> </span>eth0
+Hit<span class="w"> </span>any<span class="w"> </span>key<span class="w"> </span>to<span class="w"> </span>stop<span class="w"> </span>autoboot:<span class="w">  </span><span class="nv">0</span>
+<span class="o">=</span>&gt;
+</pre></div>
+</div>
+</section>
+</section>
+<section id="flash-u-boot-to-spi-flash">
+<h2>Flash U-Boot to SPI Flash<a class="headerlink" href="#flash-u-boot-to-spi-flash" title="Link to this heading"></a></h2>
+<p>In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot loader files (<code class="docutils literal notranslate"><span class="pre">`stage1-boot.ldr``</span></code>, <code class="docutils literal notranslate"><span class="pre">``stage1-boot-unsigned.ldr``</span></code>, <code class="docutils literal notranslate"><span class="pre">``stage2-boot.ldr``</span></code>, <code class="docutils literal notranslate"><span class="pre">``stage2-boot-unsigned.ldr`</span></code>) on TFTP.</p>
+<p><strong>Note:</strong> We are going to use <strong>stage1-boot-unsigned.ldr</strong> and <strong>stage2-boot-unsigned.ldr</strong> to boot the device then burn the secure boot key. This is needed only for the first time secure boot key burning. For the next flash you should use <strong>stage1-boot.ldr</strong> and <strong>stage2-boot.ldr</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">`Terminal1:</span> <span class="pre">minicom`</span></code></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>setenv<span class="w"> </span>tftpserverip<span class="w"> </span>&lt;SERVERIP&gt;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To find the IP address of your host Linux PC you can issue the <code class="docutils literal notranslate"><span class="pre">ip</span> <span class="pre">addr</span></code> command from the shell or console.</p>
+</div>
+<p>If your network <strong>supports</strong> DHCP, run:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>dhcp
+</pre></div>
+</div>
+<p>If your network <strong>does NOT support</strong> DHCP, run:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span><span class="nb">set</span><span class="w"> </span>ipaddr<span class="w"> </span>&lt;ADDR&gt;
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">`&lt;ADDR&gt;`</span></code> is the IP address you want to assign.</p>
+<p>Next, run the U-Boot update command to copy the U-Boot loader files from the host PC to the target board, and write it into flash:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>sf<span class="w"> </span>probe<span class="w"> </span><span class="m">2</span>:1
+<span class="o">=</span>&gt;<span class="w"> </span>sf<span class="w"> </span>erase<span class="w"> </span>0x0<span class="w"> </span><span class="nv">0x01a0000</span>
+<span class="o">=</span>&gt;<span class="w"> </span>setenv<span class="w"> </span>stage1file<span class="w"> </span>stage1-boot-unsigned.ldr
+<span class="o">=</span>&gt;<span class="w"> </span>setenv<span class="w"> </span>stage2file<span class="w"> </span>stage2-boot-unsigned.ldr
+<span class="o">=</span>&gt;<span class="w"> </span>run<span class="w"> </span>update_spi_uboot_only
+</pre></div>
+</div>
+<p>You will see an output similar to the one below:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>run<span class="w"> </span>update_spi_uboot_only
+PHY<span class="w"> </span>0x00:<span class="w"> </span><span class="nv">OUI</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>0x80028,<span class="w"> </span><span class="nv">Model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>0x23,<span class="w"> </span><span class="nv">Rev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>0x01,<span class="w"> </span>100baseT,<span class="w"> </span>FDX
+Speed:<span class="w"> </span><span class="m">1000</span>,<span class="w"> </span>full<span class="w"> </span>duplex
+BOOTP<span class="w"> </span>broadcast<span class="w"> </span><span class="m">1</span>
+BOOTP<span class="w"> </span>broadcast<span class="w"> </span><span class="m">2</span>
+BOOTP<span class="w"> </span>broadcast<span class="w"> </span><span class="m">3</span>
+BOOTP<span class="w"> </span>broadcast<span class="w"> </span><span class="m">4</span>
+DHCP<span class="w"> </span>client<span class="w"> </span>bound<span class="w"> </span>to<span class="w"> </span>address<span class="w"> </span><span class="m">192</span>.168.1.113<span class="w"> </span><span class="o">(</span><span class="m">2230</span><span class="w"> </span>ms<span class="o">)</span>
+SF:<span class="w"> </span>Detected<span class="w"> </span>is25lp512<span class="w"> </span>with<span class="w"> </span>page<span class="w"> </span>size<span class="w"> </span><span class="m">256</span><span class="w"> </span>Bytes,<span class="w"> </span>erase<span class="w"> </span>size<span class="w"> </span><span class="m">4</span><span class="w"> </span>KiB,<span class="w"> </span>total<span class="w"> </span><span class="m">64</span><span class="w"> </span>MiB
+SF:<span class="w"> </span><span class="m">1703936</span><span class="w"> </span>bytes<span class="w"> </span>@<span class="w"> </span>0x0<span class="w"> </span>Erased:<span class="w"> </span>OK
+Speed:<span class="w"> </span><span class="m">1000</span>,<span class="w"> </span>full<span class="w"> </span>duplex
+Using<span class="w"> </span>eth0<span class="w"> </span>device
+TFTP<span class="w"> </span>from<span class="w"> </span>server<span class="w"> </span><span class="m">192</span>.168.1.104<span class="p">;</span><span class="w"> </span>our<span class="w"> </span>IP<span class="w"> </span>address<span class="w"> </span>is<span class="w"> </span><span class="m">192</span>.168.1.113
+Filename<span class="w"> </span><span class="s1">&#39;stage1-boot-unsigned.ldr&#39;</span>.
+Load<span class="w"> </span>address:<span class="w"> </span>0x90000000
+Loading:<span class="w"> </span><span class="c1">######</span>
+<span class="w">         </span><span class="m">4</span>.6<span class="w"> </span>MiB/s
+<span class="k">done</span>
+Bytes<span class="w"> </span><span class="nv">transferred</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">81616</span><span class="w"> </span><span class="o">(</span>13ed0<span class="w"> </span>hex<span class="o">)</span>
+SF:<span class="w"> </span>Detected<span class="w"> </span>is25lp512<span class="w"> </span>with<span class="w"> </span>page<span class="w"> </span>size<span class="w"> </span><span class="m">256</span><span class="w"> </span>Bytes,<span class="w"> </span>erase<span class="w"> </span>size<span class="w"> </span><span class="m">4</span><span class="w"> </span>KiB,<span class="w"> </span>total<span class="w"> </span><span class="m">64</span><span class="w"> </span>MiB
+device<span class="w"> </span><span class="m">0</span><span class="w"> </span>offset<span class="w"> </span>0x0,<span class="w"> </span>size<span class="w"> </span>0x13ed0
+SF:<span class="w"> </span><span class="m">81616</span><span class="w"> </span>bytes<span class="w"> </span>@<span class="w"> </span>0x0<span class="w"> </span>Written:<span class="w"> </span>OK
+Speed:<span class="w"> </span><span class="m">1000</span>,<span class="w"> </span>full<span class="w"> </span>duplex
+Using<span class="w"> </span>eth0<span class="w"> </span>device
+TFTP<span class="w"> </span>from<span class="w"> </span>server<span class="w"> </span><span class="m">192</span>.168.1.104<span class="p">;</span><span class="w"> </span>our<span class="w"> </span>IP<span class="w"> </span>address<span class="w"> </span>is<span class="w"> </span><span class="m">192</span>.168.1.113
+Filename<span class="w"> </span><span class="s1">&#39;stage2-boot-unsigned.ldr&#39;</span>.
+Load<span class="w"> </span>address:<span class="w"> </span>0x90000000
+Loading:<span class="w"> </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">###########</span>
+<span class="w">         </span><span class="m">6</span>.2<span class="w"> </span>MiB/s
+<span class="k">done</span>
+Bytes<span class="w"> </span><span class="nv">transferred</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1113856</span><span class="w"> </span><span class="o">(</span>10ff00<span class="w"> </span>hex<span class="o">)</span>
+SF:<span class="w"> </span>Detected<span class="w"> </span>is25lp512<span class="w"> </span>with<span class="w"> </span>page<span class="w"> </span>size<span class="w"> </span><span class="m">256</span><span class="w"> </span>Bytes,<span class="w"> </span>erase<span class="w"> </span>size<span class="w"> </span><span class="m">4</span><span class="w"> </span>KiB,<span class="w"> </span>total<span class="w"> </span><span class="m">64</span><span class="w"> </span>MiB
+device<span class="w"> </span><span class="m">0</span><span class="w"> </span>offset<span class="w"> </span>0x40000,<span class="w"> </span>size<span class="w"> </span>0x10ff00
+SF:<span class="w"> </span><span class="m">1113856</span><span class="w"> </span>bytes<span class="w"> </span>@<span class="w"> </span>0x40000<span class="w"> </span>Written:<span class="w"> </span>OK
+Saving<span class="w"> </span>Environment<span class="w"> </span>to<span class="w"> </span>SPIFlash...<span class="w"> </span>Erasing<span class="w"> </span>SPI<span class="w"> </span>flash...Writing<span class="w"> </span>to<span class="w"> </span>SPI<span class="w"> </span>flash...done
+<span class="nv">OK</span>
+<span class="o">=</span>&gt;
+</pre></div>
+</div>
+<p>At this point the U-Boot binary is stored in flash. You can now disconnect the ICE-1000 or ICE-2000 from the development board and make sure to switch the BMODE to position 1. You will only need to reconnect this if your board fails to boot and you need to re-follow these instructions.</p>
+</section>
+<section id="booting-linux">
+<h2>Booting Linux<a class="headerlink" href="#booting-linux" title="Link to this heading"></a></h2>
+<section id="booting-the-minimal-image-from-qspi">
+<h3>Booting the minimal image from QSPI<a class="headerlink" href="#booting-the-minimal-image-from-qspi" title="Link to this heading"></a></h3>
+<p>The U-Boot console is used to copy U-Boot (SPL and Proper), the minimal root filesystem image and the fitImage (which contains the kernel image and dtb file) into RAM and then write them to Flash. Copy the required files from <code class="docutils literal notranslate"><span class="pre">&lt;BUILD</span> <span class="pre">DIR&gt;/tmp/deploy/images</span></code> to your <code class="docutils literal notranslate"><span class="pre">/tftpboot</span></code> directory.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot.ldr<span class="w"> </span>/tftpboot/
+cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot-unsigned.ldr<span class="w"> </span>/tftpboot/
+cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot.ldr<span class="w"> </span>/tftpboot/
+cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot-unsigned.ldr<span class="w"> </span>/tftpboot/
+cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/fitImage<span class="w"> </span>/tftpboot/
+cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/adsp-sc5xx-minimal-adsp-sc598-som-ezkit.jffs2<span class="w"> </span>/tftpboot
+</pre></div>
+</div>
+<p>If your network <strong>supports</strong> DHCP, run:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>run<span class="w"> </span>update_spi
+</pre></div>
+</div>
+<dl class="simple">
+<dt>&lt;details closed&gt;</dt><dd><p>&lt;summary&gt;If your network does NOT support DHCP&lt;/summary&gt;</p>
+</dd>
+</dl>
+<p>In the U-Boot console configure the board IP address and remove “run init*ethernet;” from the “start*update_spi” command.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>setenv<span class="w"> </span>ipaddr<span class="w"> </span>&lt;IPADDR&gt;
+<span class="o">=</span>&gt;<span class="w"> </span>edit<span class="w"> </span><span class="nv">start_update_spi</span>
+<span class="o">=</span>&gt;<span class="w"> </span>edit:<span class="w"> </span>&lt;remove<span class="w"> </span><span class="s2">&quot;run init_ethernet;&quot;</span><span class="w"> </span>from<span class="w"> </span>here&gt;<span class="w"> </span>sf<span class="w"> </span>probe<span class="w"> </span><span class="si">${</span><span class="nv">sfdev</span><span class="si">}</span><span class="p">;</span><span class="w"> </span>sf<span class="w"> </span>erase<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="si">${</span><span class="nv">sfsize</span><span class="si">}</span><span class="p">;</span><span class="w"> </span>run<span class="w"> </span>update_spi_uboot<span class="p">;</span><span class="w"> </span>run<span class="w"> </span>update_spi_fit<span class="p">;</span><span class="w"> </span>run<span class="w"> </span>update_spi_rfs<span class="p">;</span><span class="w"> </span>sleep<span class="w"> </span><span class="m">3</span><span class="p">;</span><span class="w"> </span>saveenv
+</pre></div>
+</div>
+<p>After editing <code class="docutils literal notranslate"><span class="pre">`start*update*spi``</span></code>, proceed to running as <code class="docutils literal notranslate"><span class="pre">``update_spi`</span></code>, as above.
+&lt;/details&gt;</p>
+<p>You should see output similar to the following.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>run<span class="w"> </span>update_spi
+PHY<span class="w"> </span>0x00:<span class="w"> </span><span class="nv">OUI</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>0x80028,<span class="w"> </span><span class="nv">Model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>0x23,<span class="w"> </span><span class="nv">Rev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>0x01,<span class="w"> </span>100baseT,<span class="w"> </span>FDX
+Speed:<span class="w"> </span><span class="m">1000</span>,<span class="w"> </span>full<span class="w"> </span>duplex
+BOOTP<span class="w"> </span>broadcast<span class="w"> </span><span class="m">1</span>
+BOOTP<span class="w"> </span>broadcast<span class="w"> </span><span class="m">2</span>
+BOOTP<span class="w"> </span>broadcast<span class="w"> </span><span class="m">3</span>
+BOOTP<span class="w"> </span>broadcast<span class="w"> </span><span class="m">4</span>
+DHCP<span class="w"> </span>client<span class="w"> </span>bound<span class="w"> </span>to<span class="w"> </span>address<span class="w"> </span><span class="m">192</span>.168.1.113<span class="w"> </span><span class="o">(</span><span class="m">2201</span><span class="w"> </span>ms<span class="o">)</span>
+SF:<span class="w"> </span>Detected<span class="w"> </span>is25lp512<span class="w"> </span>with<span class="w"> </span>page<span class="w"> </span>size<span class="w"> </span><span class="m">256</span><span class="w"> </span>Bytes,<span class="w"> </span>erase<span class="w"> </span>size<span class="w"> </span><span class="m">4</span><span class="w"> </span>KiB,<span class="w"> </span>total<span class="w"> </span><span class="m">64</span><span class="w"> </span>MiB
+SF:<span class="w"> </span><span class="m">67108864</span><span class="w"> </span>bytes<span class="w"> </span>@<span class="w"> </span>0x0<span class="w"> </span>Erased:<span class="w"> </span>OK
+Speed:<span class="w"> </span><span class="m">1000</span>,<span class="w"> </span>full<span class="w"> </span>duplex
+Using<span class="w"> </span>eth0<span class="w"> </span>device
+TFTP<span class="w"> </span>from<span class="w"> </span>server<span class="w"> </span><span class="m">192</span>.168.1.104<span class="p">;</span><span class="w"> </span>our<span class="w"> </span>IP<span class="w"> </span>address<span class="w"> </span>is<span class="w"> </span><span class="m">192</span>.168.1.113
+Filename<span class="w"> </span><span class="s1">&#39;stage1-boot-unsigned.ldr&#39;</span>.
+Load<span class="w"> </span>address:<span class="w"> </span>0x90000000
+Loading:<span class="w"> </span><span class="c1">######</span>
+<span class="w">         </span><span class="m">4</span>.9<span class="w"> </span>MiB/s
+<span class="k">done</span>
+Bytes<span class="w"> </span><span class="nv">transferred</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">81616</span><span class="w"> </span><span class="o">(</span>13ed0<span class="w"> </span>hex<span class="o">)</span>
+SF:<span class="w"> </span>Detected<span class="w"> </span>is25lp512<span class="w"> </span>with<span class="w"> </span>page<span class="w"> </span>size<span class="w"> </span><span class="m">256</span><span class="w"> </span>Bytes,<span class="w"> </span>erase<span class="w"> </span>size<span class="w"> </span><span class="m">4</span><span class="w"> </span>KiB,<span class="w"> </span>total<span class="w"> </span><span class="m">64</span><span class="w"> </span>MiB
+device<span class="w"> </span><span class="m">0</span><span class="w"> </span>offset<span class="w"> </span>0x0,<span class="w"> </span>size<span class="w"> </span>0x13ed0
+SF:<span class="w"> </span><span class="m">81616</span><span class="w"> </span>bytes<span class="w"> </span>@<span class="w"> </span>0x0<span class="w"> </span>Written:<span class="w"> </span>OK
+Speed:<span class="w"> </span><span class="m">1000</span>,<span class="w"> </span>full<span class="w"> </span>duplex
+Using<span class="w"> </span>eth0<span class="w"> </span>device
+TFTP<span class="w"> </span>from<span class="w"> </span>server<span class="w"> </span><span class="m">192</span>.168.1.104<span class="p">;</span><span class="w"> </span>our<span class="w"> </span>IP<span class="w"> </span>address<span class="w"> </span>is<span class="w"> </span><span class="m">192</span>.168.1.113
+Filename<span class="w"> </span><span class="s1">&#39;stage2-boot-unsigned.ldr&#39;</span>.
+Load<span class="w"> </span>address:<span class="w"> </span>0x90000000
+Loading:<span class="w"> </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">###########</span>
+<span class="w">         </span><span class="m">6</span>.4<span class="w"> </span>MiB/s
+<span class="k">done</span>
+Bytes<span class="w"> </span><span class="nv">transferred</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1113856</span><span class="w"> </span><span class="o">(</span>10ff00<span class="w"> </span>hex<span class="o">)</span>
+SF:<span class="w"> </span>Detected<span class="w"> </span>is25lp512<span class="w"> </span>with<span class="w"> </span>page<span class="w"> </span>size<span class="w"> </span><span class="m">256</span><span class="w"> </span>Bytes,<span class="w"> </span>erase<span class="w"> </span>size<span class="w"> </span><span class="m">4</span><span class="w"> </span>KiB,<span class="w"> </span>total<span class="w"> </span><span class="m">64</span><span class="w"> </span>MiB
+device<span class="w"> </span><span class="m">0</span><span class="w"> </span>offset<span class="w"> </span>0x40000,<span class="w"> </span>size<span class="w"> </span>0x10ff00
+SF:<span class="w"> </span><span class="m">1113856</span><span class="w"> </span>bytes<span class="w"> </span>@<span class="w"> </span>0x40000<span class="w"> </span>Written:<span class="w"> </span>OK
+Speed:<span class="w"> </span><span class="m">1000</span>,<span class="w"> </span>full<span class="w"> </span>duplex
+Using<span class="w"> </span>eth0<span class="w"> </span>device
+TFTP<span class="w"> </span>from<span class="w"> </span>server<span class="w"> </span><span class="m">192</span>.168.1.104<span class="p">;</span><span class="w"> </span>our<span class="w"> </span>IP<span class="w"> </span>address<span class="w"> </span>is<span class="w"> </span><span class="m">192</span>.168.1.113
+Filename<span class="w"> </span><span class="s1">&#39;fitImage&#39;</span>.
+Load<span class="w"> </span>address:<span class="w"> </span>0x90000000
+Loading:<span class="w"> </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#############</span>
+<span class="w">         </span><span class="m">6</span>.6<span class="w"> </span>MiB/s
+<span class="k">done</span>
+Bytes<span class="w"> </span><span class="nv">transferred</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8778378</span><span class="w"> </span><span class="o">(</span>85f28a<span class="w"> </span>hex<span class="o">)</span>
+SF:<span class="w"> </span>Detected<span class="w"> </span>is25lp512<span class="w"> </span>with<span class="w"> </span>page<span class="w"> </span>size<span class="w"> </span><span class="m">256</span><span class="w"> </span>Bytes,<span class="w"> </span>erase<span class="w"> </span>size<span class="w"> </span><span class="m">4</span><span class="w"> </span>KiB,<span class="w"> </span>total<span class="w"> </span><span class="m">64</span><span class="w"> </span>MiB
+device<span class="w"> </span><span class="m">0</span><span class="w"> </span>offset<span class="w"> </span>0x1a0000,<span class="w"> </span>size<span class="w"> </span>0x85f28a
+SF:<span class="w"> </span><span class="m">8778378</span><span class="w"> </span>bytes<span class="w"> </span>@<span class="w"> </span>0x1a0000<span class="w"> </span>Written:<span class="w"> </span>OK
+Speed:<span class="w"> </span><span class="m">1000</span>,<span class="w"> </span>full<span class="w"> </span>duplex
+Using<span class="w"> </span>eth0<span class="w"> </span>device
+TFTP<span class="w"> </span>from<span class="w"> </span>server<span class="w"> </span><span class="m">192</span>.168.1.104<span class="p">;</span><span class="w"> </span>our<span class="w"> </span>IP<span class="w"> </span>address<span class="w"> </span>is<span class="w"> </span><span class="m">192</span>.168.1.113
+Filename<span class="w"> </span><span class="s1">&#39;adsp-sc5xx-minimal-adsp-sc598-som-ezkit.jffs2&#39;</span>.
+Load<span class="w"> </span>address:<span class="w"> </span>0x90000000
+Loading:<span class="w"> </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">#################################################################</span>
+<span class="w">         </span><span class="c1">############################################################</span>
+<span class="w">         </span><span class="m">6</span>.6<span class="w"> </span>MiB/s
+<span class="k">done</span>
+Bytes<span class="w"> </span><span class="nv">transferred</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">34275328</span><span class="w"> </span><span class="o">(</span>20b0000<span class="w"> </span>hex<span class="o">)</span>
+SF:<span class="w"> </span>Detected<span class="w"> </span>is25lp512<span class="w"> </span>with<span class="w"> </span>page<span class="w"> </span>size<span class="w"> </span><span class="m">256</span><span class="w"> </span>Bytes,<span class="w"> </span>erase<span class="w"> </span>size<span class="w"> </span><span class="m">4</span><span class="w"> </span>KiB,<span class="w"> </span>total<span class="w"> </span><span class="m">64</span><span class="w"> </span>MiB
+device<span class="w"> </span><span class="m">0</span><span class="w"> </span>offset<span class="w"> </span>0x1020000,<span class="w"> </span>size<span class="w"> </span>0x20b0000
+SF:<span class="w"> </span><span class="m">34275328</span><span class="w"> </span>bytes<span class="w"> </span>@<span class="w"> </span>0x1020000<span class="w"> </span>Written:<span class="w"> </span>OK
+Saving<span class="w"> </span>Environment<span class="w"> </span>to<span class="w"> </span>SPIFlash...<span class="w"> </span>Erasing<span class="w"> </span>SPI<span class="w"> </span>flash...Writing<span class="w"> </span>to<span class="w"> </span>SPI<span class="w"> </span>flash...done
+<span class="nv">OK</span>
+<span class="o">=</span>&gt;
+</pre></div>
+</div>
+<p>The U-Boot image, root filesystem and Linux kernel are now stored in QSPI. Adjust the BOOT MODE selector to <strong>position 1</strong> and press the RESET button, the board should boot into Linux.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>U-Boot<span class="w"> </span>SPL<span class="w"> </span><span class="m">2023</span>.04<span class="w"> </span><span class="o">(</span>Sep<span class="w"> </span><span class="m">21</span><span class="w"> </span><span class="m">2023</span><span class="w"> </span>-<span class="w"> </span><span class="m">13</span>:39:40<span class="w"> </span>+0000<span class="o">)</span>
+ADI<span class="w"> </span>Boot<span class="w"> </span>Mode:<span class="w"> </span>0x1<span class="w"> </span><span class="o">(</span>QSPI<span class="w"> </span>Master<span class="o">)</span>
+Trying<span class="w"> </span>to<span class="w"> </span>boot<span class="w"> </span>from<span class="w"> </span>BOOTROM
+NOTICE:<span class="w">  </span>BL31:<span class="w"> </span>v2.6<span class="o">(</span>release<span class="o">)</span>:v2.6-7-g85b6e2a3a-dirty
+NOTICE:<span class="w">  </span>BL31:<span class="w"> </span>Built<span class="w"> </span>:<span class="w"> </span><span class="m">03</span>:30:41,<span class="w"> </span>Sep<span class="w"> </span><span class="m">15</span><span class="w"> </span><span class="m">2023</span>
+
+
+U-Boot<span class="w"> </span><span class="m">2023</span>.04<span class="w"> </span><span class="o">(</span>Sep<span class="w"> </span><span class="m">21</span><span class="w"> </span><span class="m">2023</span><span class="w"> </span>-<span class="w"> </span><span class="m">13</span>:39:40<span class="w"> </span>+0000<span class="o">)</span>
+
+CPU:<span class="w">   </span>ADSP<span class="w"> </span>ADSP-SC598-0.0<span class="w"> </span><span class="o">(</span>spi<span class="w"> </span>slave<span class="w"> </span>boot<span class="o">)</span>
+Model:<span class="w"> </span>ADI<span class="w"> </span>sc598-som-ezkit
+DRAM:<span class="w">  </span><span class="m">224</span><span class="w"> </span>MiB
+Core:<span class="w">  </span><span class="m">142</span><span class="w"> </span>devices,<span class="w"> </span><span class="m">22</span><span class="w"> </span>uclasses,<span class="w"> </span>devicetree:<span class="w"> </span>embed
+MMC:<span class="w">   </span>mmc@310C7000:<span class="w"> </span><span class="m">0</span>
+Loading<span class="w"> </span>Environment<span class="w"> </span>from<span class="w"> </span>SPIFlash...<span class="w"> </span>SF:<span class="w"> </span>Detected<span class="w"> </span>is25lp512<span class="w"> </span>with<span class="w"> </span>page<span class="w"> </span>size<span class="w"> </span><span class="m">256</span><span class="w"> </span>Bytes,<span class="w"> </span>erase<span class="w"> </span>size<span class="w"> </span><span class="m">4</span><span class="w"> </span>KiB,<span class="w"> </span>total<span class="w"> </span><span class="m">64</span><span class="w"> </span>MiB
+OK
+In:<span class="w">    </span>serial@0x31003000
+Out:<span class="w">   </span>serial@0x31003000
+Err:<span class="w">   </span>serial@0x31003000
+Net:<span class="w">   </span>eth0:<span class="w"> </span>eth0
+Hit<span class="w"> </span>any<span class="w"> </span>key<span class="w"> </span>to<span class="w"> </span>stop<span class="w"> </span>autoboot:<span class="w">  </span><span class="m">0</span>
+SF:<span class="w"> </span>Detected<span class="w"> </span>is25lp512<span class="w"> </span>with<span class="w"> </span>page<span class="w"> </span>size<span class="w"> </span><span class="m">256</span><span class="w"> </span>Bytes,<span class="w"> </span>erase<span class="w"> </span>size<span class="w"> </span><span class="m">4</span><span class="w"> </span>KiB,<span class="w"> </span>total<span class="w"> </span><span class="m">64</span><span class="w"> </span>MiB
+device<span class="w"> </span><span class="m">0</span><span class="w"> </span>offset<span class="w"> </span>0x1a0000,<span class="w"> </span>size<span class="w"> </span>0x85f28a
+SF:<span class="w"> </span><span class="m">8778378</span><span class="w"> </span>bytes<span class="w"> </span>@<span class="w"> </span>0x1a0000<span class="w"> </span>Read:<span class="w"> </span>OK
+<span class="c1">## Loading kernel from FIT Image at 90000000 ...</span>
+<span class="w">   </span>Using<span class="w"> </span><span class="s1">&#39;conf-1&#39;</span><span class="w"> </span>configuration
+<span class="w">   </span>Verifying<span class="w"> </span>Hash<span class="w"> </span>Integrity<span class="w"> </span>...<span class="w"> </span>sha1,rsa2048:dev+<span class="w"> </span>OK
+<span class="w">   </span>Trying<span class="w"> </span><span class="s1">&#39;kernel-1&#39;</span><span class="w"> </span>kernel<span class="w"> </span>subimage
+<span class="w">     </span>Description:<span class="w">  </span>Linux<span class="w"> </span>kernel
+<span class="w">     </span>Type:<span class="w">         </span>Kernel<span class="w"> </span>Image
+<span class="w">     </span>Compression:<span class="w">  </span>gzip<span class="w"> </span>compressed
+<span class="w">     </span>Data<span class="w"> </span>Start:<span class="w">   </span>0x900000e0
+<span class="w">     </span>Data<span class="w"> </span>Size:<span class="w">    </span><span class="m">6016729</span><span class="w"> </span><span class="nv">Bytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span>.7<span class="w"> </span>MiB
+<span class="w">     </span>Architecture:<span class="w"> </span>AArch64
+<span class="w">     </span>OS:<span class="w">           </span>Linux
+<span class="w">     </span>Load<span class="w"> </span>Address:<span class="w"> </span>0x9a200000
+<span class="w">     </span>Entry<span class="w"> </span>Point:<span class="w">  </span>0x9a200000
+<span class="w">     </span>Hash<span class="w"> </span>algo:<span class="w">    </span>sha1
+<span class="w">     </span>Hash<span class="w"> </span>value:<span class="w">   </span>5b3fd40ac12092c35dcbc719f2100a656d41b711
+<span class="w">     </span>Sign<span class="w"> </span>algo:<span class="w">    </span>sha1,rsa2048:dev
+<span class="w">     </span>Sign<span class="w"> </span>value:<span class="w">   </span>41d9bdc4f562f1d07ab91820ea8e67641caecc3de50ac2e2dcff1e9ea9bb21a4c95a0adfe001d1ca12ab2b59f5d3d0ac6af4c42b1a4971ffc98ab527d98a4c43b1b20678045480b3447f647fbef37e1f8f17db8cde9ce798ab372d8374
+<span class="w">   </span>Verifying<span class="w"> </span>Hash<span class="w"> </span>Integrity<span class="w"> </span>...<span class="w"> </span>sha1+<span class="w"> </span>sha1,rsa2048:dev+<span class="w"> </span>OK
+<span class="c1">## Loading ramdisk from FIT Image at 90000000 ...</span>
+<span class="w">   </span>Using<span class="w"> </span><span class="s1">&#39;conf-1&#39;</span><span class="w"> </span>configuration
+<span class="w">   </span>Verifying<span class="w"> </span>Hash<span class="w"> </span>Integrity<span class="w"> </span>...<span class="w"> </span>sha1,rsa2048:dev+<span class="w"> </span>OK
+<span class="w">   </span>Trying<span class="w"> </span><span class="s1">&#39;ramdisk-3&#39;</span><span class="w"> </span>ramdisk<span class="w"> </span>subimage
+<span class="w">     </span>Description:<span class="w">  </span>Initial<span class="w"> </span>Ram<span class="w"> </span>File<span class="w"> </span>System
+<span class="w">     </span>Type:<span class="w">         </span>RAMDisk<span class="w"> </span>Image
+<span class="w">     </span>Compression:<span class="w">  </span>uncompressed
+<span class="w">     </span>Data<span class="w"> </span>Start:<span class="w">   </span>0x905c456c
+<span class="w">     </span>Data<span class="w"> </span>Size:<span class="w">    </span><span class="m">2728254</span><span class="w"> </span><span class="nv">Bytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span>.6<span class="w"> </span>MiB
+<span class="w">     </span>Architecture:<span class="w"> </span>AArch64
+<span class="w">     </span>OS:<span class="w">           </span>Linux
+<span class="w">     </span>Load<span class="w"> </span>Address:<span class="w"> </span>0x9c000000
+<span class="w">     </span>Entry<span class="w"> </span>Point:<span class="w">  </span>0x9c000000
+<span class="w">     </span>Hash<span class="w"> </span>algo:<span class="w">    </span>sha1
+<span class="w">     </span>Hash<span class="w"> </span>value:<span class="w">   </span>c4497b927c79bb1e83721e65b5c8d3ff303e3fdb
+<span class="w">     </span>Sign<span class="w"> </span>algo:<span class="w">    </span>sha1,rsa2048:dev
+<span class="w">     </span>Sign<span class="w"> </span>value:<span class="w">   </span>58f64965beca3df7497ad756f18fd78a13fedd9e971286ad5c7fb9d6695c176ce4f75343d5388b667800f26be43765a5d5a580837d0aa808a53a238fb291a5f5c544771964847c73edf8c496324f06f170a800cb7db86628c37f18d621
+<span class="w">   </span>Verifying<span class="w"> </span>Hash<span class="w"> </span>Integrity<span class="w"> </span>...<span class="w"> </span>sha1+<span class="w"> </span>sha1,rsa2048:dev+<span class="w"> </span>OK
+<span class="w">   </span>Loading<span class="w"> </span>ramdisk<span class="w"> </span>from<span class="w"> </span>0x905c456c<span class="w"> </span>to<span class="w"> </span>0x9c000000
+<span class="c1">## Loading fdt from FIT Image at 90000000 ...</span>
+<span class="w">   </span>Using<span class="w"> </span><span class="s1">&#39;conf-1&#39;</span><span class="w"> </span>configuration
+<span class="w">   </span>Verifying<span class="w"> </span>Hash<span class="w"> </span>Integrity<span class="w"> </span>...<span class="w"> </span>sha1,rsa2048:dev+<span class="w"> </span>OK
+<span class="w">   </span>Trying<span class="w"> </span><span class="s1">&#39;fdt-2&#39;</span><span class="w"> </span>fdt<span class="w"> </span>subimage
+<span class="w">     </span>Description:<span class="w">  </span>Flattened<span class="w"> </span>Device<span class="w"> </span>Tree<span class="w"> </span>Blob
+<span class="w">     </span>Type:<span class="w">         </span>Flat<span class="w"> </span>Device<span class="w"> </span>Tree
+<span class="w">     </span>Compression:<span class="w">  </span>uncompressed
+<span class="w">     </span>Data<span class="w"> </span>Start:<span class="w">   </span>0x905bd238
+<span class="w">     </span>Data<span class="w"> </span>Size:<span class="w">    </span><span class="m">28890</span><span class="w"> </span><span class="nv">Bytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">28</span>.2<span class="w"> </span>KiB
+<span class="w">     </span>Architecture:<span class="w"> </span>AArch64
+<span class="w">     </span>Load<span class="w"> </span>Address:<span class="w"> </span>0x99000000
+<span class="w">     </span>Hash<span class="w"> </span>algo:<span class="w">    </span>sha1
+<span class="w">     </span>Hash<span class="w"> </span>value:<span class="w">   </span>fcc1a1eb9d09961853352904131e04e9dfabe459
+<span class="w">     </span>Sign<span class="w"> </span>algo:<span class="w">    </span>sha1,rsa2048:dev
+<span class="w">     </span>Sign<span class="w"> </span>value:<span class="w">   </span>21072cdfe9076f2f8377557c19cfa62c821a7f7abb38f359935fdd05ed0e1098005edef4ba9a54283aa09937332d52313e43ef6b2907781002f6f0487f62de474a90dac68e428efcd7a92d5915c28f82347373a96585fe3673d4bd1119
+<span class="w">   </span>Verifying<span class="w"> </span>Hash<span class="w"> </span>Integrity<span class="w"> </span>...<span class="w"> </span>sha1+<span class="w"> </span>sha1,rsa2048:dev+<span class="w"> </span>OK
+<span class="w">   </span>Loading<span class="w"> </span>fdt<span class="w"> </span>from<span class="w"> </span>0x905bd238<span class="w"> </span>to<span class="w"> </span>0x99000000
+<span class="w">   </span>Booting<span class="w"> </span>using<span class="w"> </span>the<span class="w"> </span>fdt<span class="w"> </span>blob<span class="w"> </span>at<span class="w"> </span>0x99000000
+Working<span class="w"> </span>FDT<span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="m">99000000</span>
+<span class="w">   </span>Uncompressing<span class="w"> </span>Kernel<span class="w"> </span>Image
+<span class="w">   </span>Using<span class="w"> </span>Device<span class="w"> </span>Tree<span class="w"> </span><span class="k">in</span><span class="w"> </span>place<span class="w"> </span>at<span class="w"> </span><span class="m">0000000099000000</span>,<span class="w"> </span>end<span class="w"> </span>000000009900a0d9
+Working<span class="w"> </span>FDT<span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="m">99000000</span>
+
+Starting<span class="w"> </span>kernel<span class="w"> </span>...
+
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.000000<span class="o">]</span><span class="w"> </span>Booting<span class="w"> </span>Linux<span class="w"> </span>on<span class="w"> </span>physical<span class="w"> </span>CPU<span class="w"> </span>0x0000000000<span class="w"> </span><span class="o">[</span>0x412fd050<span class="o">]</span>
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.000000<span class="o">]</span><span class="w"> </span>Linux<span class="w"> </span>version<span class="w"> </span><span class="m">5</span>.15.78-yocto-standard<span class="w"> </span><span class="o">(</span>oe-user@oe-host<span class="o">)</span><span class="w"> </span><span class="o">(</span>aarch64-adi_glibc-linux-gcc<span class="w"> </span><span class="o">(</span>GCC<span class="o">)</span><span class="w"> </span><span class="m">11</span>.2.0,<span class="w"> </span>GNU<span class="w"> </span>ld<span class="w"> </span><span class="o">(</span>GNU<span class="w"> </span>Binutils<span class="o">)</span><span class="w"> </span><span class="m">2</span>.38.20220313<span class="o">)</span><span class="w"> </span><span class="c1">#1 SMP PREEMPT Mon Oct 9 13:08:42 UTC 2023</span>
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.000000<span class="o">]</span><span class="w"> </span>Machine<span class="w"> </span>model:<span class="w"> </span>ADI<span class="w"> </span><span class="m">64</span>-bit<span class="w"> </span>SC598<span class="w"> </span>SOM<span class="w"> </span>EZ<span class="w"> </span>Kit
+
+...
+
+<span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Finished<span class="w"> </span>Record<span class="w"> </span>Runlevel<span class="w"> </span>Change<span class="w"> </span><span class="k">in</span><span class="w"> </span>UTMP.
+
+
+<span class="w">     </span>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">  </span>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">     </span>@@@@@@@@@@@@@@@@@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">        </span>@@@@@@@@@@@@@@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">            </span>@@@@@@@@@@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">               </span>@@@@@@@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">                   </span>@@@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">                     </span>@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">                        </span>@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">                     </span>@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">                   </span>@@@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">               </span>@@@@@@@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">            </span>@@@@@@@@@@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">        </span>@@@@@@@@@@@@@@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">     </span>@@@@@@@@@@@@@@@@@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">  </span>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+<span class="w">        </span>Analog<span class="w"> </span>Devices<span class="w"> </span>Yocto<span class="w"> </span>Distribution
+<span class="w">                 </span>www.analog.com
+<span class="w">              </span>www.yoctoproject.org
+
+<span class="w">     </span>***************************************
+<span class="w">     </span>*************<span class="w"> </span>PLEASE<span class="w"> </span>NOTE<span class="w"> </span>*************
+<span class="w">     </span>***************************************
+<span class="w">     </span>*<span class="w"> </span>This<span class="w"> </span>is<span class="w"> </span>an<span class="w"> </span>evaluation<span class="w"> </span>system<span class="w"> </span>with<span class="w">   </span>*
+<span class="w">     </span>*<span class="w"> </span>default<span class="w"> </span>username/password<span class="w">           </span>*
+<span class="w">     </span>***************************************
+<span class="w">     </span>*******<span class="w"> </span>NOT<span class="w"> </span>FIT<span class="w"> </span>FOR<span class="w"> </span>PRODUCTION<span class="w"> </span>********
+<span class="w">     </span>***************************************
+
+adsp-sc598-som-ezkit<span class="w"> </span>login:
+</pre></div>
+</div>
+<p>The username is <strong>root</strong> and the password is <strong>adi</strong>.</p>
+</section>
+</section>
+<section id="program-the-secure-boot-key">
+<h2>Program the secure boot key<a class="headerlink" href="#program-the-secure-boot-key" title="Link to this heading"></a></h2>
+<section id="extract-the-public-key-and-copy-it-into-the-target">
+<h3>Extract the Public key and copy it into the target<a class="headerlink" href="#extract-the-public-key-and-copy-it-into-the-target" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Dump the Key Pair to verify the content</p></li>
+</ul>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>openssl asn1parse -in testkey.der -inform der -dump
+    0:d=0  hl=2 l= 119 cons: SEQUENCE
+    2:d=1  hl=2 l=   1 prim: INTEGER           :01
+    5:d=1  hl=2 l=  32 prim: OCTET STRING
+      0000 - 87 e8 15 3c a6 7a bf 82-2a 21 1f 27 6f 81 1a ae   ...&lt;.z..*!.&#39;o...
+      0010 - b2 cd e6 7d 03 a7 ab 1e-39 26 c0 57 97 b3 e2 54   ...}....9&amp;.W...T
+   39:d=1  hl=2 l=  10 cons: cont [ 0 ]
+   41:d=2  hl=2 l=   8 prim: OBJECT            :prime256v1
+   51:d=1  hl=2 l=  68 cons: cont [ 1 ]
+   53:d=2  hl=2 l=  66 prim: BIT STRING
+      0000 - 00 04 5a 06 5d 03 19 19-fe b5 ee 87 ed 47 6b 4e   ..Z.]........GkN
+      0010 - e6 c9 59 21 6f d0 11 fa-77 ae 6b 99 51 45 49 b9   ..Y!o...w.k.QEI.
+      0020 - ec 15 91 9c c0 0e 2e 3b-9f 44 c1 4f f6 a8 f8 0e   .......;.D.O....
+      0030 - a0 7d 6a d5 72 b4 5f 37-59 31 ef e8 bf 21 fd 76   .}j.r._7Y1...!.v
+      0040 - 47 47                                             GG
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Extract the public key from the DER file <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">dd</span></code></p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>dd<span class="w"> </span><span class="k">if</span><span class="o">=</span>testkey.der<span class="w"> </span><span class="nv">bs</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">count</span><span class="o">=</span><span class="m">64</span><span class="w"> </span><span class="nv">skip</span><span class="o">=</span><span class="m">57</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>xxd
+<span class="m">00000000</span>:<span class="w"> </span>5a06<span class="w"> </span>5d03<span class="w"> </span><span class="m">1919</span><span class="w"> </span>feb5<span class="w"> </span>ee87<span class="w"> </span>ed47<span class="w"> </span>6b4e<span class="w"> </span>e6c9<span class="w">  </span>Z.<span class="o">]</span>........GkN..
+<span class="m">00000010</span>:<span class="w"> </span><span class="m">5921</span><span class="w"> </span>6fd0<span class="w"> </span>11fa<span class="w"> </span>77ae<span class="w"> </span>6b99<span class="w"> </span><span class="m">5145</span><span class="w"> </span>49b9<span class="w"> </span>ec15<span class="w">  </span>Y!o...w.k.QEI...
+<span class="m">00000020</span>:<span class="w"> </span>919c<span class="w"> </span>c00e<span class="w"> </span>2e3b<span class="w"> </span>9f44<span class="w"> </span>c14f<span class="w"> </span>f6a8<span class="w"> </span>f80e<span class="w"> </span>a07d<span class="w">  </span>.....<span class="p">;</span>.D.O.....<span class="o">}</span>
+<span class="m">64</span>+0<span class="w"> </span>records<span class="w"> </span><span class="k">in</span>
+<span class="m">64</span>+0<span class="w"> </span>records<span class="w"> </span>out
+<span class="m">00000030</span>:<span class="w"> </span>6ad5<span class="w"> </span>72b4<span class="w"> </span>5f37<span class="w"> </span><span class="m">5931</span><span class="w"> </span>efe8<span class="w"> </span>bf21<span class="w"> </span>fd76<span class="w"> </span><span class="m">4747</span><span class="w">  </span>j.r._7Y1...!.vGG
+<span class="m">64</span><span class="w"> </span>bytes<span class="w"> </span>copied,<span class="w"> </span><span class="m">0</span>.000160752<span class="w"> </span>s,<span class="w"> </span><span class="m">398</span><span class="w"> </span>kB/s
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Save the public key into a file</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>dd<span class="w"> </span><span class="k">if</span><span class="o">=</span>testkey.der<span class="w"> </span><span class="nv">bs</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">count</span><span class="o">=</span><span class="m">64</span><span class="w"> </span><span class="nv">skip</span><span class="o">=</span><span class="m">57</span><span class="w"> </span>&gt;<span class="w"> </span>testkey_pub.bin
+<span class="m">64</span>+0<span class="w"> </span>records<span class="w"> </span><span class="k">in</span>
+<span class="m">64</span>+0<span class="w"> </span>records<span class="w"> </span>out
+<span class="m">64</span><span class="w"> </span>bytes<span class="w"> </span>copied,<span class="w"> </span><span class="m">0</span>.000347221<span class="w"> </span>s,<span class="w"> </span><span class="m">184</span><span class="w"> </span>kB/s
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Copy <code class="docutils literal notranslate"><span class="pre">testkey_pub.bin</span></code> file to the target <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">scp</span></code>, then flash it <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">adiotp-cli</span></code></p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>scp<span class="w"> </span>testkey_pub.bin<span class="w"> </span>root@TARGET_IP:/tmp/testkey_pub.bin
+</pre></div>
+</div>
+</section>
+<section id="program-the-key-into-the-otp-flash-memory">
+<h3>Program the key into the OTP flash memory<a class="headerlink" href="#program-the-key-into-the-otp-flash-memory" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">`Terminal1:</span> <span class="pre">minicom`</span></code></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/tmp
+cat<span class="w"> </span>testkey_pub.bin<span class="w"> </span><span class="p">|</span><span class="w"> </span>adiotp-cli<span class="w"> </span>-s<span class="w"> </span><span class="m">12</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Print the key <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">adiotp-cli</span></code> to verify it was programmed successfully</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>adiotp-cli<span class="w"> </span><span class="m">12</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>xxd
+<span class="m">00000000</span>:<span class="w"> </span>5a06<span class="w"> </span>5d03<span class="w"> </span><span class="m">1919</span><span class="w"> </span>feb5<span class="w"> </span>ee87<span class="w"> </span>ed47<span class="w"> </span>6b4e<span class="w"> </span>e6c9<span class="w">  </span>Z.<span class="o">]</span>........GkN..
+<span class="m">00000010</span>:<span class="w"> </span><span class="m">5921</span><span class="w"> </span>6fd0<span class="w"> </span>11fa<span class="w"> </span>77ae<span class="w"> </span>6b99<span class="w"> </span><span class="m">5145</span><span class="w"> </span>49b9<span class="w"> </span>ec15<span class="w">  </span>Y!o...w.k.QEI...
+<span class="m">00000020</span>:<span class="w"> </span>919c<span class="w"> </span>c00e<span class="w"> </span>2e3b<span class="w"> </span>9f44<span class="w"> </span>c14f<span class="w"> </span>f6a8<span class="w"> </span>f80e<span class="w"> </span>a07d<span class="w">  </span>.....<span class="p">;</span>.D.O.....<span class="o">}</span>
+<span class="m">00000030</span>:<span class="w"> </span>6ad5<span class="w"> </span>72b4<span class="w"> </span>5f37<span class="w"> </span><span class="m">5931</span><span class="w"> </span>efe8<span class="w"> </span>bf21<span class="w"> </span>fd76<span class="w"> </span><span class="m">4747</span><span class="w">  </span>j.r._7Y1...!.vGG
+root@adsp-sc598-som-ezkit:~#
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Another method to verify key programmation successfully</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>adiotp-cli<span class="w"> </span><span class="m">12</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sha256sum<span class="w"> </span>-<span class="w"> </span>/tmp/testkey_pub.bin
+7c4888b77901b12b8fdd3f69e0124727286fcdc14a85214befc1fb181f273c59<span class="w">  </span>-
+7c4888b77901b12b8fdd3f69e0124727286fcdc14a85214befc1fb181f273c59<span class="w">  </span>/tmp/testkey_pub.bin
+</pre></div>
+</div>
+<p>Bravo, You have successfully programmed the secure boot key.</p>
+</section>
+</section>
+<section id="running-op-tee-applications">
+<h2>Running OP-TEE applications<a class="headerlink" href="#running-op-tee-applications" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Reboot your device then run <code class="docutils literal notranslate"><span class="pre">xtest</span></code> (<strong>TEE sanity test suite</strong>)</p></li>
+</ul>
+<p>First of all, let’s check the status of the <code class="docutils literal notranslate"><span class="pre">tee-supplicant</span></code> systemd service, then run the <code class="docutils literal notranslate"><span class="pre">xtest</span></code>.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>root@adsp-sc598-som-ezkit:~#<span class="w"> </span>systemctl<span class="w"> </span>status<span class="w"> </span>tee-supplicant
+*<span class="w"> </span>tee-supplicant.service<span class="w"> </span>-<span class="w"> </span>TEE<span class="w"> </span>Supplicant
+<span class="w">     </span>Loaded:<span class="w"> </span>loaded<span class="w"> </span><span class="o">(</span><span class="m">8</span><span class="p">;;</span>file://adsp-sc598-som-ezkit/lib/systemd/system/tee-supplicant.service/lib/systemd/system/tee-supplicant.service8<span class="p">;;;</span><span class="w"> </span>enabled<span class="p">;</span><span class="w"> </span>vendor<span class="w"> </span>preset:<span class="w"> </span>enabled<span class="o">)</span>
+<span class="w">     </span>Active:<span class="w"> </span>active<span class="w"> </span><span class="o">(</span>running<span class="o">)</span><span class="w"> </span>since<span class="w"> </span>Sat<span class="w"> </span><span class="m">2023</span>-10-14<span class="w"> </span><span class="m">11</span>:39:35<span class="w"> </span>UTC<span class="p">;</span><span class="w"> </span>15min<span class="w"> </span>ago
+<span class="w">   </span>Main<span class="w"> </span>PID:<span class="w"> </span><span class="m">258</span><span class="w"> </span><span class="o">(</span>tee-supplicant<span class="o">)</span>
+<span class="w">      </span>Tasks:<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">(</span>limit:<span class="w"> </span><span class="m">239</span><span class="o">)</span>
+<span class="w">     </span>Memory:<span class="w"> </span><span class="m">272</span>.0K
+<span class="w">     </span>CGroup:<span class="w"> </span>/system.slice/tee-supplicant.service
+<span class="w">             </span><span class="sb">`</span>-258<span class="w"> </span>/usr/sbin/tee-supplicant
+
+Oct<span class="w"> </span><span class="m">14</span><span class="w"> </span><span class="m">11</span>:39:35<span class="w"> </span>adsp-sc598-som-ezkit<span class="w"> </span>systemd<span class="o">[</span><span class="m">1</span><span class="o">]</span>:<span class="w"> </span>Started<span class="w"> </span>TEE<span class="w"> </span>Supplicant.
+root@adsp-sc598-som-ezkit:~#
+</pre></div>
+</div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>root@adsp-sc598-som-ezkit:~#<span class="w"> </span>xtest
+Run<span class="w"> </span><span class="nb">test</span><span class="w"> </span>suite<span class="w"> </span>with<span class="w"> </span><span class="nv">level</span><span class="o">=</span><span class="m">0</span>
+
+TEE<span class="w"> </span><span class="nb">test</span><span class="w"> </span>application<span class="w"> </span>started<span class="w"> </span>over<span class="w"> </span>default<span class="w"> </span>TEE<span class="w"> </span>instance
+<span class="c1">######################################################</span>
+<span class="c1">#</span>
+<span class="c1"># regression</span>
+<span class="c1">#</span>
+<span class="c1">######################################################</span>
+
+*<span class="w"> </span>regression_1001<span class="w"> </span>Core<span class="w"> </span>self<span class="w"> </span>tests
+E/LD:<span class="w">  </span>init_elf:439<span class="w"> </span>sys_open_ta_bin<span class="o">(</span>d96a5b40-c3e5-21e3-8794-1002a5d5c61b<span class="o">)</span>
+E/TC:?<span class="w"> </span><span class="m">0</span><span class="w"> </span>ldelf_init_with_ldelf:130<span class="w"> </span>ldelf<span class="w"> </span>failed<span class="w"> </span>with<span class="w"> </span>res:<span class="w"> </span>0xffff0008
+<span class="w"> </span>-<span class="w"> </span><span class="m">1001</span><span class="w"> </span>-<span class="w">   </span>skip<span class="w"> </span>test,<span class="w"> </span>pseudo<span class="w"> </span>TA<span class="w"> </span>not<span class="w"> </span>found
+<span class="w">  </span>regression_1001<span class="w"> </span>OK
+
+...
+
+regression_8102<span class="w"> </span>OK
+regression_8103<span class="w"> </span>OK
++-----------------------------------------------------
+<span class="m">26175</span><span class="w"> </span>subtests<span class="w"> </span>of<span class="w"> </span>which<span class="w"> </span><span class="m">0</span><span class="w"> </span>failed
+<span class="m">93</span><span class="w"> </span><span class="nb">test</span><span class="w"> </span>cases<span class="w"> </span>of<span class="w"> </span>which<span class="w"> </span><span class="m">0</span><span class="w"> </span>failed
+<span class="m">0</span><span class="w"> </span><span class="nb">test</span><span class="w"> </span>cases<span class="w"> </span>were<span class="w"> </span>skipped
+TEE<span class="w"> </span><span class="nb">test</span><span class="w"> </span>application<span class="w"> </span><span class="k">done</span>!
+root@adsp-sc598-som-ezkit:~#
+</pre></div>
+</div>
+</section>
+<section id="load-sharc-images-from-linux">
+<h2>Load SHARC images from Linux<a class="headerlink" href="#load-sharc-images-from-linux" title="Link to this heading"></a></h2>
+<section id="sharc-images-signing">
+<h3>SHARC images signing<a class="headerlink" href="#sharc-images-signing" title="Link to this heading"></a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>/opt/analog/cces/2.11.1/adi_signtool<span class="w"> </span>-proc<span class="w"> </span>ADSP-SC598<span class="w"> </span>sign<span class="w"> </span>-type<span class="w"> </span>BLp<span class="w"> </span>-algo<span class="w"> </span>ecdsa256<span class="w"> </span>-infile<span class="w"> </span>adi_adsp_core1_fw.ldr<span class="w"> </span>-outfile<span class="w"> </span>adi_adsp_core1_fw_signed.ldr<span class="w"> </span>-prikey<span class="w"> </span>/opt/adi-testkeys/testkey.der
+/opt/analog/cces/2.11.1/adi_signtool<span class="w"> </span>-proc<span class="w"> </span>ADSP-SC598<span class="w"> </span>sign<span class="w"> </span>-type<span class="w"> </span>BLp<span class="w"> </span>-algo<span class="w"> </span>ecdsa256<span class="w"> </span>-infile<span class="w"> </span>adi_adsp_core2_fw.ldr<span class="w"> </span>-outfile<span class="w"> </span>adi_adsp_core2_fw_signed.ldr<span class="w"> </span>-prikey<span class="w"> </span>/opt/adi-testkeys/testkey.der
+</pre></div>
+</div>
+</section>
+<section id="id1">
+<h3>Load SHARC images from Linux<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>root@adsp-sc598-som-ezkit:~#<span class="w"> </span>sharc-cli<span class="w"> </span>-z<span class="w"> </span><span class="m">0</span>
+root@adsp-sc598-som-ezkit:~#<span class="w"> </span>sharc-cli<span class="w"> </span>-z<span class="w"> </span><span class="m">1</span>
+root@adsp-sc598-som-ezkit:~#<span class="w"> </span>rmmod<span class="w"> </span>adi_rpmsg
+root@adsp-sc598-som-ezkit:~#<span class="w"> </span>sharc-cli<span class="w"> </span>-l<span class="w"> </span>./adi_adsp_core1_fw_signed.ldr<span class="w"> </span><span class="m">0</span>
+root@adsp-sc598-som-ezkit:~#<span class="w"> </span>sharc-cli<span class="w"> </span>-l<span class="w"> </span>./adi_adsp_core2_fw_signed.ldr<span class="w"> </span><span class="m">1</span>
+root@adsp-sc598-som-ezkit:~#<span class="w"> </span>sharc-cli<span class="w"> </span>-g<span class="w"> </span><span class="m">0</span>
+root@adsp-sc598-som-ezkit:~#<span class="w"> </span>sharc-cli<span class="w"> </span>-g<span class="w"> </span><span class="m">1</span>
+root@adsp-sc598-som-ezkit:~#<span class="w"> </span>modprobe<span class="w"> </span>adi_rpmsg
+<span class="o">[</span><span class="w"> </span><span class="m">3086</span>.967203<span class="o">]</span><span class="w"> </span>adi-rpmsg<span class="w"> </span>scb:core0-rpmsg@0x28240000:<span class="w"> </span>table<span class="w"> </span>TAG:<span class="w"> </span>AD-RESOURCE-TBL,<span class="w"> </span>Expected:<span class="w"> </span>AD-RESOURCE-TBL
+<span class="o">[</span><span class="w"> </span><span class="m">3086</span>.976656<span class="o">]</span><span class="w"> </span>adi-rpmsg<span class="w"> </span>scb:core0-rpmsg@0x28240000:<span class="w"> </span>table<span class="w"> </span>VERSION:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span>Expedted:<span class="w"> </span><span class="m">1</span>
+<span class="o">[</span><span class="w"> </span><span class="m">3086</span>.989211<span class="o">]</span><span class="w"> </span>adi-rpmsg<span class="w"> </span>scb:core0-rpmsg@0x28240000:<span class="w"> </span>vrings<span class="w"> </span><span class="k">in</span><span class="w"> </span>vdev-vring<span class="w"> </span>reserved-memory.
+<span class="o">[</span><span class="w"> </span><span class="m">3086</span>.999120<span class="o">]</span><span class="w"> </span>adi-rpmsg<span class="w"> </span>scb:core0-rpmsg@0x28240000:<span class="w"> </span>assigned<span class="w"> </span>reserved<span class="w"> </span>memory<span class="w"> </span>node<span class="w"> </span>vdev0buffer@20084000
+<span class="o">[</span><span class="w"> </span><span class="m">3087</span>.010222<span class="o">]</span><span class="w"> </span>adi-rpmsg<span class="w"> </span>scb:core0-rpmsg@0x28240000:<span class="w"> </span>msg<span class="w"> </span>buffers<span class="w"> </span><span class="k">in</span><span class="w"> </span>memory-region.
+<span class="o">[</span><span class="w"> </span><span class="m">3087</span>.027271<span class="o">]</span><span class="w"> </span>adi-rpmsg<span class="w"> </span>scb:core1-rpmsg@0x28a40000:<span class="w"> </span>table<span class="w"> </span>TAG:<span class="w"> </span>AD-RESOURCE-TBL,<span class="w"> </span>Expected:<span class="w"> </span>AD-RESOURCE-TBL
+<span class="o">[</span><span class="w"> </span><span class="m">3087</span>.044951<span class="o">]</span><span class="w"> </span>adi-rpmsg<span class="w"> </span>scb:core1-rpmsg@0x28a40000:<span class="w"> </span>table<span class="w"> </span>VERSION:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span>Expedted:<span class="w"> </span><span class="m">1</span>
+<span class="o">[</span><span class="w"> </span><span class="m">3087</span>.063102<span class="o">]</span><span class="w"> </span>adi-rpmsg<span class="w"> </span>scb:core1-rpmsg@0x28a40000:<span class="w"> </span>vrings<span class="w"> </span><span class="k">in</span><span class="w"> </span>vdev-vring<span class="w"> </span>reserved-memory.
+<span class="o">[</span><span class="w"> </span><span class="m">3087</span>.080646<span class="o">]</span><span class="w"> </span>adi-rpmsg<span class="w"> </span>scb:core1-rpmsg@0x28a40000:<span class="w"> </span>assigned<span class="w"> </span>reserved<span class="w"> </span>memory<span class="w"> </span>node<span class="w"> </span>vdev0buffer@200A8000
+<span class="o">[</span><span class="w"> </span><span class="m">3087</span>.093916<span class="o">]</span><span class="w"> </span>adi-rpmsg<span class="w"> </span>scb:core1-rpmsg@0x28a40000:<span class="w"> </span>msg<span class="w"> </span>buffers<span class="w"> </span><span class="k">in</span><span class="w"> </span>memory-region.
+<span class="o">[</span><span class="w"> </span><span class="m">3087</span>.119066<span class="o">]</span><span class="w"> </span>virtio_rpmsg_bus<span class="w"> </span>virtio0:<span class="w"> </span>creating<span class="w"> </span>channel<span class="w"> </span>sharc-echo<span class="w"> </span>addr<span class="w"> </span>0x97
+<span class="o">[</span><span class="w"> </span><span class="m">3087</span>.126098<span class="o">]</span><span class="w"> </span>virtio_rpmsg_bus<span class="w"> </span>virtio0:<span class="w"> </span>creating<span class="w"> </span>channel<span class="w"> </span>sharc-echo-cap<span class="w"> </span>addr<span class="w"> </span>0xa1
+<span class="o">[</span><span class="w"> </span><span class="m">3087</span>.135121<span class="o">]</span><span class="w"> </span>virtio_rpmsg_bus<span class="w"> </span>virtio1:<span class="w"> </span>creating<span class="w"> </span>channel<span class="w"> </span>sharc-echo<span class="w"> </span>addr<span class="w"> </span>0x98
+<span class="o">[</span><span class="w"> </span><span class="m">3087</span>.142135<span class="o">]</span><span class="w"> </span>virtio_rpmsg_bus<span class="w"> </span>virtio1:<span class="w"> </span>creating<span class="w"> </span>channel<span class="w"> </span>sharc-echo-cap<span class="w"> </span>addr<span class="w"> </span>0xa2
+<span class="o">[</span><span class="w"> </span><span class="m">3087</span>.149522<span class="o">]</span><span class="w"> </span>virtio_rpmsg_bus<span class="w"> </span>virtio1:<span class="w"> </span>rpmsg<span class="w"> </span>host<span class="w"> </span>is<span class="w"> </span>online
+<span class="o">[</span><span class="w"> </span><span class="m">3087</span>.159091<span class="o">]</span><span class="w"> </span>virtio_rpmsg_bus<span class="w"> </span>virtio0:<span class="w"> </span>rpmsg<span class="w"> </span>host<span class="w"> </span>is<span class="w"> </span>online
+root@adsp-sc598-som-ezkit:~#
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+          </div>
+              <div class="related">
+                &nbsp;
+    <a href="Secure-Boot-Support-in-release-3.1.1.html" title="Previous document (Alt+Shift+LeftArrow)" class="prev">Secure Boot Support (Release 3.1.1)</a>
+    <a href="../test-reports/Test-Reports.html" title="Next document (Alt+Shift+RightArrow)" class="next">Test Reports</a>
+              </div>
+          
+        </div>
+      </div>
+  </div>
+
+  <label id="cancel-area-show-toc" for="input-show-toc"></label>
+  <label id="cancel-area-show-localtoc" for="input-show-localtoc"></label>
+    <footer>
+      &#169;2026, Analog Devices, Inc.
+      
+      |
+      Made with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+      &amp; <a href="https://github.com/analogdevicesinc/doctools">Doctools</a>
+      
+    </footer>
+  </body>
+</html>

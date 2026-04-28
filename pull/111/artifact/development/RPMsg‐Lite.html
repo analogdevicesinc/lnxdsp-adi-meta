@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="This guide helps you implement RPMsg-Lite for bare-metal applications on ADSP-SC5xx processors. RPMsg-Lite is a lightweight implementation of the RPMsg protocol designed specifically for bare-metal and RTOS environments where the full Linux RPMsg stack is not available." name="description" />
+
+    <title>RPMsg-Lite &#8212; ADSP Processors  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8e8a900e" />
+    <link rel="stylesheet" type="text/css" href="../_static/app.min.css?v=ac863bf0" />
+    <script async="async" src="../_static/app.umd.js?v=09b0c6bc"></script>
+    <link rel="icon" href="../_static/icon.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Configuring System Memory When Using Linux and SHARC Applications" href="Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications.html" />
+    <link rel="prev" title="RPMsg" href="RPMsg.html" />
+   
+  
+  
+  <meta name="repository" content="adsp">
+  <meta name="version" content="">
+  
+    <meta name="page_source_suffix" content=".rst">
+  
+  
+  
+
+
+<style>
+  body {
+    
+  }
+
+  body.dark {
+    
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body:not(.light) {
+      
+    }
+  }
+</style>
+  </head>
+  
+    <body>
+  
+  <input type="checkbox" id="input-show-toc">
+  <input type="checkbox" id="input-show-localtoc">
+  <input type="checkbox" id="input-show-repotoc">
+
+  
+  <div class="search-area">
+    <form action="" method="get">
+      <input type="text" name="q" aria-labelledby="search-documentation" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" role="search" placeholder="Search"/>
+      <button class="icon"></button>
+    </form>
+  </div>
+  
+
+  <header>
+    <div id="left">
+      <label id="show-sidebar" class="icon" for="input-show-toc" title="Show/hide index"></label>
+    </div>
+    <div id="right">
+      <span>
+        <a id="logo-org" href="https://analog.com" aria-label="Analog Devices Inc. landing page"></a>
+        <div class="vertical-divider"></div>
+        
+        <label id="show-repotoc" for="input-show-repotoc" title="Show/hide docs">Docs</label>
+        
+        <a id="logo" href="../index.html">
+          <div>ADSP Processors</div>
+        </a>
+      </span>
+      <span class="reverse">
+        <label id="show-localtoc" class="icon" for="input-show-localtoc" title="Show/hide contents"></label>
+      </span>
+    </div>
+  </header>
+
+
+  <div class="repotoc-tree overlay">
+    <root/>
+
+  </div>
+    <div class="localtoc">
+      <div class="tocwrapper">
+        <div class="header localtoc-header">
+          <a id="scroll-up" href="#top-anchor" title="Back to top"></a>
+        </div>
+        <nav>
+          <ul>
+<li><a class="reference internal" href="#">RPMsg-Lite</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#overview">Overview</a><ul>
+<li><a class="reference internal" href="#resources-used">Resources used</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#using-rpmsg-lite-on-sc5xx">Using RPMsg-Lite on SC5xx</a><ul>
+<li><a class="reference internal" href="#allocate-memory-for-vring-buffers">Allocate memory for vring buffers</a><ul>
+<li><a class="reference internal" href="#disable-cache-on-arm">Disable cache on ARM</a></li>
+<li><a class="reference internal" href="#disable-cache-on-sharc">Disable cache on SHARC</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#create-resource-table">Create Resource Table</a></li>
+<li><a class="reference internal" href="#adding-an-rpmsg-lite-instance">Adding an rpmsg-lite instance</a><ul>
+<li><a class="reference internal" href="#adding-an-endpoint">Adding an endpoint</a></li>
+<li><a class="reference internal" href="#sending-a-message">Sending a message</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#additional-information">Additional Information</a><ul>
+<li><a class="reference internal" href="#downloads">Downloads</a></li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </nav>
+      </div>
+    </div>
+
+  
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+    <a id="no-logo" href="../index.html">
+      ADSP Processors
+    </a><input id="input-switch-toc" type="checkbox">
+<label id="show-repotoc" for="input-switch-toc">
+All content
+</label>
+<label id="show-toc" for="input-switch-toc">
+Content on this topic
+</label>
+<div class="repotoc-tree">
+  <root/>
+
+</div>
+<div class="toc-tree">
+  <ul class="current">
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-1" id="toctree-collapse-1"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.0.1-Landing-Page.html">Linux for ADSP SC5xx 5.0.1</a><label for="toctree-collapse-1"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC598 (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC594 (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC589-MINI (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC573 (5.0.1)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2" id="toctree-collapse-2"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.x.x-Landing-Page.html"> Linux for ADSP SC5xx 5.x.x</a><label for="toctree-collapse-2"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC598 (5.x.x)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC594 (5.x.x)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC589-MINI (5.x.x)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC573 (5.x.x)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3" id="toctree-collapse-3"/><div class="collapse"><a class="reference internal" href="../Older-Releases.html">Older Releases</a><label for="toctree-collapse-3"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-1" id="toctree-collapse-3-1"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.0.0-Landing-Page.html">Linux for ADSP-SC5xx Processors 5.0.0</a><label for="toctree-collapse-3-1"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC598 (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC594 (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC589-MINI (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC573 (5.0.0)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-2" id="toctree-collapse-3-2"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.2-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.2</a><label for="toctree-collapse-3-2"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC598 (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC594 (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC589-MINI (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC573 (3.1.2)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-3" id="toctree-collapse-3-3"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.1-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.1</a><label for="toctree-collapse-3-3"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC598 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC594 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC589-MINI (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90EZ%E2%80%90KIT-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC589-EZ-KIT (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC584-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC584 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC573 (3.1.1)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-4" id="toctree-collapse-3-4"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.0-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.0</a><label for="toctree-collapse-3-4"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC598 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC594 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC589-MINI (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90EZ%E2%80%90KIT-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC589-EZ-KIT (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC584-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC584 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC573 (3.1.0)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-4" id="toctree-collapse-4"/><div class="collapse"><a class="reference internal" href="../examples/Examples.html">Examples</a><label for="toctree-collapse-4"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples/SHARC%E2%80%90ALSA-Example.html">SHARC-ALSA Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/USB-Gadget-Audio-Example.html">USB Gadget Audio Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/The-Kitchen-Sink.html">The Kitchen Sink</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/U%E2%80%90Boot-Falcon-Mode-Example.html">U-Boot Falcon Mode Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-5" id="toctree-collapse-5" checked=""/><div class="collapse"><a class="reference internal" href="Development.html">Development</a><label for="toctree-collapse-5"><div class="icon"></div></label></div><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Setting-Up-Your-Host-PC.html">Setting Up Your Host PC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Debugging-without-ICE-Hardware.html">Debugging without ICE Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Boot-Sequence.html">Boot Sequence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U%E2%80%90Boot-Environment.html">U-Boot Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Linux-Kernel-Development.html">Linux Kernel Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Compiling-and-running-a-Rust-kernel.html">Compiling and running a Rust kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RPMsg.html">RPMsg</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">RPMsg-Lite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications.html">Configuring System Memory When Using Linux and SHARC Applications</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-6" id="toctree-collapse-6"/><div class="collapse"><a class="reference internal" href="../benchmarks/Benchmarking.html">Benchmarks</a><label for="toctree-collapse-6"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../benchmarks/RPMsg-Benchmark-Figures.html">RPMsg Benchmark Figures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../benchmarks/Booting-Benchmark-Figures.html">Booting Benchmark Figures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/Frequently-Asked-Questions.html">FAQ</a></li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-7" id="toctree-collapse-7"/><div class="collapse"><a class="reference internal" href="../secure-boot/Secure-Boot-Support.html">Secure Boot</a><label for="toctree-collapse-7"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../secure-boot/Secure-Boot-Support-in-release-3.1.1.html">Secure Boot Support (Release 3.1.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../secure-boot/Secure-Boot-Support-in-release-3.1.0.html">Secure Boot Support (Release 3.1.0)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-8" id="toctree-collapse-8"/><div class="collapse"><a class="reference internal" href="../test-reports/Test-Reports.html">Test Reports</a><label for="toctree-collapse-8"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%285.0.1%29.html">Test Report (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%285.0.0%29.html">Test Report (5.0.0)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%283.1.0%29.html">Test Report (3.1.0)</a></li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+        </div>
+      </div>
+
+  <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper" id="top-anchor">
+          <div class="body-header">
+  <nav class="breadcrumb"><ol><li><a href="Development.html">Development</a></li></ol></nav>
+</div>
+          <div class="body" role="main">
+            
+  <section id="rpmsg-lite">
+<h1>RPMsg-Lite<a class="headerlink" href="#rpmsg-lite" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>This guide helps you implement RPMsg-Lite for bare-metal applications on ADSP-SC5xx processors. RPMsg-Lite is a lightweight implementation of the RPMsg protocol designed specifically for bare-metal and RTOS environments where the full Linux RPMsg stack is not available.</p>
+<p>While Linux on the ARM core includes native RPMsg support through kernel drivers, your SHARC+ DSP cores and bare-metal ARM applications need a different approach. RPMsg-Lite provides this solution—a minimal, efficient implementation that enables inter-processor communication without requiring a full operating system.</p>
+<p><strong>What you’ll learn:</strong></p>
+<ul class="simple">
+<li><p>System resources used by RPMsg-Lite (shared memory, interrupts, TRU triggers)</p></li>
+<li><p>How to allocate and configure memory for communication buffers</p></li>
+<li><p>Creating resource tables for cross-processor coordination</p></li>
+<li><p>Setting up RPMsg-Lite instances, endpoints, and message transmission</p></li>
+<li><p>Practical implementation differences between ARM and SHARC+ cores</p></li>
+</ul>
+<p><strong>Prerequisites:</strong></p>
+<ul class="simple">
+<li><p>Understanding of RPMsg concepts—see <a class="reference internal" href="RPMsg.html"><span class="doc">What is RPMsg?</span></a></p></li>
+<li><p>Familiarity with bare-metal or RTOS development</p></li>
+<li><p>ADSP-SC5xx development environment configured</p></li>
+</ul>
+<p><strong>Additional resources:</strong></p>
+<ul class="simple">
+<li><p><a class="icon link reference external" href="https://github.com/analogdevicesinc/rpmsg-lite" target="_blank">RPMsg-Lite Repository</a></p></li>
+<li><p><a class="icon link reference external" href="https://github.com/analogdevicesinc/lnxdsp-examples" target="_blank">RPMsg Examples</a></p></li>
+</ul>
+</section>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>RPMsg-Lite enables message transfer between cores on ADSP devices. An implementation is available for ARM when running Linux, and for bare-metal applications, a port of RPMsg-Lite is available for ARM and SHARC+ cores. It allows for transmitting a message to a specific endpoint on a different core via a dedicated transport link. Multiple endpoints can be registered against a single link.</p>
+<section id="resources-used">
+<h3>Resources used<a class="headerlink" href="#resources-used" title="Link to this heading"></a></h3>
+<p>In order to allow for message transmission between cores on ADSP-SC5xx devices, RPMsg-Lite makes use of the following resources:</p>
+<ul class="simple">
+<li><p>Shared memory for storing message buffers and vring buffers containing message descriptors</p></li>
+<li><p>Interrupt on each core to indicate that a message has arrived</p></li>
+<li><p>TRU triggers for raising an interrupt on a different core</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>These resources should not be used for other purposes when using RPMsg-Lite in your application.</p>
+</div>
+<p>The interrupts used are:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>TRGS_TRU0_IRQ3      /* ARM */
+TRGS_TRU0_IRQ7      /* SHARC0 */
+TRGS_TRU0_IRQ11     /* SHARC1 */
+</pre></div>
+</div>
+<p>The TRU triggers allocated are:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>TRGM_SOFT3          /* Signal ARM */
+TRGM_SOFT4          /* Signal SHARC0 */
+TRGM_SOFT5          /* Signal SHARC1 */
+</pre></div>
+</div>
+<p>The shared memory used is allocated by a single core and typically by the main core in an RPMsg-Lite context. In order for the remotes to know the physical addresses for the vring buffers in shared memory, this information has to be passed from the main to the remote before the framework can be used. This is achieved by the main populating a resource table at a known address. The examples on this pages utilise memory located at <code class="docutils literal notranslate"><span class="pre">___MCAPI_common_start</span></code>. If using a different location for this make sure that the memory area used is not cached.</p>
+<p>For the sake of compatibility, the resource table used in the examples has an identical structure to the one created by <code class="docutils literal notranslate"><span class="pre">remoteproc</span></code> in Linux, which looks as follows:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">sharc_resource_table</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">resource_table</span><span class="w"> </span><span class="n">table_hdr</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">offset</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">fw_rsc_vdev</span><span class="w"> </span><span class="n">rpmsg_vdev</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">fw_rsc_vdev_vring</span><span class="w"> </span><span class="n">vring</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="p">};</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">adi_resource_table</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">tag</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">version</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">initialized</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">sharc_resource_table</span><span class="w"> </span><span class="n">tbl</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Additional details can be found on <a class="icon link reference external" href="https://github.com/analogdevicesinc/rpmsg-lite/blob/adi/release/yocto-2.1.0/lib/include/remoteproc.h" target="_blank">remoteproc.h (RPMsg-Lite repo)</a></p>
+</div>
+</section>
+</section>
+<section id="using-rpmsg-lite-on-sc5xx">
+<h2>Using RPMsg-Lite on SC5xx<a class="headerlink" href="#using-rpmsg-lite-on-sc5xx" title="Link to this heading"></a></h2>
+<section id="allocate-memory-for-vring-buffers">
+<h3>Allocate memory for vring buffers<a class="headerlink" href="#allocate-memory-for-vring-buffers" title="Link to this heading"></a></h3>
+<p>The memory allocation for for the vring buffers should be done on a single core and the location of those buffers shared with the other cores via a resource table. To ensure that the cores pick up the data from the shared memory, it is necessary to mark the memory as  not cached on all cores using the buffers. Allocating memory and ensuring it is not cached is done differently on ARM and SHARC. If using RPMsg-Lite on the ARM it is recommended that the memory is allocated on the ARM as the SHARCs allow for simple run-time changes to caching via a set of registers.</p>
+<p>Create an array for the vring buffers on the heap.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">vring_buffer</span><span class="p">[</span><span class="n">ADI_VRING_BUFFER_SIZE</span><span class="p">];</span>
+</pre></div>
+</div>
+<section id="disable-cache-on-arm">
+<h4>Disable cache on ARM<a class="headerlink" href="#disable-cache-on-arm" title="Link to this heading"></a></h4>
+<p>Disabling cache on the ARM for the vring buffers requires changes to the linker files. For example, to allocate 4MB of L3 memory as not cached memory on an SC594:</p>
+<ol class="arabic">
+<li><p>Modify <code class="docutils literal notranslate"><span class="pre">apt.c</span></code></p>
+<p>Add a definition for an uncached block of memory and adjust the block of memory from which it is taken from. Change:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"> </span><span class="mh">0xA0000000u</span><span class="p">,</span><span class="w"> </span><span class="mh">0xBFFFFFFFu</span><span class="p">,</span><span class="w"> </span><span class="n">ADI_MMU_WB_CACHED</span><span class="w">           </span><span class="p">},</span><span class="w"> </span><span class="cm">/* 512MB DDR-A */</span>
+</pre></div>
+</div>
+<p>To:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"> </span><span class="mh">0xA0000000u</span><span class="p">,</span><span class="w"> </span><span class="mh">0xA03FFFFFu</span><span class="p">,</span><span class="w"> </span><span class="n">ADI_MMU_RW_UNCACHED</span><span class="w">         </span><span class="p">},</span><span class="w"> </span><span class="cm">/* 4MB DDR-A */</span>
+<span class="p">{</span><span class="w"> </span><span class="mh">0xA0400000u</span><span class="p">,</span><span class="w"> </span><span class="mh">0xBFFFFFFFu</span><span class="p">,</span><span class="w"> </span><span class="n">ADI_MMU_WB_CACHED</span><span class="w">           </span><span class="p">},</span><span class="w"> </span><span class="cm">/* 508MB DDR-A */</span>
+</pre></div>
+</div>
+</li>
+<li><p>Modify <code class="docutils literal notranslate"><span class="pre">app.ld</span></code></p>
+<p>Add a definition for a non-cached block of memory and adjust the block of memory from which it is taken from, matching the changes made to <code class="docutils literal notranslate"><span class="pre">apt.c</span></code>. Change:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>/* ARM Core 0 L3, DMC0 */
+MEM_L3 : ORIGIN = 0xA0000000, LENGTH = 512M
+</pre></div>
+</div>
+<p>To:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>/* ARM Core 0 L3, DMC0 */
+MEM_L3_UNCACHED : ORIGIN = 0xA0000000, LENGTH = 4M
+MEM_L3 : ORIGIN = 0xA0400000, LENGTH = 508M
+</pre></div>
+</div>
+</li>
+<li><p>Add an entry in the <code class="docutils literal notranslate"><span class="pre">SECTIONS</span></code> covering L3 memory</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>/* L3 Uncached Memory. No data placed here by default */
+.l3_uncached :
+{
+  *(.l3_data_uncached)
+} &gt;MEM_L3_UNCACHED = 0
+</pre></div>
+</div>
+<p>To store the vring buffers previously declared in the non-cached memory block, use <code class="docutils literal notranslate"><span class="pre">__attribute__</span></code> to specify the memory section it should be mapped to.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">__attribute__</span><span class="w"> </span><span class="p">((</span><span class="n">section</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;.l3_data_uncached&quot;</span><span class="p">)))</span>
+<span class="kt">uint8_t</span><span class="w"> </span><span class="n">vring_buffer</span><span class="p">[</span><span class="n">ADI_VRING_BUFFER_SIZE</span><span class="p">];</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="disable-cache-on-sharc">
+<h4>Disable cache on SHARC<a class="headerlink" href="#disable-cache-on-sharc" title="Link to this heading"></a></h4>
+<p>The SHARCs have a number of range registers allowing for sections of memory to be marked as non-cached. We make use of these to mark the descriptor buffer range and the message buffer range as not cached like in the following example</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Disable cache for the descriptors memory range</span>
+<span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">adi_cache_set_range</span><span class="w"> </span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">vring_buffer</span><span class="p">,</span>
+<span class="w">                                </span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="n">vring_buffer</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ADI_VRING_BUFFER_SIZE</span><span class="p">),</span>
+<span class="w">                                </span><span class="n">adi_cache_rr6</span><span class="p">,</span>
+<span class="w">                                </span><span class="n">adi_cache_noncacheable_range</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>If the SHARC is acting as an RPMsg-Lite remote the ranges to mark as non-cached are retrieved from the resource table.</p>
+</section>
+</section>
+<section id="create-resource-table">
+<h3>Create Resource Table<a class="headerlink" href="#create-resource-table" title="Link to this heading"></a></h3>
+<p>On the core on which the memory for the vring buffers was declared, create the resource table used to provide information on the shared memory resources used for RPMsg-lite and instruct the linker to store it at a fixed location in L2 memory, which is by default marked as non-cached.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">RL_PACKED_BEGIN</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">sharc_resource_table</span><span class="w"> </span><span class="p">{</span>
+<span class="w">     </span><span class="k">struct</span><span class="w"> </span><span class="nc">resource_table</span><span class="w"> </span><span class="n">table_hdr</span><span class="p">;</span>
+<span class="w">     </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">offset</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="w">     </span><span class="k">struct</span><span class="w"> </span><span class="nc">fw_rsc_vdev</span><span class="w"> </span><span class="n">rpmsg_vdev</span><span class="p">;</span>
+<span class="w">     </span><span class="k">struct</span><span class="w"> </span><span class="nc">fw_rsc_vdev_vring</span><span class="w"> </span><span class="n">vring</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="p">}</span><span class="n">RL_PACKED_END</span><span class="p">;</span>
+
+<span class="n">RL_PACKED_BEGIN</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">adi_resource_table</span><span class="w"> </span><span class="p">{</span>
+<span class="w">     </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">tag</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+<span class="w">     </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">version</span><span class="p">;</span>
+<span class="w">     </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">initialized</span><span class="p">;</span>
+<span class="w">     </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
+
+<span class="w">     </span><span class="k">struct</span><span class="w"> </span><span class="nc">sharc_resource_table</span><span class="w"> </span><span class="n">tbl</span><span class="p">;</span>
+<span class="p">}</span><span class="n">RL_PACKED_END</span><span class="p">;</span>
+
+<span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">adi_resource_table</span><span class="w"> </span><span class="n">rsc_tbl_local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">             </span><span class="p">.</span><span class="n">tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;AD-RESOURCE-TBL&quot;</span><span class="p">,</span>
+<span class="w">             </span><span class="p">.</span><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">             </span><span class="p">.</span><span class="n">initialized</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">             </span><span class="p">.</span><span class="n">tbl</span><span class="p">.</span><span class="n">table_hdr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                     </span><span class="cm">/* resource table header */</span>
+<span class="w">                     </span><span class="mi">1</span><span class="p">,</span><span class="w">                      </span><span class="cm">/* version */</span>
+<span class="w">                     </span><span class="mi">1</span><span class="p">,</span><span class="w">                      </span><span class="cm">/* number of table entries */</span>
+<span class="w">                     </span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,},</span><span class="w">        </span><span class="cm">/* reserved fields */</span>
+<span class="w">             </span><span class="p">},</span>
+<span class="w">             </span><span class="p">.</span><span class="n">tbl</span><span class="p">.</span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">offsetof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">sharc_resource_table</span><span class="p">,</span><span class="w"> </span><span class="n">rpmsg_vdev</span><span class="p">),</span>
+<span class="w">             </span><span class="p">},</span>
+<span class="w">             </span><span class="p">.</span><span class="n">tbl</span><span class="p">.</span><span class="n">rpmsg_vdev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">RSC_VDEV</span><span class="p">,</span><span class="w"> </span><span class="cm">/* virtio dev type */</span>
+<span class="w">                     </span><span class="mi">7</span><span class="p">,</span><span class="w">                              </span><span class="cm">/* it&#39;s rpmsg virtio */</span>
+<span class="w">                     </span><span class="mi">1</span><span class="p">,</span><span class="w">                              </span><span class="cm">/* kick sharc0 */</span>
+<span class="w">                     </span><span class="cm">/* 1&lt;&lt;0 is VIRTIO_RPMSG_F_NS bit defined in virtio_rpmsg_bus.c */</span>
+<span class="w">                     </span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="cm">/* dfeatures, gfeatures, config len, status */</span>
+<span class="w">                     </span><span class="mi">2</span><span class="p">,</span><span class="w">                              </span><span class="cm">/* num_of_vrings */</span>
+<span class="w">                     </span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,},</span><span class="w">                </span><span class="cm">/* reserved */</span>
+<span class="w">             </span><span class="p">},</span>
+<span class="w">             </span><span class="p">.</span><span class="n">tbl</span><span class="p">.</span><span class="n">vring</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                     </span><span class="p">{(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="n">VRING_ALIGN</span><span class="p">,</span><span class="w"> </span><span class="n">RL_BUFFER_COUNT</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">},</span><span class="w"> </span><span class="cm">/* da allocated by rpmsg_lite_master_init */</span>
+<span class="w">                     </span><span class="p">{(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="n">VRING_ALIGN</span><span class="p">,</span><span class="w"> </span><span class="n">RL_BUFFER_COUNT</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">},</span><span class="w"> </span><span class="cm">/* da allocated by rpmsg_lite_master_init */</span>
+<span class="w">             </span><span class="p">},</span>
+<span class="p">};</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Declare the resource table used for sharing shmem vring details.</span>
+<span class="cm"> * The ___MCAPI_common_start address is defined in app.ldf</span>
+<span class="cm"> */</span>
+<span class="k">extern</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">adi_resource_table</span><span class="w"> </span><span class="n">__MCAPI_common_start</span><span class="p">;</span>
+<span class="k">volatile</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">adi_resource_table</span><span class="w"> </span><span class="o">*</span><span class="n">adi_resource_table</span><span class="p">;</span>
+<span class="k">volatile</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sharc_resource_table</span><span class="w"> </span><span class="o">*</span><span class="n">resource_table</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="adding-an-rpmsg-lite-instance">
+<h3>Adding an rpmsg-lite instance<a class="headerlink" href="#adding-an-rpmsg-lite-instance" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Currently the rpmsg-lite port for ADSP devices only supports static context instances.</p>
+</div>
+<ol class="arabic">
+<li><p>Create a header file named “<code class="docutils literal notranslate"><span class="pre">rpmsg_config.h</span></code>” and define <code class="docutils literal notranslate"><span class="pre">RL_USE_STATIC_API</span></code>. RPMsg-Lite will attempt to include this header file during build.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#define RL_USE_STATIC_API (1)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Create the static RPMsg-Lite instance.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">rpmsg_lite_instance</span><span class="w"> </span><span class="n">rpmsg_SHARC_channel</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The instance makes use of a Link ID to determine which core the instance should connect to.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Link IDs to use on ARM core */</span>
+<span class="cp">#define RL_PLATFORM_ARM_SHARC0_LINK_ID (0U)  </span><span class="cm">/* Link between ARM and SHARC0 */</span>
+<span class="cp">#define RL_PLATFORM_ARM_SHARC1_LINK_ID (1U)  </span><span class="cm">/* Link between ARM and SHARC1 */</span>
+
+<span class="cm">/* Link IDs to use on a SHARC core */</span>
+<span class="cp">#define RL_PLATFORM_SHARC_ARM_LINK_ID (0U)   </span><span class="cm">/* Link between SHARC and ARM */</span>
+<span class="cp">#define RL_PLATFORM_SHARC_SHARC_LINK_ID (1U) </span><span class="cm">/* Link between SHARC and SHARC */</span>
+</pre></div>
+</div>
+</li>
+<li><p>Initialize the RPMsg-Lite instance on the main core</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">rpmsg_instance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rpmsg_lite_master_init</span><span class="p">(</span>
+<span class="w">        </span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">vring_buffer</span><span class="p">,</span>
+<span class="w">        </span><span class="n">ADI_VRING_BUFFER_SIZE</span><span class="p">,</span>
+<span class="w">        </span><span class="n">RL_PLATFORM_ARM_SHARC0_LINK_ID</span><span class="p">,</span>
+<span class="w">        </span><span class="n">RL_SHM_VDEV</span><span class="p">,</span>
+<span class="w">        </span><span class="o">&amp;</span><span class="n">rpmsg_SHARC_channel</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Populate the resource table with the addresses of the vrings created by rpmsg_lite_master_init and signal the remote core that the resource table has been initialised</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">adi_resource_table</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">adi_resource_table</span><span class="w"> </span><span class="o">*</span><span class="p">)</span>
+<span class="w">    </span><span class="p">((</span><span class="kt">uint32_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">__MCAPI_common_start</span><span class="p">);</span>
+<span class="n">memcpy</span><span class="p">((</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">adi_resource_table</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">rsc_tbl_local</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">adi_resource_table</span><span class="p">));</span>
+
+<span class="n">resource_table</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">adi_resource_table</span><span class="o">-&gt;</span><span class="n">tbl</span><span class="p">;</span>
+<span class="n">resource_table</span><span class="o">-&gt;</span><span class="n">vring</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">da</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="w"> </span><span class="n">rpmsg_instance</span><span class="o">-&gt;</span><span class="n">rvq</span><span class="o">-&gt;</span><span class="n">vq_ring_mem</span><span class="p">;</span>
+<span class="n">resource_table</span><span class="o">-&gt;</span><span class="n">vring</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">da</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="w"> </span><span class="n">rpmsg_instance</span><span class="o">-&gt;</span><span class="n">tvq</span><span class="o">-&gt;</span><span class="n">vq_ring_mem</span><span class="p">;</span>
+<span class="n">resource_table</span><span class="o">-&gt;</span><span class="n">rpmsg_vdev</span><span class="p">.</span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">7</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>On the remote side the instance is initialized as follows</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">rpmsg_instance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rpmsg_lite_remote_init</span><span class="p">(</span>
+<span class="w">        </span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">resource_table_arm</span><span class="o">-&gt;</span><span class="n">rpmsg_vdev</span><span class="p">,</span>
+<span class="w">        </span><span class="n">RL_PLATFORM_SHARC_ARM_LINK_ID</span><span class="p">,</span>
+<span class="w">        </span><span class="n">RL_SHM_VDEV</span><span class="p">,</span>
+<span class="w">        </span><span class="o">&amp;</span><span class="n">rpmsg_ARM_channel</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<section id="adding-an-endpoint">
+<h4>Adding an endpoint<a class="headerlink" href="#adding-an-endpoint" title="Link to this heading"></a></h4>
+<p>A unique endpoint is determined by a <code class="docutils literal notranslate"><span class="pre">uint32</span></code> address.</p>
+<ol class="arabic">
+<li><p>Create the static context for the endpoint.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">rpmsg_lite_ept_static_context</span><span class="w"> </span><span class="n">sharc_ping_endpoint_context</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Create a callback function for handling messages received for the endpoint</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span><span class="w"> </span><span class="nf">sharc_ping_call_back</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">payload</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">payload_len</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">priv</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Received a ping from SHARC0</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">RL_RELEASE</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p>Create an endpoint</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ARM_EP_ADDR</span><span class="p">;</span>
+
+<span class="n">rpmsg_ept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rpmsg_lite_create_ept</span><span class="p">(</span>
+<span class="w">        </span><span class="o">&amp;</span><span class="n">rpmsg_SHARC_channel</span><span class="p">,</span>
+<span class="w">        </span><span class="n">addr</span><span class="p">,</span>
+<span class="w">        </span><span class="o">&amp;</span><span class="n">sharc_ping_call_back</span><span class="p">,</span>
+<span class="w">        </span><span class="nb">NULL</span><span class="p">,</span>
+<span class="w">        </span><span class="o">&amp;</span><span class="n">sharc_ping_endpoint_context</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="sending-a-message">
+<h4>Sending a message<a class="headerlink" href="#sending-a-message" title="Link to this heading"></a></h4>
+<p>In order to send a message the recipient endpoint address must be known.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">remote_addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SHARC0_EP_ADDR</span><span class="p">;</span>
+<span class="kt">char</span><span class="w"> </span><span class="n">msg</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;ping&quot;</span><span class="p">;</span>
+<span class="kt">uint32_t</span><span class="w"> </span><span class="n">len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+
+<span class="k">return</span><span class="w"> </span><span class="n">rpmsg_lite_send</span><span class="p">(</span>
+<span class="w">             </span><span class="o">&amp;</span><span class="n">rpmsg_SHARC_channel</span><span class="p">,</span>
+<span class="w">             </span><span class="o">&amp;</span><span class="n">sharc_ping_endpoint_context</span><span class="p">.</span><span class="n">ept</span><span class="p">,</span>
+<span class="w">             </span><span class="n">remote_addr</span><span class="p">,</span>
+<span class="w">             </span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">len</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="additional-information">
+<h2>Additional Information<a class="headerlink" href="#additional-information" title="Link to this heading"></a></h2>
+<section id="downloads">
+<h3>Downloads<a class="headerlink" href="#downloads" title="Link to this heading"></a></h3>
+<p>RPMsg-Lite for ADSP devices is available for Bare-Metal applications running on SHARC+, ARM A5 and ARM A55 on the <a class="icon link reference external" href="https://github.com/analogdevicesinc/rpmsg-lite" target="_blank">RPMsg-Lite repo</a>. To guarantee compatibility, use the same version of RPMsg-Lite on all cores. If running Linux on the ARM use the RPMsg-Lite version matching the Linux for ADSP-SC5xx release version running on the ARM.</p>
+</section>
+<section id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h3>
+<p><a class="icon link reference external" href="https://github.com/analogdevicesinc/lnxdsp-examples" target="_blank">lnxdsp-examples repo</a></p>
+</section>
+</section>
+</section>
+
+
+          </div>
+              <div class="related">
+                &nbsp;
+    <a href="RPMsg.html" title="Previous document (Alt+Shift+LeftArrow)" class="prev">RPMsg</a>
+    <a href="Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications.html" title="Next document (Alt+Shift+RightArrow)" class="next">Configuring System Memory When Using Linux and SHARC Applications</a>
+              </div>
+          
+        </div>
+      </div>
+  </div>
+
+  <label id="cancel-area-show-toc" for="input-show-toc"></label>
+  <label id="cancel-area-show-localtoc" for="input-show-localtoc"></label>
+    <footer>
+      &#169;2026, Analog Devices, Inc.
+      
+      |
+      Made with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+      &amp; <a href="https://github.com/analogdevicesinc/doctools">Doctools</a>
+      
+    </footer>
+  </body>
+</html>
