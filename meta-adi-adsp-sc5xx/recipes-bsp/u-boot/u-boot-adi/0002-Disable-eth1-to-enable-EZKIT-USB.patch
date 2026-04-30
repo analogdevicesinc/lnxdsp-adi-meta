@@ -1,0 +1,33 @@
+From 731e5d834b144f2ec852f07ac08cf8284d22da91 Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Thu, 30 Apr 2026 12:43:10 -0400
+Subject: [PATCH 2/2] Disable eth1 to enable EZKIT USB
+
+Disable the eth1 interface on the SC594 and SC598 EZKITs, as
+the eth1 lines are shared with the USB lines and will cause issues
+with the USB interface when enabled.
+
+Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
+---
+ board/adi/carriers/somcrr_ezkit.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/board/adi/carriers/somcrr_ezkit.c b/board/adi/carriers/somcrr_ezkit.c
+index 3cd5a6cd10b..adb2f3c96d2 100644
+--- a/board/adi/carriers/somcrr_ezkit.c
++++ b/board/adi/carriers/somcrr_ezkit.c
+@@ -14,9 +14,9 @@ void adi_somcrr_enable_ethernet(void)
+ 	struct gpio_desc *gige_reset;
+ 
+ 	if (!gpio_hog_lookup_name("eth1-en", &eth1))
+-		dm_gpio_set_value(eth1, 1);
++		dm_gpio_set_value(eth1, 0);
+ 	if (!gpio_hog_lookup_name("eth1-reset", &eth1_reset))
+-		dm_gpio_set_value(eth1_reset, 0);
++		dm_gpio_set_value(eth1_reset, 1);
+ 	if (!gpio_hog_lookup_name("gige-reset", &gige_reset))
+ 		dm_gpio_set_value(gige_reset, 0);
+ }
+-- 
+2.34.1
+

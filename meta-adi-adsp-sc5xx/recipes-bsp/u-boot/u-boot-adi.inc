@@ -18,11 +18,19 @@ UBOOT_SOM = "${@bb.utils.contains('SOM_REV', 'D', '${UBOOT_SOM_FILE}', '', d)}"
 
 python() {
     d.setVar('SDCARD_PATCH', '')
+    d.setVar('USB_PATCH', '')
 
     if d.getVar('SOM_REV') != 'D':
         d.setVar('SDCARD_PATCH', ' file://0001-sc598-som-enable-SD-card-revE.patch')
     else:
         d.setVar('SDCARD_PATCH', ' file://0001-sc598-som-enable-SD-card.patch')
+
+    machine = d.getVar('MACHINE')
+    if machine in ('adsp-sc598-som-ezkit', 'adsp-sc594-som-ezkit'):
+        d.setVar('USB_PATCH', ' file://0001-Add-USB-support-for-sc594-and-sc598.patch file://0002-Disable-eth1-to-enable-EZKIT-USB.patch')
+    elif machine in ('adsp-sc598-som-ezlite', 'adsp-sc594-som-ezlite'):
+        d.setVar('USB_PATCH', ' file://0001-Add-USB-support-for-sc594-and-sc598.patch')
+
 }
 
 UBOOT_BRANCH ?= "adi-u-boot-2025.10.y"
@@ -41,8 +49,7 @@ SRC_URI += " \
 "
 
 SRC_URI:append:adsp-sc598-som-ezkit = "${@d.getVar('SDCARD_PATCH') if (bb.utils.to_boolean(d.getVar('ADSP_SC598_SDCARD'))) else ''}"
-SRC_URI:append:adsp-sc598-som-ezkit = "${@' file://0001-sc594-sc598-usb-support.patch' if bb.utils.to_boolean(d.getVar('ADSP_SC59X_USB')) else '' }"
-SRC_URI:append:adsp-sc594-som-ezkit = "${@' file://0001-sc594-sc598-usb-support.patch' if bb.utils.to_boolean(d.getVar('ADSP_SC59X_USB')) else '' }"
+SRC_URI:append = "${@d.getVar('USB_PATCH') if (bb.utils.to_boolean(d.getVar('ADSP_SC59X_USB'))) else ''}"
 
 SRC_URI:append = "${@' file://0002-developer-mode-enable.patch' if bb.utils.to_boolean(d.getVar('DEVELOPER_MODE')) else '' }"
 
