@@ -1,21 +1,18 @@
-From dbcbb38fa28193d90b487f01ac6ec5f218856df2 Mon Sep 17 00:00:00 2001
+From e945fa9cb73c1aa76b89e793ee1ce4598b11d39a Mon Sep 17 00:00:00 2001
 From: Caleb Ethridge <caleb.ethridge@analog.com>
-Date: Wed, 15 Apr 2026 09:51:21 -0400
-Subject: [PATCH] Add USB support for sc594 and sc598
+Date: Thu, 30 Apr 2026 12:40:32 -0400
+Subject: [PATCH 1/2] Add USB support for sc594 and sc598
 
-By default, the USB cannot be used in U-boot because
-it shares lines with the eth1. This patch allows the USB to be enabled
-by holding the eth1 in reset, and adds support for retries to allow
-additional chances for slower devices to be detected before reporting
-failure.
+This patch adds support for retries to allow additional chances
+for slower devices to be detected before reporting failure, and updates
+the nop-phy driver to support the PHY on the sc59x family.
 
 Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
 ---
- arch/arm/dts/sc59x.dtsi           |  1 +
- board/adi/carriers/somcrr_ezkit.c |  4 ++--
- common/usb_hub.c                  | 12 +++++++++---
- drivers/phy/nop-phy.c             |  8 +++++++-
- 4 files changed, 19 insertions(+), 6 deletions(-)
+ arch/arm/dts/sc59x.dtsi |  1 +
+ common/usb_hub.c        | 12 +++++++++---
+ drivers/phy/nop-phy.c   |  8 +++++++-
+ 3 files changed, 17 insertions(+), 4 deletions(-)
 
 diff --git a/arch/arm/dts/sc59x.dtsi b/arch/arm/dts/sc59x.dtsi
 index 64e5a1afc53..3916a463723 100644
@@ -29,22 +26,6 @@ index 64e5a1afc53..3916a463723 100644
  			status = "disabled";
  		};
  
-diff --git a/board/adi/carriers/somcrr_ezkit.c b/board/adi/carriers/somcrr_ezkit.c
-index 3cd5a6cd10b..adb2f3c96d2 100644
---- a/board/adi/carriers/somcrr_ezkit.c
-+++ b/board/adi/carriers/somcrr_ezkit.c
-@@ -14,9 +14,9 @@ void adi_somcrr_enable_ethernet(void)
- 	struct gpio_desc *gige_reset;
- 
- 	if (!gpio_hog_lookup_name("eth1-en", &eth1))
--		dm_gpio_set_value(eth1, 1);
-+		dm_gpio_set_value(eth1, 0);
- 	if (!gpio_hog_lookup_name("eth1-reset", &eth1_reset))
--		dm_gpio_set_value(eth1_reset, 0);
-+		dm_gpio_set_value(eth1_reset, 1);
- 	if (!gpio_hog_lookup_name("gige-reset", &gige_reset))
- 		dm_gpio_set_value(gige_reset, 0);
- }
 diff --git a/common/usb_hub.c b/common/usb_hub.c
 index 6a4bcec00bc..0742786987a 100644
 --- a/common/usb_hub.c
