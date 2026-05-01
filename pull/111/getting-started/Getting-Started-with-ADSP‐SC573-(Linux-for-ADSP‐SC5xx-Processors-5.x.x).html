@@ -384,7 +384,7 @@ This will erase the contents of the folders but not the folders themselves.</p>
 <h3>Bootstrapping to Linux<a class="headerlink" href="#bootstrapping-to-linux" title="Link to this heading"></a></h3>
 <p>The programming sequence uses nfsboot to bootstrap to Linux, and from there program all boot medias available. Before beginning, follow these steps.</p>
 <p>Populate the NFS file system with the files for booting:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tar<span class="w"> </span>-xf<span class="w"> </span>tmp/deploy/images/adsp-sc5xx-full<span class="o">=</span>adsp-sc573-ezkit.rootfs.tar.xf<span class="w"> </span>-C<span class="w"> </span>/romfs
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tar<span class="w"> </span>-xf<span class="w"> </span>tmp/deploy/images/adsp-sc5xx-full<span class="o">=</span>adsp-sc573-ezkit.rootfs.tar.xz<span class="w"> </span>-C<span class="w"> </span>/romfs
 </pre></div>
 </div>
 <div class="admonition note">
@@ -497,7 +497,7 @@ adsp-sc573-ezkit<span class="w"> </span>login:
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>/usr/firmware/init
 </pre></div>
 </div>
-<p>This will call the programming script which will walk you through prorgamming the boot media on the board</p>
+<p>This will call the programming script which will walk you through programming the boot media on the board</p>
 <p>The init script will then move on to the USB programming</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Install<span class="w"> </span>U-Boot<span class="w"> </span>to<span class="w"> </span>USB
 
