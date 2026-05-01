@@ -2,7 +2,7 @@ from os import path
 
 # -- Project information -----------------------------------------------------
 
-repository = 'adsp'
+repository = 'lnxdsp-adi-meta'
 project = 'ADSP Processors'
 copyright = '2026, Analog Devices, Inc.'
 author = 'Analog Devices, Inc.'
