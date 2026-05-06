@@ -10,7 +10,7 @@ Installing Required Packages
 
 In order to build and deploy Linux to your ADSP-SC5xx development board you will need to install the following packages on your host PC.
 
-.. shell::
+.. code-block:: shell
 
    sudo apt-get update
    sudo apt-get install -y gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat libsdl1.2-dev xterm u-boot-tools openssl curl tftpd-hpa python3 zstd liblz4-tool
@@ -23,22 +23,26 @@ In order to communicate with the U-Boot bootloader, a UART connection must be ma
 
 On the host PC open a terminal and execute the following commands:
 
-.. shell::
+.. code-block:: shell
 
-   $ sudo apt-get install -y minicom
-   $ sudo minicom -s
+   sudo apt-get install -y minicom
+   sudo minicom -s
 
-               +-----[configuration]------+
-               | Filenames and paths      |
-               | File transfer protocols  |
-               | Serial port setup        |
-               | Modem and dialing        |
-               | Screen and keyboard      |
-               | Save setup as dfl        |
-               | Save setup as..          |
-               | Exit                     |
-               | Exit from Minicom        |
-               +--------------------------+
+.. code-block:: text
+
+   The minicom menu will appear as follows:
+
+   +-----[configuration]------+
+   | Filenames and paths      |
+   | File transfer protocols  |
+   | Serial port setup        |
+   | Modem and dialing        |
+   | Screen and keyboard      |
+   | Save setup as dfl        |
+   | Save setup as..          |
+   | Exit                     |
+   | Exit from Minicom        |
+   +--------------------------+
 
 
    # Select Serial port setup
@@ -61,9 +65,11 @@ Configure TFTP Service
 A TFTP server on the host is used to transfer images to the development board.
 Install and configure.
 
-.. shell::
+.. code-block:: shell
 
    sudo vi /etc/default/tftpd-hpa
+
+.. code-block:: text
 
    #Replace the existing file with the following
    TFTP_USERNAME="tftp"
@@ -72,7 +78,7 @@ Install and configure.
    TFTP_OPTIONS="--secure"
    #End of File
 
-.. shell::
+.. code-block:: shell
 
    sudo mkdir /tftpboot
    sudo chmod 777 /tftpboot
@@ -86,33 +92,33 @@ For NFS boot we use the Network File System which is stored in local Ubuntu Host
 
 First, create a directory to store the file system for the target:
 
-.. shell::
+.. code-block:: shell
 
    sudo mkdir /romfs/
    sudo chmod 777 /romfs/
 
 Then, install the required package:
 
-.. shell::
+.. code-block:: shell
 
    sudo apt-get install nfs-kernel-server
    sudo vi /etc/exports
 
 Add the following line:
 
-.. shell::
+.. code-block:: shell
 
    /romfs *(rw,sync,no_root_squash,no_subtree_check)
 
 Start the NFS server:
 
-.. shell::
+.. code-block:: shell
 
    sudo systemctl start nfs-kernel-server
 
 We can verify that the NFS service is running by executing:
 
-.. shell::
+.. code-block:: shell
 
    sudo systemctl status nfs-kernel-server
 
@@ -143,14 +149,14 @@ In order to allow OpenOCD to use the ICE debugger, we need to provide the user a
 
 On the host PC create a group called ``adiusb`` and add the user which will be accessing the ICE debugger to it. In this case we will be adding whichever user is currently logged into the session.
 
-.. shell::
+.. code-block:: shell
 
    sudo groupadd adiusb
    sudo usermod -a -G adiusb $USER
 
 We notify udev about permissions to provide this usergroup by adding a rule to it.
 
-.. shell::
+.. code-block:: shell
 
    sudo vi /etc/udev/rules.d/adi.rules
 
