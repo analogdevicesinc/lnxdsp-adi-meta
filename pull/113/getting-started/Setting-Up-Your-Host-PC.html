@@ -234,53 +234,43 @@ Content on this topic
 <section id="installing-required-packages">
 <h2>Installing Required Packages<a class="headerlink" href="#installing-required-packages" title="Link to this heading"></a></h2>
 <p>In order to build and deploy Linux to your ADSP-SC5xx development board you will need to install the following packages on your host PC.</p>
-<div class="code-shell"><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>sudo apt-get update
-sudo apt-get install -y gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat libsdl1.2-dev xterm u-boot-tools openssl curl tftpd-hpa python3 zstd liblz4-tool
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>gawk<span class="w"> </span>wget<span class="w"> </span>git-core<span class="w"> </span>diffstat<span class="w"> </span>unzip<span class="w"> </span>texinfo<span class="w"> </span>gcc-multilib<span class="w"> </span>build-essential<span class="w"> </span>chrpath<span class="w"> </span>socat<span class="w"> </span>libsdl1.2-dev<span class="w"> </span>xterm<span class="w"> </span>u-boot-tools<span class="w"> </span>openssl<span class="w"> </span>curl<span class="w"> </span>tftpd-hpa<span class="w"> </span>python3<span class="w"> </span>zstd<span class="w"> </span>liblz4-tool
 </pre></div>
 </div>
-<div class="clear-left"></div></div></div></section>
+</section>
 <section id="configure-minicom">
 <h2>Configure Minicom<a class="headerlink" href="#configure-minicom" title="Link to this heading"></a></h2>
 <p>In order to communicate with the U-Boot bootloader, a UART connection must be made between the host PC and the development board. It is recommended that you use minicom to do this. Minicom must be configured to connect to U-Boot correctly.</p>
 <p>On the host PC open a terminal and execute the following commands:</p>
-<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>minicom
+sudo<span class="w"> </span>minicom<span class="w"> </span>-s
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>minicom
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>minicom<span class="w"> </span>-s
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>           +-----[configuration]------+
-           | Filenames and paths      |
-           | File transfer protocols  |
-           | Serial port setup        |
-           | Modem and dialing        |
-           | Screen and keyboard      |
-           | Save setup as dfl        |
-           | Save setup as..          |
-           | Exit                     |
-           | Exit from Minicom        |
-           +--------------------------+
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select Serial port setup</span>
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>    Set Serial Device to /dev/ttyUSB0
-    Set Bps/Par/Bits to 115200 8N1
-    Set Hardware Flow Control to No
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>            +-----[configuration]------+
+            | Filenames and paths      |
+            | File transfer protocols  |
+            | Serial port setup        |
+            | Modem and dialing        |
+            | Screen and keyboard      |
+            | Save setup as dfl        |
+            | Save setup as..          |
+            | Exit                     |
+            | Exit from Minicom        |
+            +--------------------------+
 
-    Close the Serial port setup option by press Esc
-Select Save setup as dfl
-Select Exit
+
+# Select Serial port setup
+     Set Serial Device to /dev/ttyUSB0
+     Set Bps/Par/Bits to 115200 8N1
+     Set Hardware Flow Control to No
+
+     Close the Serial port setup option by press Esc
+ Select Save setup as dfl
+ Select Exit
 </pre></div>
 </div>
-<div class="clear-left"></div></div></div><div class="admonition note">
+<div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><code class="docutils literal notranslate"><span class="pre">/dev/ttyUSB0</span></code> might not correspond to the serial port of the board on every system. You can determine which <code class="docutils literal notranslate"><span class="pre">/dev</span></code> entry your board uses by running <code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">-l</span> <span class="pre">/dev/ttyUSB*</span></code> twice, once when the serial port of the board is plugged in, and once when it isn’t.</p>
 </div>
@@ -289,30 +279,23 @@ Select Exit
 <h2>Configure TFTP Service<a class="headerlink" href="#configure-tftp-service" title="Link to this heading"></a></h2>
 <p>A TFTP server on the host is used to transfer images to the development board.
 Install and configure.</p>
-<div class="code-shell"><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>sudo vi /etc/default/tftpd-hpa
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/default/tftpd-hpa
 </pre></div>
 </div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">#Replace the existing file with the following</span>
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>TFTP_USERNAME=&quot;tftp&quot;
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>#Replace the existing file with the following
+TFTP_USERNAME=&quot;tftp&quot;
 TFTP_DIRECTORY=&quot;/tftpboot&quot;
 TFTP_ADDRESS=&quot;0.0.0.0:69&quot;
 TFTP_OPTIONS=&quot;--secure&quot;
+#End of File
 </pre></div>
 </div>
-<div class="clear-left"></div></div><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">#End of File</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>/tftpboot
+sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">777</span><span class="w"> </span>/tftpboot
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>tftpd-hpa
 </pre></div>
 </div>
-<div class="clear-left"></div></div></div><div class="code-shell"><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>sudo mkdir /tftpboot
-sudo chmod 777 /tftpboot
-sudo systemctl restart tftpd-hpa
-</pre></div>
-</div>
-<div class="clear-left"></div></div></div></section>
+</section>
 <section id="configure-nfs-server">
 <h2>Configure NFS Server<a class="headerlink" href="#configure-nfs-server" title="Link to this heading"></a></h2>
 <p>For NFS boot we use the Network File System which is stored in local Ubuntu Host. This is suggested when you do application development. To setup the NFS server:</p>

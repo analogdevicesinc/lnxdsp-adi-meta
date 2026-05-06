@@ -10,7 +10,7 @@ Installing Required Packages
 
 In order to build and deploy Linux to your ADSP-SC5xx development board you will need to install the following packages on your host PC.
 
-.. shell::
+.. code-block:: shell
 
    sudo apt-get update
    sudo apt-get install -y gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat libsdl1.2-dev xterm u-boot-tools openssl curl tftpd-hpa python3 zstd liblz4-tool
@@ -23,10 +23,12 @@ In order to communicate with the U-Boot bootloader, a UART connection must be ma
 
 On the host PC open a terminal and execute the following commands:
 
-.. shell::
+.. code-block:: shell
 
-   $ sudo apt-get install -y minicom
-   $ sudo minicom -s
+   sudo apt-get install -y minicom
+   sudo minicom -s
+
+.. code-block:: text
 
                +-----[configuration]------+
                | Filenames and paths      |
@@ -61,9 +63,11 @@ Configure TFTP Service
 A TFTP server on the host is used to transfer images to the development board.
 Install and configure.
 
-.. shell::
+.. code-block:: shell
 
    sudo vi /etc/default/tftpd-hpa
+
+.. code-block:: text
 
    #Replace the existing file with the following
    TFTP_USERNAME="tftp"
@@ -72,7 +76,7 @@ Install and configure.
    TFTP_OPTIONS="--secure"
    #End of File
 
-.. shell::
+.. code-block:: shell
 
    sudo mkdir /tftpboot
    sudo chmod 777 /tftpboot
