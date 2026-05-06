@@ -30,17 +30,19 @@ On the host PC open a terminal and execute the following commands:
 
 .. code-block:: text
 
-               +-----[configuration]------+
-               | Filenames and paths      |
-               | File transfer protocols  |
-               | Serial port setup        |
-               | Modem and dialing        |
-               | Screen and keyboard      |
-               | Save setup as dfl        |
-               | Save setup as..          |
-               | Exit                     |
-               | Exit from Minicom        |
-               +--------------------------+
+   The minicom menu will appear as follows:
+
+   +-----[configuration]------+
+   | Filenames and paths      |
+   | File transfer protocols  |
+   | Serial port setup        |
+   | Modem and dialing        |
+   | Screen and keyboard      |
+   | Save setup as dfl        |
+   | Save setup as..          |
+   | Exit                     |
+   | Exit from Minicom        |
+   +--------------------------+
 
 
    # Select Serial port setup
