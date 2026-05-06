@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="This guide introduces RPMsg, the inter-processor communication protocol that enables ADSP-SC5xx processors to seamlessly coordinate between the ARM Cortex-A cores running Linux and the SHARC+ DSP cores running bare-metal or RTOS applications. Understanding RPMsg is essential for building applications that leverage the full heterogeneous computing capabilities of your ADSP-SC5xx platform." name="description" />
+
+    <title>RPMsg &#8212; ADSP Processors  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8e8a900e" />
+    <link rel="stylesheet" type="text/css" href="../_static/app.min.css?v=ac863bf0" />
+    <script async="async" src="../_static/app.umd.js?v=09b0c6bc"></script>
+    <link rel="icon" href="../_static/icon.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="RPMsg-Lite" href="RPMsg%E2%80%90Lite.html" />
+    <link rel="prev" title="Compiling and running a Rust kernel" href="Compiling-and-running-a-Rust-kernel.html" />
+   
+  
+  
+  <meta name="repository" content="lnxdsp-adi-meta">
+  <meta name="version" content="">
+  
+    <meta name="page_source_suffix" content=".rst">
+  
+  
+  
+
+
+<style>
+  body {
+    
+  }
+
+  body.dark {
+    
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body:not(.light) {
+      
+    }
+  }
+</style>
+  </head>
+  
+    <body>
+  
+  <input type="checkbox" id="input-show-toc">
+  <input type="checkbox" id="input-show-localtoc">
+  <input type="checkbox" id="input-show-repotoc">
+
+  
+  <div class="search-area">
+    <form action="" method="get">
+      <input type="text" name="q" aria-labelledby="search-documentation" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" role="search" placeholder="Search"/>
+      <button class="icon"></button>
+    </form>
+  </div>
+  
+
+  <header>
+    <div id="left">
+      <label id="show-sidebar" class="icon" for="input-show-toc" title="Show/hide index"></label>
+    </div>
+    <div id="right">
+      <span>
+        <a id="logo-org" href="https://analog.com" aria-label="Analog Devices Inc. landing page"></a>
+        <div class="vertical-divider"></div>
+        
+        <label id="show-repotoc" for="input-show-repotoc" title="Show/hide docs">Docs</label>
+        
+        <a id="logo" href="../index.html">
+          <div>ADI DSP Linux</div>
+        </a>
+      </span>
+      <span class="reverse">
+        <label id="show-localtoc" class="icon" for="input-show-localtoc" title="Show/hide contents"></label>
+      </span>
+    </div>
+  </header>
+
+
+  <div class="repotoc-tree overlay">
+    <root>
+  <a href="../index.html" class="current">ADI DSP Linux</a>
+</root>
+
+  </div>
+    <div class="localtoc">
+      <div class="tocwrapper">
+        <div class="header localtoc-header">
+          <a id="scroll-up" href="#top-anchor" title="Back to top"></a>
+        </div>
+        <nav>
+          <ul>
+<li><a class="reference internal" href="#">RPMsg</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#what-is-rpmsg">What is RPMsg?</a></li>
+<li><a class="reference internal" href="#rpmsg-working">RPMsg Working</a><ul>
+<li><a class="reference internal" href="#fundamental-workings">Fundamental workings</a></li>
+<li><a class="reference internal" href="#rpmsg-and-linux">RPMsg and Linux</a><ul>
+<li><a class="reference internal" href="#boot-process">Boot process</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#testing">Testing</a><ul>
+<li><a class="reference internal" href="#rpmsg-with-yocto">RPMsg with yocto</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </nav>
+      </div>
+    </div>
+
+  
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+    <a id="no-logo" href="../index.html">
+      ADSP Processors
+    </a><input id="input-switch-toc" type="checkbox">
+<label id="show-repotoc" for="input-switch-toc">
+All content
+</label>
+<label id="show-toc" for="input-switch-toc">
+Content on this topic
+</label>
+<div class="repotoc-tree">
+  <root>
+  <a href="../index.html" class="current">ADI DSP Linux</a>
+</root>
+
+</div>
+<div class="toc-tree">
+  <ul class="current">
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-1" id="toctree-collapse-1"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.0.1-Landing-Page.html">Linux for ADSP SC5xx 5.0.1</a><label for="toctree-collapse-1"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC598 (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC594 (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC589-MINI (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC573 (5.0.1)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2" id="toctree-collapse-2"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.x.x-Landing-Page.html"> Linux for ADSP SC5xx 5.x.x</a><label for="toctree-collapse-2"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC598 (5.x.x)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC594 (5.x.x)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC589-MINI (5.x.x)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC573 (5.x.x)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3" id="toctree-collapse-3"/><div class="collapse"><a class="reference internal" href="../Older-Releases.html">Older Releases</a><label for="toctree-collapse-3"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-1" id="toctree-collapse-3-1"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.0.0-Landing-Page.html">Linux for ADSP-SC5xx Processors 5.0.0</a><label for="toctree-collapse-3-1"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC598 (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC594 (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC589-MINI (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC573 (5.0.0)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-2" id="toctree-collapse-3-2"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.2-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.2</a><label for="toctree-collapse-3-2"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC598 (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC594 (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC589-MINI (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC573 (3.1.2)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-3" id="toctree-collapse-3-3"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.1-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.1</a><label for="toctree-collapse-3-3"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC598 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC594 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC589-MINI (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90EZ%E2%80%90KIT-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC589-EZ-KIT (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC584-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC584 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC573 (3.1.1)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-4" id="toctree-collapse-3-4"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.0-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.0</a><label for="toctree-collapse-3-4"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC598 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC594 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC589-MINI (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90EZ%E2%80%90KIT-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC589-EZ-KIT (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC584-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC584 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC573 (3.1.0)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-4" id="toctree-collapse-4"/><div class="collapse"><a class="reference internal" href="../examples/Examples.html">Examples</a><label for="toctree-collapse-4"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples/SHARC%E2%80%90ALSA-Example.html">SHARC-ALSA Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/USB-Gadget-Audio-Example.html">USB Gadget Audio Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/The-Kitchen-Sink.html">The Kitchen Sink</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/U%E2%80%90Boot-Falcon-Mode-Example.html">U-Boot Falcon Mode Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-5" id="toctree-collapse-5" checked=""/><div class="collapse"><a class="reference internal" href="Development.html">Development</a><label for="toctree-collapse-5"><div class="icon"></div></label></div><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Setting-Up-Your-Host-PC.html">Setting Up Your Host PC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Debugging-without-ICE-Hardware.html">Debugging without ICE Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Boot-Sequence.html">Boot Sequence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U%E2%80%90Boot-Environment.html">U-Boot Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Linux-Kernel-Development.html">Linux Kernel Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Compiling-and-running-a-Rust-kernel.html">Compiling and running a Rust kernel</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">RPMsg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RPMsg%E2%80%90Lite.html">RPMsg-Lite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications.html">Configuring System Memory When Using Linux and SHARC Applications</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-6" id="toctree-collapse-6"/><div class="collapse"><a class="reference internal" href="../benchmarks/Benchmarking.html">Benchmarks</a><label for="toctree-collapse-6"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../benchmarks/RPMsg-Benchmark-Figures.html">RPMsg Benchmark Figures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../benchmarks/Booting-Benchmark-Figures.html">Booting Benchmark Figures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/Frequently-Asked-Questions.html">FAQ</a></li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-7" id="toctree-collapse-7"/><div class="collapse"><a class="reference internal" href="../secure-boot/Secure-Boot-Support.html">Secure Boot</a><label for="toctree-collapse-7"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../secure-boot/Secure-Boot-Support-in-release-3.1.1.html">Secure Boot Support (Release 3.1.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../secure-boot/Secure-Boot-Support-in-release-3.1.0.html">Secure Boot Support (Release 3.1.0)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-8" id="toctree-collapse-8"/><div class="collapse"><a class="reference internal" href="../test-reports/Test-Reports.html">Test Reports</a><label for="toctree-collapse-8"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%285.0.1%29.html">Test Report (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%285.0.0%29.html">Test Report (5.0.0)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%283.1.0%29.html">Test Report (3.1.0)</a></li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+        </div>
+      </div>
+
+  <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper" id="top-anchor">
+          <div class="body-header">
+  <nav class="breadcrumb"><ol><li><a href="Development.html">Development</a></li></ol></nav>
+</div>
+          <div class="body" role="main">
+            
+  <section id="rpmsg">
+<h1>RPMsg<a class="headerlink" href="#rpmsg" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>This guide introduces RPMsg, the inter-processor communication protocol that enables ADSP-SC5xx processors to seamlessly coordinate between the ARM Cortex-A cores running Linux and the SHARC+ DSP cores running bare-metal or RTOS applications. Understanding RPMsg is essential for building applications that leverage the full heterogeneous computing capabilities of your ADSP-SC5xx platform.</p>
+<p>RPMsg allows different processors on the same system-on-chip to communicate efficiently through shared memory, even when they’re running different operating systems or execution environments. For example, your Linux application on the ARM core can send audio processing commands to SHARC+ DSP cores and receive results back—all through standardized RPMsg channels.</p>
+<p><strong>What you’ll learn:</strong></p>
+<ul class="simple">
+<li><p>How RPMsg works and its fundamental architecture</p></li>
+<li><p>The boot process and how processors establish communication roles</p></li>
+<li><p>RPMsg integration with Linux and the remoteproc framework</p></li>
+<li><p>Setting up and testing RPMsg communication using Yocto</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This guide provides an introduction to RPMsg concepts and basic testing. For deeper implementation details, refer to the specific project documentation for <a class="icon link reference external" href="https://docs.kernel.org/staging/rpmsg.html" target="_blank">Linux RPMsg driver</a>, <a class="icon link reference external" href="https://www.openampproject.org/" target="_blank">OpenAMP</a>, or <a class="icon link reference external" href="https://github.com/analogdevicesinc/rpmsg-lite" target="_blank">RPMsg-Lite</a>.</p>
+</div>
+</section>
+<section id="what-is-rpmsg">
+<h2>What is RPMsg?<a class="headerlink" href="#what-is-rpmsg" title="Link to this heading"></a></h2>
+<p>RPMsg is a communication protocol for heterogeneous inter-processor communication. These processors are often on the same SoC but isolated from each other via software (for instance, a board may boot up Linux with an ARM processor while additional microcontrollers (remote processors) run an RTOS or some bare-metal application).</p>
+</section>
+<section id="rpmsg-working">
+<h2>RPMsg Working<a class="headerlink" href="#rpmsg-working" title="Link to this heading"></a></h2>
+<p>Considering one of ADI’s DSP offerings as an example: the <a class="icon link reference external" href="https://www.analog.com/en/products/adsp-sc598.html" target="_blank">ADSP-SC598</a>. This board contains 2 SHARC+ processing cores and 1 Arm Cortex A55, where the Arm processor is used to run Linux and is isolated, via software, from both the SHARC cores. All processors however share the memory provided to the system (L2 and L3).</p>
+<p>In this scenario, we will aim to establish communication between a SHARC core and the cortex-A55. Both sides will require clients to handle RPMsg related activity. For the Arm processor, since it is running Linux, the kernel includes support for RPMsg via a <a class="icon link reference external" href="https://docs.kernel.org/staging/rpmsg.html" target="_blank">dedicated driver</a>.</p>
+<p>The latter, however, is currently assumed to be running bare-metal applications/RTOS only. Due to this, a lightweight, bare-metal library called <a class="icon link reference external" href="https://github.com/analogdevicesinc/rpmsg-lite.git" target="_blank">rpmsg-lite</a> is utilized. It implements a subset of features from Linux’s RPMsg implementation to allow devices such as small MCUs to utilize this framework.</p>
+<p>Although RPMsg-based communication is possible between any combination of processors (Arm-SHARC/SHARC-SHARC), the following is discussed with respect to Arm-SHARC interactions.</p>
+<section id="fundamental-workings">
+<h3>Fundamental workings<a class="headerlink" href="#fundamental-workings" title="Link to this heading"></a></h3>
+<p>The communication takes place via shared memory, and hence, these processors share and know certain regions in the common memory space to search for the relevant data structures. Depending on which processor gets access to the memory first, it will assume the role of the “main” processor, while the other assumes the role of the “sub” processor. The main processor populates the MCAPI region with relevant data structures (such as the resource table) indicating its presence as well as determines the memory regions to be used for the inter-processor communication. Once the “sub” boots up, it discovers the MCAPI region has already been populated, parses the data structures and sets a flag in the region to indicate that it is ready to establish communication.</p>
+<p>It is now assumed that the role of the main processor was assumed by the Arm chip. Since the Arm processor needs to communicate to the SHARC core, it will have to go through the following steps and establish a channel:</p>
+<ul class="simple">
+<li><p>Establish an RPMsg endpoint</p></li>
+<li><p>Announce its presence to the remote processor (sends the source address and endpoint name)</p></li>
+<li><p>Remote processor then establishes its own endpoint and a channel using the metadata obtained from the announcement</p></li>
+</ul>
+<p>It should be noted that a channel is a software concept and hence, a single device can have multiple channels. Each channel is tied to endpoints, which are then tied to particular function callbacks. Once created, they do not need to be re-established.</p>
+<a class="reference internal image-reference" href="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/141642367/9e08142a-147c-4aed-8c1f-48e48a80a461"><img alt="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/141642367/9e08142a-147c-4aed-8c1f-48e48a80a461" src="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/141642367/9e08142a-147c-4aed-8c1f-48e48a80a461" width="400" />
+</a>
+<p>When the Arm processor wants to communicate via the abovementioned channel, it populates the shared memory region associated with the channel and triggers and interrupt on the SHARC core via the TRU, notifying it about the change made. The SHARC core can now update its values and process the new changes accordingly. The inverse is also true when a SHARC core wants to communicate to the Arm processor.</p>
+</section>
+<section id="rpmsg-and-linux">
+<h3>RPMsg and Linux<a class="headerlink" href="#rpmsg-and-linux" title="Link to this heading"></a></h3>
+<p>Before discussing the RPMsg interaction between a SHARC core running a baremetal application and an Arm core running linux, it is essential that the boot process of the machine in focus is discussed since it also provides a couple of options to the user, allowing changing the “main” and “sub” processors.</p>
+<section id="boot-process">
+<h4>Boot process<a class="headerlink" href="#boot-process" title="Link to this heading"></a></h4>
+<p>When a board is powered up, the following takes place:</p>
+<ul class="simple">
+<li><p>The processors reads the bootrom and runs some pre-requisite tasks before each boot</p></li>
+<li><p>The processor then loads the first stage bootloader(SPL) from a fixed memory address</p></li>
+<li><p>SPL then passes the control to the second stage bootloader, or the full version of uboot in this case</p></li>
+</ul>
+<a class="reference internal image-reference" href="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/141642367/5343408e-6fd5-4c8c-b539-116dd58dde1b"><img alt="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/141642367/5343408e-6fd5-4c8c-b539-116dd58dde1b" src="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/141642367/5343408e-6fd5-4c8c-b539-116dd58dde1b" width="400" />
+</a>
+<p>After this point, there are two paths that the user can take:</p>
+<ol class="arabic">
+<li><p>Let linux boot as normal</p>
+<p>During initialization of the remoteproc driver, MCAPI region is populated, and the SHARC processor is initialized, forcing it to take the role of “sub”</p>
+</li>
+<li><p>Parse and Load the firmware for the SHARC core and run it</p>
+<p>This will enable the MCAPI region to be populated by the SHARC core and will allow it to assume the role of “main”</p>
+</li>
+</ol>
+<a class="reference internal image-reference" href="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/141642367/ddbfcefe-d151-4151-9201-e31f464c488b"><img alt="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/141642367/ddbfcefe-d151-4151-9201-e31f464c488b" src="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/141642367/ddbfcefe-d151-4151-9201-e31f464c488b" width="800" />
+</a>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In both cases, the SHARC core is initialized by sending a binary to it and running it.</p>
+</div>
+<p>Once the MCAPI interface has been populated and metadata exchanged, the RPMsg driver initializes similarly to the previous section. For security purposes, Linux creates RPMsg devices for each RPMsg channel. These are dynamically created, following which, the system continues to boot as usual.</p>
+<p>It is recommended that the source code for the respective driver is referred to from <a class="icon link reference external" href="https://github.com/analogdevicesinc/lnxdsp-linux" target="_blank">ADI’s ADSP Linux repository</a> for a deeper understanding.</p>
+</section>
+</section>
+</section>
+<section id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Link to this heading"></a></h2>
+<p>Testing can be conducted via following methods:</p>
+<ol class="arabic simple">
+<li><p>Include relevant packages in your Yocto distribution</p></li>
+<li><p>Build from scratch using the RPMsg guides listed in the <a class="icon link reference external" href="https://github.com/analogdevicesinc/rpmsg-utils" target="_blank">rpmsg-utils</a> and <a class="icon link reference external" href="https://github.com/analogdevicesinc/rpmsg-examples" target="_blank">rpmsg-examples</a> repositories.</p></li>
+</ol>
+<p>Since this is an introductory guide, it will only document the former approach. For a more in-depth usage, it is encouraged for the user to refer to the abovementioned repositories.</p>
+<section id="rpmsg-with-yocto">
+<h3>RPMsg with yocto<a class="headerlink" href="#rpmsg-with-yocto" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>In your local.conf file, append the following: <code class="docutils literal notranslate"><span class="pre">INSTALL_IMAGE:append</span> <span class="pre">=</span> <span class="pre">&quot;</span> <span class="pre">rpmsg-utils</span> <span class="pre">&quot;</span></code></p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Make sure <code class="docutils literal notranslate"><span class="pre">DISTRO_FEATURES:append</span> <span class="pre">=</span> <span class="pre">&quot;</span> <span class="pre">linux_only_audio</span> <span class="pre">&quot;</span></code> is present in your local.conf</p>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Booting into Linux, the following messages should be visible in the kernel boot log:</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">[    2.153877] adi_remoteproc 28240000.core1-rproc: Resource table set, enable rpmsg</span>
+<span class="go">[    2.161710] adi_remoteproc 28240000.core1-rproc: Load verification enabled</span>
+<span class="go">[    2.168504] mmc0: SDHCI controller on 310c7000.mmc [310c7000.mmc] using ADMA</span>
+<span class="go">[    2.175711] remoteproc remoteproc0: core1-rproc is available</span>
+<span class="go">[    2.182065] adi_remoteproc 28a40000.core2-rproc: Resource table set, enable rpmsg</span>
+<span class="go">[    2.189794] remoteproc remoteproc0: powering up core1-rproc</span>
+<span class="go">[    2.195336] remoteproc remoteproc0: Booting fw image adi_adsp_core1_fw.ldr, size 32228</span>
+<span class="go">[    2.203461] adi_remoteproc 28a40000.core2-rproc: Load verification enabled</span>
+<span class="go">[    2.212513] remoteproc remoteproc1: core2-rproc is available</span>
+<span class="go">[    2.220244] remoteproc remoteproc1: powering up core2-rproc</span>
+<span class="go">[    2.228828] remoteproc remoteproc1: Booting fw image adi_adsp_core2_fw.ldr, size 3222</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As it can be seen, the first boot method (as documented above) is utilized here, where remoteproc is responsible for populating the MCAPI region, load and execute the required firmware into the SHARC cores.</p>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">[    2.246718] virtio_rpmsg_bus virtio0: creating channel sharc-echo addr 0x97</span>
+<span class="go">[    2.253692] virtio_rpmsg_bus virtio0: creating channel sharc-echo-cap addr 0xa1</span>
+<span class="go">[    2.261025] virtio_rpmsg_bus virtio0: rpmsg host is online</span>
+<span class="go">[    2.266446]  remoteproc0#vdev0buffer: registered virtio0 (type 7)</span>
+<span class="go">[    2.272483] virtio_rpmsg_bus virtio1: rpmsg host is online</span>
+<span class="go">[    2.272524] virtio_rpmsg_bus virtio1: creating channel sharc-echo addr 0x98</span>
+<span class="go">[    2.284931] virtio_rpmsg_bus virtio1: creating channel sharc-echo-cap addr 0xa2</span>
+<span class="go">[    2.292355]  remoteproc1#vdev0buffer: registered virtio1 (type 7)</span>
+<span class="go">[    2.298370] remoteproc remoteproc0: remote processor core1-rproc is now up</span>
+<span class="go">[    2.305218] remoteproc remoteproc1: remote processor core2-rproc is now up</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>These messages indicate that RPMsg has now created channels dynamically with the SHARC cores using the virtio framework (establishing shared memory communication).</p>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Run the following commands to bind an RPMsg device to the rpmsg-char driver:</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">root@adsp-sc598-som-ezkit:~# </span>rpmsg-bind-chardev<span class="w"> </span>-p<span class="w"> </span>virtio0.sharc-echo.-1.<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>-e<span class="w"> </span><span class="m">151</span><span class="w"> </span>-s<span class="w"> </span><span class="m">100</span>
+<span class="gp">root@adsp-sc598-som-ezkit:~# </span>rpmsg-bind-chardev<span class="w"> </span>-p<span class="w"> </span>virtio0.sharc-echo-cap.-1.<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>-e<span class="w"> </span><span class="m">352</span><span class="w"> </span>-s<span class="w"> </span><span class="m">101</span>
+<span class="gp">root@adsp-sc598-som-ezkit:~# </span>rpmsg-bind-chardev<span class="w"> </span>-p<span class="w"> </span>virtio1.sharc-echo.-1.<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>-e<span class="w"> </span><span class="m">320</span><span class="w"> </span>-s<span class="w"> </span><span class="m">102</span>
+<span class="gp">root@adsp-sc598-som-ezkit:~# </span>rpmsg-bind-chardev<span class="w"> </span>-p<span class="w"> </span>virtio1.sharc-echo-cap.-1.<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>-e<span class="w"> </span><span class="m">384</span><span class="w"> </span>-s<span class="w"> </span><span class="m">103</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Test the mechanism with an echo example</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>root@adsp-sc598-som-ezkit:~#<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>hello<span class="w"> </span><span class="p">|</span><span class="w"> </span>rpmsg-xmit<span class="w"> </span>-n<span class="w"> </span><span class="m">5</span><span class="w"> </span>/dev/rpmsg0
+<span class="nv">hello</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>from<span class="w"> </span>Core1
+root@adsp-sc598-som-ezkit:~#<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>hello<span class="w"> </span><span class="p">|</span><span class="w"> </span>rpmsg-xmit<span class="w"> </span>-n<span class="w"> </span><span class="m">5</span><span class="w"> </span>/dev/rpmsg1
+<span class="nv">HELLO</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>capitalized<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>from<span class="w"> </span>Core1
+root@adsp-sc598-som-ezkit:~#<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>hello<span class="w"> </span><span class="p">|</span><span class="w"> </span>rpmsg-xmit<span class="w"> </span>-n<span class="w"> </span><span class="m">5</span><span class="w"> </span>/dev/rpmsg2
+<span class="nv">hello</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>from<span class="w"> </span>Core2
+root@adsp-sc598-som-ezkit:~#<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>hello<span class="w"> </span><span class="p">|</span><span class="w"> </span>rpmsg-xmit<span class="w"> </span>-n<span class="w"> </span><span class="m">5</span><span class="w"> </span>/dev/rpmsg3
+<span class="nv">HELLO</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>capitalized<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>from<span class="w"> </span>Core2
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+          </div>
+              <div class="related">
+                &nbsp;
+    <a href="Compiling-and-running-a-Rust-kernel.html" title="Previous document (Alt+Shift+LeftArrow)" class="prev">Compiling and running a Rust kernel</a>
+    <a href="RPMsg%E2%80%90Lite.html" title="Next document (Alt+Shift+RightArrow)" class="next">RPMsg-Lite</a>
+              </div>
+          
+        </div>
+      </div>
+  </div>
+
+  <label id="cancel-area-show-toc" for="input-show-toc"></label>
+  <label id="cancel-area-show-localtoc" for="input-show-localtoc"></label>
+    <footer>
+      &#169;2026, Analog Devices, Inc.
+      
+      |
+      Made with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+      &amp; <a href="https://github.com/analogdevicesinc/doctools">Doctools</a>
+      
+    </footer>
+  </body>
+</html>
