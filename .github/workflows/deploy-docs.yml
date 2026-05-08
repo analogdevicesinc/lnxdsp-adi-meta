@@ -18,8 +18,18 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    outputs:
+      base_path: ${{ steps.base-path.outputs.base_path }}
 
     steps:
+    - name: Set base_path
+      id: base-path
+      run: |
+        if [[ "${{ github.event_name }}" == "pull_request" || "${{ github.ref_name }}" == "main" ]]; then
+          echo "base_path=." >> "$GITHUB_OUTPUT"
+        else
+          echo "base_path=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+        fi
     - uses: analogdevicesinc/doctools/checkout@action
 
     - name: Install pip packages
@@ -48,3 +58,4 @@ jobs:
     - uses: analogdevicesinc/doctools/gh-pages-deploy@action
       with:
         name: html
+        path: ${{ needs.build-doc.outputs.base_path }}
