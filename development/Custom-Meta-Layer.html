@@ -4,17 +4,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta content="This guide helps you develop and customise the Linux kernel for ADSP-SC5xx processors. Whether you’re debugging driver issues, adding new hardware support, or optimizing performance, this page walks you through compiling and rebuilding the kernel outside of the full Yocto build system." name="description" />
+<meta content="Yocto builds are organised into layers: collections of metadata (recipes, configuration files, and patches) that each address a specific concern. The ADI release ships several layers covering the BSP, kernel, drivers, and example images. Any customisation that belongs to your product, whether adding packages, patching upstream recipes, or tweaking configuration, should live in a separate layer that you own and maintain independently of the ADI sources." name="description" />
 
-    <title>Linux Kernel Development &#8212; ADSP Processors  documentation</title>
+    <title>Creating a Custom Meta Layer &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8e8a900e" />
     <link rel="stylesheet" type="text/css" href="../_static/app.min.css?v=ac863bf0" />
     <script async="async" src="../_static/app.umd.js?v=09b0c6bc"></script>
     <link rel="icon" href="../_static/icon.svg"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Compiling and running a Rust kernel" href="Compiling-and-running-a-Rust-kernel.html" />
-    <link rel="prev" title="U-Boot Environment" href="U%E2%80%90Boot-Environment.html" />
+    <link rel="next" title="RPMsg" href="RPMsg.html" />
+    <link rel="prev" title="Compiling and running a Rust kernel" href="Compiling-and-running-a-Rust-kernel.html" />
    
   
   
@@ -94,21 +94,15 @@
         </div>
         <nav>
           <ul>
-<li><a class="reference internal" href="#">Linux Kernel Development</a><ul>
+<li><a class="reference internal" href="#">Creating a Custom Meta Layer</a><ul>
 <li><a class="reference internal" href="#introduction">Introduction</a></li>
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
-<li><a class="reference internal" href="#obtaining-the-kernel-source">Obtaining the Kernel Source</a></li>
-<li><a class="reference internal" href="#building-the-kernel">Building the Kernel</a><ul>
-<li><a class="reference internal" href="#configure-for-your-board">Configure for Your Board</a></li>
-<li><a class="reference internal" href="#compile-kernel-modules-and-device-trees">Compile Kernel, Modules, and Device Trees</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#creating-a-fitimage">Creating a fitImage</a></li>
-<li><a class="reference internal" href="#integrating-changes">Integrating Changes</a><ul>
-<li><a class="reference internal" href="#deploying-kernel-modules">Deploying Kernel Modules</a></li>
-<li><a class="reference internal" href="#integrating-into-yocto">Integrating into Yocto</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#creating-the-layer">Creating the Layer</a></li>
+<li><a class="reference internal" href="#registering-the-layer">Registering the Layer</a></li>
+<li><a class="reference internal" href="#a-simple-recipe">A Simple Recipe</a></li>
+<li><a class="reference internal" href="#including-the-recipe-in-the-image">Including the Recipe in the Image</a></li>
+<li><a class="reference internal" href="#using-bbappend">Using bbappend</a></li>
+<li><a class="reference internal" href="#patching-the-kernel">Patching the Kernel</a></li>
 </ul>
 </li>
 </ul>
@@ -191,9 +185,9 @@ Content on this topic
 <li class="toctree-l2"><a class="reference internal" href="Debugging-without-ICE-Hardware.html">Debugging without ICE Hardware</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Boot-Sequence.html">Boot Sequence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="U%E2%80%90Boot-Environment.html">U-Boot Environment</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Linux Kernel Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Linux-Kernel-Development.html">Linux Kernel Development</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Compiling-and-running-a-Rust-kernel.html">Compiling and running a Rust kernel</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Custom-Meta-Layer.html">Creating a Custom Meta Layer</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Creating a Custom Meta Layer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="RPMsg.html">RPMsg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="RPMsg%E2%80%90Lite.html">RPMsg-Lite</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications.html">Configuring System Memory When Using Linux and SHARC Applications</a></li>
@@ -231,107 +225,181 @@ Content on this topic
 </div>
           <div class="body" role="main">
             
-  <section id="linux-kernel-development">
-<h1>Linux Kernel Development<a class="headerlink" href="#linux-kernel-development" title="Link to this heading"></a></h1>
+  <section id="creating-a-custom-meta-layer">
+<h1>Creating a Custom Meta Layer<a class="headerlink" href="#creating-a-custom-meta-layer" title="Link to this heading"></a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
-<p>This guide helps you develop and customise the Linux kernel for ADSP-SC5xx processors. Whether you’re debugging driver issues, adding new hardware support, or optimizing performance, this page walks you through compiling and rebuilding the kernel outside of the full Yocto build system.</p>
-<p>While Yocto automates the entire build process, direct kernel development allows for faster iteration during development. You can quickly compile changes, test them on your hardware, and integrate them back into your Yocto layer once they’re stable.</p>
-<p><strong>What you’ll learn:</strong></p>
-<ul class="simple">
-<li><p>How to obtain and compile the ADSP Linux kernel source</p></li>
-<li><p>Building kernel images and device trees for different boards</p></li>
-<li><p>Creating fitImage boot files with your custom kernel</p></li>
-<li><p>Integrating your changes back into Yocto</p></li>
-</ul>
+<p>Yocto builds are organised into layers: collections of metadata (recipes, configuration files,
+and patches) that each address a specific concern. The ADI release ships several layers covering
+the BSP, kernel, drivers, and example images. Any customisation that belongs to your product,
+whether adding packages, patching upstream recipes, or tweaking configuration, should live in a
+separate layer that you own and maintain independently of the ADI sources.</p>
+<p>This guide creates a minimal <code class="docutils literal notranslate"><span class="pre">meta-custom</span></code> layer, registers it with the build system, and
+walks through a simple recipe to confirm everything is working.</p>
 </section>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
-<p>Before starting kernel development, ensure you have:</p>
-<ul class="simple">
-<li><p>Cross-compilation toolchain installed (from the SDK or your host package manager)</p></li>
-<li><p>Basic understanding of Linux kernel development concepts</p></li>
-<li><p>Minimal build requirements: <a class="icon link reference external" href="https://docs.kernel.org/process/changes.html" target="_blank">kernel.org build requirements</a></p></li>
-</ul>
-<p><strong>Additional kernel development resources:</strong></p>
-<ul class="simple">
-<li><p><a class="icon link reference external" href="https://kernelnewbies.org/KernelBuild" target="_blank">Kernel Newbies - Kernel Build</a></p></li>
-<li><p><a class="icon link reference external" href="https://linux-kernel-labs.github.io/refs/heads/master/labs/arm_kernel_development.html" target="_blank">ARM Kernel Development Labs</a></p></li>
-<li><p><a class="icon link reference external" href="https://www.raspberrypi.com/documentation/computers/linux_kernel.html" target="_blank">Raspberry Pi Kernel Documentation</a></p></li>
-</ul>
+<p>A working Yocto build environment is assumed. If you don’t have one set up yet, follow the
+<a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html"><span class="doc">Getting Started guide</span></a>
+before continuing.</p>
+<p>The examples here use the SC598 SOM EZKit (<code class="docutils literal notranslate"><span class="pre">adsp-sc598-som-ezkit</span></code>). The steps are identical
+for any other supported board.</p>
 </section>
-<section id="obtaining-the-kernel-source">
-<h2>Obtaining the Kernel Source<a class="headerlink" href="#obtaining-the-kernel-source" title="Link to this heading"></a></h2>
-<p>Clone the ADSP Linux kernel repository:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/analogdevicesinc/lnxdsp-linux.git
-<span class="nb">cd</span><span class="w"> </span>lnxdsp-linux
+<section id="creating-the-layer">
+<h2>Creating the Layer<a class="headerlink" href="#creating-the-layer" title="Link to this heading"></a></h2>
+<p>Source the build environment first so the Yocto tools are available:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/adsp-sc598-som-ezkit-yocto-build
+<span class="nb">source</span><span class="w"> </span>setup-environment<span class="w"> </span>-m<span class="w"> </span>adsp-sc598-som-ezkit
+</pre></div>
+</div>
+<p>Sourcing the script changes the working directory to <code class="docutils literal notranslate"><span class="pre">build/</span></code>. Create the layer in the
+<code class="docutils literal notranslate"><span class="pre">sources</span></code> directory alongside the other layers:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bitbake-layers<span class="w"> </span>create-layer<span class="w"> </span>../sources/meta-custom
+</pre></div>
+</div>
+<p>This generates the basic skeleton:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>sources/meta-custom/
+├── conf/
+│   └── layer.conf
+├── recipes-example/
+│   └── example/
+│       └── example_0.1.bb
+├── COPYING.MIT
+└── README
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">layer.conf</span></code> is populated with defaults for <code class="docutils literal notranslate"><span class="pre">BBFILE_COLLECTIONS</span></code>, <code class="docutils literal notranslate"><span class="pre">BBFILES</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">LAYERSERIES_COMPAT</span></code>. No changes are needed there to get started.</p>
+</section>
+<section id="registering-the-layer">
+<h2>Registering the Layer<a class="headerlink" href="#registering-the-layer" title="Link to this heading"></a></h2>
+<p>Add the layer to <code class="docutils literal notranslate"><span class="pre">build/conf/bblayers.conf</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bitbake-layers<span class="w"> </span>add-layer<span class="w"> </span>../sources/meta-custom
+</pre></div>
+</div>
+<p>To confirm it was registered:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bitbake-layers<span class="w"> </span>show-layers
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">meta-custom</span></code> should appear in the list alongside the existing layers.</p>
+</section>
+<section id="a-simple-recipe">
+<h2>A Simple Recipe<a class="headerlink" href="#a-simple-recipe" title="Link to this heading"></a></h2>
+<p>The example below installs a small shell script onto the target. It covers the essentials of
+a recipe: declaring a license, referencing local source files, and installing them into the
+correct location on the target filesystem.</p>
+<p>Create the recipe directory and a <code class="docutils literal notranslate"><span class="pre">files</span></code> subdirectory for local sources:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>../sources/meta-custom/recipes-custom/hello-adi/files
+</pre></div>
+</div>
+<p>Create <code class="docutils literal notranslate"><span class="pre">../sources/meta-custom/recipes-custom/hello-adi/files/hello-adi.sh</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Hello from ADSP-SC598&quot;</span>
+</pre></div>
+</div>
+<p>Create the recipe file at
+<code class="docutils literal notranslate"><span class="pre">../sources/meta-custom/recipes-custom/hello-adi/hello-adi_1.0.bb</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">SUMMARY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Custom example script&quot;</span>
+<span class="nv">LICENSE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;MIT&quot;</span>
+<span class="nv">LIC_FILES_CHKSUM</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;file://</span><span class="si">${</span><span class="nv">COMMON_LICENSE_DIR</span><span class="si">}</span><span class="s2">/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302&quot;</span>
+
+<span class="nv">SRC_URI</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;file://hello-adi.sh&quot;</span>
+
+<span class="nv">S</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">WORKDIR</span><span class="si">}</span><span class="s2">&quot;</span>
+
+do_install<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>install<span class="w"> </span>-d<span class="w"> </span><span class="si">${</span><span class="nv">D</span><span class="si">}${</span><span class="nv">bindir</span><span class="si">}</span>
+<span class="w">    </span>install<span class="w"> </span>-m<span class="w"> </span><span class="m">0755</span><span class="w"> </span><span class="si">${</span><span class="nv">WORKDIR</span><span class="si">}</span>/hello-adi.sh<span class="w"> </span><span class="si">${</span><span class="nv">D</span><span class="si">}${</span><span class="nv">bindir</span><span class="si">}</span>/hello-adi
+<span class="o">}</span>
 </pre></div>
 </div>
 </section>
-<section id="building-the-kernel">
-<h2>Building the Kernel<a class="headerlink" href="#building-the-kernel" title="Link to this heading"></a></h2>
-<section id="configure-for-your-board">
-<h3>Configure for Your Board<a class="headerlink" href="#configure-for-your-board" title="Link to this heading"></a></h3>
-<p>Load the default configuration for your target board.</p>
-<p><strong>For ADSP-SC598 (ARM64):</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">ARCH</span><span class="o">=</span>arm64<span class="w"> </span><span class="nv">CROSS_COMPILE</span><span class="o">=</span>aarch64-linux-gnu-<span class="w"> </span>make<span class="w"> </span>sc598-som-ezkit_defconfig
+<section id="including-the-recipe-in-the-image">
+<h2>Including the Recipe in the Image<a class="headerlink" href="#including-the-recipe-in-the-image" title="Link to this heading"></a></h2>
+<p>Recipes are not automatically included in an image. The simplest way to add <code class="docutils literal notranslate"><span class="pre">hello-adi</span></code>
+to a build is to append to <code class="docutils literal notranslate"><span class="pre">IMAGE_INSTALL</span></code> in <code class="docutils literal notranslate"><span class="pre">build/conf/local.conf</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>IMAGE_INSTALL:append<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot; hello-adi&quot;</span>
 </pre></div>
 </div>
-<p><strong>For ADSP-SC589-MINI (ARM):</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">ARCH</span><span class="o">=</span>arm<span class="w"> </span><span class="nv">CROSS_COMPILE</span><span class="o">=</span>arm-linux-gnueabi-<span class="w"> </span>make<span class="w"> </span>sc589-mini_defconfig
+<p>Then build:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bitbake<span class="w"> </span>adsp-sc5xx-minimal
 </pre></div>
 </div>
-</section>
-<section id="compile-kernel-modules-and-device-trees">
-<h3>Compile Kernel, Modules, and Device Trees<a class="headerlink" href="#compile-kernel-modules-and-device-trees" title="Link to this heading"></a></h3>
-<p><strong>For ADSP-SC598 (ARM64):</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">ARCH</span><span class="o">=</span>arm64<span class="w"> </span><span class="nv">CROSS_COMPILE</span><span class="o">=</span>aarch64-linux-gnu-<span class="w"> </span>make<span class="w"> </span>-j<span class="sb">`</span>nproc<span class="sb">`</span><span class="w"> </span>Image.gz<span class="w"> </span>modules<span class="w"> </span>dtbs
-</pre></div>
-</div>
-<p><strong>For ADSP-SC589 (ARM):</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">ARCH</span><span class="o">=</span>arm<span class="w"> </span><span class="nv">CROSS_COMPILE</span><span class="o">=</span>arm-linux-gnueabi-<span class="w"> </span>make<span class="w"> </span>-j<span class="sb">`</span>nproc<span class="sb">`</span><span class="w"> </span>zImage<span class="w"> </span>modules<span class="w"> </span>dtbs
+<p>Once the board is booted, the script will be at <code class="docutils literal notranslate"><span class="pre">/usr/bin/hello-adi</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>root@adsp-sc598-som-ezkit:~# hello-adi
+Hello from ADSP-SC598
 </pre></div>
 </div>
 </section>
-</section>
-<section id="creating-a-fitimage">
-<h2>Creating a fitImage<a class="headerlink" href="#creating-a-fitimage" title="Link to this heading"></a></h2>
-<p>The default boot format used is fitImage. Here’s how to rebuild a fitImage with your newly compiled kernel:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>new_fit_image
-<span class="nb">cd</span><span class="w"> </span>new_fit_image
-cp<span class="w"> </span>&lt;builddir&gt;/tmp/deploy/images/adsp-sc598-som-ezkit/fit-image.its<span class="w"> </span>./
-cp<span class="w"> </span>&lt;builddir&gt;/tmp/deploy/images/adsp-sc598-som-ezkit/adsp-sc5xx-ramdisk-adsp-sc598-som-ezkit.cpio.gz<span class="w"> </span>./
-cp<span class="w"> </span>&lt;kernel_builddir&gt;/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtb<span class="w"> </span>./
-cp<span class="w"> </span>&lt;kernel_builddir&gt;/arch/arm64/boot/Image.gz<span class="w"> </span>./
-mkimage<span class="w"> </span>-f<span class="w"> </span>fit-image.its<span class="w"> </span>fitImage
+<section id="using-bbappend">
+<h2>Using bbappend<a class="headerlink" href="#using-bbappend" title="Link to this heading"></a></h2>
+<p>A <code class="docutils literal notranslate"><span class="pre">bbappend</span></code> file lets you modify an existing recipe without touching it directly, keeping
+your changes cleanly separated in <code class="docutils literal notranslate"><span class="pre">meta-custom</span></code>. The <code class="docutils literal notranslate"><span class="pre">%</span></code> wildcard in the filename matches
+any version of the recipe.</p>
+<p>As a simple example, the board’s hostname can be changed by appending to <code class="docutils literal notranslate"><span class="pre">base-files</span></code>, which
+is the recipe responsible for <code class="docutils literal notranslate"><span class="pre">/etc/hostname</span></code>. Create
+<code class="docutils literal notranslate"><span class="pre">../sources/meta-custom/recipes-core/base-files/base-files_%.bbappend</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">hostname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;myadspdevboard&quot;</span>
 </pre></div>
 </div>
-<p>Boot the fitImage using your preferred boot method.</p>
-</section>
-<section id="integrating-changes">
-<h2>Integrating Changes<a class="headerlink" href="#integrating-changes" title="Link to this heading"></a></h2>
-<section id="deploying-kernel-modules">
-<h3>Deploying Kernel Modules<a class="headerlink" href="#deploying-kernel-modules" title="Link to this heading"></a></h3>
-<p>Kernel modules must be copied to the filesystem in use:</p>
-<ul class="simple">
-<li><p>For NFS boot: Copy modules to the NFS boot directory</p></li>
-<li><p>For other boot methods: Update the root filesystem with the compiled modules</p></li>
-</ul>
-</section>
-<section id="integrating-into-yocto">
-<h3>Integrating into Yocto<a class="headerlink" href="#integrating-into-yocto" title="Link to this heading"></a></h3>
-<p>After developing and testing your kernel changes:</p>
-<ol class="arabic simple">
-<li><p>Create a patch file with your modifications</p></li>
-<li><p>Add the patch to your Yocto layer</p></li>
-<li><p>Alternatively, create a custom repository and point the kernel recipe to it</p></li>
-<li><p>Apply any required patches from the meta-adi Yocto layer kernel recipe</p></li>
-</ol>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>For persistent changes across builds, integrate your modifications into your Yocto layer rather than maintaining manual builds.</p>
+<p>After rebuilding and booting, the shell prompt will reflect the change:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>root@myadspdevboard:~#
+</pre></div>
 </div>
+<p>For a more complete image recipe example, see <code class="docutils literal notranslate"><span class="pre">adsp-custom-ramdisk</span></code> in the
+<a class="reference internal" href="../faq/Frequently-Asked-Questions.html"><span class="doc">FAQ</span></a>.</p>
 </section>
+<section id="patching-the-kernel">
+<h2>Patching the Kernel<a class="headerlink" href="#patching-the-kernel" title="Link to this heading"></a></h2>
+<p>The same bbappend mechanism is used to carry kernel patches in your layer. This is how you
+keep product-specific kernel changes out of the ADI sources and under your own version control.</p>
+<p>The kernel source is available inside the Yocto build tree after the first build, or can be
+cloned separately as described in <a class="reference internal" href="Linux-Kernel-Development.html"><span class="doc">Linux Kernel Development</span></a>.
+Make your change, commit it, then generate a patch file with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">format-patch</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>format-patch<span class="w"> </span>-1<span class="w"> </span>-o<span class="w"> </span>~/my-patches/
+</pre></div>
+</div>
+<p>As a minimal example, adding a <code class="docutils literal notranslate"><span class="pre">pr_info</span></code> call near the top of <code class="docutils literal notranslate"><span class="pre">start_kernel()</span></code> in
+<code class="docutils literal notranslate"><span class="pre">init/main.c</span></code> produces a message visible in <code class="docutils literal notranslate"><span class="pre">dmesg</span></code> on every boot:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pr_info<span class="o">(</span><span class="s2">&quot;Custom build: ADSP-SC598 production image\n&quot;</span><span class="o">)</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The patch file generated by <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">format-patch</span></code> will look something like this:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>From a1b2c3d4e5f6 Mon Sep 17 00:00:00 2001
+From: Your Name &lt;your.name@example.com&gt;
+Date: Mon, 01 Jan 2024 00:00:00 +0000
+Subject: [PATCH] init: add custom build tag
+
+---
+ init/main.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/init/main.c b/init/main.c
+--- a/init/main.c
++++ b/init/main.c
+@@ -... @@
++    pr_info(&quot;Custom build: ADSP-SC598 production image\n&quot;);
+</pre></div>
+</div>
+<p>Copy the patch into the layer under a <code class="docutils literal notranslate"><span class="pre">linux-adi</span></code> subdirectory next to the bbappend:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>../sources/meta-custom/recipes-kernel/linux/linux-adi
+cp<span class="w"> </span>~/my-patches/0001-init-add-custom-build-tag.patch<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>../sources/meta-custom/recipes-kernel/linux/linux-adi/
+</pre></div>
+</div>
+<p>Create <code class="docutils literal notranslate"><span class="pre">../sources/meta-custom/recipes-kernel/linux/linux-adi_%.bbappend</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>FILESEXTRAPATHS:prepend<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">THISDIR</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">PN</span><span class="si">}</span><span class="s2">:&quot;</span>
+
+SRC_URI:append<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot; file://0001-init-add-custom-build-tag.patch&quot;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">FILESEXTRAPATHS:prepend</span></code> tells BitBake to look for <code class="docutils literal notranslate"><span class="pre">file://</span></code> references in the
+<code class="docutils literal notranslate"><span class="pre">linux-adi/</span></code> subdirectory next to the bbappend before searching anywhere else.</p>
+<p>Rebuild the kernel and boot the board. The message will appear in the early boot log:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>root@adsp-sc598-som-ezkit:~# dmesg | grep &quot;Custom build&quot;
+[    0.000000] Custom build: ADSP-SC598 production image
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -339,8 +407,8 @@ mkimage<span class="w"> </span>-f<span class="w"> </span>fit-image.its<span clas
           </div>
               <div class="related">
                 &nbsp;
-    <a href="U%E2%80%90Boot-Environment.html" title="Previous document (Alt+Shift+LeftArrow)" class="prev">U-Boot Environment</a>
-    <a href="Compiling-and-running-a-Rust-kernel.html" title="Next document (Alt+Shift+RightArrow)" class="next">Compiling and running a Rust kernel</a>
+    <a href="Compiling-and-running-a-Rust-kernel.html" title="Previous document (Alt+Shift+LeftArrow)" class="prev">Compiling and running a Rust kernel</a>
+    <a href="RPMsg.html" title="Next document (Alt+Shift+RightArrow)" class="next">RPMsg</a>
               </div>
           
         </div>

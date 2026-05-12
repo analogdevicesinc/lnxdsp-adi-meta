@@ -100,7 +100,7 @@
 <li><a class="reference internal" href="#sharc-core-initialisation">SHARC Core initialisation</a><ul>
 <li><a class="reference internal" href="#u-boot">U-Boot</a></li>
 <li><a class="reference internal" href="#linux">Linux</a><ul>
-<li><a class="reference internal" href="#id4">Overview</a></li>
+<li><a class="reference internal" href="#id1">Overview</a></li>
 <li><a class="reference internal" href="#in-more-detail">In More Detail</a></li>
 </ul>
 </li>
@@ -190,6 +190,7 @@ Content on this topic
 <li class="toctree-l2"><a class="reference internal" href="U%E2%80%90Boot-Environment.html">U-Boot Environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Linux-Kernel-Development.html">Linux Kernel Development</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Compiling-and-running-a-Rust-kernel.html">Compiling and running a Rust kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Custom-Meta-Layer.html">Creating a Custom Meta Layer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="RPMsg.html">RPMsg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="RPMsg%E2%80%90Lite.html">RPMsg-Lite</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications.html">Configuring System Memory When Using Linux and SHARC Applications</a></li>
@@ -237,9 +238,9 @@ Content on this topic
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <p>The Boot ROM is responsible for initial start up - when the board powers on, the cores are brought online, and the Arm core will begin executing from the Boot ROM.</p>
 <p>The Boot ROM will then boot the system according to the Boot Mode - set by a rotary switch on the carrier boards, or 3 pins on the SoC more generally. Boot modes 0 through 6 are available, with 7 reserved. They are defined in the HRM of the relevant SoC (Table 47-15 for the SC598, for example) as follows:</p>
-<div class="table-wrapper colwidths-given docutils container" id="id5">
-<table class="docutils align-default" id="id5">
-<caption><span class="caption-text">Boot Modes</span><a class="headerlink" href="#id5" title="Link to this table"></a></caption>
+<div class="table-wrapper colwidths-given docutils container" id="id2">
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">Boot Modes</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 10.0%" />
 <col style="width: 10.0%" />
@@ -319,10 +320,10 @@ Content on this topic
 </div>
 <p>Note, there are <em>Controller</em> and <em>Target</em> boot modes. In <em>Target</em> boot modes, the processor functions as a target to a host device. In these modes, the host device usually applies the reset sequence and waits until the processor is ready to boot, depending on the peripheral in use, and transmits the boot stream data to the processor. In <em>Controller</em> boot modes, the processor controls the peripheral and requests data via the peripheral as and when required.</p>
 <p>Below is a flowchart that gives an overview of the U-Boot/Linux boot process in some of these modes.</p>
-<figure class="align-default" id="id6">
+<figure class="align-default" id="id3">
 <img alt="Boot Order Overview Flowchart" src="https://github.com/user-attachments/assets/e16d6c26-9f5b-429f-9f43-d78f8f6edb3e" />
 <figcaption>
-<p><span class="caption-text">Boot Order Overview Flowchart</span><a class="headerlink" href="#id6" title="Link to this image"></a></p>
+<p><span class="caption-text">Boot Order Overview Flowchart</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 </section>
@@ -362,8 +363,8 @@ rproc  [init|list|load|start|stop|reset|is_running|ping]
 </section>
 <section id="linux">
 <h3>Linux<a class="headerlink" href="#linux" title="Link to this heading"></a></h3>
-<section id="id4">
-<h4>Overview<a class="headerlink" href="#id4" title="Link to this heading"></a></h4>
+<section id="id1">
+<h4>Overview<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
 <p>After the system has booted the kernel and mounted the initramfs, the remoteproc driver is initialised. It first probes the cores, before loading default firmware (located in <code class="docutils literal notranslate"><span class="pre">/lib/firmware</span></code>, both in the initramfs and in the normal root filesystem), normally <code class="docutils literal notranslate"><span class="pre">adi_adsp_core&lt;n&gt;_fw.ldr</span></code>.</p>
 <p>The rpmsg interface is then brought online to enable communication with the cores, creating a communication channel for each core.</p>
 <p>The firmware of the cores can be controlled from within Linux using the remoteproc interface, under <code class="docutils literal notranslate"><span class="pre">/sys/class/remoteproc/remoteproc&lt;core</span> <span class="pre">n&gt;/</span></code>. For example usage, see the “Using Linux (remoteproc)” section in the <a class="reference internal" href="../examples/SHARC%E2%80%90ALSA-Example.html"><span class="doc">SHARC-ALSA Example</span></a>.</p>
