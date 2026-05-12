@@ -17,7 +17,7 @@ RPMsg allows different processors on the same system-on-chip to communicate effi
 * Setting up and testing RPMsg communication using Yocto
 
 .. note::
-   This guide provides an introduction to RPMsg concepts and basic testing. For deeper implementation details, refer to the specific project documentation for `Linux RPMsg driver <https://docs.kernel.org/staging/rpmsg.html>`_, `OpenAMP <https://www.openampproject.org/>`_, or `RPMsg-Lite <https://github.com/analogdevicesinc/rpmsg-lite>`_.
+   This guide provides an introduction to RPMsg concepts and basic testing. For deeper implementation details, refer to the specific project documentation for `Linux RPMsg driver <https://docs.kernel.org/staging/rpmsg.html>`_, `OpenAMP <https://www.openampproject.org/>`_, or `RPMsg-Lite <https://github.com/analogdevicesinc/rpmsg-lite>`__.
 
 What is RPMsg?
 ==============

@@ -24,6 +24,7 @@ This section provides guides and resources for developing applications and custo
    U‐Boot-Environment
    Linux-Kernel-Development
    Compiling-and-running-a-Rust-kernel
+   Custom-Meta-Layer
    RPMsg
    RPMsg‐Lite
    Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications
