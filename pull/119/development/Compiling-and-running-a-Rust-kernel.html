@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="Yocto 5 onward, all supported boards have now been ported to kernel 6.12. As a result, it is now possible to compile the linux kernel with Rust support for ADSP-SC598 boards." name="description" />
+
+    <title>Compiling and running a Rust kernel &#8212; ADSP Processors  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8e8a900e" />
+    <link rel="stylesheet" type="text/css" href="../_static/app.min.css?v=ac863bf0" />
+    <script async="async" src="../_static/app.umd.js?v=09b0c6bc"></script>
+    <link rel="icon" href="../_static/icon.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Creating a Custom Meta Layer" href="Custom-Meta-Layer.html" />
+    <link rel="prev" title="Linux Kernel Development" href="Linux-Kernel-Development.html" />
+   
+  
+  
+  <meta name="repository" content="lnxdsp-adi-meta">
+  <meta name="version" content="">
+  
+    <meta name="page_source_suffix" content=".rst">
+  
+  
+  
+
+
+<style>
+  body {
+    
+  }
+
+  body.dark {
+    
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body:not(.light) {
+      
+    }
+  }
+</style>
+  </head>
+  
+    <body>
+  
+  <input type="checkbox" id="input-show-toc">
+  <input type="checkbox" id="input-show-localtoc">
+  <input type="checkbox" id="input-show-repotoc">
+
+  
+  <div class="search-area">
+    <form action="" method="get">
+      <input type="text" name="q" aria-labelledby="search-documentation" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" role="search" placeholder="Search"/>
+      <button class="icon"></button>
+    </form>
+  </div>
+  
+
+  <header>
+    <div id="left">
+      <label id="show-sidebar" class="icon" for="input-show-toc" title="Show/hide index"></label>
+    </div>
+    <div id="right">
+      <span>
+        <a id="logo-org" href="https://analog.com" aria-label="Analog Devices Inc. landing page"></a>
+        <div class="vertical-divider"></div>
+        
+        <label id="show-repotoc" for="input-show-repotoc" title="Show/hide docs">Docs</label>
+        
+        <a id="logo" href="../index.html">
+          <div>ADI DSP Linux</div>
+        </a>
+      </span>
+      <span class="reverse">
+        <label id="show-localtoc" class="icon" for="input-show-localtoc" title="Show/hide contents"></label>
+      </span>
+    </div>
+  </header>
+
+
+  <div class="repotoc-tree overlay">
+    <root>
+  <a href="../index.html" class="current">ADI DSP Linux</a>
+</root>
+
+  </div>
+    <div class="localtoc">
+      <div class="tocwrapper">
+        <div class="header localtoc-header">
+          <a id="scroll-up" href="#top-anchor" title="Back to top"></a>
+        </div>
+        <nav>
+          <ul>
+<li><a class="reference internal" href="#">Compiling and running a Rust kernel</a><ul>
+<li><a class="reference internal" href="#requirements">Requirements</a></li>
+<li><a class="reference internal" href="#getting-started">Getting started</a></li>
+<li><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+</ul>
+
+        </nav>
+      </div>
+    </div>
+
+  
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+    <a id="no-logo" href="../index.html">
+      ADSP Processors
+    </a><input id="input-switch-toc" type="checkbox">
+<label id="show-repotoc" for="input-switch-toc">
+All content
+</label>
+<label id="show-toc" for="input-switch-toc">
+Content on this topic
+</label>
+<div class="repotoc-tree">
+  <root>
+  <a href="../index.html" class="current">ADI DSP Linux</a>
+</root>
+
+</div>
+<div class="toc-tree">
+  <ul class="current">
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-1" id="toctree-collapse-1"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.0.1-Landing-Page.html">Linux for ADSP SC5xx 5.0.1</a><label for="toctree-collapse-1"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC598 (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC594 (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC589-MINI (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC573 (5.0.1)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2" id="toctree-collapse-2"/><div class="collapse"><a class="reference internal" href="../Older-Releases.html">Older Releases</a><label for="toctree-collapse-2"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2-1" id="toctree-collapse-2-1"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.0.0-Landing-Page.html">Linux for ADSP-SC5xx Processors 5.0.0</a><label for="toctree-collapse-2-1"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC598 (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC594 (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC589-MINI (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC573 (5.0.0)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2-2" id="toctree-collapse-2-2"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.2-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.2</a><label for="toctree-collapse-2-2"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC598 (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC594 (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC589-MINI (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC573 (3.1.2)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2-3" id="toctree-collapse-2-3"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.1-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.1</a><label for="toctree-collapse-2-3"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC598 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC594 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC589-MINI (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90EZ%E2%80%90KIT-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC589-EZ-KIT (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC584-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC584 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC573 (3.1.1)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2-4" id="toctree-collapse-2-4"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.0-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.0</a><label for="toctree-collapse-2-4"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC598 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC594 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC589-MINI (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90EZ%E2%80%90KIT-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC589-EZ-KIT (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC584-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC584 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC573 (3.1.0)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3" id="toctree-collapse-3"/><div class="collapse"><a class="reference internal" href="../examples/Examples.html">Examples</a><label for="toctree-collapse-3"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples/SHARC%E2%80%90ALSA-Example.html">SHARC-ALSA Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/USB-Gadget-Audio-Example.html">USB Gadget Audio Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/The-Kitchen-Sink.html">The Kitchen Sink</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/U%E2%80%90Boot-Falcon-Mode-Example.html">U-Boot Falcon Mode Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-4" id="toctree-collapse-4" checked=""/><div class="collapse"><a class="reference internal" href="Development.html">Development</a><label for="toctree-collapse-4"><div class="icon"></div></label></div><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Setting-Up-Your-Host-PC.html">Setting Up Your Host PC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Debugging-without-ICE-Hardware.html">Debugging without ICE Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Boot-Sequence.html">Boot Sequence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U%E2%80%90Boot-Environment.html">U-Boot Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Linux-Kernel-Development.html">Linux Kernel Development</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Compiling and running a Rust kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Custom-Meta-Layer.html">Creating a Custom Meta Layer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RPMsg.html">RPMsg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RPMsg%E2%80%90Lite.html">RPMsg-Lite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications.html">Configuring System Memory When Using Linux and SHARC Applications</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-5" id="toctree-collapse-5"/><div class="collapse"><a class="reference internal" href="../benchmarks/Benchmarking.html">Benchmarks</a><label for="toctree-collapse-5"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../benchmarks/RPMsg-Benchmark-Figures.html">RPMsg Benchmark Figures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../benchmarks/Booting-Benchmark-Figures.html">Booting Benchmark Figures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/Frequently-Asked-Questions.html">FAQ</a></li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-6" id="toctree-collapse-6"/><div class="collapse"><a class="reference internal" href="../secure-boot/Secure-Boot-Support.html">Secure Boot</a><label for="toctree-collapse-6"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../secure-boot/Secure-Boot-Support-in-release-3.1.1.html">Secure Boot Support (Release 3.1.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../secure-boot/Secure-Boot-Support-in-release-3.1.0.html">Secure Boot Support (Release 3.1.0)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-7" id="toctree-collapse-7"/><div class="collapse"><a class="reference internal" href="../test-reports/Test-Reports.html">Test Reports</a><label for="toctree-collapse-7"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%285.0.1%29.html">Test Report (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%285.0.0%29.html">Test Report (5.0.0)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%283.1.0%29.html">Test Report (3.1.0)</a></li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+        </div>
+      </div>
+
+  <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper" id="top-anchor">
+          <div class="body-header">
+  <nav class="breadcrumb"><ol><li><a href="Development.html">Development</a></li></ol></nav>
+</div>
+          <div class="body" role="main">
+            
+  <section id="compiling-and-running-a-rust-kernel">
+<h1>Compiling and running a Rust kernel<a class="headerlink" href="#compiling-and-running-a-rust-kernel" title="Link to this heading"></a></h1>
+<p>Yocto 5 onward, all supported boards have now been ported to kernel 6.12. As a result, it is now possible to compile the linux kernel with Rust support for ADSP-SC598 boards.</p>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>rust (installed via rustup)</p></li>
+<li><p>Linux kernel source code</p></li>
+<li><p>LLVM</p></li>
+<li><p>clang</p></li>
+<li><p>Aarch64 GCC compiler</p></li>
+</ul>
+<p>Run the following to install the prerequisite packages on ubuntu 22.04:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>llvm<span class="w"> </span>libclang-dev<span class="w"> </span>gcc-aarch64-linux-gnu<span class="w"> </span>-y
+</pre></div>
+</div>
+</section>
+<section id="getting-started">
+<h2>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>On your host/build machine, install rust via <a class="icon link reference external" href="https://www.rust-lang.org/tools/install" target="_blank">rustup</a></p></li>
+<li><p>Clone the Linux kernel tree you wish to use. In our case, we will use <a class="icon link reference external" href="https://github.com/analogdevicesinc/linux/tree/adsp-main-6.12" target="_blank">this</a>.</p></li>
+<li><p>Once cloned, configure the kernel using either <code class="docutils literal notranslate"><span class="pre">ARCH=arm64</span> <span class="pre">CROSS_COMPILE=aarch64-linux-gnu-</span> <span class="pre">make</span> <span class="pre">menuconfig/defconfig/olddefconfig</span></code></p></li>
+<li><p>Set up the rust environment:</p></li>
+</ol>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>cd linux
+</pre></div>
+</div>
+<p>Edit the following file <code class="docutils literal notranslate"><span class="pre">scripts/min-tool-version.sh</span></code> with the following change:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>diff<span class="w"> </span>--git<span class="w"> </span>a/scripts/min-tool-version.sh<span class="w"> </span>b/scripts/min-tool-version.sh
+index<span class="w"> </span>91c91201212c..dd09a4ed0e96<span class="w"> </span><span class="m">100755</span>
+---<span class="w"> </span>a/scripts/min-tool-version.sh
++++<span class="w"> </span>b/scripts/min-tool-version.sh
+@@<span class="w"> </span>-33,7<span class="w"> </span>+33,7<span class="w"> </span>@@<span class="w"> </span>llvm<span class="o">)</span>
+<span class="w">        </span><span class="k">fi</span>
+<span class="w">        </span><span class="p">;;</span>
+<span class="w"> </span>rustc<span class="o">)</span>
+-<span class="w">       </span><span class="nb">echo</span><span class="w"> </span><span class="m">1</span>.78.0
++<span class="w">       </span><span class="nb">echo</span><span class="w"> </span><span class="m">1</span>.82.0
+<span class="w">        </span><span class="p">;;</span>
+<span class="w"> </span>bindgen<span class="o">)</span>
+<span class="w">        </span><span class="nb">echo</span><span class="w"> </span><span class="m">0</span>.65.1
+</pre></div>
+</div>
+<p>Set the package/crate versions using the script</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>rustup<span class="w"> </span>override<span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="k">$(</span>scripts/min-tool-version.sh<span class="w"> </span>rustc<span class="k">)</span>
+rustup<span class="w"> </span>component<span class="w"> </span>add<span class="w"> </span>rust-src
+cargo<span class="w"> </span>install<span class="w"> </span>--locked<span class="w"> </span>bindgen-cli
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:~/.cargo/bin
+</pre></div>
+</div>
+<p>Now setup the target architecture</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>rustup<span class="w"> </span>target<span class="w"> </span>add<span class="w"> </span>aarch64-unknown-linux-gnu
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p>Check if rust is now available to be compiled into the kernel:</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">ARCH</span><span class="o">=</span>arm64<span class="w"> </span><span class="nv">CROSS_COMPILE</span><span class="o">=</span>aarch64-linux-gnu-<span class="w"> </span>make<span class="w"> </span>rustavailable
+</pre></div>
+</div>
+<p>You should see something like this:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Rust<span class="w"> </span>is<span class="w"> </span>available!
+</pre></div>
+</div>
+<p>Now, we are ready to enable Rust kernel support!</p>
+<p>Start the kernel config with <code class="docutils literal notranslate"><span class="pre">menuconfig</span></code> and enable <code class="docutils literal notranslate"><span class="pre">CONFIG_RUST</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>General Setup
+    -&gt; Rust support
+</pre></div>
+</div>
+<p>To enable a kernel rust sample, head to the following and enable the <code class="docutils literal notranslate"><span class="pre">minimal</span></code> example:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Kernel hacking
+    -&gt; Sample kernel code
+        -&gt; Rust samples
+              -&gt; minimal
+</pre></div>
+</div>
+<p>You can select it as a built-in module and an external kernel module. For this guide, we will keep it as a built-in module.</p>
+<p>Now compile the kernel with the following:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">ARCH</span><span class="o">=</span>arm64<span class="w"> </span><span class="nv">CROSS_COMPILE</span><span class="o">=</span>aarch64-linux-gnu-<span class="w"> </span>make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span>
+</pre></div>
+</div>
+<p>You should be able to see rust modules
+being compiled:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>RUSTC<span class="w"> </span>L<span class="w"> </span>rust/core.o
+EXPORTS<span class="w"> </span>rust/exports_core_generated.h
+RUSTC<span class="w"> </span>P<span class="w"> </span>rust/libmacros.so
+BINDGEN<span class="w"> </span>rust/bindings/bindings_generated.rs
+BINDGEN<span class="w"> </span>rust/bindings/bindings_helpers_generated.rs
+RUSTC<span class="w"> </span>L<span class="w"> </span>rust/compiler_builtins.o
+RUSTC<span class="w"> </span>L<span class="w"> </span>rust/alloc.o
+EXPORTS<span class="w"> </span>rust/exports_alloc_generated.h
+CC<span class="w">      </span>rust/helpers/helpers.o
+EXPORTS<span class="w"> </span>rust/exports_helpers_generated.h
+RUSTC<span class="w"> </span>L<span class="w"> </span>rust/bindings.o
+</pre></div>
+</div>
+<p>Once this is done, follow the custom fitImage compilation guide in <a class="reference internal" href="Linux-Kernel-Development.html"><span class="doc">Linux Kernel Development</span></a> and generate your own fitImage.</p>
+<p>Proceed to boot into the fitImage from your preferred boot method. Once in, you should be able to spot the following in the kernel logs:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">[</span><span class="w">    </span><span class="m">1</span>.467785<span class="o">]</span><span class="w"> </span>virtio_rpmsg_bus<span class="w"> </span>virtio1:<span class="w"> </span>creating<span class="w"> </span>channel<span class="w"> </span>sharc-echo-cap<span class="w"> </span>addr<span class="w"> </span>0xa2
+<span class="o">[</span><span class="w">    </span><span class="m">1</span>.475113<span class="o">]</span><span class="w"> </span>virtio_rpmsg_bus<span class="w"> </span>virtio1:<span class="w"> </span>rpmsg<span class="w"> </span>host<span class="w"> </span>is<span class="w"> </span>online
+<span class="o">[</span><span class="w">    </span><span class="m">1</span>.480488<span class="o">]</span><span class="w"> </span>rproc-virtio<span class="w"> </span>rproc-virtio.1.auto:<span class="w"> </span>registered<span class="w"> </span>virtio1<span class="w"> </span><span class="o">(</span><span class="nb">type</span><span class="w"> </span><span class="m">7</span><span class="o">)</span>
+<span class="o">[</span><span class="w">    </span><span class="m">1</span>.487253<span class="o">]</span><span class="w"> </span>remoteproc<span class="w"> </span>remoteproc1:<span class="w"> </span>remote<span class="w"> </span>processor<span class="w"> </span>core2-rproc<span class="w"> </span>is<span class="w"> </span>now<span class="w"> </span>up
+<span class="o">[</span><span class="w">    </span><span class="m">1</span>.802327<span class="o">]</span><span class="w"> </span>rust_minimal:<span class="w"> </span>Rust<span class="w"> </span>minimal<span class="w"> </span>sample<span class="w"> </span><span class="o">(</span>init<span class="o">)</span>
+<span class="o">[</span><span class="w">    </span><span class="m">1</span>.807237<span class="o">]</span><span class="w"> </span>rust_minimal:<span class="w"> </span>Am<span class="w"> </span>I<span class="w"> </span>built-in?<span class="w"> </span><span class="nb">true</span>
+<span class="o">[</span><span class="w">    </span><span class="m">1</span>.811804<span class="o">]</span><span class="w"> </span>NET:<span class="w"> </span>Registered<span class="w"> </span>PF_PACKET<span class="w"> </span>protocol<span class="w"> </span>family
+</pre></div>
+</div>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="icon link reference external" href="https://www.kernel.org/doc/html/v6.1/rust/quick-start.html" target="_blank">https://www.kernel.org/doc/html/v6.1/rust/quick-start.html</a></p></li>
+<li><p><a class="icon link reference external" href="https://docs.kernel.org/rust/quick-start.html" target="_blank">https://docs.kernel.org/rust/quick-start.html</a></p></li>
+<li><p><a class="reference internal" href="Linux-Kernel-Development.html"><span class="doc">Linux Kernel Development</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+          </div>
+              <div class="related">
+                &nbsp;
+    <a href="Linux-Kernel-Development.html" title="Previous document (Alt+Shift+LeftArrow)" class="prev">Linux Kernel Development</a>
+    <a href="Custom-Meta-Layer.html" title="Next document (Alt+Shift+RightArrow)" class="next">Creating a Custom Meta Layer</a>
+              </div>
+          
+        </div>
+      </div>
+  </div>
+
+  <label id="cancel-area-show-toc" for="input-show-toc"></label>
+  <label id="cancel-area-show-localtoc" for="input-show-localtoc"></label>
+    <footer>
+      &#169;2026, Analog Devices, Inc.
+      
+      |
+      Made with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+      &amp; <a href="https://github.com/analogdevicesinc/doctools">Doctools</a>
+      
+    </footer>
+  </body>
+</html>
