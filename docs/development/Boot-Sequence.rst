@@ -17,10 +17,10 @@ The Boot ROM will then boot the system according to the Boot Mode - set by a rot
    :header-rows: 1
    :widths: 10 10 10 10 15 45
 
-   * - Number (SC57x) `(HRM) <https://www.analog.com/media/en/dsp-documentation/processor-manuals/adsp-sc57x-2157x_hwr.pdf#page=2696>`_
-     - Number (SC58x) `(HRM) <https://www.analog.com/media/en/dsp-documentation/processor-manuals/SC58x-2158x-hrm.pdf#page=3440>`_
-     - Number (SC591/2/4) `(HRM) <https://www.analog.com/media/en/dsp-documentation/processor-manuals/adsp-2159x-sc591-592-594-hrm.pdf#page=2951>`_
-     - Number (SC596/8) `(HRM) <https://www.analog.com/media/en/dsp-documentation/processor-manuals/adsp-sc595-sc596-sc598-hrm.pdf#page=3501>`_
+   * - Number (SC57x) `(HRM) <https://www.analog.com/media/en/dsp-documentation/processor-manuals/adsp-sc57x-2157x_hwr.pdf#page=2696>`__
+     - Number (SC58x) `(HRM) <https://www.analog.com/media/en/dsp-documentation/processor-manuals/SC58x-2158x-hrm.pdf#page=3440>`__
+     - Number (SC591/2/4) `(HRM) <https://www.analog.com/media/en/dsp-documentation/processor-manuals/adsp-2159x-sc591-592-594-hrm.pdf#page=2951>`__
+     - Number (SC596/8) `(HRM) <https://www.analog.com/media/en/dsp-documentation/processor-manuals/adsp-sc595-sc596-sc598-hrm.pdf#page=3501>`__
      - Boot Source
      - Description
    * - 0
