@@ -48,6 +48,9 @@ This generates the basic skeleton:
    sources/meta-custom/
    ├── conf/
    │   └── layer.conf
+   ├── recipes-example/
+   │   └── example/
+   │       └── example_0.1.bb
    ├── COPYING.MIT
    └── README
 
