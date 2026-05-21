@@ -7,7 +7,7 @@ do_image_wic[depends] += " \
         ${IMAGE_BASENAME}:do_image_ext4 \
 "
 
-IMAGE_FSTYPES:remove = "ubifs"
+IMAGE_FSTYPES:remove = "ubi"
 
 FILE_SYSTEM_TOOLS = "\
 	e2fsprogs \
