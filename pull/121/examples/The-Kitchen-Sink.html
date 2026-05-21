@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="This image is fully loaded with all the features offered with the full image with the addition of a few notable packages. This example is intended to exhibit the versatility of an open source build and operating system, coupled with our ARM-SHARC SoC can allow the user to leverage some extremely complex readily available software." name="description" />
+
+    <title>The Kitchen Sink &#8212; ADSP Processors  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8e8a900e" />
+    <link rel="stylesheet" type="text/css" href="../_static/app.min.css?v=ac863bf0" />
+    <script async="async" src="../_static/app.umd.js?v=09b0c6bc"></script>
+    <link rel="icon" href="../_static/icon.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="U-Boot Falcon Mode Example" href="U%E2%80%90Boot-Falcon-Mode-Example.html" />
+    <link rel="prev" title="USB Gadget Audio Example" href="USB-Gadget-Audio-Example.html" />
+   
+  
+  
+  <meta name="repository" content="lnxdsp-adi-meta">
+  <meta name="version" content="">
+  
+    <meta name="page_source_suffix" content=".rst">
+  
+  
+  
+
+
+<style>
+  body {
+    
+  }
+
+  body.dark {
+    
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body:not(.light) {
+      
+    }
+  }
+</style>
+  </head>
+  
+    <body>
+  
+  <input type="checkbox" id="input-show-toc">
+  <input type="checkbox" id="input-show-localtoc">
+  <input type="checkbox" id="input-show-repotoc">
+
+  
+  <div class="search-area">
+    <form action="" method="get">
+      <input type="text" name="q" aria-labelledby="search-documentation" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" role="search" placeholder="Search"/>
+      <button class="icon"></button>
+    </form>
+  </div>
+  
+
+  <header>
+    <div id="left">
+      <label id="show-sidebar" class="icon" for="input-show-toc" title="Show/hide index"></label>
+    </div>
+    <div id="right">
+      <span>
+        <a id="logo-org" href="https://analog.com" aria-label="Analog Devices Inc. landing page"></a>
+        <div class="vertical-divider"></div>
+        
+        <label id="show-repotoc" for="input-show-repotoc" title="Show/hide docs">Docs</label>
+        
+        <a id="logo" href="../index.html">
+          <div>ADI DSP Linux</div>
+        </a>
+      </span>
+      <span class="reverse">
+        <label id="show-localtoc" class="icon" for="input-show-localtoc" title="Show/hide contents"></label>
+      </span>
+    </div>
+  </header>
+
+
+  <div class="repotoc-tree overlay">
+    <root>
+  <a href="../index.html" class="current">ADI DSP Linux</a>
+</root>
+
+  </div>
+    <div class="localtoc">
+      <div class="tocwrapper">
+        <div class="header localtoc-header">
+          <a id="scroll-up" href="#top-anchor" title="Back to top"></a>
+        </div>
+        <nav>
+          <ul>
+<li><a class="reference internal" href="#">The Kitchen Sink</a><ul>
+<li><a class="reference internal" href="#building-the-image">Building the image</a></li>
+<li><a class="reference internal" href="#neofetch">Neofetch</a></li>
+<li><a class="reference internal" href="#pyrpmsg">PyRPMsg</a></li>
+<li><a class="reference internal" href="#jupyterlab">JupyterLab</a></li>
+</ul>
+</li>
+</ul>
+
+        </nav>
+      </div>
+    </div>
+
+  
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+    <a id="no-logo" href="../index.html">
+      ADSP Processors
+    </a><input id="input-switch-toc" type="checkbox">
+<label id="show-repotoc" for="input-switch-toc">
+All content
+</label>
+<label id="show-toc" for="input-switch-toc">
+Content on this topic
+</label>
+<div class="repotoc-tree">
+  <root>
+  <a href="../index.html" class="current">ADI DSP Linux</a>
+</root>
+
+</div>
+<div class="toc-tree">
+  <ul class="current">
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-1" id="toctree-collapse-1"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.0.1-Landing-Page.html">Linux for ADSP SC5xx 5.0.1</a><label for="toctree-collapse-1"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC598 (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC594 (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC589-MINI (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC573 (5.0.1)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2" id="toctree-collapse-2"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.x.x-Landing-Page.html"> Linux for ADSP SC5xx 5.x.x</a><label for="toctree-collapse-2"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC598 (5.x.x)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC594 (5.x.x)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC589-MINI (5.x.x)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC573 (5.x.x)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3" id="toctree-collapse-3"/><div class="collapse"><a class="reference internal" href="../Older-Releases.html">Older Releases</a><label for="toctree-collapse-3"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-1" id="toctree-collapse-3-1"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.0.0-Landing-Page.html">Linux for ADSP-SC5xx Processors 5.0.0</a><label for="toctree-collapse-3-1"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC598 (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC594 (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC589-MINI (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC573 (5.0.0)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-2" id="toctree-collapse-3-2"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.2-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.2</a><label for="toctree-collapse-3-2"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC598 (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC594 (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC589-MINI (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC573 (3.1.2)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-3" id="toctree-collapse-3-3"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.1-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.1</a><label for="toctree-collapse-3-3"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC598 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC594 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC589-MINI (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90EZ%E2%80%90KIT-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC589-EZ-KIT (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC584-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC584 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC573 (3.1.1)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-4" id="toctree-collapse-3-4"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.0-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.0</a><label for="toctree-collapse-3-4"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC598 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC594 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC589-MINI (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90EZ%E2%80%90KIT-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC589-EZ-KIT (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC584-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC584 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC573 (3.1.0)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-4" id="toctree-collapse-4" checked=""/><div class="collapse"><a class="reference internal" href="Examples.html">Examples</a><label for="toctree-collapse-4"><div class="icon"></div></label></div><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="SHARC%E2%80%90ALSA-Example.html">SHARC-ALSA Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="USB-Gadget-Audio-Example.html">USB Gadget Audio Example</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">The Kitchen Sink</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U%E2%80%90Boot-Falcon-Mode-Example.html">U-Boot Falcon Mode Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-5" id="toctree-collapse-5"/><div class="collapse"><a class="reference internal" href="../development/Development.html">Development</a><label for="toctree-collapse-5"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Setting-Up-Your-Host-PC.html">Setting Up Your Host PC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Debugging-without-ICE-Hardware.html">Debugging without ICE Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Boot-Sequence.html">Boot Sequence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/U%E2%80%90Boot-Environment.html">U-Boot Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Linux-Kernel-Development.html">Linux Kernel Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Compiling-and-running-a-Rust-kernel.html">Compiling and running a Rust kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Custom-Meta-Layer.html">Creating a Custom Meta Layer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/RPMsg.html">RPMsg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/RPMsg%E2%80%90Lite.html">RPMsg-Lite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications.html">Configuring System Memory When Using Linux and SHARC Applications</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-6" id="toctree-collapse-6"/><div class="collapse"><a class="reference internal" href="../benchmarks/Benchmarking.html">Benchmarks</a><label for="toctree-collapse-6"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../benchmarks/RPMsg-Benchmark-Figures.html">RPMsg Benchmark Figures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../benchmarks/Booting-Benchmark-Figures.html">Booting Benchmark Figures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/Frequently-Asked-Questions.html">FAQ</a></li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-7" id="toctree-collapse-7"/><div class="collapse"><a class="reference internal" href="../secure-boot/Secure-Boot-Support.html">Secure Boot</a><label for="toctree-collapse-7"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../secure-boot/Secure-Boot-Support-in-release-3.1.1.html">Secure Boot Support (Release 3.1.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../secure-boot/Secure-Boot-Support-in-release-3.1.0.html">Secure Boot Support (Release 3.1.0)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-8" id="toctree-collapse-8"/><div class="collapse"><a class="reference internal" href="../test-reports/Test-Reports.html">Test Reports</a><label for="toctree-collapse-8"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%285.0.1%29.html">Test Report (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%285.0.0%29.html">Test Report (5.0.0)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%283.1.0%29.html">Test Report (3.1.0)</a></li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+        </div>
+      </div>
+
+  <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper" id="top-anchor">
+          <div class="body-header">
+  <nav class="breadcrumb"><ol><li><a href="Examples.html">Examples</a></li></ol></nav>
+</div>
+          <div class="body" role="main">
+            
+  <section id="the-kitchen-sink">
+<h1>The Kitchen Sink<a class="headerlink" href="#the-kitchen-sink" title="Link to this heading"></a></h1>
+<p>This image is fully loaded with all the features offered with the full image with the addition of a few notable packages.
+This example is intended to exhibit the versatility of an open source build and operating system, coupled with our
+ARM-SHARC SoC can allow the user to leverage some extremely complex readily available software.</p>
+<section id="building-the-image">
+<h2>Building the image<a class="headerlink" href="#building-the-image" title="Link to this heading"></a></h2>
+<p>Go to <code class="docutils literal notranslate"><span class="pre">sources/meta/meta-adi/tools</span></code> sources and run</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>machine<span class="w"> </span>::<span class="w"> </span>sources/meta-adi/tools<span class="w"> </span>»<span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>kitchen_sink
+machine<span class="w"> </span>::<span class="w"> </span>sources/meta-adi/tools<span class="w"> </span>»<span class="w"> </span>chmod<span class="w"> </span>+x<span class="w"> </span>prepare-kitchen-sink.sh
+machine<span class="w"> </span>::<span class="w"> </span>sources/meta-adi/tools<span class="w"> </span>»<span class="w"> </span>./prepare-kitchen-sink.sh
+machine<span class="w"> </span>kitchen<span class="w"> </span>sink<span class="w"> </span>sources...
+Cloning<span class="w"> </span>Xilinx<span class="w"> </span>Jupyter<span class="w"> </span>meta<span class="w"> </span>layer...
+Cloning<span class="w"> </span>into<span class="w"> </span><span class="s1">&#39;meta-xilinx&#39;</span>...
+remote:<span class="w"> </span>Enumerating<span class="w"> </span>objects:<span class="w"> </span><span class="m">1687</span>,<span class="w"> </span><span class="k">done</span>.
+remote:<span class="w"> </span>Counting<span class="w"> </span>objects:<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="o">(</span><span class="m">473</span>/473<span class="o">)</span>,<span class="w"> </span><span class="k">done</span>.
+remote:<span class="w"> </span>Compressing<span class="w"> </span>objects:<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="o">(</span><span class="m">208</span>/208<span class="o">)</span>,<span class="w"> </span><span class="k">done</span>.
+remote:<span class="w"> </span>Total<span class="w"> </span><span class="m">1687</span><span class="w"> </span><span class="o">(</span>delta<span class="w"> </span><span class="m">266</span><span class="o">)</span>,<span class="w"> </span>reused<span class="w"> </span><span class="m">420</span><span class="w"> </span><span class="o">(</span>delta<span class="w"> </span><span class="m">258</span><span class="o">)</span>,<span class="w"> </span>pack-reused<span class="w"> </span><span class="m">1214</span><span class="w"> </span><span class="o">(</span>from<span class="w"> </span><span class="m">1</span><span class="o">)</span>
+Receiving<span class="w"> </span>objects:<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="o">(</span><span class="m">1687</span>/1687<span class="o">)</span>,<span class="w"> </span><span class="m">265</span>.26<span class="w"> </span>KiB<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">3</span>.12<span class="w"> </span>MiB/s,<span class="w"> </span><span class="k">done</span>.
+Resolving<span class="w"> </span>deltas:<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="o">(</span><span class="m">1036</span>/1036<span class="o">)</span>,<span class="w"> </span><span class="k">done</span>.
+Patching<span class="w"> </span>Xilinx<span class="w"> </span>meta<span class="w"> </span>layer...
+Patching<span class="w"> </span>OE<span class="w"> </span>meta<span class="w"> </span>layer...
+Done
+Please<span class="w"> </span>proceed<span class="w"> </span>to<span class="w"> </span>setup<span class="w"> </span>environment<span class="w"> </span>and<span class="w"> </span>build<span class="w"> </span>the<span class="w"> </span>image.
+</pre></div>
+</div>
+<p>This will clone and patch the relevant repositories required for compiling the kitchen-sink image.</p>
+<p>Go back to the yocto directory and create the build directory as usual with setup-environment, then build <code class="docutils literal notranslate"><span class="pre">sc5xx-kitchen-sink</span></code></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>machine<span class="w"> </span>::<span class="w"> </span>yocto<span class="w"> </span>»<span class="w"> </span><span class="nb">source</span><span class="w"> </span>setup-environment<span class="w"> </span>-m<span class="w"> </span>adsp-sc598-som-ezkit
+Your<span class="w"> </span>build<span class="w"> </span>environment<span class="w"> </span>has<span class="w"> </span>been<span class="w"> </span>configured<span class="w"> </span>with:
+
+<span class="w">        </span><span class="nv">MACHINE</span><span class="o">=</span>adsp-sc598-som-ezkit
+
+You<span class="w"> </span>can<span class="w"> </span>now<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;bitbake &lt;target&gt;&#39;</span>
+Some<span class="w"> </span>of<span class="w"> </span>common<span class="w"> </span>targets<span class="w"> </span>are:
+<span class="w">        </span>u-boot-adi
+<span class="w">        </span>linux-adi
+<span class="w">        </span>adsp-sc5xx-ramdisk-emmc-tools
+<span class="w">        </span>adsp-sc5xx-kitchen-sink
+<span class="w">        </span>adsp-sc5xx-minimal
+<span class="w">        </span>adsp-sc5xx-minimal-mmc
+<span class="w">        </span>adsp-sc5xx-full
+<span class="w">        </span>adsp-sc5xx-ramdisk
+<span class="w">        </span>adsp-sc5xx-tiny
+</pre></div>
+</div>
+<p>This can now either be booted via NFS/eMMC/SD card boot (spiboot is not available due to image size).</p>
+</section>
+<section id="neofetch">
+<h2>Neofetch<a class="headerlink" href="#neofetch" title="Link to this heading"></a></h2>
+<p>This is a commonly found package within package managers which showcases some details about the current Linux Distribution and hardware
+specifications of the machine. The support is however not maintained for Yocto. Since we are working in an open source environment however, we
+can add our <a class="icon link reference external" href="https://github.com/analogdevicesinc/lnxdsp-adi-meta/blob/glencos%2Bjupyter/meta-adi-adsp-sc5xx/recipes-adi/neofetch/neofetch.bb" target="_blank">own instructions for Yocto</a> to include it.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w">        </span>Analog<span class="w"> </span>Devices<span class="w"> </span>Yocto<span class="w"> </span>Distribution
+<span class="w">                 </span>www.analog.com
+<span class="w">              </span>www.yoctoproject.org
+
+<span class="w">     </span>***************************************
+<span class="w">     </span>*************<span class="w"> </span>PLEASE<span class="w"> </span>NOTE<span class="w"> </span>*************
+<span class="w">     </span>***************************************
+<span class="w">     </span>*<span class="w"> </span>This<span class="w"> </span>is<span class="w"> </span>an<span class="w"> </span>evaluation<span class="w"> </span>system<span class="w"> </span>with<span class="w">   </span>*
+<span class="w">     </span>*<span class="w"> </span>default<span class="w"> </span>username/password<span class="w">           </span>*
+<span class="w">     </span>***************************************
+<span class="w">     </span>*******<span class="w"> </span>NOT<span class="w"> </span>FIT<span class="w"> </span>FOR<span class="w"> </span>PRODUCTION<span class="w"> </span>********
+<span class="w">     </span>***************************************
+
+adsp-sc598-som-ezkit<span class="w"> </span>login:<span class="w"> </span>root
+Password:
+
+<span class="w">     </span>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@<span class="w">        </span>-------------------------
+<span class="w">     </span>@@@@@@@@<span class="w">  </span>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@<span class="w">        </span>OS:<span class="w"> </span>Analog<span class="w"> </span>Devices<span class="w"> </span>Inc<span class="w"> </span>Reference<span class="w"> </span>Distro<span class="w"> </span><span class="o">(</span>glibc<span class="o">)</span><span class="w"> </span><span class="m">5</span>.0.0<span class="w"> </span><span class="o">(</span>scarthgap<span class="o">)</span><span class="w"> </span>aarch64
+<span class="w">     </span>@@@@@@@@<span class="w">     </span>@@@@@@@@@@@@@@@@@@@@@@@@@@<span class="w">        </span>Host:<span class="w"> </span>ADI<span class="w"> </span><span class="m">64</span>-bit<span class="w"> </span>SC598<span class="w"> </span>SOM<span class="w"> </span>EZ<span class="w"> </span>Kit
+<span class="w">     </span>@@@@@@@@<span class="w">        </span>@@@@@@@@@@@@@@@@@@@@@@@<span class="w">        </span>Kernel:<span class="w"> </span><span class="m">6</span>.12.0-yocto-standard-00061-g6d25618933d1
+<span class="w">     </span>@@@@@@@@<span class="w">            </span>@@@@@@@@@@@@@@@@@@@<span class="w">        </span>Uptime:<span class="w"> </span><span class="m">1</span><span class="w"> </span>min
+<span class="w">     </span>@@@@@@@@<span class="w">               </span>@@@@@@@@@@@@@@@@<span class="w">        </span>Shell:<span class="w"> </span>sh
+<span class="w">     </span>@@@@@@@@<span class="w">                   </span>@@@@@@@@@@@@<span class="w">        </span>CPU:<span class="w"> </span><span class="o">(</span><span class="m">1</span><span class="o">)</span>
+<span class="w">     </span>@@@@@@@@<span class="w">                     </span>@@@@@@@@@@<span class="w">        </span>Memory:<span class="w"> </span>54MiB<span class="w"> </span>/<span class="w"> </span>202MiB
+<span class="w">     </span>@@@@@@@@<span class="w">                        </span>@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">                     </span>@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">                   </span>@@@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">               </span>@@@@@@@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">            </span>@@@@@@@@@@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">        </span>@@@@@@@@@@@@@@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">     </span>@@@@@@@@@@@@@@@@@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@<span class="w">  </span>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+<span class="w">     </span>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+root@adsp-sc598-som-ezkit:~#
+</pre></div>
+</div>
+</section>
+<section id="pyrpmsg">
+<h2>PyRPMsg<a class="headerlink" href="#pyrpmsg" title="Link to this heading"></a></h2>
+<p>This is a simple python library written from scratch that exhibits the Linux RPMsg interface as an interact-able shell, allowing fast prototyping/testing for SHARC firmware. Similar to Neofetch, there is no support for this package since it is something completely custom and as a result, we have added <a class="icon link reference external" href="https://github.com/analogdevicesinc/lnxdsp-adi-meta/tree/glencos%2Bjupyter/meta-adi-adsp-sc5xx/recipes-adi/python3-pyrpmsg" target="_blank">support for it</a>.</p>
+<p>Usage instructions can be found <a class="icon link reference external" href="https://github.com/analogdevicesinc/lnxdsp-adi-meta/tree/glencos%2Bjupyter/meta-adi-adsp-sc5xx/recipes-adi/python3-pyrpmsg/python3-pyrpmsg/source" target="_blank">here</a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is NOT maintained and should ONLY be used for evaluation purposes. It is meant to be an example for including custom userspace programs in the meta layer</p>
+</div>
+</section>
+<section id="jupyterlab">
+<h2>JupyterLab<a class="headerlink" href="#jupyterlab" title="Link to this heading"></a></h2>
+<p>This is the de facto interactive python notebook and is a complex piece of software. Getting such functionality enabled, out of the box, with custom bare metal software would incur significant costs.</p>
+<p>Since this package is available for Linux (like several other larger projects) and support is maintained for Yocto by <a class="icon link reference external" href="https://github.com/Xilinx/meta-jupyter" target="_blank">Xilinx</a>, we have the option to supplement our build with it via <a class="icon link reference external" href="https://github.com/analogdevicesinc/lnxdsp-adi-meta/blob/glencos%2Bjupyter/meta-adi-adsp-sc5xx/recipes-adi/images/adsp-sc5xx-kitchen-sink.bb" target="_blank">a few changes</a>.</p>
+<p>You can connect to the jupyter-lab using port forwarding. On your local machine, run the following to connect to the board via SSH:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>-L<span class="w"> </span><span class="m">9091</span>:localhost:9091<span class="w"> </span>root@10.42.0.109
+</pre></div>
+</div>
+<p>Once connected, this should now be forwarding the port 9091 from the board to your local machine.</p>
+<p>On the board, start jupyter lab:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>root@adsp-sc598-som-ezkit:~#<span class="w"> </span>jupyter-lab<span class="w"> </span>--allow-root<span class="w"> </span>--no-browser<span class="w"> </span>--port<span class="o">=</span><span class="m">9091</span>
+<span class="o">[</span>I<span class="w"> </span><span class="m">2024</span>-02-27<span class="w"> </span><span class="m">17</span>:32:45.013<span class="w"> </span>ServerApp<span class="o">]</span><span class="w"> </span>jupyterlab<span class="w"> </span><span class="p">|</span><span class="w"> </span>extension<span class="w"> </span>was<span class="w"> </span>successfully<span class="w"> </span>linked.
+<span class="o">[</span>I<span class="w"> </span><span class="m">2024</span>-02-27<span class="w"> </span><span class="m">17</span>:32:45.057<span class="w"> </span>ServerApp<span class="o">]</span><span class="w"> </span>nbclassic<span class="w"> </span><span class="p">|</span><span class="w"> </span>extension<span class="w"> </span>was<span class="w"> </span>successfully<span class="w"> </span>linked.
+<span class="o">[</span>I<span class="w"> </span><span class="m">2024</span>-02-27<span class="w"> </span><span class="m">17</span>:32:49.281<span class="w"> </span>ServerApp<span class="o">]</span><span class="w"> </span>notebook_shim<span class="w"> </span><span class="p">|</span><span class="w"> </span>extension<span class="w"> </span>was<span class="w"> </span>successfully<span class="w"> </span>linked.
+<span class="o">[</span>I<span class="w"> </span><span class="m">2024</span>-02-27<span class="w"> </span><span class="m">17</span>:32:49.568<span class="w"> </span>ServerApp<span class="o">]</span><span class="w"> </span>notebook_shim<span class="w"> </span><span class="p">|</span><span class="w"> </span>extension<span class="w"> </span>was<span class="w"> </span>successfully<span class="w"> </span>loaded.
+<span class="o">[</span>I<span class="w"> </span><span class="m">2024</span>-02-27<span class="w"> </span><span class="m">17</span>:32:49.574<span class="w"> </span>LabApp<span class="o">]</span><span class="w"> </span>JupyterLab<span class="w"> </span>extension<span class="w"> </span>loaded<span class="w"> </span>from<span class="w"> </span>/usr/lib/python3.12/site-packages/jupyterlab
+<span class="o">[</span>I<span class="w"> </span><span class="m">2024</span>-02-27<span class="w"> </span><span class="m">17</span>:32:49.574<span class="w"> </span>LabApp<span class="o">]</span><span class="w"> </span>JupyterLab<span class="w"> </span>application<span class="w"> </span>directory<span class="w"> </span>is<span class="w"> </span>/usr/share/jupyter/lab
+<span class="o">[</span>I<span class="w"> </span><span class="m">2024</span>-02-27<span class="w"> </span><span class="m">17</span>:32:49.602<span class="w"> </span>ServerApp<span class="o">]</span><span class="w"> </span>jupyterlab<span class="w"> </span><span class="p">|</span><span class="w"> </span>extension<span class="w"> </span>was<span class="w"> </span>successfully<span class="w"> </span>loaded.
+<span class="o">[</span>I<span class="w"> </span><span class="m">2024</span>-02-27<span class="w"> </span><span class="m">17</span>:32:49.666<span class="w"> </span>ServerApp<span class="o">]</span><span class="w"> </span>nbclassic<span class="w"> </span><span class="p">|</span><span class="w"> </span>extension<span class="w"> </span>was<span class="w"> </span>successfully<span class="w"> </span>loaded.
+<span class="o">[</span>I<span class="w"> </span><span class="m">2024</span>-02-27<span class="w"> </span><span class="m">17</span>:32:49.734<span class="w"> </span>ServerApp<span class="o">]</span><span class="w"> </span>Serving<span class="w"> </span>notebooks<span class="w"> </span>from<span class="w"> </span><span class="nb">local</span><span class="w"> </span>directory:<span class="w"> </span>/root
+<span class="o">[</span>I<span class="w"> </span><span class="m">2024</span>-02-27<span class="w"> </span><span class="m">17</span>:32:49.734<span class="w"> </span>ServerApp<span class="o">]</span><span class="w"> </span>Jupyter<span class="w"> </span>Server<span class="w"> </span><span class="m">1</span>.18.1<span class="w"> </span>is<span class="w"> </span>running<span class="w"> </span>at:
+<span class="o">[</span>I<span class="w"> </span><span class="m">2024</span>-02-27<span class="w"> </span><span class="m">17</span>:32:49.735<span class="w"> </span>ServerApp<span class="o">]</span><span class="w"> </span>http://localhost:8080/lab?token<span class="o">=</span>3943b8d4efaf585f2d06e30dae719eece5102ca5878d0493
+<span class="o">[</span>I<span class="w"> </span><span class="m">2024</span>-02-27<span class="w"> </span><span class="m">17</span>:32:49.735<span class="w"> </span>ServerApp<span class="o">]</span><span class="w">  </span>or<span class="w"> </span>http://127.0.0.1:9091/lab?token<span class="o">=</span>3943b8d4efaf585f2d06e30dae719eece5102ca5878d0493
+<span class="o">[</span>I<span class="w"> </span><span class="m">2024</span>-02-27<span class="w"> </span><span class="m">17</span>:32:49.736<span class="w"> </span>ServerApp<span class="o">]</span><span class="w"> </span>Use<span class="w"> </span>Control-C<span class="w"> </span>to<span class="w"> </span>stop<span class="w"> </span>this<span class="w"> </span>server<span class="w"> </span>and<span class="w"> </span>shut<span class="w"> </span>down<span class="w"> </span>all<span class="w"> </span>kernels<span class="w"> </span><span class="o">(</span>twice<span class="w"> </span>to<span class="w"> </span>skip<span class="w"> </span>confirmation<span class="o">)</span>.
+<span class="o">[</span>C<span class="w"> </span><span class="m">2024</span>-02-27<span class="w"> </span><span class="m">17</span>:32:49.780<span class="w"> </span>ServerApp<span class="o">]</span>
+
+<span class="w">    </span>To<span class="w"> </span>access<span class="w"> </span>the<span class="w"> </span>server,<span class="w"> </span>open<span class="w"> </span>this<span class="w"> </span>file<span class="w"> </span><span class="k">in</span><span class="w"> </span>a<span class="w"> </span>browser:
+<span class="w">        </span>file:///root/.local/share/jupyter/runtime/jpserver-373-open.html
+<span class="w">    </span>Or<span class="w"> </span>copy<span class="w"> </span>and<span class="w"> </span>paste<span class="w"> </span>one<span class="w"> </span>of<span class="w"> </span>these<span class="w"> </span>URLs:
+<span class="w">        </span>http://localhost:9091/lab?token<span class="o">=</span>3943b8d4efaf585f2d06e30dae719eece5102ca5878d0493
+<span class="w">     </span>or<span class="w"> </span>http://127.0.0.1:9091/lab?token<span class="o">=</span>3943b8d4efaf585f2d06e30dae719eece5102ca5878d0493
+</pre></div>
+</div>
+<p>You should now be able to access the instance from your local machine from <code class="docutils literal notranslate"><span class="pre">http://localhost:9091</span></code></p>
+<p>NOTE: If you cannot access a browser on your build machine, you can daisy chain the port forwarding via multiple SSH sessions.</p>
+<p>You should be able to see the following page:</p>
+<img alt="https://github.com/user-attachments/assets/7468f9e3-5848-49b5-9027-24a856872eaa" src="https://github.com/user-attachments/assets/7468f9e3-5848-49b5-9027-24a856872eaa" />
+</section>
+</section>
+
+
+          </div>
+              <div class="related">
+                &nbsp;
+    <a href="USB-Gadget-Audio-Example.html" title="Previous document (Alt+Shift+LeftArrow)" class="prev">USB Gadget Audio Example</a>
+    <a href="U%E2%80%90Boot-Falcon-Mode-Example.html" title="Next document (Alt+Shift+RightArrow)" class="next">U-Boot Falcon Mode Example</a>
+              </div>
+          
+        </div>
+      </div>
+  </div>
+
+  <label id="cancel-area-show-toc" for="input-show-toc"></label>
+  <label id="cancel-area-show-localtoc" for="input-show-localtoc"></label>
+    <footer>
+      &#169;2026, Analog Devices, Inc.
+      
+      |
+      Made with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+      &amp; <a href="https://github.com/analogdevicesinc/doctools">Doctools</a>
+      
+    </footer>
+  </body>
+</html>
