@@ -15,8 +15,8 @@ SRC_URI:append="\
 	file://feature/cfg/tracepoints.cfg \
 "
 
-PV="6.12"
-KERNEL_BRANCH = "adsp-6.12.0-y"
+PV="6.18"
+KERNEL_BRANCH = "adsp-6.18.31-y"
 
 SRCREV="7da0cef491e39b2a61040e54b937455cdce22d22"
 KERNEL_VERSION_SANITY_SKIP = "1"
