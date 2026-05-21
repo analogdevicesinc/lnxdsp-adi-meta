@@ -55,7 +55,10 @@ EXTRA_USERS_PARAMS = "usermod -p '${PASSWD_ROOT}' root;"
 TOOLCHAIN_HOST_TASK:append = " nativesdk-openocd-adi"
 TOOLCHAIN_HOST_TASK:append = " nativesdk-ldr-adi"
 
-IMAGE_FSTYPES:append = " tar.xz ubifs "
+IMAGE_FSTYPES:append = " tar.xz ubi ext4"
+
+UBI_VOLNAME = "rootfs"
+UBINIZE_ARGS = "-m 1 -p 65536 -s 1"
 
 #For some reason on poky-tiny, INIT_MANAGER="systemd" does not appear to work
 #For now, let's relink directly to systemd
@@ -95,9 +98,9 @@ do_create_programming_images(){
         cp ${DEPLOY_DIR_IMAGE}/fitImage ${PROG_DIR}/
     fi
 
-    # Copy rootfs.ubifs, rename to 'rootfs.ubifs'
-    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubifs ]; then
-        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubifs ${PROG_DIR}/rootfs.ubifs
+    # Copy rootfs.ubi
+    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubi ]; then
+        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubi ${PROG_DIR}/rootfs.ubi
     fi
 
     if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ext4 ]; then
