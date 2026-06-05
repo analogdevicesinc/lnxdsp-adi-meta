@@ -1,0 +1,100 @@
+name: Build ADI Yocto artifacts
+
+on:
+  workflow_dispatch:
+  pull_request:
+  release:
+    types: [published]
+  schedule:
+    - cron: '0 4 * * *' # 04:00 UTC (05:00/06:00 CET/CEST, 23:00/00:00 EST/EDT)
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        machine:
+          - adsp-sc598-som-ezkit
+        image:
+          - adsp-sc5xx-minimal
+
+    steps:
+      - name: Setup build workspace
+        run: |
+          # Create ephemeral workspace directory for this run
+          WORKSPACE="${GITHUB_WORKSPACE}/yocto-build-${GITHUB_RUN_ID}"
+          mkdir -p "${WORKSPACE}"
+
+          # Create persistent cache directories in runner's home
+          YOCTO_DL_DIR="${HOME}/.yocto-downloads"
+          YOCTO_SSTATE_DIR="${HOME}/.yocto-sstate"
+          mkdir -p "${YOCTO_DL_DIR}"
+          mkdir -p "${YOCTO_SSTATE_DIR}"
+
+          # Save workspace path and cache dirs for subsequent steps
+          echo "YOCTO_WORKSPACE=${WORKSPACE}" >> $GITHUB_ENV
+          echo "YOCTO_DL_DIR=${YOCTO_DL_DIR}" >> $GITHUB_ENV
+          echo "YOCTO_SSTATE_DIR=${YOCTO_SSTATE_DIR}" >> $GITHUB_ENV
+
+      - name: Setup repo tool
+        run: |
+          cd "${YOCTO_WORKSPACE}"
+          mkdir -p bin
+          curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ./bin/repo
+          chmod a+x ./bin/repo
+
+      - name: Initialize repo manifest
+        run: |
+          cd "${YOCTO_WORKSPACE}"
+          ./bin/repo init \
+            -u https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git \
+            -m main.xml
+
+      - name: Sync all sources
+        run: |
+          cd "${YOCTO_WORKSPACE}"
+          ./bin/repo sync
+
+      - name: Setup build environment for ${{ matrix.machine }}
+        run: |
+          cd "${YOCTO_WORKSPACE}"
+          source setup-environment -m ${{ matrix.machine }}
+
+          # Configure for CI with persistent caches in runner's home directory
+          cat >> conf/local.conf <<EOF
+
+          # CI Build Configuration - use persistent caches from runner's home
+          DL_DIR = "${{ env.YOCTO_DL_DIR }}"
+          SSTATE_DIR = "${{ env.YOCTO_SSTATE_DIR }}"
+          EOF
+
+      - name: Build ${{ matrix.image }} for ${{ matrix.machine }}
+        run: |
+          cd "${YOCTO_WORKSPACE}"
+          source setup-environment -b build
+          bitbake ${{ matrix.image }}
+
+      - name: Upload Yocto images for ${{ matrix.machine }} - ${{ matrix.image }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: images-${{ matrix.machine }}-${{ matrix.image }}
+          path: ${{ env.YOCTO_WORKSPACE }}/build/tmp/deploy/images/${{ matrix.machine }}
+
+      - name: Archive output images directory
+        if: ${{ github.event_name == 'release' }}
+        run: |
+          cd "${YOCTO_WORKSPACE}"
+          tar -cJvf images-${{ matrix.machine }}-${{ matrix.image }}-${{ github.event.release.tag_name }}.tar.xz \
+            build/tmp/deploy/images/${{ matrix.machine }}/
+
+      - name: Upload release archive to release
+        uses: svenstaro/upload-release-action@v2
+        if: ${{ github.event_name == 'release' }}
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ env.YOCTO_WORKSPACE }}/images-${{ matrix.machine }}-${{ matrix.image }}-${{ github.event.release.tag_name }}.tar.xz
+          tag: ${{ github.ref }}
