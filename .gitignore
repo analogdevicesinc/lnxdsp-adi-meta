@@ -16,6 +16,12 @@ build/
 *.egg-info/
 docs/_build/
 
+# Repo tool files
+.repo/
+bin/
+sources/
+setup-environment
+
 # Log files
 *.log
 
