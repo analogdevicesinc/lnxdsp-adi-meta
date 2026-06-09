@@ -157,7 +157,7 @@ Before installing the software on to the development board, ensure that the foll
 
 {% endif %}
 
-Programming the board for the first time
+Preparing the board for first-time programming
 --------------------------------------------------------------
 
 .. note::
@@ -165,28 +165,7 @@ Programming the board for the first time
    It's always good practice to erase the contents of the folders mentioned below before running and/or flashing a new build of U-Boot or Linux. You can do so by executing ``rm /<folder>/*`` on your host PC before proceeding.
    This will erase the contents of the folders but not the folders themselves.
 
-------------------------------
-Bootstrapping to Linux
-------------------------------
-
-The programming sequence uses nfsboot to bootstrap to Linux, and from there program all boot medias available. Before beginning, follow these steps.
-
-Populate the NFS file system with the files for booting:
-
-.. code-block:: shell
-
-   sudo tar -xf tmp/deploy/images/adsp-sc5xx-full={{ machine }}.rootfs.tar.xz -C /romfs
-
-.. note::
-   The directory for this extraction is `/romfs` if you followed the directions in :doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>`.
-   Also, the adsp-sc5xx-minimal image can also be used, but will not include installed some of the debugging tools that the full image will have
-   if there are problems.
-
-Copy the programming files into the /usr/firmware directory in the NFS filesystem 
-
-.. code-block:: shell
-
-   sudo cp tmp/deploy/images/programming-images/adsp-sc5xx-minimal/* /romfs/usr/firmware
+There are several ways to program the board for the first time, depending on which boot media you are trying to program. Before programming, follow these instructions to get to U-Boot proper.
 
 ------------------------------
 Starting the Python webserver
@@ -279,9 +258,10 @@ At this point U-Boot will now be running in RAM on your target board. You should
 
 {{uboot_proper_boot | indent(3, True)}}
 
--------------------------
-Programming Images
--------------------------
+
+-----------------------------------------------------
+Setting the IP address of the board for file transfer
+-----------------------------------------------------
 
 In the U-Boot console, set the IP address of the Linux PC that hosts the Python webserver, and the IP address of the board itself, if not using dhcp.
 
@@ -301,6 +281,63 @@ If your network **supports** DHCP, run:
 .. code-block:: shell
 
    => dhcp
+
+Programming the board for the first time
+----------------------------------------
+
+There are two main ways to program the board. The bootstrap image, which will program only the SPI, and the programming script for programming everything else.
+
+------------------------------------
+Bootstrap Image for SPI programming
+------------------------------------
+
+The Yocto build system provides a build target to create a bootstrap fitImage which will automatically program the SPI flash. Before following the below steps, build the bootstrap image with this command
+
+.. code-block:: shell
+
+   bitbake adsp-sc5xx-bootstrap
+
+Then copy the `bootstrap-fitImage` file into the directory where the Python webserver is serving files from
+
+---------------------------------
+Programming with Bootstrap Image
+---------------------------------
+
+Once the IP addresses are set up and the bootstrap fitImage available in the http server, issue the following command.
+
+.. code-block:: shell
+
+   wget ${loadaddr} ${serverip}:/bootstrap-fitImage
+   bootm
+
+The image will boot to Linux and automatically install U-boot and Linux to the SPI flash
+
+-----------------------------------
+Programming with Programming Script
+-----------------------------------
+If you want to program other boot media, such as the eMMC, or want more control over what is programmed versus the bootstrap image, follow these instructions once you have booted into U-boot and set the IP address.
+
+This programming sequence uses nfsboot to bootstrap to Linux, and from there program all boot medias available.
+
+Populate the NFS file system with the files for booting:
+
+.. code-block:: shell
+
+   sudo tar -xf tmp/deploy/images/adsp-sc5xx-full={{ machine }}.rootfs.tar.xz -C /romfs
+
+.. note::
+   The directory for this extraction is `/romfs` if you followed the directions in :doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>`.
+   Also, the adsp-sc5xx-minimal image can also be used, but will not include installed some of the debugging tools that the full image will have
+   if there are problems.
+
+Copy the programming files into the /usr/firmware directory in the NFS filesystem 
+
+.. code-block:: shell
+
+   sudo cp tmp/deploy/images/programming-images/adsp-sc5xx-minimal/* /romfs/usr/firmware
+
+Programming Images
+^^^^^^^^^^^^^^^^^^
 
 Start the boot to Linux using nfsboot, and wait for the login prompt.
 
