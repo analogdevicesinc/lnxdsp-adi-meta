@@ -1,16 +1,27 @@
-#LBA-34 (17KB)
-part bootloader --source rawcopy --sourceparams="file=${MMC_BOOT_STAGE1}" --ondisk mmcblk --no-table --align 17
+# eMMC/SD image layout for ADSP-SC5xx boards (ext4 filesystem boot).
+#
+# Mirrors the ADI buildroot eMMC layout, replacing boot.vfat with an ext4
+# boot filesystem that holds the fitImage. The SPL boots in ext4 FS mode:
+# it mounts partition 1 and loads "fitImage" by name.
+#
+#   - U-Boot SPL    : raw, outside the partition table, at LBA-34 (17K)
+#   - U-Boot proper : raw, outside the partition table, at 128K
+#   - boot   (p1)   : ext4, holds the prebuilt fitImage (IMAGE_BOOT_FILES)
+#   - rootfs (p2)   : the prebuilt rootfs.ext4 image, copied in as-is
+#
+# The boot ROM starts reading at GPT LBA-34, which is why the SPL is placed
+# there and the GPT partition entries are kept before it.
 
-#LBA-512 (256KB)
-part bootloader --source rawcopy --sourceparams="file=${MMC_BOOT_STAGE2}" --ondisk mmcblk --no-table --align 256
+# LBA-34 (17K) - U-Boot SPL
+part --source rawcopy --sourceparams="file=${MMC_BOOT_STAGE1}" --ondisk mmcblk --no-table --align 17
 
-# LBA-2048 (1024KB) - DTB for raw mode falcon boot
-part bootloader --source rawcopy --sourceparams="file=${BOARD}.dtb" --ondisk mmcblk --no-table --align 1024
+# 128K - U-Boot proper
+part --source rawcopy --sourceparams="file=${MMC_BOOT_STAGE2}" --ondisk mmcblk --no-table --align 128
 
-# LBA-4096 (2048KB) - Kernel Image for raw mode falcon boot
-part bootloader --source rawcopy --sourceparams="file=${KERNEL_IMAGETYPE}" --ondisk mmcblk --no-table --align 2048
+# boot partition (p1): ext4 wrapping the prebuilt fitImage
+part /boot --source bootimg-partition --ondisk mmcblk --fstype=ext4 --label boot --align 1024 --size 64M
 
-# (32M) - RFS
-part / --source rawcopy --sourceparams="file=${IMGDEPLOYDIR}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ext4" --ondisk mmcblk --fstype=ext4 --align 32768
+# rootfs partition (p2): the prebuilt rootfs.ext4, copied in directly
+part / --source rawcopy --sourceparams="file=${IMGDEPLOYDIR}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ext4" --ondisk mmcblk --fstype=ext4 --label rootfs --align 1024
 
-bootloader --ptable msdos
+bootloader --ptable gpt
