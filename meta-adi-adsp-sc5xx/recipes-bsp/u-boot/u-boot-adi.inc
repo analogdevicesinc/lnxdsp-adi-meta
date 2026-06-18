@@ -33,7 +33,7 @@ python() {
 
 }
 
-UBOOT_BRANCH ?= "adi-u-boot-2025.10.y"
+UBOOT_BRANCH ?= "u-boot-os-boot-mode-testing"
 
 # On the SC598, we can't boot directly from the eMMC due to default speed configuration issues
 # We can boot the SPL from OSPI or QSPI and then subsequently boot U-Boot Proper from eMMC
