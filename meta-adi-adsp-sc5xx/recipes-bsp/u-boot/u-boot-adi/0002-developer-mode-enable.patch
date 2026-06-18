@@ -1,8 +1,6 @@
-diff --git a/arch/arm/mach-sc5xx/spl.c b/arch/arm/mach-sc5xx/spl.c
-index 68e0310f5af..362263bdb0c 100644
 --- a/arch/arm/mach-sc5xx/spl.c
 +++ b/arch/arm/mach-sc5xx/spl.c
-@@ -21,6 +21,7 @@ static int adi_sf_default_cs = CONFIG_SF_DEFAULT_CS;
+@@ -18,6 +18,7 @@
  static int adi_sf_default_speed = CONFIG_SF_DEFAULT_SPEED;
  
  u32 bmode;
@@ -10,12 +8,12 @@ index 68e0310f5af..362263bdb0c 100644
  
  int spl_start_uboot(void)
  {
-@@ -45,6 +46,18 @@ unsigned int spl_spi_get_default_cs(void)
+@@ -48,9 +49,34 @@
  void board_boot_order(u32 *spl_boot_list)
  {
  	const char *bmodestring = sc5xx_get_boot_mode(&bmode);
 +	int i = 0;
-+	static char *bmodes[] = {
++	static const char * const bmodes[] = {
 +		"JTAG/BOOTROM",
 +		"QSPI Master",
 +		"QSPI Slave",
@@ -23,28 +21,25 @@ index 68e0310f5af..362263bdb0c 100644
 +		"LP0 Slave",
 +		"OSPI",
 +#ifdef CONFIG_SC59X_64
-+		"eMMC"
++		"eMMC",
 +#endif
 +	};
  
  	printf("ADI Boot Mode: 0x%x (%s)\n", bmode, bmodestring);
  
-@@ -54,6 +67,18 @@ void board_boot_order(u32 *spl_boot_list)
- 	 */
- 	spl_boot_list[0] = BOOT_DEVICE_BOOTROM;
- 
-+	bmode = *((unsigned int *) BMODE_ADDR) - 1;
-+ 	printf("Entering Developer Mode...\n");
-+ 	if ((ARRAY_SIZE(bmodes) <= bmode) || (0 >= bmode)) {
-+ 		printf("Please enter a bootmode at 0x%08x via JTAG:\n",BMODE_ADDR);
-+ 		for (i = 0; i < ARRAY_SIZE(bmodes); i++)
-+ 			printf("[%d]	%s\n", i+1, bmodes[i]);
-+ 		
-+ 		bmode = 0; //allow continuing to load U-boot proper if needed
-+ 	} else {
-+ 		printf("Booting into %s\n", bmodes[bmode], bmode);
-+ 	}
++	bmode = (*(volatile unsigned int *)BMODE_ADDR) - 1;
++	printf("Entering Developer Mode...\n");
++	if (bmode >= ARRAY_SIZE(bmodes)) {
++		printf("Please enter a bootmode at 0x%08x via JTAG:\n", BMODE_ADDR);
++		for (i = 0; i < ARRAY_SIZE(bmodes); i++)
++			printf("[%d]\t%s\n", i + 1, bmodes[i]);
 +
- 	if (bmode == 0) {
++		/* Allow continuing to load U-Boot proper if needed. */
++		bmode = 0;
++	} else {
++		printf("Booting into %s\n", bmodes[bmode]);
++	}
++
+ 	switch (bmode) {
+ 	case 0:
  		printf("SPL execution has completed.  Please load U-Boot Proper via JTAG");
- 		while (1)

@@ -4,21 +4,22 @@ Date: Mon, 9 Feb 2026 10:30:27 -0500
 Subject: [PATCH] Enabled SD card support for RevE SC598 SOM
 
 ---
- arch/arm/dts/sc598-som-revE.dtsi | 4 ++--
+ arch/arm/dts/sc598-som-revE.dtsi | 6 ++++--
  arch/arm/dts/sc598-som.dtsi      | 5 +++--
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ 2 files changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/arch/arm/dts/sc598-som-revE.dtsi b/arch/arm/dts/sc598-som-revE.dtsi
 index bec504102e7..5599f3d6d02 100644
 --- a/arch/arm/dts/sc598-som-revE.dtsi
 +++ b/arch/arm/dts/sc598-som-revE.dtsi
-@@ -48,14 +48,14 @@
+@@ -50,15 +50,17 @@
  		som-emmc {
  			gpio-hog;
  			gpios = <8 GPIO_ACTIVE_LOW>;
 -			output-high;
 +			output-low;
  			line-name = "som-emmc-en";
++			bootph-pre-ram;
  		};
  
  		crr-sdcard {
@@ -27,8 +28,10 @@ index bec504102e7..5599f3d6d02 100644
 -			output-low;
 +			output-high;
  			line-name = "crr-sdcard-en";
++			bootph-pre-ram;
  		};
  
+ 		led-ds3 {
 diff --git a/arch/arm/dts/sc598-som.dtsi b/arch/arm/dts/sc598-som.dtsi
 index bc212ef25cb..47596f55d9f 100644
 --- a/arch/arm/dts/sc598-som.dtsi
