@@ -103,8 +103,8 @@ do_create_programming_images(){
         cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubi ${PROG_DIR}/rootfs.ubi
     fi
 
-    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ext4 ]; then
-        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ext4 ${PROG_DIR}/rootfs.ext4
+    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.wic.gz ]; then
+        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.wic.gz ${PROG_DIR}/image.wic.gz
     fi
 
     echo "Programming images created in: ${PROG_DIR}"

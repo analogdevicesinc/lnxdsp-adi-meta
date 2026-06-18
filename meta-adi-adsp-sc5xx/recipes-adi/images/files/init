@@ -107,33 +107,35 @@ case "$MACHINE_MODEL" in
       y|Y)
         echo "Installing to EMMC..."
 
-        echo "Partitioning eMMC..."
-        # Create DOS MBR partition table with two primary partitions
-        # Partition 1: 32MB for fitImage (should be more than enough)
-        # Partition 2: Remainder for rootfs
-        echo -e 'o\nn\np\n1\n\n+32M\nn\np\n2\n\n\nw' | fdisk /dev/mmcblk0 > /dev/null
+        # The wic image is the full eMMC disk layout produced by Yocto
+        # (GPT + U-Boot SPL + U-Boot proper + boot/rootfs partitions). Write
+        # it to the whole device in a single pass instead of programming each
+        # component individually.
+        WIC_IMAGE=$(ls /usr/firmware/*.wic.gz 2>/dev/null | head -1)
+        if [ -z "$WIC_IMAGE" ]; then
+          echo "Error: no wic image (/usr/firmware/*.wic.gz) found. Skipping eMMC install."
+        else
+          echo "Writing wic image $WIC_IMAGE to /dev/mmcblk0..."
+          zcat "$WIC_IMAGE" | dd of=/dev/mmcblk0 bs=4M conv=fsync
 
-        # Wait for partition table to be re-read
-        sleep 2
-        partprobe /dev/mmcblk0 || true > /dev/null
-        sleep 1
+          sync
 
-        echo "Formatting eMMC partition 1 as ext4..."
-        mke2fs -F -t ext4 -L "BOOT" /dev/mmcblk0p1 > /dev/null
+          # Fix GPT to match actual eMMC device size (wic image may be smaller than
+          # the actual device, causing the alternate GPT header to be at the wrong
+          # location). Use fdisk write-back since fdisk is already part of the
+          # installer image and can relocate the backup GPT header.
+          echo "Expanding GPT to match device size..."
+          if command -v fdisk >/dev/null 2>&1; then
+            printf 'w\n' | fdisk /dev/mmcblk0 > /dev/null 2>&1 || true
+          else
+            echo "Warning: fdisk not found; GPT backup header may remain misplaced."
+          fi
 
-        echo "Writing fitImage to eMMC partition 1..."
-        mkdir -p /tmp/boot_mount > /dev/null
-        mount /dev/mmcblk0p1 /tmp/boot_mount > /dev/null
-        cp /usr/firmware/fitImage /tmp/boot_mount/ > /dev/null
-        sync
-        umount /tmp/boot_mount > /dev/null
-        rmdir /tmp/boot_mount > /dev/null
-
-        echo "Writing rootfs image to eMMC partition 2..."
-        dd if=/usr/firmware/rootfs.ext4 of=/dev/mmcblk0p2 bs=512 > /dev/null
-
-        sync
-        echo "EMMC install complete"
+          sync
+          partprobe /dev/mmcblk0 >/dev/null 2>&1 || true
+          
+          echo "EMMC install complete"
+        fi
         ;;
       *)
         echo "Skipping EMMC install"
@@ -158,33 +160,36 @@ case "$ans" in
   y|Y)
     echo "Installing to USB..."
 
-    echo "Partitioning USB..."
-    # Create DOS MBR partition table with two primary partitions
-    # Partition 1: 32MB for fitImage (should be more than enough)
-    # Partition 2: Remainder for rootfs
-    echo -e 'o\nn\np\n1\n\n+32M\nn\np\n2\n\n\nw' | fdisk /dev/sda > /dev/null
+    # The wic image is the full disk layout produced by Yocto
+    # (GPT + boot/rootfs partitions). Write it to the whole device in a single
+    # pass instead of programming each component individually. U-Boot's usbboot
+    # loads /fitImage from partition 1 and Linux mounts rootfs from partition 2,
+    # both of which the wic GPT layout provides.
+    WIC_IMAGE=$(ls /usr/firmware/*.wic.gz 2>/dev/null | head -1)
+    if [ -z "$WIC_IMAGE" ]; then
+      echo "Error: no wic image (/usr/firmware/*.wic.gz) found. Skipping USB install."
+    else
+      echo "Writing wic image $WIC_IMAGE to /dev/sda..."
+      zcat "$WIC_IMAGE" | dd of=/dev/sda bs=4M conv=fsync
 
-    # Wait for partition table to be re-read
-    sleep 2
-    partprobe /dev/sda || true > /dev/null
-    sleep 1
+      sync
 
-    echo "Formatting USB partition 1 as ext4..."
-    mke2fs -F -t ext4 -L "BOOT" /dev/sda1 > /dev/null
+      # Fix GPT to match actual USB device size (wic image may be smaller than
+      # the actual device, causing the alternate GPT header to be at the wrong
+      # location). Use fdisk write-back since fdisk is already part of the
+      # installer image and can relocate the backup GPT header.
+      echo "Expanding GPT to match device size..."
+      if command -v fdisk >/dev/null 2>&1; then
+        printf 'w\n' | fdisk /dev/sda > /dev/null 2>&1 || true
+      else
+        echo "Warning: fdisk not found; GPT backup header may remain misplaced."
+      fi
 
-    echo "Writing fitImage to USB partition 1..."
-    mkdir -p /tmp/boot_mount > /dev/null
-    mount /dev/sda1 /tmp/boot_mount > /dev/null
-    cp /usr/firmware/fitImage /tmp/boot_mount/ > /dev/null
-    sync
-    umount /tmp/boot_mount > /dev/null
-    rmdir /tmp/boot_mount > /dev/null
+      sync
+      partprobe /dev/sda >/dev/null 2>&1 || true
 
-    echo "Writing rootfs image to USB partition 2..."
-    dd if=/usr/firmware/rootfs.ext4 of=/dev/sda2 bs=512 > /dev/null
-
-    sync
-    echo "USB install complete"
+      echo "USB install complete"
+    fi
     ;;
   *)
     echo "Skipping USB install"
