@@ -42,7 +42,7 @@ emit_its() {
 
 		fdt-2 {
 			description = "Flattened Device Tree Blob";
-			data = /incbin/("$(basename ${KERNEL_DEVICETREE})");
+			data = /incbin/("${FIT_DTB_FILENAME}");
 			type = "flat_dt";
 			arch = "${ARCH}";
 			compression = "none";
@@ -82,7 +82,7 @@ emit_its() {
 			description = "boot configuration";
 			kernel = "kernel-1";
 			fdt = "fdt-2";
-			ramdisk = "ramdisk-3";
+			loadables = "ramdisk-3";
 			signature-1 {
 				algo = "sha1,rsa2048";
 				key-name-hint = "${UBOOT_SIGN_KEYNAME}";
@@ -93,9 +93,34 @@ emit_its() {
 EOF
 }
 
+prepare_fit_dtb() {
+	local src_dtb="$(basename ${KERNEL_DEVICETREE})"
+	local dst_dtb="${FIT_DTB_FILENAME}"
+	local ramdisk_img="adsp-sc5xx-ramdisk-${MACHINE}.rootfs.cpio.gz"
+	local ramdisk_size
+	local initrd_start
+	local initrd_end
+	local start_lo
+	local end_lo
+
+	cp "$src_dtb" "$dst_dtb"
+
+	ramdisk_size=$(stat -Lc%s "$ramdisk_img")
+	initrd_start=$(printf "%d" ${UBOOT_RDADDR})
+	initrd_end=$(expr "$initrd_start" + "$ramdisk_size")
+	start_lo=$(printf "%x" "$initrd_start")
+	end_lo=$(printf "%x" "$initrd_end")
+
+	# Ensure /chosen exists, then encode initrd bounds as 64-bit cells.
+	fdtput -c "$dst_dtb" /chosen >/dev/null 2>&1 || true
+	fdtput -t x "$dst_dtb" /chosen linux,initrd-start 0 "$start_lo"
+	fdtput -t x "$dst_dtb" /chosen linux,initrd-end 0 "$end_lo"
+}
+
 do_assemble_fitimage() {
 	cd ${DEPLOY_DIR_IMAGE}
         echo "currently in ${DEPLOY_DIR_IMAGE}"
+	prepare_fit_dtb;
 	emit_its;
 	uboot-mkimage -D "${UBOOT_MKIMAGE_DTCOPTS}" -f fit-image.its fitImage
 }
@@ -116,12 +141,15 @@ do_assemble_fitimage[vardeps] += " \
     UBOOT_ENTRYPOINT \
     UBOOT_SIGN_KEYNAME \
     UBOOT_DTBADDRESS \
+	UBOOT_RDADDR \
     ARCH \
     UBOOT_MKIMAGE_DTCOPTS \
     KERNEL_COMPRESSION \
     KERNEL_DEVICETREE \
     KERNEL_IMAGETYPE \
 "
+
+FIT_DTB_FILENAME ?= "falcon-fit.dtb"
 
 do_image_wic[depends] += "\
      ${PN}:do_assemble_fitimage \
