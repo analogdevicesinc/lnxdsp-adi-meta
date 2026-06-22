@@ -1,0 +1,11 @@
+[Unit]
+Description=ADI GPIO boot-trace marker
+After=boot-complete.target
+Requires=boot-complete.target
+
+[Service]
+Type=exec
+ExecStart=/usr/libexec/gpio-boot-trace
+
+[Install]
+WantedBy=multi-user.target
