@@ -1,0 +1,39 @@
+#!/bin/sh
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+set -e
+
+# Set the port address and line number for the board
+case "$(hostname)" in
+*sc598*)
+	# Port A, line 13 for the sc598
+	PORT_ADDR="31004000"
+	LINE=13
+	;;
+*)
+	echo "gpio-boot-trace: unsupported machine '$(hostname)'" >&2
+	exit 1
+	;;
+esac
+
+chip=""
+for dev in /sys/bus/gpio/devices/gpiochip*; do
+	[ -e "${dev}" ] || continue
+	real=$(readlink -f "${dev}") || continue
+	case "${real}" in
+	*"${PORT_ADDR}"*)
+		chip=$(basename "${dev}")
+		break
+		;;
+	esac
+done
+
+if [ -z "${chip}" ]; then
+	echo "gpio-boot-trace: GPIO port (${PORT_ADDR}) gpiochip not found" >&2
+	exit 1
+fi
+
+gpioset -z -C gpio-boot-trace -c "${chip}" "${LINE}=0"
+
+echo "gpio-boot-trace: ${PORT_ADDR} line ${LINE} (${chip}) low"
+exit 0
