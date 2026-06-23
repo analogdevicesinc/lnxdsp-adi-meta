@@ -75,6 +75,7 @@ jobs:
       - name: Build ${{ matrix.image }} for ${{ matrix.machine }}
         run: |
           cd "${YOCTO_WORKSPACE}"
+          umask 022
           source setup-environment -b build
           bitbake ${{ matrix.image }}
 
