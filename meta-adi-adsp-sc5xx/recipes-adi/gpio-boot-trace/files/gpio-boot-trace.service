@@ -1,0 +1,11 @@
+[Unit]
+Description=ADI GPIO boot-trace marker
+After=multi-user.target systemd-user-sessions.service getty.target serial-getty@ttySC0.service systemd-update-utmp-runlevel.service systemd-vconsole-setup.service
+
+[Service]
+Type=idle
+RemainAfterExit=yes
+ExecStart=/usr/bin/gpio-boot-trace.sh
+
+[Install]
+WantedBy=multi-user.target
