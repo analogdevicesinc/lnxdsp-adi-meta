@@ -44,6 +44,7 @@ DEBUG_CFG:adsp-sc594-som-ezkit = " file://debug_sc594-som-ezkit.cfg"
 DEBUG_CFG:adsp-sc594-som-ezlite = " file://debug_sc594-som-ezlite.cfg"
 DEBUG_CFG:adsp-sc598-som-ezkit = " file://debug_sc598-som-ezkit.cfg"
 DEBUG_CFG:adsp-sc598-som-ezlite = " file://debug_sc598-som-ezlite.cfg"
+DEBUG_CFG:adsp-sc846-som-ezkit = " file://debug_sc846-som-ezkit.cfg"
 
 SRC_URI += " \
 	${UBOOT_GIT_URI};protocol=${UBOOT_GIT_PROTOCOL};branch=${UBOOT_BRANCH} \

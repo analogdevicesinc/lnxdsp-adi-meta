@@ -10,7 +10,8 @@ Subject: [PATCH] Yocto Debug Build
  arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi | 2 +-
  arch/arm64/boot/dts/adi/sc598-som-revD.dtsi  | 2 +-
  arch/arm64/boot/dts/adi/sc598-som-revE.dtsi | 2 +-
- 6 files changed, 7 insertions(+), 7 deletions(-)
+ arch/arm64/boot/dts/adi/sc846-som.dts       | 2 +-
+ 7 files changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/arch/arm/boot/dts/adi/sc573-ezlite.dts b/arch/arm/boot/dts/adi/sc573-ezlite.dts
 index 181804eeb9d5..bce501397670 100644
@@ -99,6 +100,19 @@ index 46bb19af093e..b0046807c15a 100644
  			};
  
  			qspi_2@100000 {
+diff --git a/arch/arm64/boot/dts/adi/sc846-som.dts b/arch/arm64/boot/dts/adi/sc846-som.dts
+index 1234567890ab..abcdef123456 100644
+--- a/arch/arm64/boot/dts/adi/sc846-som.dts
++++ b/arch/arm64/boot/dts/adi/sc846-som.dts
+@@ -365,7 +365,7 @@ qspi_0@0 {
+ 
+ 			qspi_1@40000 {
+ 				label = "u-boot proper";
+-				reg = <0x00040000 0xC0000>;
++				reg = <0x00040000 0xB0000>;
+ 			};
+ 
+ 			qspi_2@210000 {
 -- 
 2.34.1
 
