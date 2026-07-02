@@ -136,7 +136,7 @@ jobs:
           Context: Certain files have been modified intentionally to act as markers for review.
           **Requirement:** When a file is modified in this set, you must review the full-file.
           Logic:
-          1. Identify files containing the `/* touch */` comment or minor placeholder changes.
+          1. Identify files containing the `# touch` comment or minor placeholder changes.
           2. Disregard the placeholder change itself.
           3. Analyze the entire content of that file.
           EOF
