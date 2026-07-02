@@ -92,7 +92,10 @@ jobs:
           - Verify SRC_URI and ensure matching checksums.
           - Validate the presence and accuracy of LIC_FILES_CHKSUM.
           - Confirm that the version of any .bbappend file matches the base recipe it extends.
-          - Check LAYERSERIES_COMPAT settings, specifically validating against the scarthgap pin.
+          - Check LAYERSERIES_COMPAT settings validating against the version Scarthgap (5.0)
+
+          The LAYERSERIES_COMPAT prevent a build from breaking due to incompatible syntax
+          changes between different versions of Yocto.
 
           A must read is ./yocto-docs/documentation/bsp-guide/bsp.rst, focus on
           good practices for bsp layers, and how to integrate linux kernel.
