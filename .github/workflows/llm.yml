@@ -86,7 +86,17 @@ jobs:
           The Yocto meta layer is used in the production of toolchains, uboot images,
           kernel and filesystem for ADI ADSP reference boards (e.g. `adsp-sc598-som-ezkit`).
 
-          Your review should be based on the current Yocto documentation (./yocto-docs/documentation).
+          Your review should be based on the current Yocto documentation
+          (./yocto-docs/documentation) and focus on the metadata standards:
+
+          - Verify SRC_URI and ensure matching checksums.
+          - Validate the presence and accuracy of LIC_FILES_CHKSUM.
+          - Confirm that the version of any .bbappend file matches the base recipe it extends.
+          - Check LAYERSERIES_COMPAT settings, specifically validating against the scarthgap pin.
+
+          A must read is ./yocto-docs/documentation/bsp-guide/bsp.rst, focus on
+          good practices for bsp layers, and how to integrate linux kernel.
+
           The lnxdsp-adi-meta documentation at ./docs/ maybe out-of-date.
           Never says things you are unsure.
 
@@ -99,24 +109,20 @@ jobs:
 
           Do **not** review commits starting with "[TMP]", "[ADI]", "[CI]",
           they are not part of the series but to change the CI/CD or temporally change behaviour.
-          You **must** check the appropriate datasheets for devices drivers, always convert pdfs
-          before reading it, in particular, camelot-py is already installed.
 
-          Pre-converted (with docling), may be available at the git tree:
+          To confirm information against ADI datasheets, a sitemap with all
+          pdfs, including the datasheets, is available at:
+            https://raw.githubusercontent.com/analogdevicesinc/doctools/refs/heads/docling/en-pdf-sitemap.xml
+
+          A version in markdown may be available at the git tree:
             https://raw.githubusercontent.com/analogdevicesinc/doctools/refs/heads/docling
 
           for example:
-            https://www.analog.com/media/en/technical-documentation/data-sheets/max17335.pdf
+            https://www.analog.com/media/en/technical-documentation/data-sheets/adsp-sc596-adsp-sc598.pdf
           can be fetched with:
-            https://raw.githubusercontent.com/analogdevicesinc/doctools/refs/heads/docling/media/en/technical-documentation/data-sheets/max17335.md
+            https://raw.githubusercontent.com/analogdevicesinc/doctools/refs/heads/docling/media/en/technical-documentation/data-sheets/adsp-sc596-adsp-sc598.md
 
-          If not available,
-          `python3 $CI_WORKTREE/ci/extract_register_map.py ./datasheet.pdf`
-          extract register maps from datasheets and should work on most cases.
-
-          A sitemap with all pdfs, including the datasheets, is available at:
-            https://raw.githubusercontent.com/analogdevicesinc/doctools/refs/heads/docling/en-pdf-sitemap.xml
-            (mirror of https://www.analog.com/media/en/en-pdf-sitemap.xml)
+          To convert pdfs to markdown before reading, camelot-py is already installed.
 
           EOF
 
