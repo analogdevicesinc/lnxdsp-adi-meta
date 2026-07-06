@@ -1,9 +1,12 @@
-Linux for ADSP-SC5xx Processors
-================================
+ADSP Yocto
+==========
 
-Welcome to the official Linux documentation for `Analog Devices <https://www.analog.com>`_ ADSP-SC5xx processors.
+Welcome to the official Yocto documentation for ADI Digital Signal Processors
+(ADSP).
 
-ADSP-SC5xx System-on-Chips (SoCs) combine ARM Cortex-A55/A5 application processors with SHARC+ DSP cores, delivering a unique heterogeneous computing platform. These processors excel at real-time audio processing, industrial control, and automotive applications by seamlessly blending Linux's rich ecosystem on the ARM core with deterministic, high-performance signal processing on the SHARC+ DSPs. The architecture enables developers to partition their applications optimally - running high-level application code, networking, and user interfaces on Linux while offloading compute-intensive, real-time algorithms to the dedicated DSPs.
+See :external+documentation:doc:`products/adsp/index` for generic ADSP
+documentation including a list of supported SoCs and a description of the
+various :external+documentation:doc:`use cases <products/adsp/use-cases>`.
 
 **Platform Highlights**
 
