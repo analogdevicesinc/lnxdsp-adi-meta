@@ -1,12 +1,6 @@
 SHELL         = /bin/bash
-SPHINXOPTS   ?=
-# Check for virtual environment and use it if available
-VENV_DIR      = ../documentation-env
-ifeq ($(wildcard $(VENV_DIR)/bin/sphinx-build),)
-    SPHINXBUILD  ?= sphinx-build
-else
-    SPHINXBUILD  ?= $(VENV_DIR)/bin/sphinx-build
-endif
+SPHINXOPTS   ?= -jauto
+SPHINXBUILD  ?= sphinx-build
 SOURCEDIR     = .
 BUILDDIR      = _build
 
@@ -17,7 +11,3 @@ help:
 
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-	@if [ "$@" = "html" ]; then \
-		echo "Creating .nojekyll file for GitHub Pages..."; \
-		touch "$(BUILDDIR)/html/.nojekyll"; \
-	fi
