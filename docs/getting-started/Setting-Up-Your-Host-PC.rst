@@ -1,7 +1,9 @@
 Setting Up Your Host PC
 =======================
 
-The build system is currently supported on host PCs running **Ubuntu 22.04 LTS 64-bit**.
+The build system is currently supported on host PCs running Ubuntu 22.04 (LTS)
+(see `Containerfile#L1
+<https://github.com/analogdevicesinc/lnxdsp-adi-meta/blob/main/ci/Containerfile#L1>`_).
 
 Installing Required Packages
 ----------------------------
