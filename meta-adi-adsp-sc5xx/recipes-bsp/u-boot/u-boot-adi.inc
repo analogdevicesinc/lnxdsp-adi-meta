@@ -17,13 +17,7 @@ UBOOT_SOM_FILE:adsp-sc598-som-ezkit = "file://0001-SC598-SOM-Adding-Rev-D-compat
 UBOOT_SOM = "${@bb.utils.contains('SOM_REV', 'D', '${UBOOT_SOM_FILE}', '', d)}"
 
 python() {
-    d.setVar('SDCARD_PATCH', '')
     d.setVar('USB_PATCH', '')
-
-    if d.getVar('SOM_REV') != 'D':
-        d.setVar('SDCARD_PATCH', ' file://0001-sc598-som-enable-SD-card-revE.patch')
-    else:
-        d.setVar('SDCARD_PATCH', ' file://0001-sc598-som-enable-SD-card.patch')
 
     machine = d.getVar('MACHINE')
     if machine in ('adsp-sc598-som-ezkit', 'adsp-sc594-som-ezkit'):
@@ -58,7 +52,7 @@ SRC_URI += " \
         ${UBOOT_SOM} \
 "
 
-SRC_URI:append:adsp-sc598-som-ezkit = "${@d.getVar('SDCARD_PATCH') if (bb.utils.to_boolean(d.getVar('ADSP_SC598_SDCARD'))) else ''}"
+EXTRA_OEMAKE:append:adsp-sc598-som-ezkit = "${@' DEVICE_TREE=sc598-som-ezkit-sd' if bb.utils.to_boolean(d.getVar('ADSP_SC598_SDCARD')) else ''}"
 SRC_URI:append = "${@d.getVar('USB_PATCH') if (bb.utils.to_boolean(d.getVar('ADSP_SC59X_USB'))) else ''}"
 
 SRC_URI:append = "${@' file://0002-developer-mode-enable.patch' if bb.utils.to_boolean(d.getVar('DEVELOPER_MODE')) else '' }"
