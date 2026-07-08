@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="This page contains information about using and working with the U-Boot environment." name="description" />
+
+    <title>U-Boot Environment &#8212; ADSP Processors  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8e8a900e" />
+    <link rel="stylesheet" type="text/css" href="../_static/app.min.css?v=d3f78147" />
+    <script async="async" src="../_static/app.umd.js?v=26d0298f"></script>
+    <link rel="icon" href="../_static/icon.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Linux Kernel Development" href="Linux-Kernel-Development.html" />
+    <link rel="prev" title="Boot Sequence" href="Boot-Sequence.html" />
+   
+  
+  
+  
+  <meta name="repository" content="lnxdsp-adi-meta">
+  <meta name="version" content="">
+  
+    <meta name="page_source_suffix" content=".rst">
+  
+  
+  
+
+
+<style>
+  body {
+    
+  }
+
+  body.dark {
+    
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body:not(.light) {
+      
+    }
+  }
+</style>
+  </head>
+  
+    <body>
+  
+  <input type="checkbox" id="input-show-toc">
+  <input type="checkbox" id="input-show-localtoc">
+  <input type="checkbox" id="input-show-repotoc">
+
+  
+  <div class="search-area">
+    <form action="" method="get">
+      <input type="text" name="q" aria-labelledby="search-documentation" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" role="search" placeholder="Search"/>
+      <button class="icon"></button>
+    </form>
+  </div>
+  
+
+  <header>
+    <div id="left">
+      <label id="show-sidebar" class="icon" for="input-show-toc" title="Show/hide index"></label>
+    </div>
+    <div id="right">
+      <span>
+        <a id="logo-org" href="https://analog.com" aria-label="Analog Devices Inc. landing page"></a>
+        <div class="vertical-divider"></div>
+        
+        <label id="show-repotoc" for="input-show-repotoc" title="Show/hide docs">Docs</label>
+        
+        <a id="logo" href="../index.html">
+          <div>ADI DSP Linux</div>
+        </a>
+      </span>
+      <span class="reverse">
+        <label id="show-localtoc" class="icon" for="input-show-localtoc" title="Show/hide contents"></label>
+      </span>
+    </div>
+  </header>
+
+
+  <div class="repotoc-tree overlay">
+    <root>
+  <a href="../index.html" class="current">ADI DSP Linux</a>
+</root>
+
+  </div>
+    <div class="localtoc">
+      <div class="tocwrapper">
+        <div class="header localtoc-header">
+          <a id="scroll-up" href="#top-anchor" title="Back to top"></a>
+        </div>
+        <nav>
+          <ul>
+<li><a class="reference internal" href="#">U-Boot Environment</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#about-the-environment">About the Environment</a></li>
+<li><a class="reference internal" href="#interacting-with-the-environment">Interacting with the Environment</a><ul>
+<li><a class="reference internal" href="#env-command"><code class="docutils literal notranslate"><span class="pre">env</span></code> command</a></li>
+<li><a class="reference internal" href="#using-environment-variables">Using Environment Variables</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#the-persistent-environment">The Persistent Environment</a></li>
+<li><a class="reference internal" href="#the-default-environment">The Default Environment</a></li>
+<li><a class="reference internal" href="#setting-default-boot-method">Setting Default Boot Method</a><ul>
+<li><a class="reference internal" href="#important-notes">Important Notes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </nav>
+      </div>
+    </div>
+
+  
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+    <a id="no-logo" href="../index.html">
+      ADSP Processors
+    </a><input id="input-switch-toc" type="checkbox">
+<label id="show-repotoc" for="input-switch-toc">
+All content
+</label>
+<label id="show-toc" for="input-switch-toc">
+Content on this topic
+</label>
+<div class="repotoc-tree">
+  <root>
+  <a href="../index.html" class="current">ADI DSP Linux</a>
+</root>
+
+</div>
+<div class="toc-tree">
+  <ul class="current">
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-1" id="toctree-collapse-1"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.0.1-Landing-Page.html">Linux for ADSP SC5xx 5.0.1</a><label for="toctree-collapse-1"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC598 (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC594 (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC589-MINI (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC573 (5.0.1)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2" id="toctree-collapse-2"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.x.x-Landing-Page.html"> Linux for ADSP SC5xx 5.x.x</a><label for="toctree-collapse-2"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC598 (5.x.x)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC594 (5.x.x)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC589-MINI (5.x.x)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC573 (5.x.x)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3" id="toctree-collapse-3"/><div class="collapse"><a class="reference internal" href="../Older-Releases.html">Older Releases</a><label for="toctree-collapse-3"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-1" id="toctree-collapse-3-1"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.0.0-Landing-Page.html">Linux for ADSP-SC5xx Processors 5.0.0</a><label for="toctree-collapse-3-1"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC598 (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC594 (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC589-MINI (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC573 (5.0.0)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-2" id="toctree-collapse-3-2"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.2-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.2</a><label for="toctree-collapse-3-2"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC598 (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC594 (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC589-MINI (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC573 (3.1.2)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-3" id="toctree-collapse-3-3"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.1-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.1</a><label for="toctree-collapse-3-3"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC598 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC594 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC589-MINI (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90EZ%E2%80%90KIT-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC589-EZ-KIT (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC584-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC584 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC573 (3.1.1)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-4" id="toctree-collapse-3-4"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.0-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.0</a><label for="toctree-collapse-3-4"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC598 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC594 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC589-MINI (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90EZ%E2%80%90KIT-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC589-EZ-KIT (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC584-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC584 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC573 (3.1.0)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-4" id="toctree-collapse-4"/><div class="collapse"><a class="reference internal" href="../examples/Examples.html">Examples</a><label for="toctree-collapse-4"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples/SHARC%E2%80%90ALSA-Example.html">SHARC-ALSA Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/USB-Gadget-Audio-Example.html">USB Gadget Audio Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/The-Kitchen-Sink.html">The Kitchen Sink</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/U%E2%80%90Boot-Falcon-Mode-Example.html">U-Boot Falcon Mode Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-5" id="toctree-collapse-5" checked=""/><div class="collapse"><a class="reference internal" href="Development.html">Development</a><label for="toctree-collapse-5"><div class="icon"></div></label></div><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Setting-Up-Your-Host-PC.html">Setting Up Your Host PC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Debugging-without-ICE-Hardware.html">Debugging without ICE Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Boot-Sequence.html">Boot Sequence</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">U-Boot Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Linux-Kernel-Development.html">Linux Kernel Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Compiling-and-running-a-Rust-kernel.html">Compiling and running a Rust kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Custom-Meta-Layer.html">Creating a Custom Meta Layer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RPMsg.html">RPMsg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RPMsg%E2%80%90Lite.html">RPMsg-Lite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications.html">Configuring System Memory When Using Linux and SHARC Applications</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-6" id="toctree-collapse-6"/><div class="collapse"><a class="reference internal" href="../benchmarks/Benchmarking.html">Benchmarks</a><label for="toctree-collapse-6"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../benchmarks/RPMsg-Benchmark-Figures.html">RPMsg Benchmark Figures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../benchmarks/Booting-Benchmark-Figures.html">Booting Benchmark Figures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/Frequently-Asked-Questions.html">FAQ</a></li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-7" id="toctree-collapse-7"/><div class="collapse"><a class="reference internal" href="../secure-boot/Secure-Boot-Support.html">Secure Boot</a><label for="toctree-collapse-7"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../secure-boot/Secure-Boot-Support-in-release-3.1.1.html">Secure Boot Support (Release 3.1.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../secure-boot/Secure-Boot-Support-in-release-3.1.0.html">Secure Boot Support (Release 3.1.0)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-8" id="toctree-collapse-8"/><div class="collapse"><a class="reference internal" href="../test-reports/Test-Reports.html">Test Reports</a><label for="toctree-collapse-8"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%285.0.1%29.html">Test Report (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%285.0.0%29.html">Test Report (5.0.0)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%283.1.0%29.html">Test Report (3.1.0)</a></li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+        </div>
+      </div>
+
+  <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper" id="top-anchor">
+          <div class="body-header">
+  <nav class="breadcrumb"><ol><li><a href="Development.html">Development</a></li></ol></nav>
+</div>
+          <div class="body" role="main">
+            
+  <section id="u-boot-environment">
+<h1>U-Boot Environment<a class="headerlink" href="#u-boot-environment" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>This page contains information about using and working with the U-Boot
+environment.</p>
+</section>
+<section id="about-the-environment">
+<h2>About the Environment<a class="headerlink" href="#about-the-environment" title="Link to this heading"></a></h2>
+<p>The U-Boot envionrment is a text-based key-value store within U-Boot,
+used to store information such as board-specific commands, run-time
+configuration options, network information and settings, filesystem
+settings and more.</p>
+<p>Some Examples include: - The board’s IP address - can be set manually or
+by DHCP - Names of files used to boot the system - such as a fitimage,
+jffs2 filesystem, etc. - Commands to update various parts of the system,
+such as U-Boot, the fitImage, linux’s rootfs, etc. - Autoboot options,
+such as the boot delay and key used to stop autoboot</p>
+<p>By default (on ADSP boards), a persistent copy of the environment is
+stored in the SPI Flash. This is loaded automatically on boot to
+populate the in-memory environment. If no valid environment is present
+in the flash - e.g. if the flash has been erased or corrupted - a
+default environment is loaded instead.</p>
+<p>More information on the environment, and many of the environment
+variables used by U-Boot, see <a class="icon link reference external" href="https://docs.u-boot.org/en/latest/usage/environment.html" target="_blank">Environment
+Variables</a>
+in the U-Boot docs.</p>
+</section>
+<section id="interacting-with-the-environment">
+<h2>Interacting with the Environment<a class="headerlink" href="#interacting-with-the-environment" title="Link to this heading"></a></h2>
+<section id="env-command">
+<h3><code class="docutils literal notranslate"><span class="pre">env</span></code> command<a class="headerlink" href="#env-command" title="Link to this heading"></a></h3>
+<p>U-Boot provides the <code class="docutils literal notranslate"><span class="pre">env</span></code> command to interact with the environment.
+The basic commands are:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">env</span> <span class="pre">set</span> <span class="pre">&lt;name&gt;</span> <span class="pre">[value]</span></code> (alias <code class="docutils literal notranslate"><span class="pre">setenv</span></code>) - set value <code class="docutils literal notranslate"><span class="pre">name</span></code> to
+<code class="docutils literal notranslate"><span class="pre">value</span></code>, or deletes <code class="docutils literal notranslate"><span class="pre">name</span></code> if <code class="docutils literal notranslate"><span class="pre">value</span></code> is not present.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">env</span> <span class="pre">print</span> <span class="pre">[name]</span></code> (alias <code class="docutils literal notranslate"><span class="pre">printenv</span></code>) - print value <code class="docutils literal notranslate"><span class="pre">name</span></code>, or
+the whole environment if <code class="docutils literal notranslate"><span class="pre">name</span></code> is not present.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">env</span> <span class="pre">default</span> <span class="pre">(-a</span> <span class="pre">|</span> <span class="pre">name</span> <span class="pre">...)</span></code> - set one of more values specified by
+<code class="docutils literal notranslate"><span class="pre">name</span></code> to their default values, or reset the entire environment if
+<code class="docutils literal notranslate"><span class="pre">-a</span></code> specified.</p>
+<p><em>Note: only modifies the in-memory copy - also run</em> <code class="docutils literal notranslate"><span class="pre">saveenv</span></code> <em>to
+reset the persistent copy</em></p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">env</span> <span class="pre">load</span></code> and <code class="docutils literal notranslate"><span class="pre">env</span> <span class="pre">save</span></code> (alias <code class="docutils literal notranslate"><span class="pre">saveenv</span></code>) - load/save the
+environment from persistent storage - uses the SPI Flash on ADSP
+boards.</p></li>
+</ul>
+<p>For a full command listing, see <a class="icon link reference external" href="https://docs.u-boot.org/en/latest/usage/cmd/env.html" target="_blank">env
+command</a> in the
+U-Boot docs.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">edit</span> <span class="pre">&lt;name&gt;</span></code> command is also provided to interactively edit the
+contents of environment variable <code class="docutils literal notranslate"><span class="pre">name</span></code>.</p>
+</section>
+<section id="using-environment-variables">
+<h3>Using Environment Variables<a class="headerlink" href="#using-environment-variables" title="Link to this heading"></a></h3>
+<p>There are two main ways to use environment variables: - The <code class="docutils literal notranslate"><span class="pre">run</span></code>
+command will execute the contents of a variable. For example, the
+<code class="docutils literal notranslate"><span class="pre">update_spi</span></code> command is stored as an environment variable, so is
+executed using <code class="docutils literal notranslate"><span class="pre">run</span> <span class="pre">update_spi</span></code>. - Using curly-brace notation,
+similarly to Unix shells. For example, <code class="docutils literal notranslate"><span class="pre">tftpboot</span> <span class="pre">${tftpserverip}</span></code> will
+boot using the IP stored in <code class="docutils literal notranslate"><span class="pre">tftpserverip</span></code> as the server address.</p>
+</section>
+</section>
+<section id="the-persistent-environment">
+<h2>The Persistent Environment<a class="headerlink" href="#the-persistent-environment" title="Link to this heading"></a></h2>
+<p>By default, the environment is stored on the SPI Flash on ADSP boards.
+The default location varies by board:</p>
+<div class="table-wrapper docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Boards</p></th>
+<th class="head"><p>Location</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>SC573, SC584, SC589</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0xD0000</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>SC594, SC598-ezlite</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x100000</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>SC598-ezkit</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x180000</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>This is controlled by the config option <code class="docutils literal notranslate"><span class="pre">CONFIG_ENV_OFFSET</span></code>, usually
+set in the defconfig file for the relevant board
+(e.g. <code class="docutils literal notranslate"><span class="pre">configs/sc598-som-ezkit-spl_defconfig</span></code> for the SC598, running
+without Falcon enabled). Modifying the <code class="docutils literal notranslate"><span class="pre">CONFIG_ENV_OFFSET=...</span></code> line in
+the relevant file will change where it is stored.</p>
+<p><strong>BEWARE</strong> - the persistent environment is not updated when flashing
+U-Boot. Any changes previously made to the environment, either manually
+or by a U-Boot configuration option, may persist after updating U-Boot
+and cause unexpected behaviour. It is therefore recommended to reset the
+environment to the default after changing U-Boot configuration options,
+using:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">=&gt;</span> <span class="n">env</span> <span class="n">default</span> <span class="o">-</span><span class="n">f</span> <span class="o">-</span><span class="n">a</span>
+<span class="o">=&gt;</span> <span class="n">env</span> <span class="n">save</span>
+</pre></div>
+</div>
+</section>
+<section id="the-default-environment">
+<h2>The Default Environment<a class="headerlink" href="#the-default-environment" title="Link to this heading"></a></h2>
+<p>As previously described, when U-Boot is unable to load a valid
+environment from the persistent storage, it will load the default
+environment. This is defined by a number of configuration options,
+within the <code class="docutils literal notranslate"><span class="pre">include/configs</span></code> directory in U-Boot’s source.</p>
+<p>Some common values are defined under <code class="docutils literal notranslate"><span class="pre">CFG_EXTRA_ENV_SETTINGS</span></code> in
+<a class="icon link reference external" href="https://github.com/analogdevicesinc/lnxdsp-u-boot/blob/main/include/configs/sc_adi_common.h#L201" target="_blank">sc_adi_common.h</a>,
+with board specific options being defined with <code class="docutils literal notranslate"><span class="pre">ADI_ENV_SETTINGS</span></code> in
+the relevant board file - for example, for SC598, in
+<a class="icon link reference external" href="https://github.com/analogdevicesinc/lnxdsp-u-boot/blob/main/include/configs/sc598-som.h#L141" target="_blank">sc598-som.h</a>.</p>
+<p>The default environment can also be manually loaded using the
+<code class="docutils literal notranslate"><span class="pre">env</span> <span class="pre">default</span></code> command, described in the <a class="reference external" href="#env-command">env command</a>
+section.</p>
+</section>
+<section id="setting-default-boot-method">
+<h2>Setting Default Boot Method<a class="headerlink" href="#setting-default-boot-method" title="Link to this heading"></a></h2>
+<p>In order to change the default boot method (i.e., boot used by autoboot or executed after issuing <code class="docutils literal notranslate"><span class="pre">boot</span></code> within U-Boot shell), run the following within U-Boot:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>setenv<span class="w"> </span>bootcmd<span class="w"> </span>&lt;boot<span class="w"> </span>method&gt;
+<span class="o">=</span>&gt;<span class="w"> </span>saveenv
+</pre></div>
+</div>
+<p>Boot method can be set to the following:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">spiboot</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ramboot</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nfsboot</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mmcboot</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">usbboot</span></code></p></li>
+</ul>
+<section id="important-notes">
+<h3>Important Notes<a class="headerlink" href="#important-notes" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sfdev</span></code> must be set when trying to boot with spiboot. Default QSPI usually requires sfdev to be <code class="docutils literal notranslate"><span class="pre">2:1</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">usbboot</span></code> must be defined as per the USB boot guide prior to attempting boot with this method</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+          </div>
+              <div class="related">
+                &nbsp;
+    <a href="Boot-Sequence.html" title="Previous document (Alt+Shift+LeftArrow)" class="prev">Boot Sequence</a>
+    <a href="Linux-Kernel-Development.html" title="Next document (Alt+Shift+RightArrow)" class="next">Linux Kernel Development</a>
+              </div>
+          
+        </div>
+      </div>
+  </div>
+
+  <label id="cancel-area-show-toc" for="input-show-toc"></label>
+  <label id="cancel-area-show-localtoc" for="input-show-localtoc"></label>
+    <footer>
+      &#169;2026, Analog Devices, Inc.
+      
+      |
+      Made with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+      &amp; <a href="https://github.com/analogdevicesinc/doctools">Doctools</a>
+      
+    </footer>
+  </body>
+</html>
