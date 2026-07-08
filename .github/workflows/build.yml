@@ -2,25 +2,40 @@ name: Build ADI Yocto artifacts
 
 on:
   workflow_dispatch:
-  pull_request:
-  release:
-    types: [published]
-  schedule:
-    - cron: '0 4 * * *' # 04:00 UTC (05:00/06:00 CET/CEST, 23:00/00:00 EST/EDT)
+    inputs:
+      machine:
+        description: "Yocto machine"
+        default: adsp-sc598-som-ezkit
+      image:
+        description: "Yocto image"
+        default: adsp-sc5xx-minimal
+      manifest:
+        description: "Manifest"
+        default: main
+      manifest_repo:
+        description: "Manifest repository"
+        default: "https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git"
+  workflow_call:
+    inputs:
+      machine:
+        type: string
+        default: "adsp-sc598-som-ezkit"
+      image:
+        type: string
+        default: "adsp-sc5xx-minimal"
+      manifest:
+        type: string
+        default: main
+      manifest_repo:
+        type: string
+        default: "https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git"
 
 permissions:
   contents: read
 
 jobs:
   build:
-    runs-on: self-hosted
-
-    strategy:
-      matrix:
-        machine:
-          - adsp-sc598-som-ezkit
-        image:
-          - adsp-sc5xx-minimal
+    runs-on: ${{ vars.RUNNER != '' && fromJSON(vars.RUNNER) || 'ubuntu-latest' }}
 
     steps:
       - name: Setup build workspace
@@ -51,18 +66,18 @@ jobs:
         run: |
           cd "${YOCTO_WORKSPACE}"
           ./bin/repo init \
-            -u https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git \
-            -m main.xml
+            -u ${{ inputs.manifest_repo }} \
+            -m "${{ inputs.manifest }}.xml"
 
       - name: Sync all sources
         run: |
           cd "${YOCTO_WORKSPACE}"
           ./bin/repo sync
 
-      - name: Setup build environment for ${{ matrix.machine }}
+      - name: Setup build environment
         run: |
           cd "${YOCTO_WORKSPACE}"
-          source setup-environment -m ${{ matrix.machine }}
+          source setup-environment -m ${{ inputs.machine }}
 
           # Configure for CI with persistent caches in runner's home directory
           cat >> conf/local.conf <<EOF
@@ -72,30 +87,36 @@ jobs:
           SSTATE_DIR = "${{ env.YOCTO_SSTATE_DIR }}"
           EOF
 
-      - name: Build ${{ matrix.image }} for ${{ matrix.machine }}
+      - name: Build image
         run: |
           cd "${YOCTO_WORKSPACE}"
           umask 022
           source setup-environment -b build
-          bitbake ${{ matrix.image }}
+          bitbake ${{ inputs.image }}
 
-      - name: Upload Yocto images for ${{ matrix.machine }} - ${{ matrix.image }}
+      - name: Set artifact name
+        run: |
+          ARTIFACT_NAME="images-${{ inputs.machine }}-${{ inputs.image }}"
+          [[ "${{ inputs.manifest }}" == "main" ]] || ARTIFACT_NAME="${ARTIFACT_NAME}-${{ inputs.manifest }}"
+          echo "ARTIFACT_NAME=${ARTIFACT_NAME}" >> $GITHUB_ENV
+
+      - name: Upload Yocto images
         uses: actions/upload-artifact@v6
         with:
-          name: images-${{ matrix.machine }}-${{ matrix.image }}
-          path: ${{ env.YOCTO_WORKSPACE }}/build/tmp/deploy/images/${{ matrix.machine }}
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.YOCTO_WORKSPACE }}/build/tmp/deploy/images/${{ inputs.machine }}
 
       - name: Archive output images directory
         if: ${{ github.event_name == 'release' }}
         run: |
           cd "${YOCTO_WORKSPACE}"
-          tar -cJvf images-${{ matrix.machine }}-${{ matrix.image }}-${{ github.event.release.tag_name }}.tar.xz \
-            build/tmp/deploy/images/${{ matrix.machine }}/
+          tar -cJvf images-${{ inputs.machine }}-${{ inputs.image }}-${{ github.event.release.tag_name }}.tar.xz \
+            build/tmp/deploy/images/${{ inputs.machine }}/
 
       - name: Upload release archive to release
         uses: svenstaro/upload-release-action@v2
         if: ${{ github.event_name == 'release' }}
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.YOCTO_WORKSPACE }}/images-${{ matrix.machine }}-${{ matrix.image }}-${{ github.event.release.tag_name }}.tar.xz
+          file: ${{ env.YOCTO_WORKSPACE }}/images-${{ inputs.machine }}-${{ inputs.image }}-${{ github.event.release.tag_name }}.tar.xz
           tag: ${{ github.ref }}

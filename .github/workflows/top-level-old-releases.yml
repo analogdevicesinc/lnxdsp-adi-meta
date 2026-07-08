@@ -1,0 +1,36 @@
+name: Build ADI Yocto artifacts (old releases)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 5 * * 1' # 05:00 UTC every Monday
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        machine:
+          - adsp-sc598-som-ezkit
+        image:
+          - adsp-sc5xx-minimal
+        manifest:
+          - release-3.1.2
+          - release-5.0.0
+          - release-5.0.1
+
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+    permissions:
+      contents: read
+    with:
+      machine: ${{ matrix.machine }}
+      image: ${{ matrix.image }}
+      manifest: ${{ matrix.manifest }}
