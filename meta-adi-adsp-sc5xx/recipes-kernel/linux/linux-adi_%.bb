@@ -16,7 +16,7 @@ SRC_URI:append="\
 "
 
 PV="6.18"
-KERNEL_BRANCH = "adsp-6.18.31-y"
+KERNEL_BRANCH = "boot-trace-gpio-label"
 
 SRCREV="${AUTOREV}"
 KERNEL_VERSION_SANITY_SKIP = "1"
