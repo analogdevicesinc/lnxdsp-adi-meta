@@ -4,9 +4,15 @@ Linux Kernel Development
 Introduction
 ------------
 
-This guide helps you develop and customise the Linux kernel for ADSP-SC5xx processors. Whether you're debugging driver issues, adding new hardware support, or optimizing performance, this page walks you through compiling and rebuilding the kernel outside of the full Yocto build system.
+This guide helps you develop and customise the Linux kernel for ADSP-SC5xx
+processors. Whether you're debugging driver issues, adding new hardware
+support, or optimizing performance, this page walks you through compiling and
+rebuilding the kernel outside of the full Yocto build system.
 
-While Yocto automates the entire build process, direct kernel development allows for faster iteration during development. You can quickly compile changes, test them on your hardware, and integrate them back into your Yocto layer once they're stable.
+While Yocto automates the entire build process, direct kernel development
+allows for faster iteration during development. You can quickly compile
+changes, test them on your hardware, and integrate them back into your Yocto
+layer once they're stable.
 
 **What you'll learn:**
 
@@ -78,7 +84,8 @@ Compile Kernel, Modules, and Device Trees
 Creating a fitImage
 -------------------
 
-The default boot format used is fitImage. Here's how to rebuild a fitImage with your newly compiled kernel:
+The default boot format used is fitImage. Here's how to rebuild a fitImage with
+your newly compiled kernel:
 
 .. shell::
 
@@ -115,4 +122,5 @@ After developing and testing your kernel changes:
 
 .. note::
 
-   For persistent changes across builds, integrate your modifications into your Yocto layer rather than maintaining manual builds.
+   For persistent changes across builds, integrate your modifications into your
+   Yocto layer rather than maintaining manual builds.

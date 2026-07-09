@@ -1,7 +1,9 @@
 Compiling and running a Rust kernel
 ===================================
 
-Yocto 5 onward, all supported boards have now been ported to kernel 6.12. As a result, it is now possible to compile the linux kernel with Rust support for ADSP-SC598 boards.
+Yocto 5 onward, all supported boards have now been ported to kernel 6.12. As a
+result, it is now possible to compile the linux kernel with Rust support for
+ADSP-SC598 boards.
 
 Requirements
 ------------
@@ -21,12 +23,14 @@ Run the following to install the prerequisite packages on ubuntu 22.04:
 Getting started
 ---------------
 
-1) On your host/build machine, install rust via `rustup <https://www.rust-lang.org/tools/install>`_
+1) On your host/build machine, install rust via `rustup
+<https://www.rust-lang.org/tools/install>`_
 
 2) Clone the Linux kernel tree you wish to use. In our case, we will use the
    :git-linux:`adsp-main-6.12` branch.
 
-3) Once cloned, configure the kernel using either ``ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make menuconfig/defconfig/olddefconfig``
+3) Once cloned, configure the kernel using either ``ARCH=arm64
+CROSS_COMPILE=aarch64-linux-gnu- make menuconfig/defconfig/olddefconfig``
 
 4) Set up the rust environment:
 
@@ -34,7 +38,8 @@ Getting started
 
    cd linux
 
-Edit the following file ``scripts/min-tool-version.sh`` with the following change:
+Edit the following file ``scripts/min-tool-version.sh`` with the following
+change:
 
 .. code-block:: diff
 
@@ -88,7 +93,8 @@ Start the kernel config with ``menuconfig`` and enable ``CONFIG_RUST``:
    General Setup
        -> Rust support
 
-To enable a kernel rust sample, head to the following and enable the ``minimal`` example:
+To enable a kernel rust sample, head to the following and enable the
+``minimal`` example:
 
 .. code-block:: text
 
@@ -97,7 +103,8 @@ To enable a kernel rust sample, head to the following and enable the ``minimal``
            -> Rust samples
                  -> minimal
 
-You can select it as a built-in module and an external kernel module. For this guide, we will keep it as a built-in module.
+You can select it as a built-in module and an external kernel module. For this
+guide, we will keep it as a built-in module.
 
 Now compile the kernel with the following:
 
@@ -122,9 +129,11 @@ being compiled:
      EXPORTS rust/exports_helpers_generated.h
      RUSTC L rust/bindings.o
 
-Once this is done, follow the custom fitImage compilation guide in :doc:`Linux-Kernel-Development` and generate your own fitImage.
+Once this is done, follow the custom fitImage compilation guide in
+:doc:`Linux-Kernel-Development` and generate your own fitImage.
 
-Proceed to boot into the fitImage from your preferred boot method. Once in, you should be able to spot the following in the kernel logs:
+Proceed to boot into the fitImage from your preferred boot method. Once in, you
+should be able to spot the following in the kernel logs:
 
 .. code-block:: text
 
