@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="The build system is currently supported on host PCs running Ubuntu 22.04 LTS 64-bit." name="description" />
+
+    <title>Setting Up Your Host PC &#8212; ADSP Processors  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8e8a900e" />
+    <link rel="stylesheet" type="text/css" href="../_static/app.min.css?v=d3f78147" />
+    <script async="async" src="../_static/app.umd.js?v=26d0298f"></script>
+    <link rel="icon" href="../_static/icon.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Debugging without ICE Hardware" href="../development/Debugging-without-ICE-Hardware.html" />
+    <link rel="prev" title="Development" href="../development/Development.html" />
+   
+  
+  
+  
+  <meta name="repository" content="lnxdsp-adi-meta">
+  <meta name="version" content="">
+  
+    <meta name="page_source_suffix" content=".rst">
+  
+  
+  
+
+
+<style>
+  body {
+    
+  }
+
+  body.dark {
+    
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body:not(.light) {
+      
+    }
+  }
+</style>
+  </head>
+  
+    <body>
+  
+  <input type="checkbox" id="input-show-toc">
+  <input type="checkbox" id="input-show-localtoc">
+  <input type="checkbox" id="input-show-repotoc">
+
+  
+  <div class="search-area">
+    <form action="" method="get">
+      <input type="text" name="q" aria-labelledby="search-documentation" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" role="search" placeholder="Search"/>
+      <button class="icon"></button>
+    </form>
+  </div>
+  
+
+  <header>
+    <div id="left">
+      <label id="show-sidebar" class="icon" for="input-show-toc" title="Show/hide index"></label>
+    </div>
+    <div id="right">
+      <span>
+        <a id="logo-org" href="https://analog.com" aria-label="Analog Devices Inc. landing page"></a>
+        <div class="vertical-divider"></div>
+        
+        <label id="show-repotoc" for="input-show-repotoc" title="Show/hide docs">Docs</label>
+        
+        <a id="logo" href="../index.html">
+          <div>ADI DSP Linux</div>
+        </a>
+      </span>
+      <span class="reverse">
+        <label id="show-localtoc" class="icon" for="input-show-localtoc" title="Show/hide contents"></label>
+      </span>
+    </div>
+  </header>
+
+
+  <div class="repotoc-tree overlay">
+    <root>
+  <a href="../index.html" class="current">ADI DSP Linux</a>
+</root>
+
+  </div>
+    <div class="localtoc">
+      <div class="tocwrapper">
+        <div class="header localtoc-header">
+          <a id="scroll-up" href="#top-anchor" title="Back to top"></a>
+        </div>
+        <nav>
+          <ul>
+<li><a class="reference internal" href="#">Setting Up Your Host PC</a><ul>
+<li><a class="reference internal" href="#installing-required-packages">Installing Required Packages</a></li>
+<li><a class="reference internal" href="#configure-minicom">Configure Minicom</a></li>
+<li><a class="reference internal" href="#configure-tftp-service">Configure TFTP Service</a></li>
+<li><a class="reference internal" href="#configure-nfs-server">Configure NFS Server</a></li>
+<li><a class="reference internal" href="#configuring-usb-permissions-for-ice-debugger">Configuring USB permissions for ICE debugger</a></li>
+</ul>
+</li>
+</ul>
+
+        </nav>
+      </div>
+    </div>
+
+  
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+    <a id="no-logo" href="../index.html">
+      ADSP Processors
+    </a><input id="input-switch-toc" type="checkbox">
+<label id="show-repotoc" for="input-switch-toc">
+All content
+</label>
+<label id="show-toc" for="input-switch-toc">
+Content on this topic
+</label>
+<div class="repotoc-tree">
+  <root>
+  <a href="../index.html" class="current">ADI DSP Linux</a>
+</root>
+
+</div>
+<div class="toc-tree">
+  <ul class="current">
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-1" id="toctree-collapse-1"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.0.1-Landing-Page.html">Linux for ADSP SC5xx 5.0.1</a><label for="toctree-collapse-1"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC598 (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC594 (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC589-MINI (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC573 (5.0.1)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2" id="toctree-collapse-2"/><div class="collapse"><a class="reference internal" href="../Older-Releases.html">Older Releases</a><label for="toctree-collapse-2"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2-1" id="toctree-collapse-2-1"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.0.0-Landing-Page.html">Linux for ADSP-SC5xx Processors 5.0.0</a><label for="toctree-collapse-2-1"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC598 (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC594 (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC589-MINI (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC573 (5.0.0)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2-2" id="toctree-collapse-2-2"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.2-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.2</a><label for="toctree-collapse-2-2"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC598 (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC594 (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC589-MINI (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC573 (3.1.2)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2-3" id="toctree-collapse-2-3"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.1-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.1</a><label for="toctree-collapse-2-3"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC598 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC594 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC589-MINI (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90EZ%E2%80%90KIT-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC589-EZ-KIT (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC584-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC584 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC573 (3.1.1)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2-4" id="toctree-collapse-2-4"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.0-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.0</a><label for="toctree-collapse-2-4"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC598 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC594 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC589-MINI (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90EZ%E2%80%90KIT-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC589-EZ-KIT (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC584-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC584 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC573 (3.1.0)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3" id="toctree-collapse-3"/><div class="collapse"><a class="reference internal" href="../examples/Examples.html">Examples</a><label for="toctree-collapse-3"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples/SHARC%E2%80%90ALSA-Example.html">SHARC-ALSA Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/USB-Gadget-Audio-Example.html">USB Gadget Audio Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/The-Kitchen-Sink.html">The Kitchen Sink</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/U%E2%80%90Boot-Falcon-Mode-Example.html">U-Boot Falcon Mode Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-4" id="toctree-collapse-4" checked=""/><div class="collapse"><a class="reference internal" href="../development/Development.html">Development</a><label for="toctree-collapse-4"><div class="icon"></div></label></div><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Setting Up Your Host PC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Debugging-without-ICE-Hardware.html">Debugging without ICE Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Boot-Sequence.html">Boot Sequence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/U%E2%80%90Boot-Environment.html">U-Boot Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Linux-Kernel-Development.html">Linux Kernel Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Compiling-and-running-a-Rust-kernel.html">Compiling and running a Rust kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Custom-Meta-Layer.html">Creating a Custom Meta Layer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/RPMsg.html">RPMsg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/RPMsg%E2%80%90Lite.html">RPMsg-Lite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications.html">Configuring System Memory When Using Linux and SHARC Applications</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-5" id="toctree-collapse-5"/><div class="collapse"><a class="reference internal" href="../benchmarks/Benchmarking.html">Benchmarks</a><label for="toctree-collapse-5"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../benchmarks/RPMsg-Benchmark-Figures.html">RPMsg Benchmark Figures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../benchmarks/Booting-Benchmark-Figures.html">Booting Benchmark Figures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/Frequently-Asked-Questions.html">FAQ</a></li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-6" id="toctree-collapse-6"/><div class="collapse"><a class="reference internal" href="../secure-boot/Secure-Boot-Support.html">Secure Boot</a><label for="toctree-collapse-6"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../secure-boot/Secure-Boot-Support-in-release-3.1.1.html">Secure Boot Support (Release 3.1.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../secure-boot/Secure-Boot-Support-in-release-3.1.0.html">Secure Boot Support (Release 3.1.0)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-7" id="toctree-collapse-7"/><div class="collapse"><a class="reference internal" href="../test-reports/Test-Reports.html">Test Reports</a><label for="toctree-collapse-7"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%285.0.1%29.html">Test Report (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%285.0.0%29.html">Test Report (5.0.0)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%283.1.0%29.html">Test Report (3.1.0)</a></li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+        </div>
+      </div>
+
+  <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper" id="top-anchor">
+          <div class="body-header">
+  <nav class="breadcrumb"><ol><li><a href="../development/Development.html">Development</a></li></ol></nav>
+</div>
+          <div class="body" role="main">
+            
+  <section id="setting-up-your-host-pc">
+<h1>Setting Up Your Host PC<a class="headerlink" href="#setting-up-your-host-pc" title="Link to this heading"></a></h1>
+<p>The build system is currently supported on host PCs running <strong>Ubuntu 22.04 LTS 64-bit</strong>.</p>
+<section id="installing-required-packages">
+<h2>Installing Required Packages<a class="headerlink" href="#installing-required-packages" title="Link to this heading"></a></h2>
+<p>In order to build and deploy Linux to your ADSP-SC5xx development board you will need to install the following packages on your host PC.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>gawk<span class="w"> </span>wget<span class="w"> </span>git-core<span class="w"> </span>diffstat<span class="w"> </span>unzip<span class="w"> </span>texinfo<span class="w"> </span>gcc-multilib<span class="w"> </span>build-essential<span class="w"> </span>chrpath<span class="w"> </span>socat<span class="w"> </span>libsdl1.2-dev<span class="w"> </span>xterm<span class="w"> </span>u-boot-tools<span class="w"> </span>openssl<span class="w"> </span>curl<span class="w"> </span>tftpd-hpa<span class="w"> </span>python3<span class="w"> </span>zstd<span class="w"> </span>liblz4-tool
+</pre></div>
+</div>
+</section>
+<section id="configure-minicom">
+<h2>Configure Minicom<a class="headerlink" href="#configure-minicom" title="Link to this heading"></a></h2>
+<p>In order to communicate with the U-Boot bootloader, a UART connection must be made between the host PC and the development board. It is recommended that you use minicom to do this. Minicom must be configured to connect to U-Boot correctly.</p>
+<p>On the host PC open a terminal and execute the following commands:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>minicom
+sudo<span class="w"> </span>minicom<span class="w"> </span>-s
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>The minicom menu will appear as follows:
+
++-----[configuration]------+
+| Filenames and paths      |
+| File transfer protocols  |
+| Serial port setup        |
+| Modem and dialing        |
+| Screen and keyboard      |
+| Save setup as dfl        |
+| Save setup as..          |
+| Exit                     |
+| Exit from Minicom        |
++--------------------------+
+
+
+# Select Serial port setup
+     Set Serial Device to /dev/ttyUSB0
+     Set Bps/Par/Bits to 115200 8N1
+     Set Hardware Flow Control to No
+
+     Close the Serial port setup option by press Esc
+ Select Save setup as dfl
+ Select Exit
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">/dev/ttyUSB0</span></code> might not correspond to the serial port of the board on every system. You can determine which <code class="docutils literal notranslate"><span class="pre">/dev</span></code> entry your board uses by running <code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">-l</span> <span class="pre">/dev/ttyUSB*</span></code> twice, once when the serial port of the board is plugged in, and once when it isn’t.</p>
+</div>
+</section>
+<section id="configure-tftp-service">
+<h2>Configure TFTP Service<a class="headerlink" href="#configure-tftp-service" title="Link to this heading"></a></h2>
+<p>A TFTP server on the host is used to transfer images to the development board.
+Install and configure.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/default/tftpd-hpa
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>#Replace the existing file with the following
+TFTP_USERNAME=&quot;tftp&quot;
+TFTP_DIRECTORY=&quot;/tftpboot&quot;
+TFTP_ADDRESS=&quot;0.0.0.0:69&quot;
+TFTP_OPTIONS=&quot;--secure&quot;
+#End of File
+</pre></div>
+</div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>/tftpboot
+sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">777</span><span class="w"> </span>/tftpboot
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>tftpd-hpa
+</pre></div>
+</div>
+</section>
+<section id="configure-nfs-server">
+<h2>Configure NFS Server<a class="headerlink" href="#configure-nfs-server" title="Link to this heading"></a></h2>
+<p>For NFS boot we use the Network File System which is stored in local Ubuntu Host. This is suggested when you do application development. To setup the NFS server:</p>
+<p>First, create a directory to store the file system for the target:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>/romfs/
+sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">777</span><span class="w"> </span>/romfs/
+</pre></div>
+</div>
+<p>Then, install the required package:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>nfs-kernel-server
+sudo<span class="w"> </span>vi<span class="w"> </span>/etc/exports
+</pre></div>
+</div>
+<p>Add the following line:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>/romfs<span class="w"> </span>*<span class="o">(</span>rw,sync,no_root_squash,no_subtree_check<span class="o">)</span>
+</pre></div>
+</div>
+<p>Start the NFS server:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>nfs-kernel-server
+</pre></div>
+</div>
+<p>We can verify that the NFS service is running by executing:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>status<span class="w"> </span>nfs-kernel-server
+</pre></div>
+</div>
+<p>The output will indicate that the server is active, i.e.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>● nfs-server.service - NFS server and services
+     Loaded: loaded (/lib/systemd/system/nfs-server.service; enabled; vendor preset: enabled)
+    Drop-In: /run/systemd/generator/nfs-server.service.d
+             └─order-with-mounts.conf
+     Active: active (exited) since Tue 2022-09-06 14:38:31 BST; 3 months 14 days ago
+   Main PID: 953 (code=exited, status=0/SUCCESS)
+      Tasks: 0 (limit: 18797)
+     Memory: 0B
+     CGroup: /system.slice/nfs-server.service
+
+Sep 06 14:38:29 $YOUR_HOSTNAME systemd[1]: Starting NFS server and services...
+Sep 06 14:38:31 $YOUR_HOSTNAME systemd[1]: Finished NFS server and services.
+</pre></div>
+</div>
+<p>If it’s reported as inactive, wait a few moments and check the status again.</p>
+</section>
+<section id="configuring-usb-permissions-for-ice-debugger">
+<h2>Configuring USB permissions for ICE debugger<a class="headerlink" href="#configuring-usb-permissions-for-ice-debugger" title="Link to this heading"></a></h2>
+<p>In order to allow OpenOCD to use the ICE debugger, we need to provide the user appropriate access via udev.</p>
+<p>On the host PC create a group called <code class="docutils literal notranslate"><span class="pre">adiusb</span></code> and add the user which will be accessing the ICE debugger to it. In this case we will be adding whichever user is currently logged into the session.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>groupadd<span class="w"> </span>adiusb
+sudo<span class="w"> </span>usermod<span class="w"> </span>-a<span class="w"> </span>-G<span class="w"> </span>adiusb<span class="w"> </span><span class="nv">$USER</span>
+</pre></div>
+</div>
+<p>We notify udev about permissions to provide this usergroup by adding a rule to it.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/udev/rules.d/adi.rules
+</pre></div>
+</div>
+<p>Add the following content to the file</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ATTRS{idVendor}==&quot;064b&quot;, GROUP=&quot;adiusb&quot;
+ATTRS{idVendor}==&quot;0d28&quot;, ATTRS{idProduct}==&quot;0204&quot;, GROUP=&quot;adiusb&quot;
+ATTRS{idVendor}==&quot;03eb&quot;, ATTRS{idProduct}==&quot;6124&quot;, GROUP=&quot;adiusb&quot;
+</pre></div>
+</div>
+<p>Save and restart the system.</p>
+</section>
+</section>
+
+
+          </div>
+              <div class="related">
+                &nbsp;
+    <a href="../development/Development.html" title="Previous document (Alt+Shift+LeftArrow)" class="prev">Development</a>
+    <a href="../development/Debugging-without-ICE-Hardware.html" title="Next document (Alt+Shift+RightArrow)" class="next">Debugging without ICE Hardware</a>
+              </div>
+          
+        </div>
+      </div>
+  </div>
+
+  <label id="cancel-area-show-toc" for="input-show-toc"></label>
+  <label id="cancel-area-show-localtoc" for="input-show-localtoc"></label>
+    <footer>
+      &#169;2026, Analog Devices, Inc.
+      
+      |
+      Made with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+      &amp; <a href="https://github.com/analogdevicesinc/doctools">Doctools</a>
+      
+    </footer>
+  </body>
+</html>
