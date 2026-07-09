@@ -29,10 +29,10 @@ Step 1: Configure Build System
 
 After fetching the sources as described in the Getting Started guides, open a kas shell:
 
-.. code-block:: shell
+.. shell::
 
-   . .venv/bin/activate
-   KAS_MACHINE=adsp-sc598-som-ezkit kas shell config/kas/adsp-sc5xx.yml
+   $. .venv/bin/activate
+   $KAS_MACHINE=adsp-sc598-som-ezkit kas shell config/kas/adsp-sc5xx.yml
 
 The shell starts in the ``build`` directory with BitBake configured.
 
@@ -41,7 +41,7 @@ Step 2: Enable Falcon Mode
 
 Add the following lines to ``conf/auto.conf`` so kas preserves them:
 
-.. code-block:: shell
+.. code-block::
 
    MACHINE_FEATURES:remove = " spl"
    MACHINE_FEATURES:append = " falcon"
@@ -136,7 +136,7 @@ SOMs with the EZKIT carrier default to using OSPI flash (device 0 on bus 0) for 
 
 Flash the OSPI on the EZKIT carrier via U-Boot. Once U-Boot is loaded via GDB, execute:
 
-.. code-block:: shell
+.. code-block:: console
 
    => run update_spi_uboot_only
    => setenv sfdev 0:0; run update_spi_fit
