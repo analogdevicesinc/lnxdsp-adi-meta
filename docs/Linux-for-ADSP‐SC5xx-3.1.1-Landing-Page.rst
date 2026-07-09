@@ -2,7 +2,9 @@ Linux for ADSP-SC5xx Processors 3.1.1
 ======================================
 
 Welcome to version 3.1.1 of Linux for ADSP-SC5xx.
-This collection of pages contains all you need to know in order to download, build, develop and install Linux, running on the ARM core of the ADSP-SC5xx family of processors.
+This collection of pages contains all you need to know in order to download,
+build, develop and install Linux, running on the ARM core of the ADSP-SC5xx
+family of processors.
 
 Release Status
 --------------
@@ -36,9 +38,11 @@ The following boards are supported on this release.
      - :doc:`Getting Started with ADSP-SC573 EZ-KIT <getting-started/Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-3.1.1)>`
 
 
-Building of the Linux software requires a host PC running a recent flavour Linux.
+Building of the Linux software requires a host PC running a recent flavour
+Linux.
 Analog Devices uses `64-bit Ubuntu 20.04 LTS <https://wiki.ubuntu.com/BionicBeaver/ReleaseNotes>`_ for its building and testing of Linux for ADSP-SC5xx.
-If you are new to Linux development we strongly recommend using a host PC with this installation of Linux.
+If you are new to Linux development we strongly recommend using a host PC with
+this installation of Linux.
 If you are confident in resolving variant specific problems feel free to use your `favourite distro <https://www.techradar.com/uk/best/best-linux-distros>`_.
 
 Release Notes

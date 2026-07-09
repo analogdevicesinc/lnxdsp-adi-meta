@@ -23,7 +23,8 @@ Latest Release
 .. admonition:: Version 5.1.0 - Current Stable
    :class: tip
 
-   **Linux 6.18.31 (LTS)** | **Yocto Scarthgap** | **Enhanced RPMsg** | **Secure Boot** | **New Audio Examples**
+   **Linux 6.18.31 (LTS)** | **Yocto Scarthgap** | **Enhanced RPMsg** |
+   **Secure Boot** | **New Audio Examples**
 
    :doc:`Release Landing Page <Linux-for-ADSP‐SC5xx-5.1.0-Landing-Page>` | `Full Release Notes <https://github.com/analogdevicesinc/lnxdsp-adi-meta/releases/tag/5.1.0-rel>`_ | :doc:`Older Releases <Older-Releases>`
 
@@ -74,7 +75,11 @@ Quick Start
 3. :doc:`Build and customize <development/Development>` - Use Yocto to create your custom image and develop applications
 4. :doc:`Run examples <examples/Examples>` - Try SHARC-ALSA, USB Audio, and more
 
-**Key Topics**: :doc:`Boot Process <development/Boot-Sequence>` | :doc:`Image Types <development/Image-Types>` | :doc:`RPMsg <development/RPMsg>` | :doc:`Memory Configuration <development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>` | :doc:`Secure Boot <secure-boot/Secure-Boot-Support>`
+**Key Topics**: :doc:`Boot Process <development/Boot-Sequence>` | :doc:`Image
+Types <development/Image-Types>` | :doc:`RPMsg <development/RPMsg>` |
+:doc:`Memory Configuration
+<development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>` |
+:doc:`Secure Boot <secure-boot/Secure-Boot-Support>`
 
 Quick Links
 -----------
@@ -114,7 +119,9 @@ Documentation
    Test Reports <test-reports/Test-Reports>
 
 .. tip::
-   🔍 **Quick Search**: Press :kbd:`Ctrl+K` to search documentation | For generic Linux kernel info, visit `docs.kernel.org <https://docs.kernel.org/>`_
+   🔍 **Quick Search**: Press :kbd:`Ctrl+K` to search documentation | For
+   generic Linux kernel info, visit `docs.kernel.org
+   <https://docs.kernel.org/>`_
 
 ----
 
