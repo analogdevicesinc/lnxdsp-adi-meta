@@ -124,7 +124,7 @@ Additional Resources
 
 * **Release Notes**: `GitHub Releases <https://github.com/analogdevicesinc/lnxdsp-adi-meta/releases>`_
 * **Issue Tracking**: `GitHub Issues <https://github.com/analogdevicesinc/lnxdsp-adi-meta/issues>`_
-* **Support Forum**: `EngineerZone <https://ez.analog.com/linux-software-drivers>`_
+* **Support Forum**: :ez:`EngineerZone <linux-software-drivers>`
 
 .. toctree::
    :maxdepth: 1

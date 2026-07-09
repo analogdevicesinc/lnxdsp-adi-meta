@@ -42,4 +42,4 @@ Available Releases
 
 ----
 
-.. centered:: **For support with older releases, visit** `EngineerZone <https://ez.analog.com/linux-software-drivers>`_
+.. centered:: **For support with older releases, visit** :ez:`EngineerZone <linux-software-drivers>`

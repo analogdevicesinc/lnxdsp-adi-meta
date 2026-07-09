@@ -32,4 +32,4 @@ Available Releases
 
 ----
 
-.. centered:: **For support with secure boot, visit** `EngineerZone <https://ez.analog.com/linux-software-drivers>`_
+.. centered:: **For support with secure boot, visit** :ez:`EngineerZone <linux-software-drivers>`

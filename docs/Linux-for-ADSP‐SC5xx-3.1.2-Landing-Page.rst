@@ -16,16 +16,16 @@ The following boards are supported on this release.
    * - Development Board
      - Board Revision
      - Getting Started Guide
-   * - `ADSP-SC598 SOM <https://www.analog.com/en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/EV-SC598-SOM.html>`_ and `EV-SOMCRR-EZKIT <https://www.analog.com/en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/ev-somcrr-ezkit.html>`_ carrier board
+   * - :adi:`ADSP-SC598 SOM <en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/EV-SC598-SOM.html>` and :adi:`EV-SOMCRR-EZKIT <en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/ev-somcrr-ezkit.html>` carrier board
      - Rev A/B/C/D/E (DSP-SC598 SOM), Rev A/D (REV-SOMCRR-EZKIT)
      - :doc:`Getting Started with ADSP-SC598 <getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-3.1.2)>`
-   * - `ADSP-SC594 SOM <https://www.analog.com/en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/EV-SC594-SOM.html>`_ and `EV-SOMCRR-EZKIT <https://www.analog.com/en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/ev-somcrr-ezkit.html>`_ carrier board
+   * - :adi:`ADSP-SC594 SOM <en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/EV-SC594-SOM.html>` and :adi:`EV-SOMCRR-EZKIT <en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/ev-somcrr-ezkit.html>` carrier board
      - 1.0 Rev B or later
      - :doc:`Getting Started with ADSP-SC594 <getting-started/Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-3.1.2)>`
-   * - `ADSP-SC589-MINI <https://www.analog.com/en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/sharc-audio-module.html>`_
+   * - :adi:`ADSP-SC589-MINI <en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/sharc-audio-module.html>`
      - 1.5 or later
      - :doc:`Getting Started with ADSP-SC589 MINI <getting-started/Getting-Started-with-ADSP‐SC589‐MINI-(Linux-for-ADSP‐SC5xx-Processors-3.1.2)>`
-   * - `ADSP-SC573 EZ-KIT <https://www.analog.com/en/resources/evaluation-hardware-and-software/evaluation-boards-kits/sc573ezkit.html>`_
+   * - :adi:`ADSP-SC573 EZ-KIT <en/resources/evaluation-hardware-and-software/evaluation-boards-kits/sc573ezkit.html>`
      - 1.5 or later
      - :doc:`Getting Started with ADSP-SC573 EZ-KIT <getting-started/Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-3.1.2)>`
 
