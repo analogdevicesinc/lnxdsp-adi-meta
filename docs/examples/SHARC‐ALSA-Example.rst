@@ -1,6 +1,5 @@
-===================
 SHARC-ALSA Example
-===================
+==================
 
 .. note::
    SHARC-ALSA is currently only supported on SC598
