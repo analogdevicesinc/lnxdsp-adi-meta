@@ -20,7 +20,7 @@ Method 1: Using auto.conf (Recommended)
 
 Add the package to your image by appending this line to ``conf/auto.conf``:
 
-.. code-block:: shell
+.. code-block::
 
    IMAGE_INSTALL:append = " ethtool"
 
@@ -52,9 +52,9 @@ Build the Image
 Build your image to include the new package, from the workspace created in the
 Getting Started guide:
 
-.. code-block:: shell
+.. shell::
 
-   KAS_MACHINE=adsp-sc598-som-ezkit kas build config/kas/adsp-sc5xx.yml --target adsp-custom-ramdisk
+   $KAS_MACHINE=adsp-sc598-som-ezkit kas build config/kas/adsp-sc5xx.yml --target adsp-custom-ramdisk
 
 If the recipe is in your own layer, use the kas configuration that includes it
 instead, see :doc:`Creating a Custom Meta Layer <../development/Custom-Meta-Layer>`.
@@ -129,25 +129,25 @@ Ensure your host PC is properly configured: :doc:`Setting Up Your Host PC <../ge
 Step 1: Download Source Code
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block:: shell
+.. shell::
 
-   mkdir ~/linux-dsp-own-repos
-   cd ~/linux-dsp-own-repos
-   python3 -m venv .venv
-   . .venv/bin/activate
-   pip install kas
-   git clone https://github.com/analogdevicesinc/lnxdsp-adi-meta.git meta-adi
-   cd meta-adi
+   $mkdir ~/linux-dsp-own-repos
+   $cd ~/linux-dsp-own-repos
+   $python3 -m venv .venv
+   $. .venv/bin/activate
+   $pip install kas
+   $git clone https://github.com/analogdevicesinc/lnxdsp-adi-meta.git meta-adi
+   $cd meta-adi
 
 If you maintain a fork of ``lnxdsp-adi-meta``, use its URL instead.
 
 Step 2: Configure kas
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block:: shell
+.. shell::
 
-   export KAS_MACHINE=adsp-sc598-som-ezkit
-   kas checkout kas/adsp-sc5xx.yml
+   $export KAS_MACHINE=adsp-sc598-som-ezkit
+   $kas checkout kas/adsp-sc5xx.yml
 
 .. note::
    Pinned configurations for selected older releases are available under
@@ -160,7 +160,7 @@ Step 3: Configure Kernel and U-Boot Repositories
 Point U-Boot and Linux kernel recipes to your custom repositories by adding
 ``build/conf/auto.conf`` (preserved by kas):
 
-.. code-block:: shell
+.. code-block::
 
    # Add to build/conf/auto.conf
    UBOOT_GIT_URI = "git://$YOUR_REPO_PATH/u-boot.git"
@@ -175,13 +175,11 @@ Step 4: Build with Custom Repositories
 
 Configure your build environment and start building:
 
-.. code-block:: shell
+.. shell::
 
-   cd ~/linux-dsp-own-repos/meta-adi
-   . ../.venv/bin/activate
-
-   # Build your target
-   KAS_MACHINE=adsp-sc598-som-ezkit kas shell kas/adsp-sc5xx.yml -c 'bitbake adsp-sc5xx-minimal'
+   $cd ~/linux-dsp-own-repos/meta-adi
+   $. ../.venv/bin/activate
+   $KAS_MACHINE=adsp-sc598-som-ezkit kas shell kas/adsp-sc5xx.yml -c 'bitbake adsp-sc5xx-minimal'
 
 **Common build targets:**
 
