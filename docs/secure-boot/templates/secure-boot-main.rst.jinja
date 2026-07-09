@@ -55,15 +55,15 @@ Build System Setup
 Fetch and install the sources:
 
 
-.. code-block:: shell
+.. shell::
 
-   mkdir ~/{{ workspace }}
-   cd ~/{{ workspace }}
-   python3 -m venv .venv
-   . .venv/bin/activate
-   pip install kas
-   git clone https://github.com/analogdevicesinc/lnxdsp-adi-meta.git config
-   KAS_MACHINE=adsp-sc598-som-ezkit kas checkout config/{{ kas_file | default('kas/adsp-sc5xx.yml') }}
+   $mkdir ~/{{ workspace }}
+   $cd ~/{{ workspace }}
+   $python3 -m venv .venv
+   $. .venv/bin/activate
+   $pip install kas
+   $git clone https://github.com/analogdevicesinc/lnxdsp-adi-meta.git config
+   $KAS_MACHINE=adsp-sc598-som-ezkit kas checkout config/{{ kas_file | default('kas/adsp-sc5xx.yml') }}
 
 
 Key Generation
@@ -73,30 +73,29 @@ Key Generation
 * Create directory to store the keys
 
 
-.. code-block:: shell
+.. shell::
 
-   sudo mkdir /opt/adi-testkeys
-
+   $sudo mkdir /opt/adi-testkeys
    # ensures the normal user can read/write the directory
-   sudo chown $(whoami):$(whoami) /opt/adi-testkeys
+   $sudo chown $(whoami):$(whoami) /opt/adi-testkeys
 
 
 * Generate key Pair for LDR images signing using ``adi_signtool``
 
 
-.. code-block:: shell
+.. shell::
 
-   cd /opt/adi-testkeys
-   /opt/analog/cces/{{ cces_version }}/adi_signtool genkeypair -algo ecdsa256 -outfile testkey.der
+   $cd /opt/adi-testkeys
+   $/opt/analog/cces/{{ cces_version }}/adi_signtool genkeypair -algo ecdsa256 -outfile testkey.der
 
 
 * Generate key and certificate for verified boot
 
 
-.. code-block:: shell
+.. shell::
 
-   openssl genrsa -F4 -out dev.key 2048
-   openssl req -batch -new -x509 -key dev.key -out dev.crt
+   $openssl genrsa -F4 -out dev.key 2048
+   $openssl req -batch -new -x509 -key dev.key -out dev.crt
 
 
 Build Linux image and SDK
@@ -106,12 +105,12 @@ Build Linux image and SDK
 * Prepare the build work directory:
 
 
-.. code-block:: shell
+.. shell::
 
-   cd ~/{{ workspace }}
-   . .venv/bin/activate
-   KAS_MACHINE=adsp-sc598-som-ezkit KAS_DISTRO=adi-security \
-      KAS_BUILD_DIR="$PWD/{{ build_dir }}" kas shell config/{{ kas_file | default('kas/adsp-sc5xx.yml') }}
+   $cd ~/{{ workspace }}
+   $. .venv/bin/activate
+   $KAS_MACHINE=adsp-sc598-som-ezkit KAS_DISTRO=adi-security \
+   $   KAS_BUILD_DIR="$PWD/{{ build_dir }}" kas shell config/{{ kas_file | default('kas/adsp-sc5xx.yml') }}
 
 The shell starts in ``{{ build_dir }}`` with BitBake configured. Run the following
 build commands there. kas regenerates ``conf/local.conf``; use ``conf/auto.conf``
@@ -121,7 +120,7 @@ for persistent changes.
 * Add the following lines into ``conf/auto.conf``:
 
 
-.. code-block:: shell
+.. code-block::
 
    ADI_SIGNTOOL_KEY="/opt/adi-testkeys/testkey.der"
    ADI_SIGNTOOL_PATH="/opt/analog/cces/{{ cces_version }}/adi_signtool"
@@ -134,9 +133,9 @@ for persistent changes.
 * The complete system (Linux Image, root filesystem and bootloader) can now be built with:
 
 
-.. code-block:: shell
+.. shell::
 
-   bitbake adsp-sc5xx-minimal
+   $bitbake adsp-sc5xx-minimal
 
 
 Building the SDK
@@ -146,18 +145,18 @@ Building the SDK
 * Build the SDK with:
 
 
-.. code-block:: shell
+.. shell::
 
-   bitbake adsp-sc5xx-minimal -c populate_sdk
+   $bitbake adsp-sc5xx-minimal -c populate_sdk
 
 
 * It can then be installed by invoking the self-extracting archive, as follows:
 
 
-.. code-block:: shell
+.. shell::
 
-   cd tmp/deploy/sdk
-   sudo ./adi-security-glibc-x86_64-adsp-sc5xx-minimal-cortexa55-adsp-sc598-som-ezkit-toolchain-{{ sdk_version }}.sh
+   $cd tmp/deploy/sdk
+   $sudo ./adi-security-glibc-x86_64-adsp-sc5xx-minimal-cortexa55-adsp-sc598-som-ezkit-toolchain-{{ sdk_version }}.sh
    Analog Devices Inc Reference Distro (glibc) SDK installer version {{ sdk_version }}
    =======================================================================
    Enter target directory for SDK (default: /opt/adi-security/{{ sdk_version }}):
@@ -166,7 +165,7 @@ Building the SDK
    Setting it up...done
    SDK has been successfully set up and is ready to be used.
    Each time you wish to use the SDK in a new shell session, you need to source the environment setup script e.g.
-    $ . /opt/adi-security/{{ sdk_version }}/environment-setup-cortexa55-adi_glibc-linux
+     $ . /opt/adi-security/{{ sdk_version }}/environment-setup-cortexa55-adi_glibc-linux
 
 
 Setup the hardware
@@ -221,9 +220,9 @@ The console output from U-Boot and later on Linux will appear on the USB serial 
 ```Terminal1: minicom```
 
 
-.. code-block:: shell
+.. shell::
 
-   sudo minicom
+   $sudo minicom
 
 
 In a separate console launch OpenOCD and connect to the development board.
@@ -232,10 +231,10 @@ In a separate console launch OpenOCD and connect to the development board.
 ```Terminal2: OpenOCD```
 
 
-.. code-block:: shell
+.. shell::
 
-   sdk_usr=/opt/adi-security/{{ sdk_version }}/sysroots/x86_64-adi_glibc_sdk-linux/usr/
-   $sdk_usr/bin/openocd -f $sdk_usr/share/openocd/scripts/interface/<ICE>.cfg -f $sdk_usr/share/openocd/scripts/target/adspsc59x_a55.cfg
+   $sdk_usr=/opt/adi-security/{{ sdk_version }}/sysroots/x86_64-adi_glibc_sdk-linux/usr/
+   $$sdk_usr/bin/openocd -f $sdk_usr/share/openocd/scripts/interface/<ICE>.cfg -f $sdk_usr/share/openocd/scripts/target/adspsc59x_a55.cfg
 
 Where ```<ICE>```` should be replaced with ````ice1000```` or ````ice2000``` depending on your hardware.
 When successful you should see a message similar to the console output below
@@ -243,7 +242,7 @@ When successful you should see a message similar to the console output below
 ```Terminal2: OpenOCD```
 
 
-.. code-block:: shell
+.. code-block:: text
 
    Open On-Chip Debugger (PKGVERSION)  OpenOCD 0.10.0-gf73da81ab (2024-01-31-15:39)
    Licensed under GNU GPL v2
@@ -269,7 +268,7 @@ In a third console window launch GDB and type ```target extended-remote :3333```
 ```Terminal3: GDB```
 
 
-.. code-block:: shell
+.. code-block:: console
 
    cd /<folder>
    /opt/adi-security/{{ sdk_version }}/sysroots/x86_64-adi_glibc_sdk-linux/usr/bin/aarch64-adi_glibc-linux/aarch64-adi_glibc-linux-gdb u-boot-spl-sc598-som-ezkit.elf
@@ -293,7 +292,7 @@ You will see a message on Terminal 1 running minicom, informing you that you can
 ```Terminal1: minicom```
 
 
-.. code-block:: shell
+.. code-block:: text
 
    U-Boot SPL 2025.10
    ADI Boot Mode: 0x0 (JTAG/BOOTROM)
@@ -305,7 +304,7 @@ Now, press Ctrl-C to halt SPL, and load U-Boot Proper into RAM.
 ```Terminal3: GDB```
 
 
-.. code-block:: shell
+.. code-block:: console
 
    ^C
    Program received signal SIGINT, Interrupt.
@@ -334,7 +333,7 @@ At this point U-Boot will now be running in RAM on your target board. You should
 ```Terminal1: minicom```
 
 
-.. code-block:: shell
+.. code-block:: console
 
    U-Boot 2025.10
    CPU:   ADSP ADSP-SC598-0.0 (spi slave boot)
@@ -364,7 +363,7 @@ this to program the unsigned LDR files for the first boot, and for programming t
 ```Terminal1: minicom```
 
 
-.. code-block:: shell
+.. code-block:: console
 
    => setenv serverip <SERVERIP>
 
@@ -377,14 +376,14 @@ this to program the unsigned LDR files for the first boot, and for programming t
 
 If your network **supports** DHCP, run:
 
-.. code-block:: shell
+.. code-block:: console
 
    => dhcp
 
 
 If your network **does NOT support** DHCP, run:
 
-.. code-block:: shell
+.. code-block:: console
 
    => set ipaddr <ADDR>
 
@@ -393,14 +392,14 @@ Where ```<ADDR>``` is the IP address you want to assign.
 
 Next, run the U-Boot update command to copy the U-Boot loader files from the host PC to the target board, and write it into flash:
 
-.. code-block:: shell
+.. code-block:: console
 
    => run update_uboot
 
 
 You will see an output similar to the one below:
 
-.. code-block:: shell
+.. code-block:: console
 
    => run update_uboot
    SF: Detected is25lp01g with page size 256 Bytes, erase size 4 KiB, total 128 MiB
@@ -437,9 +436,9 @@ Program the Secure Firmware
 ---------------------------
 After logging in, run the following command:
 
-.. code-block:: shell
+.. shell::
 
-   /usr/firmware/init
+   $/usr/firmware/init
 
 and follow the prompts to program the secure firmware to the SPI, eMMC or USB. For more detailed information about
 each of these steps see :doc:`Getting Started with SC598-{{ version }} <../getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-{{ version }})>`
@@ -456,9 +455,9 @@ Extract the Public key and copy it into the target
 * cd into the directory where the keys were generated:
 
 
-.. code-block:: shell
+.. shell::
 
-   cd /opt/adi-testkeys
+   $cd /opt/adi-testkeys
 
 
 * Dump the Key Pair to verify the content
@@ -486,9 +485,9 @@ Extract the Public key and copy it into the target
 * Extract the public key from the DER file with ``dd``
 
 
-.. code-block:: shell
+.. shell::
 
-   dd if=testkey.der bs=1 count=64 skip=57 | xxd
+   $dd if=testkey.der bs=1 count=64 skip=57 | xxd
    00000000: 5a06 5d03 1919 feb5 ee87 ed47 6b4e e6c9  Z.]........GkN..
    00000010: 5921 6fd0 11fa 77ae 6b99 5145 49b9 ec15  Y!o...w.k.QEI...
    00000020: 919c c00e 2e3b 9f44 c14f f6a8 f80e a07d  .....;.D.O.....}
@@ -501,9 +500,9 @@ Extract the Public key and copy it into the target
 * Save the public key into a file
 
 
-.. code-block:: shell
+.. shell::
 
-   dd if=testkey.der bs=1 count=64 skip=57 > testkey_pub.bin
+   $dd if=testkey.der bs=1 count=64 skip=57 > testkey_pub.bin
    64+0 records in
    64+0 records out
    64 bytes copied, 0.000347221 s, 184 kB/s
@@ -512,9 +511,9 @@ Extract the Public key and copy it into the target
 * Copy ``testkey_pub.bin`` file to the target with ``scp``, then flash it with ``adiotp-cli``
 
 
-.. code-block:: shell
+.. shell::
 
-   scp testkey_pub.bin root@<TARGET_IP>:/tmp/testkey_pub.bin
+   $scp testkey_pub.bin root@<TARGET_IP>:/tmp/testkey_pub.bin
 
 
 Program the key into the OTP flash memory
@@ -526,31 +525,30 @@ Program the key into the OTP flash memory
 ```Terminal1: minicom```
 
 
-.. code-block:: shell
+.. shell::
 
-   cd /tmp
-   cat testkey_pub.bin | adiotp-cli -s 12
+   $cd /tmp
+   $cat testkey_pub.bin | adiotp-cli -s 12
 
 
 * Print the key with ``adiotp-cli`` to verify it was programmed successfully
 
 
-.. code-block:: shell
+.. shell::
 
-   adiotp-cli 12 | xxd
+   $adiotp-cli 12 | xxd
    00000000: 5a06 5d03 1919 feb5 ee87 ed47 6b4e e6c9  Z.]........GkN..
    00000010: 5921 6fd0 11fa 77ae 6b99 5145 49b9 ec15  Y!o...w.k.QEI...
    00000020: 919c c00e 2e3b 9f44 c14f f6a8 f80e a07d  .....;.D.O.....}
    00000030: 6ad5 72b4 5f37 5931 efe8 bf21 fd76 4747  j.r._7Y1...!.vGG
-   root@adsp-sc598-som-ezkit:~#
 
 
 * Another method to verify key programmation successfully
 
 
-.. code-block:: shell
+.. shell::
 
-   adiotp-cli 12 | sha256sum - /tmp/testkey_pub.bin
+   $adiotp-cli 12 | sha256sum - /tmp/testkey_pub.bin
    7c4888b77901b12b8fdd3f69e0124727286fcdc14a85214befc1fb181f273c59  -
    7c4888b77901b12b8fdd3f69e0124727286fcdc14a85214befc1fb181f273c59  /tmp/testkey_pub.bin
 
@@ -570,43 +568,37 @@ Running OP-TEE applications
 First of all, let's check the status of the ``tee-supplicant`` systemd service, then run the ``xtest``.
 
 
-.. code-block:: shell
+.. shell::
 
-   root@adsp-sc598-som-ezkit:~# systemctl status tee-supplicant
+   $systemctl status tee-supplicant
    * tee-supplicant.service - TEE Supplicant
-        Loaded: loaded (8;;file://adsp-sc598-som-ezkit/lib/systemd/system/tee-supplicant.service/lib/systemd/system/tee-supplicant.service8;;; enabled; vendor preset: enabled)
-        Active: active (running) since Thu 2022-04-28 17:42:33 UTC; 3min 36s ago
-      Main PID: 268 (tee-supplicant)
-         Tasks: 1 (limit: 238)
-        Memory: 544.0K
-        CGroup: /system.slice/tee-supplicant.service
-                `- 268 /usr/sbin/tee-supplicant
-
+         Loaded: loaded (8;;file://adsp-sc598-som-ezkit/lib/systemd/system/tee-supplicant.service/lib/systemd/system/tee-supplicant.service8;;; enabled; vendor preset: enabled)
+         Active: active (running) since Thu 2022-04-28 17:42:33 UTC; 3min 36s ago
+       Main PID: 268 (tee-supplicant)
+          Tasks: 1 (limit: 238)
+         Memory: 544.0K
+         CGroup: /system.slice/tee-supplicant.service
+                 `- 268 /usr/sbin/tee-supplicant
    Apr 28 17:42:33 adsp-sc598-som-ezkit systemd[1]: Started TEE Supplicant.
-   root@adsp-sc598-som-ezkit:~#
 
 
 
-.. code-block:: shell
+.. shell::
 
-   root@adsp-sc598-som-ezkit:~# xtest
+   $xtest
    Run test suite with level=0
-
    TEE test application started over default TEE instance
-   ######################################################
-   #
-   # regression
-   #
-   ######################################################
-
+    ######################################################
+    #
+    # regression
+    #
+    ######################################################
    * regression_1001 Core self tests
    E/LD:  init_elf:439 sys_open_ta_bin(d96a5b40-c3e5-21e3-8794-1002a5d5c61b)
    E/TC:? 0 ldelf_init_with_ldelf:130 ldelf failed with res: 0xffff0008
-    - 1001 -   skip test, pseudo TA not found
-     regression_1001 OK
-
+     - 1001 -   skip test, pseudo TA not found
+      regression_1001 OK
    ...
-
    regression_8102 OK
    regression_8103 OK
    +-----------------------------------------------------
@@ -614,7 +606,6 @@ First of all, let's check the status of the ``tee-supplicant`` systemd service, 
    93 test cases of which 0 failed
    0 test cases were skipped
    TEE test application done!
-   root@adsp-sc598-som-ezkit:~#
 
 
 Using the SHARC Cores
@@ -628,10 +619,10 @@ Signing the SHARC firmware
 First, copy the firmware files from ``/lib/firmware`` on the target system, to the host. Then, the following commands can be used to sign the firmware. Finally, transfer the signed files back to the target and place in ``/lib/firmware`` next to the original firmware.
 
 
-.. code-block:: shell
+.. shell::
 
-   /opt/analog/cces/{{ cces_version }}/adi_signtool -proc ADSP-SC598 sign -type BLp -algo ecdsa256 -infile adi_adsp_core1_fw.ldr -outfile adi_adsp_core1_fw_signed.ldr -prikey /opt/adi-testkeys/testkey.der
-   /opt/analog/cces/{{ cces_version }}/adi_signtool -proc ADSP-SC598 sign -type BLp -algo ecdsa256 -infile adi_adsp_core2_fw.ldr -outfile adi_adsp_core2_fw_signed.ldr -prikey /opt/adi-testkeys/testkey.der
+   $/opt/analog/cces/{{ cces_version }}/adi_signtool -proc ADSP-SC598 sign -type BLp -algo ecdsa256 -infile adi_adsp_core1_fw.ldr -outfile adi_adsp_core1_fw_signed.ldr -prikey /opt/adi-testkeys/testkey.der
+   $/opt/analog/cces/{{ cces_version }}/adi_signtool -proc ADSP-SC598 sign -type BLp -algo ecdsa256 -infile adi_adsp_core2_fw.ldr -outfile adi_adsp_core2_fw_signed.ldr -prikey /opt/adi-testkeys/testkey.der
 
 
 Using the Signed Firmware
@@ -641,25 +632,21 @@ Using the Signed Firmware
 The following commands can then be used to load the signed firmware images.
 
 
-.. code-block:: shell
+.. shell::
 
    # Stop the SHARC cores
-   sharc-cli -z 0
-   sharc-cli -z 1
-
+   $sharc-cli -z 0
+   $sharc-cli -z 1
    # Halt the RPMsg driver
-   rmmod adi_rpmsg
-
+   $rmmod adi_rpmsg
    # Load the firmware
-   sharc-cli -l /lib/firmware/adi_adsp_core1_fw_signed.ldr 0
-   sharc-cli -l /lib/firmware/adi_adsp_core2_fw_signed.ldr 1
-
+   $sharc-cli -l /lib/firmware/adi_adsp_core1_fw_signed.ldr 0
+   $sharc-cli -l /lib/firmware/adi_adsp_core2_fw_signed.ldr 1
    # Re-start the SHARC cores
-   sharc-cli -g 0
-   sharc-cli -g 1
-
+   $sharc-cli -g 0
+   $sharc-cli -g 1
    # Re-load the RPMsg driver
-   modprobe adi_rpmsg
+   $modprobe adi_rpmsg
 
 
 After running the ``modprobe`` command, you should see output similar to below:
@@ -686,12 +673,12 @@ The SHARC cores are now up, and running the signed firmware images.
 In order to communicate with the cores, we must first bind some RPMsg endpoints:
 
 
-.. code-block:: shell
+.. shell::
 
-   rpmsg-bind-chardev -p virtio0.sharc-echo.-1. -n 1 -e 151 -s 50
-   rpmsg-bind-chardev -p virtio0.sharc-echo-cap.-1. -n 1 -e 161 -s 61
-   rpmsg-bind-chardev -p virtio1.sharc-echo.-1. -n 1 -e 152 -s 51
-   rpmsg-bind-chardev -p virtio1.sharc-echo-cap.-1. -n 1 -e 162 -s 62
+   $rpmsg-bind-chardev -p virtio0.sharc-echo.-1. -n 1 -e 151 -s 50
+   $rpmsg-bind-chardev -p virtio0.sharc-echo-cap.-1. -n 1 -e 161 -s 61
+   $rpmsg-bind-chardev -p virtio1.sharc-echo.-1. -n 1 -e 152 -s 51
+   $rpmsg-bind-chardev -p virtio1.sharc-echo-cap.-1. -n 1 -e 162 -s 62
 
 
 Communicating with the SHARC Cores
@@ -701,15 +688,15 @@ Communicating with the SHARC Cores
 Finally, we can  communicate with the SHARC cores. For example:
 
 
-.. code-block:: shell
+.. shell::
 
-   $ echo hello | rpmsg-xmit -n 5 /dev/rpmsg0
+   $echo hello | rpmsg-xmit -n 5 /dev/rpmsg0
    hello => echo from Core1
-   $ echo hello | rpmsg-xmit -n 5 /dev/rpmsg1
+   $echo hello | rpmsg-xmit -n 5 /dev/rpmsg1
    HELLO => capitalized echo from Core1
-   $ echo hello | rpmsg-xmit -n 5 /dev/rpmsg2
+   $echo hello | rpmsg-xmit -n 5 /dev/rpmsg2
    hello => echo from Core2
-   $ echo hello | rpmsg-xmit -n 5 /dev/rpmsg3
+   $echo hello | rpmsg-xmit -n 5 /dev/rpmsg3
    HELLO => capitalized echo from Core2
 
 
@@ -734,9 +721,9 @@ This will build ``ptest`` and ``ptest-runner`` (used to run ``ptest`` test suite
 To run the test suite, run the following from the target system:
 
 
-.. code-block:: shell
+.. shell::
 
-   ptest-runner
+   $ptest-runner
 
 
 You should see output similar to the following:
