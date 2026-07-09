@@ -19,7 +19,8 @@ keys generation
 
 * Generate key Pair for LDR images signing using ``adi_signtool``
 
-**Note:** install :adi:`CCES (CrossCore Embedded Studio) <en/design-center/evaluation-hardware-and-software/software/adswt-cces.html#software-relatedsoftware>` package on your host machine.
+**Note:** install :adi:`CCES (CrossCore Embedded Studio) <en/design-center/evaluation-hardware-and-software/software/adswt-cces.html#software-relatedsoftware>`
+package on your host machine.
 
 
 .. shell::
@@ -113,7 +114,8 @@ Setup the hardware
 
 
 
-Before installing the software on to the development board, ensure that the following cables are connected:
+Before installing the software on to the development board, ensure that the
+following cables are connected:
 
 .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5471efe3-9cb0-44a1-a96e-72f453e1431f
    :width: 400
@@ -125,7 +127,8 @@ Before installing the software on to the development board, ensure that the foll
 * ICE is also connected to host PC via USB mini cable
 
 
-On the carrier board is a set of micro switches labelled SW1.  These should all be set to the OFF position before continuing.
+On the carrier board is a set of micro switches labelled SW1.  These should all
+be set to the OFF position before continuing.
 
 .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5e285aff-e67d-4d9c-8157-7f596c32134b
    :width: 400
@@ -148,7 +151,9 @@ Transfer, run and flash U-Boot on the board for the first time
 
 .. note::
 
-   It's always good practice to erase the contents of ``/tftpboot/`` before running and/or flashing a new build of U-Boot or Linux. You can do so by executing ``rm /tftpboot/*`` on your host PC before proceeding
+   It's always good practice to erase the contents of ``/tftpboot/`` before
+   running and/or flashing a new build of U-Boot or Linux. You can do so by
+   executing ``rm /tftpboot/*`` on your host PC before proceeding
 
 
 Transfer and run U-Boot on RAM
@@ -168,7 +173,8 @@ Copy the U-Boot binary & loader files to the tftp directory:
    $cp tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot-unsigned.ldr /tftpboot/
 
 
-The console output from U-Boot and later on Linux will appear on the USB serial port configured in minicom earlier so open up minicom.
+The console output from U-Boot and later on Linux will appear on the USB serial
+port configured in minicom earlier so open up minicom.
 
 ```Terminal1: minicom```
 
@@ -189,8 +195,9 @@ In a separate console launch OpenOCD and connect to the development board.
    $sdk_usr=/opt/adi-security/3.1.0/sysroots/x86_64-adi_glibc_sdk-linux/usr/
    $$sdk_usr/bin/openocd -f $sdk_usr/share/openocd/scripts/interface/<ICE>.cfg -f $sdk_usr/share/openocd/scripts/target/adspsc59x_a55.cfg
 
-Where ```<ICE>```` should be replaced with ````ice1000```` or ````ice2000``` depending on your hardware.
-When successful you should see a message similar to the console output below
+Where ```<ICE>```` should be replaced with ````ice1000```` or ````ice2000```
+depending on your hardware. When successful you should see a message similar to
+the console output below
 
 ```Terminal2: OpenOCD```
 
@@ -216,7 +223,10 @@ When successful you should see a message similar to the console output below
    Info : Listening on port 3333 for gdb connections
 
 
-In a third console window launch GDB and type ```target extended-remote :3333````. This will make GDB to connect to the gdbserver on the local host using port 3333. Then, load the U-Boot SPL into RAM by typing ````load````. Hit ````Ctrl+C``` to interrupt thereafter.
+In a third console window launch GDB and type ```target extended-remote
+:3333````. This will make GDB to connect to the gdbserver on the local host
+using port 3333. Then, load the U-Boot SPL into RAM by typing ````load````. Hit
+````Ctrl+C``` to interrupt thereafter.
 
 ```Terminal3: GDB```
 
@@ -243,7 +253,8 @@ In a third console window launch GDB and type ```target extended-remote :3333```
    Program received signal SIGINT, Interrupt.
 
 
-You will see a message on Terminal 1 running minicom, informing you that you can now load U-Boot Proper
+You will see a message on Terminal 1 running minicom, informing you that you
+can now load U-Boot Proper
 
 ```Terminal1: minicom```
 
@@ -281,7 +292,9 @@ Now, load U-Boot Proper into RAM.
    Continuing.
 
 
-At this point U-Boot will now be running in RAM on your target board. You should see U-Boot booting in the minicom console (Terminal 1). Press a key to interrupt the boot process before the countdown terminates:
+At this point U-Boot will now be running in RAM on your target board. You
+should see U-Boot booting in the minicom console (Terminal 1). Press a key to
+interrupt the boot process before the countdown terminates:
 
 ```Terminal1: minicom```
 
@@ -310,9 +323,14 @@ Flash U-Boot to SPI Flash
 -------------------------
 
 
-In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot loader files (```stage1-boot.ldr````, ````stage1-boot-unsigned.ldr````, ````stage2-boot.ldr````, ````stage2-boot-unsigned.ldr```) on TFTP.
+In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot
+loader files (```stage1-boot.ldr````, ````stage1-boot-unsigned.ldr````,
+````stage2-boot.ldr````, ````stage2-boot-unsigned.ldr```) on TFTP.
 
-**Note:** We are going to use **stage1-boot-unsigned.ldr** and **stage2-boot-unsigned.ldr** to boot the device then burn the secure boot key. This is needed only for the first time secure boot key burning. For the next flash you should use **stage1-boot.ldr** and **stage2-boot.ldr**
+**Note:** We are going to use **stage1-boot-unsigned.ldr** and
+**stage2-boot-unsigned.ldr** to boot the device then burn the secure boot key.
+This is needed only for the first time secure boot key burning. For the next
+flash you should use **stage1-boot.ldr** and **stage2-boot.ldr**
 
 ```Terminal1: minicom```
 
@@ -325,7 +343,8 @@ In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot 
 
 .. note::
 
-   To find the IP address of your host Linux PC you can issue the ``ip addr`` command from the shell or console.
+   To find the IP address of your host Linux PC you can issue the ``ip addr``
+   command from the shell or console.
 
 
 If your network **supports** DHCP, run:
@@ -344,7 +363,8 @@ If your network **does NOT support** DHCP, run:
 
 Where ```<ADDR>``` is the IP address you want to assign.
 
-Next, run the U-Boot update command to copy the U-Boot loader files from the host PC to the target board, and write it into flash:
+Next, run the U-Boot update command to copy the U-Boot loader files from the
+host PC to the target board, and write it into flash:
 
 .. code-block:: console
 
@@ -399,7 +419,10 @@ You will see an output similar to the one below:
    =>
 
 
-At this point the U-Boot binary is stored in flash. You can now disconnect the ICE-1000 or ICE-2000 from the development board and make sure to switch the BMODE to position 1. You will only need to reconnect this if your board fails to boot and you need to re-follow these instructions.
+At this point the U-Boot binary is stored in flash. You can now disconnect the
+ICE-1000 or ICE-2000 from the development board and make sure to switch the
+BMODE to position 1. You will only need to reconnect this if your board fails
+to boot and you need to re-follow these instructions.
 
 
 Booting Linux
@@ -409,7 +432,10 @@ Booting Linux
 Booting the minimal image from QSPI
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The U-Boot console is used to copy U-Boot (SPL and Proper), the minimal root filesystem image and the fitImage (which contains the kernel image and dtb file) into RAM and then write them to Flash. Copy the required files from ``<BUILD DIR>/tmp/deploy/images`` to your ``/tftpboot`` directory.
+The U-Boot console is used to copy U-Boot (SPL and Proper), the minimal root
+filesystem image and the fitImage (which contains the kernel image and dtb
+file) into RAM and then write them to Flash. Copy the required files from
+``<BUILD DIR>/tmp/deploy/images`` to your ``/tftpboot`` directory.
 
 
 .. shell::
@@ -432,7 +458,8 @@ If your network **supports** DHCP, run:
 <details closed>
   <summary>If your network does NOT support DHCP</summary>
 
-In the U-Boot console configure the board IP address and remove "run init*ethernet;" from the "start*update_spi" command.
+In the U-Boot console configure the board IP address and remove "run
+init*ethernet;" from the "start*update_spi" command.
 
 .. code-block:: console
 
@@ -441,8 +468,8 @@ In the U-Boot console configure the board IP address and remove "run init*ethern
    => edit: <remove "run init_ethernet;" from here> sf probe ${sfdev}; sf erase 0 ${sfsize}; run update_spi_uboot; run update_spi_fit; run update_spi_rfs; sleep 3; saveenv
 
 
-After editing ```start*update*spi````, proceed to running as ````update_spi```, as above.
-</details>
+After editing ```start*update*spi````, proceed to running as ````update_spi```,
+as above. </details>
 
 You should see output similar to the following.
 
@@ -557,7 +584,9 @@ You should see output similar to the following.
 
 
 
-The U-Boot image, root filesystem and Linux kernel are now stored in QSPI. Adjust the BOOT MODE selector to **position 1** and press the RESET button, the board should boot into Linux.
+The U-Boot image, root filesystem and Linux kernel are now stored in QSPI.
+Adjust the BOOT MODE selector to **position 1** and press the RESET button, the
+board should boot into Linux.
 
 
 
@@ -802,7 +831,8 @@ Running OP-TEE applications
 
 * Reboot your device then run ``xtest`` (**TEE sanity test suite**)
 
-First of all, let's check the status of the ``tee-supplicant`` systemd service, then run the ``xtest``. 
+First of all, let's check the status of the ``tee-supplicant`` systemd service,
+then run the ``xtest``.
 
 
 .. shell::
