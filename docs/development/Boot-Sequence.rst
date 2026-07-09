@@ -17,10 +17,10 @@ The Boot ROM will then boot the system according to the Boot Mode - set by a rot
    :header-rows: 1
    :widths: 10 10 10 10 15 45
 
-   * - Number (SC57x) `(HRM) <https://www.analog.com/media/en/dsp-documentation/processor-manuals/adsp-sc57x-2157x_hwr.pdf#page=2696>`__
-     - Number (SC58x) `(HRM) <https://www.analog.com/media/en/dsp-documentation/processor-manuals/SC58x-2158x-hrm.pdf#page=3440>`__
-     - Number (SC591/2/4) `(HRM) <https://www.analog.com/media/en/dsp-documentation/processor-manuals/adsp-2159x-sc591-592-594-hrm.pdf#page=2951>`__
-     - Number (SC596/8) `(HRM) <https://www.analog.com/media/en/dsp-documentation/processor-manuals/adsp-sc595-sc596-sc598-hrm.pdf#page=3501>`__
+   * - Number (SC57x) :adi:`(HRM) <media/en/dsp-documentation/processor-manuals/adsp-sc57x-2157x_hwr.pdf#page=2696>`
+     - Number (SC58x) :adi:`(HRM) <media/en/dsp-documentation/processor-manuals/SC58x-2158x-hrm.pdf#page=3440>`
+     - Number (SC591/2/4) :adi:`(HRM) <media/en/dsp-documentation/processor-manuals/adsp-2159x-sc591-592-594-hrm.pdf#page=2951>`
+     - Number (SC596/8) :adi:`(HRM) <media/en/dsp-documentation/processor-manuals/adsp-sc595-sc596-sc598-hrm.pdf#page=3501>`
      - Boot Source
      - Description
    * - 0
@@ -135,13 +135,13 @@ The firmware of the cores can be controlled from within Linux using the remotepr
 In More Detail
 ^^^^^^^^^^^^^^
 
-- Initial bring-up occurs within the probe function of the ADI remoteproc driver - `adi_remoteproc_probe <https://github.com/analogdevicesinc/linux/blob/c4403f406eff867723e10acf414afdfe8132102f/drivers/remoteproc/adi_remoteproc.c#L809>`_. This makes a number of calls to the core Linux remoteproc driver:
+- Initial bring-up occurs within the probe function of the ADI remoteproc driver - :git-linux:`c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/adi_remoteproc.c#L809 <adi_remoteproc_probe>`. This makes a number of calls to the core Linux remoteproc driver:
 
-  - `rproc_alloc <https://github.com/analogdevicesinc/linux/blob/c4403f406eff867723e10acf414afdfe8132102f/drivers/remoteproc/remoteproc_core.c#L2515>`_ to allocate a remoteproc handle
-  - `rproc_add <https://github.com/analogdevicesinc/linux/blob/c4403f406eff867723e10acf414afdfe8132102f/drivers/remoteproc/remoteproc_core.c#L2341>`_ to register the device, which also calls `rproc_validate <https://github.com/analogdevicesinc/linux/blob/c4403f406eff867723e10acf414afdfe8132102f/drivers/remoteproc/remoteproc_core.c#L2284>`_ to ensure the device can be started by the driver.
+  - :git-linux:`c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/remoteproc_core.c#L2515 <rproc_alloc>` to allocate a remoteproc handle
+  - :git-linux:`c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/remoteproc_core.c#L2341 <rproc_add>` to register the device, which also calls :git-linux:`c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/remoteproc_core.c#L2284 <rproc_validate>` to ensure the device can be started by the driver.
 
     - e.g. if the device is offline and has no start function, ``rproc_validate`` will fail.
     - If this succeeds, ``<device name> is available`` is printed.
-    - Finally, `rproc_boot <https://github.com/analogdevicesinc/linux/blob/c4403f406eff867723e10acf414afdfe8132102f/drivers/remoteproc/remoteproc_core.c#L1994>`_ is triggered, and the core is powered up.
+    - Finally, :git-linux:`c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/remoteproc_core.c#L1994 <rproc_boot>` is triggered, and the core is powered up.
 
-After ``rproc_boot``, firmware loading begins. ``adi_adsp_core<core n>_fw.ldr`` is loaded from the initramfs by `request_firmware <https://github.com/analogdevicesinc/linux/blob/c4403f406eff867723e10acf414afdfe8132102f/drivers/base/firmware_loader/main.c#L888>`_ (from Linux's generic firmware loader driver), then `rproc_start <https://github.com/analogdevicesinc/linux/blob/c4403f406eff867723e10acf414afdfe8132102f/drivers/remoteproc/remoteproc_core.c#L1376>`_ is called, passing the loaded firmware. The firmware is then loaded onto the core over DMA, using `ldr_load <https://github.com/analogdevicesinc/linux/blob/c4403f406eff867723e10acf414afdfe8132102f/drivers/remoteproc/adi_remoteproc.c#L242>`_, as well as the resource table (which was loaded during probing). Finally, the core is reset and started, and begins running the default firmware.
+After ``rproc_boot``, firmware loading begins. ``adi_adsp_core<core n>_fw.ldr`` is loaded from the initramfs by :git-linux:`c4403f406eff867723e10acf414afdfe8132102f:drivers/base/firmware_loader/main.c#L888 <request_firmware>` (from Linux's generic firmware loader driver), then :git-linux:`c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/remoteproc_core.c#L1376 <rproc_start>` is called, passing the loaded firmware. The firmware is then loaded onto the core over DMA, using :git-linux:`c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/adi_remoteproc.c#L242 <ldr_load>`, as well as the resource table (which was loaded during probing). Finally, the core is reset and started, and begins running the default firmware.
