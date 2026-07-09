@@ -27,15 +27,15 @@ The source is fully contained in the `Analog Devices Linux for ADSP repositories
 
 To install the sources:
 
-.. code-block:: shell
+.. shell::
 
-   mkdir ~/{{ build_dir }}
-   cd ~/{{ build_dir }}
-   python3 -m venv .venv
-   . .venv/bin/activate
-   pip install kas
-   git clone https://github.com/analogdevicesinc/lnxdsp-adi-meta.git config
-   KAS_MACHINE={{ machine }} kas checkout config/{{ kas_file | default('kas/adsp-sc5xx.yml') }}
+   $mkdir ~/{{ build_dir }}
+   $cd ~/{{ build_dir }}
+   $python3 -m venv .venv
+   $. .venv/bin/activate
+   $pip install kas
+   $git clone https://github.com/analogdevicesinc/lnxdsp-adi-meta.git config
+   $KAS_MACHINE={{ machine }} kas checkout config/{{ kas_file | default('kas/adsp-sc5xx.yml') }}
 
 ------------------
 Building the Image
@@ -46,11 +46,11 @@ Preparing the buildtool
 
 Open a shell configured by kas for your board:
 
-.. code-block:: shell
+.. shell::
 
-   cd ~/{{ build_dir }}
-   . .venv/bin/activate
-   KAS_MACHINE={{ machine }} kas shell config/{{ kas_file | default('kas/adsp-sc5xx.yml') }}
+   $cd ~/{{ build_dir }}
+   $. .venv/bin/activate
+   $KAS_MACHINE={{ machine }} kas shell config/{{ kas_file | default('kas/adsp-sc5xx.yml') }}
 
 The shell starts in the ``build`` directory with the BitBake environment configured.
 Run the following build commands from this shell. To resume in another terminal,
@@ -68,7 +68,7 @@ Check and select the appropriate revision
 
 Add the following to ``conf/auto.conf`` within the build directory:
 
-.. code-block:: shell
+.. code-block::
 
    SOM_REV = "<SOM revision>"
    CRR_REV = "<Carrier Revision>"
@@ -86,9 +86,9 @@ The {{ board_name }} is built with the ``adi-distro-{{ libc }}`` distro, which s
 {% endif -%}
 To build the example images invoke bitbake from within the build directory created previously.
 
-.. code-block:: shell
+.. shell::
 
-{% for i in images %}   bitbake {{ i }}
+{% for i in images %}   $bitbake {{ i }}
 {% endfor %}
 When the build completes you will see a warning that the ELF binary has relocations in .text. It is OK to ignore this warning
 
@@ -106,15 +106,15 @@ The SDK can be built for the ``adsp-sc5xx-minimal`` image or the ``adsp-sc5xx-fu
 {% else -%}
 To build the SDK for the ``{{ image }}`` image invoke bitbake from within the build directory created previously.
 {% endif %}
-.. code-block:: shell
+.. shell::
 
-   bitbake {{ image }} -c populate_sdk
+   $bitbake {{ image }} -c populate_sdk
 {% if images | length > 1 %}
 or for the adsp-sc5xx-full image
 
-.. code-block:: shell
+.. shell::
 
-   bitbake adsp-sc5xx-full -c populate_sdk
+   $bitbake adsp-sc5xx-full -c populate_sdk
 {% endif %}
 
 {% if sdk_machine_note %}
@@ -126,9 +126,9 @@ or for the adsp-sc5xx-full image
 
 When the build has completed you will find a set of files in the ``<BUILD_DIR>/tmp/deploy/sdk`` directory. For example, the {{ 'minimal' if image == 'adsp-sc5xx-minimal' else image }} image on {{ board_name }}:
 
-.. code-block:: shell
+.. shell::
 
-   ls tmp/deploy/sdk
+   $ls tmp/deploy/sdk
 
 .. code-block:: text
 
@@ -143,9 +143,9 @@ Invoke the self-extracting archive.
 It will default to installing to ``{{ sdk_path }}`` but gives you the option to select your own install folder during the installation.
 For the {{ 'minimal' if image == 'adsp-sc5xx-minimal' else image }} image on {{ board_name }}
 
-.. code-block:: shell
+.. shell::
 
-   ./{{ sdk_installer }}
+   $./{{ sdk_installer }}
 
 .. code-block:: text
 
@@ -193,9 +193,9 @@ The programming sequence uses nfsboot to bootstrap to Linux, and from there prog
 
 Populate the NFS file system with the files for booting:
 
-.. code-block:: shell
+.. shell::
 
-   sudo tar -xf tmp/deploy/images/{{ machine }}/{{ nfs_image }}-{{ machine }}.rootfs.tar.xz -C /romfs
+   $sudo tar -xf tmp/deploy/images/{{ machine }}/{{ nfs_image }}-{{ machine }}.rootfs.tar.xz -C /romfs
 
 .. note::
    The directory for this extraction is `/romfs` if you followed the directions in :doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>`.
@@ -204,9 +204,9 @@ Populate the NFS file system with the files for booting:
 {% endif %}
 Copy the programming files into the /usr/firmware directory in the NFS filesystem 
 
-.. code-block:: shell
+.. shell::
 
-   sudo cp tmp/deploy/images/{{ machine }}/programming-images/{{ image }}/* /romfs/usr/firmware
+   $sudo cp tmp/deploy/images/{{ machine }}/programming-images/{{ image }}/* /romfs/usr/firmware
 
 ------------------------------
 Starting the Python webserver
@@ -214,10 +214,10 @@ Starting the Python webserver
 
 Start the Python web server to serve the files
 
-.. code-block:: shell
+.. shell::
 
-   cd <folder> 
-   python3 -m http.server 8000
+   $cd <folder>
+   $python3 -m http.server 8000
 
 .. note::
    The Python web server can be run directly from the images/{{ machine }}/programming-images directory, however it is advised to copy the images to another directory and serve them from that folder,
@@ -231,25 +231,25 @@ The console output from U-Boot and later on Linux will appear on the USB serial 
 
 **Terminal1: minicom**
 
-.. code-block:: shell
+.. shell::
 
-   sudo minicom
+   $sudo minicom
 
 In a separate console launch OpenOCD and connect to the development board.
 
 **Terminal2: OpenOCD**
 
-.. code-block:: shell
+.. shell::
 
-   sdk_usr={{ sdk_path }}/sysroots/x86_64-adi_{{ libc }}_sdk-linux/usr/
-   $sdk_usr/bin/openocd -f $sdk_usr/share/openocd/scripts/interface/<ICE>.cfg -f $sdk_usr/share/openocd/scripts/target/{{ openocd_target }}.cfg
+   $sdk_usr={{ sdk_path }}/sysroots/x86_64-adi_{{ libc }}_sdk-linux/usr/
+   $$sdk_usr/bin/openocd -f $sdk_usr/share/openocd/scripts/interface/<ICE>.cfg -f $sdk_usr/share/openocd/scripts/target/{{ openocd_target }}.cfg
 
 Where ``<ICE>`` should be replaced with ``ice1000`` or ``ice2000`` depending on your hardware.
 When successful you should see a message similar to the console output below
 
 **Terminal2: OpenOCD**
 
-.. code-block:: shell
+.. code-block:: text
 
 {{openocd_output | indent(3, True)}}
 
@@ -257,7 +257,7 @@ In a third console window launch GDB and type ``target extended-remote :3333``. 
 
 **Terminal3: GDB**
 
-.. code-block:: shell
+.. code-block:: console
 
    cd build/tmp/deploy/images/{{ machine }}/programming-images/{{ image }}  # or wherever the Python webserver is serving from
    {{ sdk_path }}/sysroots/x86_64-adi_{{ libc }}_sdk-linux/usr/bin/{{ gdb_prefix }}/{{ gdb_prefix }}-gdb u-boot-spl-{{ machine_short }}.elf
@@ -276,7 +276,7 @@ You will see a message on Terminal 1 running minicom, informing you that you can
 
 **Terminal1: minicom**
 
-.. code-block:: shell
+.. code-block:: text
 
 {{uboot_spl_message | indent(3, True)}}
 
@@ -284,7 +284,7 @@ Now, load U-Boot Proper into RAM.
 
 **Terminal3: GDB**
 
-.. code-block:: shell
+.. code-block:: console
 
    (gdb) load u-boot-proper-{{ machine_short }}.elf
 {{gdb_load_proper_output | indent(3, True)}}
@@ -295,7 +295,7 @@ At this point U-Boot will now be running in RAM on your target board. You should
 
 **Terminal1: minicom**
 
-.. code-block:: shell
+.. code-block:: console
 
 {{uboot_proper_boot | indent(3, True)}}
 
@@ -307,7 +307,7 @@ In the U-Boot console, set the IP address of the Linux PC that hosts the Python 
 
 **Terminal1: minicom**
 
-.. code-block:: shell
+.. code-block:: console
 
    => setenv serverip <SERVERIP>
    => setenv ipaddr <IPADDR>
@@ -318,13 +318,13 @@ In the U-Boot console, set the IP address of the Linux PC that hosts the Python 
 
 If your network **supports** DHCP, run:
 
-.. code-block:: shell
+.. code-block:: console
 
    => dhcp
 
 Start the boot to Linux using nfsboot, and wait for the login prompt.
 
-.. code-block:: shell
+.. code-block:: console
 
    => run nfsboot
    ...
@@ -333,9 +333,9 @@ Start the boot to Linux using nfsboot, and wait for the login prompt.
 
 After logging in, run the following command:
 
-.. code-block:: shell
+.. shell::
 
-   /usr/firmware/init
+   $/usr/firmware/init
 
 This will call the programming script which will walk you through programming the boot media on the board
 
@@ -343,7 +343,7 @@ This will call the programming script which will walk you through programming th
 
 The first images to be programmed are the SPI flash images. The terminal will prompt asking approval to program the SPI flash.
 
-.. code-block:: shell
+.. code-block:: text
 
    ======== SPI Flash Installer ========                                                                                                                                                               
    Install U-Boot to SPI Flash                                                                                                                                                                         
@@ -360,7 +360,7 @@ The default for this and all programming prompts is N for no.
 
 The init script will then move on to the mmc programming
 
-.. code-block:: shell
+.. code-block:: text
 
    ======== Emmc Installer ========                                                                                                                                                                    
    Install U-Boot to EMMC                                                                                                                                                                              
@@ -376,7 +376,7 @@ Select y to program the eMMC, or N to skip programming.
 
 The init script will then move on to the USB programming
 
-.. code-block:: shell
+.. code-block:: text
 
    Install U-Boot to USB                                                                                                                                                                               
                                                                                                                                                                                                     
@@ -397,7 +397,7 @@ Default Login
 The default login credentials for the development build of the ADSP Yocto images is shown below. User/passwords can be set or changed in the Yocto
 adsp-sc5xx.bbclass file, and the default credentials should be changed before a production deployment.
 
-.. code-block:: shell
+.. code-block:: text
 
    {{ linux_boot_output | indent(3) }}
 
@@ -425,13 +425,13 @@ In order to boot Linux via NFS, the NFS server should be setup as indicated in `
 
 The root filesystem should then be copied to ``/romfs``.
 
-.. code-block:: shell
+.. shell::
 
-   sudo tar -xf tmp/deploy/images/{{ machine }}/{{ nfs_image }}-{{ machine }}.{{ file_extension }} -C /romfs
+   $sudo tar -xf tmp/deploy/images/{{ machine }}/{{ nfs_image }}-{{ machine }}.{{ file_extension }} -C /romfs
 
 Next, on the target, from u-boot, run the following commands:
 
-.. code-block:: shell
+.. code-block:: console
 
    => setenv ipaddr <IPADDR>
    => setenv serverip <SERVERIP>
@@ -456,7 +456,7 @@ Booting from the eMMC
 
 Now, boot to U-boot and interrupt autoboot to drop to the shell and enter the following command
 
-.. code-block:: shell
+.. code-block:: console
 
    => run mmcboot
 
@@ -480,57 +480,48 @@ Alternatively, the SD card can be programmed by the host PC before being inserte
 Formatting the SD card
 ---------------------------------
 
-.. code-block:: shell
+.. shell::
 
-   sudo fdisk /dev/mmcblk0                                                                                                                                                     
-                                                                                                                                                                                                      
-   Welcome to fdisk (util-linux 2.39.3).                                                                                                                                                               
-   Changes will remain in memory only, until you decide to write them.                                                                                                                                 
-   Be careful before using the write command.                                                                                                                                                          
-                                                                                                                                                                                                      
-                                                                                                                                                                                                      
-   Command (m for help): n                                                                                                                                                                             
-   Partition type                                                                                                                                                                                      
-      p   primary (0 primary, 0 extended, 4 free)                                                                                                                                                      
-      e   extended (container for logical partitions)                                                                                                                                                  
-   Select (default p): p                                                                                                                                                                               
-   Partition number (1-4, default 1): 1                                                                                                                                                                
-   First sector (2048-15269887, default 2048):                                                                                                                                                         
-   Last sector, +/-sectors or +/-size{K,M,G,T,P} (2048-15269887, default 15269887): +32M                                                                                                               
-                                                                                                                                                                                                      
-   Created a new partition 1 of type 'Linux' and of size 32 MiB.                                                                                                                                       
+   $sudo fdisk /dev/mmcblk0
+   Welcome to fdisk (util-linux 2.39.3).
+   Changes will remain in memory only, until you decide to write them.
+   Be careful before using the write command.
+   Command (m for help): n
+   Partition type
+       p   primary (0 primary, 0 extended, 4 free)
+       e   extended (container for logical partitions)
+   Select (default p): p
+   Partition number (1-4, default 1): 1
+   First sector (2048-15269887, default 2048):
+   Last sector, +/-sectors or +/-size{K,M,G,T,P} (2048-15269887, default 15269887): +32M
+   Created a new partition 1 of type 'Linux' and of size 32 MiB.
    Partition #1 contains a ext4 signature.
-                                                                                                                                                                                                      
-   Command (m for help): n                                                                                                                                                                             
-   Partition type                                                                                                                                                                                      
-      p   primary (1 primary, 0 extended, 3 free)                                                                                                                                                      
-      e   extended (container for logical partitions)                                                                                                                                                  
-   Select (default p): p                                                                                                                                                                               
-   Partition number (2-4, default 2): 2                                                                                                                                                                
-   First sector (67584-15269887, default 67584):                                                                                                                                                       
-   Last sector, +/-sectors or +/-size{K,M,G,T,P} (67584-15269887, default 15269887):                                                                                                                   
-                                                                                                                                                                                                      
-   Created a new partition 2 of type 'Linux' and of size 7.2 GiB.                                                                                                                                      
-   Partition #2 contains a ext4 signature.                                                                                                                                               
-                                                                                                                                                                                                      
+   Command (m for help): n
+   Partition type
+       p   primary (1 primary, 0 extended, 3 free)
+       e   extended (container for logical partitions)
+   Select (default p): p
+   Partition number (2-4, default 2): 2
+   First sector (67584-15269887, default 67584):
+   Last sector, +/-sectors or +/-size{K,M,G,T,P} (67584-15269887, default 15269887):
+   Created a new partition 2 of type 'Linux' and of size 7.2 GiB.
+   Partition #2 contains a ext4 signature.
    Command (m for help): w
 
 ---------------------------------
 Programming the SD card
 ---------------------------------
 
-.. code-block:: shell
+.. shell::
 
-   mke2fs -F -t ext4 -L "BOOT" /dev/mmcblk0p1
-   mkdir -p /tmp/boot_mount
-   mount /dev/mmcblk0p1 /tmp/boot_mount
-   cp fitImage /tmp/boot_mount
-   sync
-   umount /tmp/boot_mount
-
-   dd if=rootfs.ext4 of=/dev/mmcblk0p2 bs=512
-
-   sync
+   $mke2fs -F -t ext4 -L "BOOT" /dev/mmcblk0p1
+   $mkdir -p /tmp/boot_mount
+   $mount /dev/mmcblk0p1 /tmp/boot_mount
+   $cp fitImage /tmp/boot_mount
+   $sync
+   $umount /tmp/boot_mount
+   $dd if=rootfs.ext4 of=/dev/mmcblk0p2 bs=512
+   $sync
 
 ---------------------------------
 Booting from the SD card
@@ -538,7 +529,7 @@ Booting from the SD card
 
 Now, boot to U-boot and interrupt autoboot to drop to the shell and enter the following command
 
-.. code-block:: shell
+.. code-block:: console
 
    => run mmcboot
 
@@ -569,57 +560,48 @@ To do this, follow the commands below. The example code in this section assumes 
 
    You can use ``sudo fdisk -l`` to list the available devices and partitions, in order to locate the USB device.
 
-.. code-block:: shell
+.. shell::
 
-   sudo fdisk /dev/sda                                                                                                                                                   
-                                                                                                                                                                                                      
-   Welcome to fdisk (util-linux 2.39.3).                                                                                                                                                               
-   Changes will remain in memory only, until you decide to write them.                                                                                                                                 
-   Be careful before using the write command.                                                                                                                                                          
-                                                                                                                                                                                                      
-                                                                                                                                                                                                      
-   Command (m for help): n                                                                                                                                                                             
-   Partition type                                                                                                                                                                                      
-      p   primary (0 primary, 0 extended, 4 free)                                                                                                                                                      
-      e   extended (container for logical partitions)                                                                                                                                                  
-   Select (default p): p                                                                                                                                                                               
-   Partition number (1-4, default 1): 1                                                                                                                                                                
-   First sector (2048-15269887, default 2048):                                                                                                                                                         
-   Last sector, +/-sectors or +/-size{K,M,G,T,P} (2048-15269887, default 15269887): +32M                                                                                                               
-                                                                                                                                                                                                      
-   Created a new partition 1 of type 'Linux' and of size 32 MiB.                                                                                                                                       
+   $sudo fdisk /dev/sda
+   Welcome to fdisk (util-linux 2.39.3).
+   Changes will remain in memory only, until you decide to write them.
+   Be careful before using the write command.
+   Command (m for help): n
+   Partition type
+       p   primary (0 primary, 0 extended, 4 free)
+       e   extended (container for logical partitions)
+   Select (default p): p
+   Partition number (1-4, default 1): 1
+   First sector (2048-15269887, default 2048):
+   Last sector, +/-sectors or +/-size{K,M,G,T,P} (2048-15269887, default 15269887): +32M
+   Created a new partition 1 of type 'Linux' and of size 32 MiB.
    Partition #1 contains a ext4 signature.
-                                                                                                                                                                                                      
-   Command (m for help): n                                                                                                                                                                             
-   Partition type                                                                                                                                                                                      
-      p   primary (1 primary, 0 extended, 3 free)                                                                                                                                                      
-      e   extended (container for logical partitions)                                                                                                                                                  
-   Select (default p): p                                                                                                                                                                               
-   Partition number (2-4, default 2): 2                                                                                                                                                                
-   First sector (67584-15269887, default 67584):                                                                                                                                                       
-   Last sector, +/-sectors or +/-size{K,M,G,T,P} (67584-15269887, default 15269887):                                                                                                                   
-                                                                                                                                                                                                      
-   Created a new partition 2 of type 'Linux' and of size 7.2 GiB.                                                                                                                                      
-   Partition #2 contains a ext4 signature.                                                                                                                                               
-                                                                                                                                                                                                      
+   Command (m for help): n
+   Partition type
+       p   primary (1 primary, 0 extended, 3 free)
+       e   extended (container for logical partitions)
+   Select (default p): p
+   Partition number (2-4, default 2): 2
+   First sector (67584-15269887, default 67584):
+   Last sector, +/-sectors or +/-size{K,M,G,T,P} (67584-15269887, default 15269887):
+   Created a new partition 2 of type 'Linux' and of size 7.2 GiB.
+   Partition #2 contains a ext4 signature.
    Command (m for help): w
 
 -----------------------------------
 Copying to the USB storage device
 -----------------------------------
 
-.. code-block:: shell
+.. shell::
 
-   mke2fs -F -t ext4 -L "BOOT" /dev/sda1
-   mkdir -p /tmp/boot_mount
-   mount /dev/sda1 /tmp/boot_mount
-   cp fitImage /tmp/boot_mount
-   sync
-   umount /tmp/boot_mount
-
-   dd if=rootfs.ext4 of=/dev/sda2 bs=512
-
-   sync
+   $mke2fs -F -t ext4 -L "BOOT" /dev/sda1
+   $mkdir -p /tmp/boot_mount
+   $mount /dev/sda1 /tmp/boot_mount
+   $cp fitImage /tmp/boot_mount
+   $sync
+   $umount /tmp/boot_mount
+   $dd if=rootfs.ext4 of=/dev/sda2 bs=512
+   $sync
 
 -----------------------------------
 Booting from the USB storage device
@@ -627,7 +609,7 @@ Booting from the USB storage device
 
 Now, boot to U-boot and interrupt autoboot to drop to the shell and enter the following command
 
-.. code-block:: shell
+.. code-block:: console
 
    => run usbboot
 
