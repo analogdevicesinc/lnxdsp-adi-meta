@@ -1,13 +1,12 @@
-=====================================
 Secure Boot Support (Release 3.1.0)
 =====================================
 
 Getting started
-===============
+---------------
 
 
 keys generation
-===============
+---------------
 
 
 * Create directory to store the keys
@@ -39,7 +38,7 @@ keys generation
 
 
 Build Linux image and SDK
-=========================
+-------------------------
 
 
 * Fetch the sources
@@ -110,7 +109,7 @@ Build Linux image and SDK
 
 
 Setup the hardware
-==================
+------------------
 
 
 
@@ -143,7 +142,7 @@ On the carrier board is a set of micro switches labelled SW1.  These should all 
 
 
 Transfer, run and flash U-Boot on the board for the first time
-=======================================================================
+-----------------------------------------------------------------------
 
 
 
@@ -153,7 +152,7 @@ Transfer, run and flash U-Boot on the board for the first time
 
 
 Transfer and run U-Boot on RAM
-------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 Copy the U-Boot binary & loader files to the tftp directory:
@@ -308,7 +307,7 @@ At this point U-Boot will now be running in RAM on your target board. You should
 
 
 Flash U-Boot to SPI Flash
-=========================
+-------------------------
 
 
 In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot loader files (```stage1-boot.ldr````, ````stage1-boot-unsigned.ldr````, ````stage2-boot.ldr````, ````stage2-boot-unsigned.ldr```) on TFTP.
@@ -404,11 +403,11 @@ At this point the U-Boot binary is stored in flash. You can now disconnect the I
 
 
 Booting Linux
-=============
+-------------
 
 
 Booting the minimal image from QSPI
------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The U-Boot console is used to copy U-Boot (SPL and Proper), the minimal root filesystem image and the fitImage (which contains the kernel image and dtb file) into RAM and then write them to Flash. Copy the required files from ``<BUILD DIR>/tmp/deploy/images`` to your ``/tftpboot`` directory.
 
@@ -696,11 +695,11 @@ The U-Boot image, root filesystem and Linux kernel are now stored in QSPI. Adjus
 The username is **root** and the password is **adi**.
 
 Program the secure boot key
-===========================
+---------------------------
 
 
 Extract the Public key and copy it into the target
----------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 * Dump the Key Pair to verify the content
@@ -760,7 +759,7 @@ Extract the Public key and copy it into the target
 
 
 Program the key into the OTP flash memory
-------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 ```Terminal1: minicom```
@@ -798,7 +797,7 @@ Program the key into the OTP flash memory
 Bravo, You have successfully programmed the secure boot key. 
 
 Running OP-TEE applications
-===========================
+---------------------------
 
 
 * Reboot your device then run ``xtest`` (**TEE sanity test suite**)
@@ -854,11 +853,11 @@ First of all, let's check the status of the ``tee-supplicant`` systemd service, 
 
 
 Load SHARC images from Linux
-============================
+----------------------------
 
 
 SHARC images signing
---------------------
+~~~~~~~~~~~~~~~~~~~~
 
 
 
@@ -869,7 +868,7 @@ SHARC images signing
 
 
 Load SHARC images from Linux
-----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 
