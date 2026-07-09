@@ -49,9 +49,12 @@ Step 4: Start OpenOCD
 
 Start OpenOCD with the ``adi-debugagent`` interface:
 
-.. code-block:: shell
+.. shell::
 
-   $sdk_usr/bin/openocd -f $sdk_usr/share/openocd/scripts/interface/adi-dbgagent.cfg -f $sdk_usr/share/openocd/scripts/board/ev-sc598-som.cfg -c init -c reset -c halt
+   $$sdk_usr/bin/openocd \
+   $   -f $sdk_usr/share/openocd/scripts/interface/adi-dbgagent.cfg \
+   $   -f $sdk_usr/share/openocd/scripts/board/ev-sc598-som.cfg \
+   $   -c init -c reset -c halt
 
 Where ``sdk_usr`` is the SDK installation's ``usr`` directory, for example:
 
@@ -68,16 +71,17 @@ Step 5: Connect GDB to OpenOCD
 
 In a separate terminal, connect GDB to OpenOCD:
 
-.. code-block:: shell
+.. shell::
 
-   $sdk_usr/bin/aarch64-adi_glibc-linux/aarch64-adi_glibc-linux-gdb -ex "tar ext :3333"
+   $$sdk_usr/bin/aarch64-adi_glibc-linux/aarch64-adi_glibc-linux-gdb \
+   $   -ex "tar ext :3333"
 
 Loading Firmware
 ----------------
 
 Once connected, load the firmware using GDB:
 
-.. code-block:: shell
+.. code-block:: console
 
    (gdb) load u-boot-proper-sc598-som-ezkit.elf
    (gdb) c
@@ -89,7 +93,7 @@ Soft Reset via RCU
 
 To perform a soft reset through the Reset Control Unit (RCU):
 
-.. code-block:: shell
+.. code-block:: console
 
    (gdb) set *0x3108C000=0x1
 
