@@ -38,23 +38,20 @@ Using Linux (remoteproc)
 
 An example SHARC image is present in the ``/lib/firmware`` directory on the target. The SHARC can be programmed with this image using the Linux shell. The SHARCs are running already when Linux has booted, so you can stop them, reload the example image or your own one, and start them again
 
-.. code-block:: shell
+.. shell::
 
-   $ cd /lib/firmware
-
-   $ echo stop > /sys/class/remoteproc/remoteproc0/state
-   ADI Reset Control Unit 3108b000.rcu: Timeout waiting for remote core 1 to IDLE!
-   remoteproc remoteproc0: stopped remote processor core1-rproc
-
-   $ echo icap-sharc-alsa_Core1.ldr  > /sys/class/remoteproc/remoteproc0/firmware
-
-   $ echo start > /sys/class/remoteproc/remoteproc0/state
-   remoteproc remoteproc0: powering up core1-rproc
-   remoteproc remoteproc0: Booting fw image adi_adsp_core1_fw.ldr, size 132860
-   adi_remoteproc 28240000.core1-rproc: Core1 rpmsg init timeout, probably not supported.
-   virtio_rpmsg_bus virtio0: rpmsg host is online
+   ~/lib/firmware
+   $echo stop > /sys/class/remoteproc/remoteproc0/state
+    ADI Reset Control Unit 3108b000.rcu: Timeout waiting for remote core 1 to IDLE!
+    remoteproc remoteproc0: stopped remote processor core1-rproc
+   $echo icap-sharc-alsa_Core1.ldr > /sys/class/remoteproc/remoteproc0/firmware
+   $echo start > /sys/class/remoteproc/remoteproc0/state
+    remoteproc remoteproc0: powering up core1-rproc
+    remoteproc remoteproc0: Booting fw image adi_adsp_core1_fw.ldr, size 132860
+    adi_remoteproc 28240000.core1-rproc: Core1 rpmsg init timeout, probably not supported.
+    virtio_rpmsg_bus virtio0: rpmsg host is online
     remoteproc0#vdev0buffer: registered virtio0 (type 7)
-   remoteproc remoteproc0: remote processor core1-rproc is now up
+    remoteproc remoteproc0: remote processor core1-rproc is now up
 
 When executing the ``echo start`` command you will notice the LEDs on the SOMCRR-EZKIT flashing and then settle on LED7 remaining on. This indicates that the image on the SHARC is running.
 
@@ -63,13 +60,14 @@ Using U-Boot (rproc)
 
 An example SHARC image is present within this repository. The SHARC can be programmed with this image via U-Boot. You need to store ``icap-sharc-alsa_Core1.ldr`` & ``icap-sharc-alsa_Core2.ldr`` (or your own image/images) in the TFTP server as demonstrated in `Setting Up Your Host PC: Configure TFTP Service <../getting-started/Setting-Up-Your-Host-PC>`. Copy these using the following command, executed from your build folder:
 
-.. code-block:: shell
+.. shell::
 
-   $ cp ../sources/meta-adi/meta-adi-adsp-sc5xx/recipes-icc/sharc-audio/files/icap-sharc-alsa_Core{1,2}.ldr /tftpboot/
+   $cp ../sources/meta-adi/meta-adi-adsp-sc5xx/recipes-icc/sharc-audio/files/icap-sharc-alsa_Core{1,2}.ldr \
+   $   /tftpboot/
 
 With these stored in the TFTP server, you need to input the following at the U-Boot prompt:
 
-.. code-block:: shell
+.. code-block:: console
 
    => rproc init
    => tftp ${loadaddr} icap-sharc-alsa_Core1.ldr
@@ -94,9 +92,9 @@ Playing Audio
 
 Play back the audio sample file stored in ``/usr/share/sounds/alsa/``
 
-.. code-block:: shell
+.. shell::
 
-   $ aplay /usr/share/sounds/alsa/2Ch_L440_R200_48kHz_16bit_6s.wav
+   $aplay /usr/share/sounds/alsa/2Ch_L440_R200_48kHz_16bit_6s.wav
 
 You will hear a 440Hz tone on the left channel and a 200Hz tone on the right channel being played for 6 seconds.
 
@@ -105,24 +103,28 @@ Adding a Tone to a Channel
 
 The SHARC can be instructed to add a tone to the audio played using ``aplay``. This is done through a command interface which also uses RPMsg for passing on the instructions to the SHARC Core. A helper tool for simplifying this is installed on the target. The tool creates a character device which will accept a channel number and a frequency to be added to the audio as strings allowing for simple interaction from the command line.
 
-.. code-block:: shell
+.. shell::
 
-   $ rpmsg-bind-chardev -d virtio0.sharc-audioweaver.-1.201 -a 60
+   $rpmsg-bind-chardev -d virtio0.sharc-audioweaver.-1.201 -a 60
 
-Once the binding has been created a character device ``/dev/rpmsg0`` is available and will accept commands with the syntax: ``<channel> <frequency>``. To add a 800Hz tone to channel 0 (Left), enter the following at the command line:
+Once the binding has been created a character device ``/dev/rpmsg0`` is available
+and will accept commands with the syntax: ``<channel> <frequency>``. To add a
+800Hz tone to channel 0 (Left), enter the following at the command line:
 
-.. code-block:: shell
+.. shell::
 
-   $ echo 0 800.0 > /dev/rpmsg0
+   $echo 0 800.0 > /dev/rpmsg0
 
 Similarly, to add a 500Hz tone to channel 1 (Right), enter the following command:
 
-.. code-block:: shell
+.. shell::
 
-   $ echo 1 500.0 > /dev/rpmsg0
+   $echo 1 500.0 > /dev/rpmsg0
 
-When running ``aplay`` again, you will hear a dual tone frequency on both channels. The left channel will contain 440Hz + 800Hz whereas the right channel will contain 200Hz + 500Hz.
+When running ``aplay`` again, you will hear a dual tone frequency on both channels.
+The left channel will contain 440Hz + 800Hz whereas the right channel will contain
+200Hz + 500Hz.
 
-.. code-block:: shell
+.. shell::
 
-   $ aplay /usr/share/sounds/alsa/2Ch_L440_R200_48kHz_16bit_6s.wav
+   $aplay /usr/share/sounds/alsa/2Ch_L440_R200_48kHz_16bit_6s.wav

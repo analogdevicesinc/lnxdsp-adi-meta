@@ -29,9 +29,9 @@ Step 1: Configure Build System
 
 After following the Getting Started guides and sourcing the setup script:
 
-.. code-block:: shell
+.. shell::
 
-   source setup-environment -m adsp-sc598-som-ezkit
+   $source setup-environment -m adsp-sc598-som-ezkit
 
 A build folder and local configuration file will be created at ``$PROJECT_DIR/build/conf/local.conf``.
 
@@ -40,7 +40,7 @@ Step 2: Enable Falcon Mode
 
 Edit ``conf/local.conf`` and append the following lines:
 
-.. code-block:: shell
+.. code-block::
 
    MACHINE_FEATURES:remove = " spl"
    MACHINE_FEATURES:append = " falcon"
@@ -135,7 +135,7 @@ SOMs with the EZKIT carrier default to using OSPI flash (device 0 on bus 0) for 
 
 Flash the OSPI on the EZKIT carrier via U-Boot. Once U-Boot is loaded via GDB, execute:
 
-.. code-block:: shell
+.. code-block:: console
 
    => run update_spi_uboot_only
    => setenv sfdev 0:0; run update_spi_fit

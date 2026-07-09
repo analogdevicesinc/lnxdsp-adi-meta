@@ -10,7 +10,7 @@ Building the image
 
 Go to ``sources/meta/meta-adi/tools`` sources and run
 
-.. code-block:: shell
+.. code-block:: text
 
    machine :: sources/meta-adi/tools » git checkout kitchen_sink
    machine :: sources/meta-adi/tools » chmod +x prepare-kitchen-sink.sh
@@ -33,7 +33,7 @@ This will clone and patch the relevant repositories required for compiling the k
 
 Go back to the yocto directory and create the build directory as usual with setup-environment, then build ``sc5xx-kitchen-sink``
 
-.. code-block:: shell
+.. code-block:: text
 
    machine :: yocto » source setup-environment -m adsp-sc598-som-ezkit
    Your build environment has been configured with:
@@ -61,7 +61,7 @@ This is a commonly found package within package managers which showcases some de
 specifications of the machine. The support is however not maintained for Yocto. Since we are working in an open source environment however, we
 can add our `own instructions for Yocto <https://github.com/analogdevicesinc/lnxdsp-adi-meta/blob/glencos%2Bjupyter/meta-adi-adsp-sc5xx/recipes-adi/neofetch/neofetch.bb>`_ to include it.
 
-.. code-block:: shell
+.. code-block:: text
 
            Analog Devices Yocto Distribution
                     www.analog.com
@@ -118,17 +118,17 @@ Since this package is available for Linux (like several other larger projects) a
 
 You can connect to the jupyter-lab using port forwarding. On your local machine, run the following to connect to the board via SSH:
 
-.. code-block:: shell
+.. shell::
 
-   ssh -L 9091:localhost:9091 root@10.42.0.109
+   $ssh -L 9091:localhost:9091 root@10.42.0.109
 
 Once connected, this should now be forwarding the port 9091 from the board to your local machine.
 
 On the board, start jupyter lab:
 
-.. code-block:: shell
+.. shell::
 
-   root@adsp-sc598-som-ezkit:~# jupyter-lab --allow-root --no-browser --port=9091
+   $jupyter-lab --allow-root --no-browser --port=9091
    [I 2024-02-27 17:32:45.013 ServerApp] jupyterlab | extension was successfully linked.
    [I 2024-02-27 17:32:45.057 ServerApp] nbclassic | extension was successfully linked.
    [I 2024-02-27 17:32:49.281 ServerApp] notebook_shim | extension was successfully linked.
