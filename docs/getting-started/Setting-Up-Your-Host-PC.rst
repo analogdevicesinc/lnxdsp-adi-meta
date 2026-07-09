@@ -8,10 +8,12 @@ Installing Required Packages
 
 In order to build and deploy Linux to your ADSP-SC5xx development board you will need to install the following packages on your host PC.
 
-.. code-block:: shell
+.. shell::
 
-   sudo apt-get update
-   sudo apt-get install -y gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat libsdl1.2-dev xterm u-boot-tools openssl curl tftpd-hpa python3 zstd liblz4-tool
+   $sudo apt-get update
+   $sudo apt-get install -y gawk wget git-core diffstat unzip texinfo \
+   $   gcc-multilib build-essential chrpath socat libsdl1.2-dev xterm \
+   $   u-boot-tools openssl curl tftpd-hpa python3 zstd liblz4-tool
 
 Configure Minicom
 -----------------
@@ -20,10 +22,10 @@ In order to communicate with the U-Boot bootloader, a UART connection must be ma
 
 On the host PC open a terminal and execute the following commands:
 
-.. code-block:: shell
+.. shell::
 
-   sudo apt-get install -y minicom
-   sudo minicom -s
+   $sudo apt-get install -y minicom
+   $sudo minicom -s
 
 .. code-block:: text
 
@@ -61,9 +63,9 @@ Configure TFTP Service
 A TFTP server on the host is used to transfer images to the development board.
 Install and configure.
 
-.. code-block:: shell
+.. shell::
 
-   sudo vi /etc/default/tftpd-hpa
+   $sudo vi /etc/default/tftpd-hpa
 
 .. code-block:: text
 
@@ -74,11 +76,11 @@ Install and configure.
    TFTP_OPTIONS="--secure"
    #End of File
 
-.. code-block:: shell
+.. shell::
 
-   sudo mkdir /tftpboot
-   sudo chmod 777 /tftpboot
-   sudo systemctl restart tftpd-hpa
+   $sudo mkdir /tftpboot
+   $sudo chmod 777 /tftpboot
+   $sudo systemctl restart tftpd-hpa
 
 Configure NFS Server
 --------------------
@@ -87,35 +89,35 @@ For NFS boot we use the Network File System which is stored in local Ubuntu Host
 
 First, create a directory to store the file system for the target:
 
-.. code-block:: shell
+.. shell::
 
-   sudo mkdir /romfs/
-   sudo chmod 777 /romfs/
+   $sudo mkdir /romfs/
+   $sudo chmod 777 /romfs/
 
 Then, install the required package:
 
-.. code-block:: shell
+.. shell::
 
-   sudo apt-get install nfs-kernel-server
-   sudo vi /etc/exports
+   $sudo apt-get install nfs-kernel-server
+   $sudo vi /etc/exports
 
 Add the following line:
 
-.. code-block:: shell
+.. code-block:: text
 
    /romfs *(rw,sync,no_root_squash,no_subtree_check)
 
 Start the NFS server:
 
-.. code-block:: shell
+.. shell::
 
-   sudo systemctl start nfs-kernel-server
+   $sudo systemctl start nfs-kernel-server
 
 We can verify that the NFS service is running by executing:
 
-.. code-block:: shell
+.. shell::
 
-   sudo systemctl status nfs-kernel-server
+   $sudo systemctl status nfs-kernel-server
 
 The output will indicate that the server is active, i.e.
 
@@ -143,16 +145,16 @@ In order to allow OpenOCD to use the ICE debugger, we need to provide the user a
 
 On the host PC create a group called ``adiusb`` and add the user which will be accessing the ICE debugger to it. In this case we will be adding whichever user is currently logged into the session.
 
-.. code-block:: shell
+.. shell::
 
-   sudo groupadd adiusb
-   sudo usermod -a -G adiusb $USER
+   $sudo groupadd adiusb
+   $sudo usermod -a -G adiusb $USER
 
 We notify udev about permissions to provide this usergroup by adding a rule to it.
 
-.. code-block:: shell
+.. shell::
 
-   sudo vi /etc/udev/rules.d/adi.rules
+   $sudo vi /etc/udev/rules.d/adi.rules
 
 Add the following content to the file
 
