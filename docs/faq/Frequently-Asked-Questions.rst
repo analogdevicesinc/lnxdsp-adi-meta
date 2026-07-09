@@ -192,7 +192,7 @@ Point U-Boot and Linux kernel recipes to your custom repositories by modifying `
    # Add to conf/local.conf
    UBOOT_GIT_URI = "git://$YOUR_REPO_PATH/u-boot.git"
    UBOOT_BRANCH = "main"
-   KERNEL_GIT_URI = "git://$YOUR_REPO_PATH/lnxdsp-linux.git"
+   KERNEL_GIT_URI = "git://$YOUR_REPO_PATH/linux.git"
    KERNEL_BRANCH = "main"
 
 Replace ``$YOUR_REPO_PATH`` with your repository locations and adjust branch names as needed.
