@@ -77,6 +77,12 @@ jobs:
           cd "${YOCTO_WORKSPACE}"
           ./bin/repo sync
 
+      - name: Checkout ref into sources/meta-adi
+        uses: actions/checkout@v7
+        with:
+          # Override yocto's revision="main"
+          path: ${{ env.YOCTO_WORKSPACE }}/sources/meta-adi
+
       - name: Setup build environment
         run: |
           cd "${YOCTO_WORKSPACE}"
