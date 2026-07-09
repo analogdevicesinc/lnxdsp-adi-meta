@@ -10,9 +10,17 @@ Secure Boot Support ({{ version }})
 Introduction
 ------------
 
-This guide helps you build and deploy a security-hardened Linux distribution for ADSP-SC5xx processors with secure boot capabilities. Secure boot ensures that only authenticated software runs on your hardware, protecting against unauthorized firmware modifications and establishing a chain of trust from the bootloader through the Linux kernel.
+This guide helps you build and deploy a security-hardened Linux distribution
+for ADSP-SC5xx processors with secure boot capabilities. Secure boot ensures
+that only authenticated software runs on your hardware, protecting against
+unauthorized firmware modifications and establishing a chain of trust from the
+bootloader through the Linux kernel.
 
-By following this guide, you'll create a complete secure boot environment that integrates OP-TEE (Open Portable Trusted Execution Environment), ARM Trusted Firmware-A, and Mbed-TLS into your U-Boot and Linux images. The system will verify cryptographic signatures at each boot stage, ensuring the integrity of your software stack.
+By following this guide, you'll create a complete secure boot environment that
+integrates OP-TEE (Open Portable Trusted Execution Environment), ARM Trusted
+Firmware-A, and Mbed-TLS into your U-Boot and Linux images. The system will
+verify cryptographic signatures at each boot stage, ensuring the integrity of
+your software stack.
 
 **What you'll learn:**
 
@@ -26,17 +34,22 @@ By following this guide, you'll create a complete secure boot environment that i
 
 **Prerequisites:**
 
-* CCES (CrossCore Embedded Studio) installed on your host machine—this guide references version {{ cces_version }}, but you can use newer versions by updating version numbers in commands
-* Standard Linux build environment configured—see :doc:`Setting Up Your Host PC <../getting-started/Setting-Up-Your-Host-PC>`
+* CCES (CrossCore Embedded Studio) installed on your host machine—this guide
+  references version {{ cces_version }}, but you can use newer versions by
+  updating version numbers in commands
+* Standard Linux build environment configured—see :doc:`Setting Up Your Host PC
+  <../getting-started/Setting-Up-Your-Host-PC>`
 * Understanding of PKI concepts (public/private keys, certificates, signing)
 * Development board with ICE-1000 or ICE-2000 debugger
 
 **Important security considerations:**
 
-* OTP key programming is irreversible—test thoroughly with unsigned images first
+* OTP key programming is irreversible—test thoroughly with unsigned images
+  first
 * Keep private keys secure—loss or compromise requires new hardware
 * This guide uses test keys for demonstration—never use test keys in production
-* Secure boot alone does not guarantee system security—implement defense in depth
+* Secure boot alone does not guarantee system security—implement defense in
+  depth
 
 Getting Started
 ---------------
@@ -44,13 +57,17 @@ Getting Started
 Prerequisites
 ~~~~~~~~~~~~~
 
-System requirements and dependencies are the same as the standard (non-secure) distribution, with the addition of CCES for signing tools.
+System requirements and dependencies are the same as the standard (non-secure)
+distribution, with the addition of CCES for signing tools.
 
 Build System Setup
 ------------------
 
 
-*These steps can be skipped if you have previously followed one of the Getting Started guides, such as :doc:`Getting Started with ADSP‐SC598 (Linux for ADSP‐SC5xx Processors {{ version }}) <../getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-{{ version }})>`*.
+*These steps can be skipped if you have previously followed one of the Getting
+Started guides, such as :doc:`Getting Started with ADSP‐SC598 (Linux for
+ADSP‐SC5xx Processors {{ version }})
+<../getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-{{ version }})>`*.
 
 Fetch and install the sources:
 
@@ -112,9 +129,9 @@ Build Linux image and SDK
    $KAS_MACHINE=adsp-sc598-som-ezkit KAS_DISTRO=adi-security \
    $   KAS_BUILD_DIR="$PWD/{{ build_dir }}" kas shell config/{{ kas_file | default('kas/adsp-sc5xx.yml') }}
 
-The shell starts in ``{{ build_dir }}`` with BitBake configured. Run the following
-build commands there. kas regenerates ``conf/local.conf``; use ``conf/auto.conf``
-for persistent changes.
+The shell starts in ``{{ build_dir }}`` with BitBake configured. Run the
+following build commands there. kas regenerates ``conf/local.conf``; use
+``conf/auto.conf`` for persistent changes.
 
 
 * Add the following lines into ``conf/auto.conf``:
@@ -130,7 +147,8 @@ for persistent changes.
    UBOOT_MKIMAGE_DTCOPTS = "-I dts -O dtb -p 2000"
 
 
-* The complete system (Linux Image, root filesystem and bootloader) can now be built with:
+* The complete system (Linux Image, root filesystem and bootloader) can now be
+  built with:
 
 
 .. shell::
@@ -173,26 +191,31 @@ Setup the hardware
 
 
 
-Before installing the software on to the development board, ensure that the following cables are connected:
+Before installing the software on to the development board, ensure that the
+following cables are connected:
 
 .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5471efe3-9cb0-44a1-a96e-72f453e1431f
    :width: 400
    :alt: Hardware setup
 
 * Board connected to network via ethernet cable using J13 connector.
-* Board connected to host PC using USB micro cable, connected to USB/UART port on the development board
+* Board connected to host PC using USB micro cable, connected to USB/UART port
+  on the development board
 * Board connected to the ICE 1000 or ICE 2000 via the DEBUG port on the board
 * ICE is also connected to host PC via USB mini cable
 
 
-On the carrier board is a set of micro switches labelled SW1.  These should all be set to the OFF position before continuing.
+On the carrier board is a set of micro switches labelled SW1. These should all
+be set to the OFF position before continuing.
 
 .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5e285aff-e67d-4d9c-8157-7f596c32134b
    :width: 400
    :alt: SW1 switches
 
 
-* The Power jumper JP1 on the EV-SC598-SOM board should be fitted so that it shorts the two pins closest to the edge.  This will enable the routing of power from the SOMCRR-EZKIT.
+* The Power jumper JP1 on the EV-SC598-SOM board should be fitted so that it
+  shorts the two pins closest to the edge. This will enable the routing of
+  power from the SOMCRR-EZKIT.
 
 * The BOOT MODE selector on the EV-SC598-SOM board should be turned to "0".
 
@@ -204,18 +227,22 @@ On the carrier board is a set of micro switches labelled SW1.  These should all 
 Transfer, run and flash U-Boot on the board for the first time
 -----------------------------------------------------------------------
 
-Create a folder to serve the images and copy the build output there as mentioned in :doc:`Getting Started with ADSP SC598 {{ version }} <../getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-{{ version }})>`
+Create a folder to serve the images and copy the build output there as
+mentioned in :doc:`Getting Started with ADSP SC598 {{ version }}
+<../getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-{{ version }})>`
 
 .. note::
 
-   It's always good practice to erase the contents of this folder before running and/or flashing a new build of U-Boot or Linux.
+   It's always good practice to erase the contents of this folder before
+   running and/or flashing a new build of U-Boot or Linux.
 
 
 Transfer and run U-Boot on RAM
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-The console output from U-Boot and later on Linux will appear on the USB serial port configured in minicom earlier so open up minicom.
+The console output from U-Boot and later on Linux will appear on the USB serial
+port configured in minicom earlier so open up minicom.
 
 ```Terminal1: minicom```
 
@@ -236,8 +263,9 @@ In a separate console launch OpenOCD and connect to the development board.
    $sdk_usr=/opt/adi-security/{{ sdk_version }}/sysroots/x86_64-adi_glibc_sdk-linux/usr/
    $$sdk_usr/bin/openocd -f $sdk_usr/share/openocd/scripts/interface/<ICE>.cfg -f $sdk_usr/share/openocd/scripts/target/adspsc59x_a55.cfg
 
-Where ```<ICE>```` should be replaced with ````ice1000```` or ````ice2000``` depending on your hardware.
-When successful you should see a message similar to the console output below
+Where ```<ICE>```` should be replaced with ````ice1000```` or ````ice2000```
+depending on your hardware. When successful you should see a message similar to
+the console output below
 
 ```Terminal2: OpenOCD```
 
@@ -263,7 +291,10 @@ When successful you should see a message similar to the console output below
    Info : Listening on port 3333 for gdb connections
 
 
-In a third console window launch GDB and type ```target extended-remote :3333````. This will make GDB to connect to the gdbserver on the local host using port 3333. Then, load the U-Boot SPL into RAM by typing ````load````. Hit ````Ctrl+C``` to interrupt thereafter.
+In a third console window launch GDB and type ```target extended-remote
+:3333````. This will make GDB to connect to the gdbserver on the local host
+using port 3333. Then, load the U-Boot SPL into RAM by typing ````load````. Hit
+````Ctrl+C``` to interrupt thereafter.
 
 ```Terminal3: GDB```
 
@@ -287,7 +318,8 @@ In a third console window launch GDB and type ```target extended-remote :3333```
    Continuing.
 
 
-You will see a message on Terminal 1 running minicom, informing you that you can now load U-Boot Proper
+You will see a message on Terminal 1 running minicom, informing you that you
+can now load U-Boot Proper
 
 ```Terminal1: minicom```
 
@@ -328,7 +360,9 @@ Now, press Ctrl-C to halt SPL, and load U-Boot Proper into RAM.
    Continuing.
 
 
-At this point U-Boot will now be running in RAM on your target board. You should see U-Boot booting in the minicom console (Terminal 1). Press a key to interrupt the boot process before the countdown terminates:
+At this point U-Boot will now be running in RAM on your target board. You
+should see U-Boot booting in the minicom console (Terminal 1). Press a key to
+interrupt the boot process before the countdown terminates:
 
 ```Terminal1: minicom```
 
@@ -356,9 +390,13 @@ Flash (Unsigned) U-Boot to SPI Flash
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot loader files, and on the host PC, set up the HTTP server according to the instructions in
-:doc:`Getting Started with ADSP-SC598 {{ version }} (Bootstrapping to Linux section) <../getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-{{ version }})>`. We will use
-this to program the unsigned LDR files for the first boot, and for programming the signed firmware files later.
+In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot
+loader files, and on the host PC, set up the HTTP server according to the
+instructions in :doc:`Getting Started with ADSP-SC598 {{ version }}
+(Bootstrapping to Linux section)
+<../getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-{{ version }})>`.
+We will use this to program the unsigned LDR files for the first boot, and for
+programming the signed firmware files later.
 
 ```Terminal1: minicom```
 
@@ -371,7 +409,8 @@ this to program the unsigned LDR files for the first boot, and for programming t
 
 .. note::
 
-   To find the IP address of your host Linux PC you can issue the ``ip addr`` command from the shell or console.
+   To find the IP address of your host Linux PC you can issue the ``ip addr``
+   command from the shell or console.
 
 
 If your network **supports** DHCP, run:
@@ -390,7 +429,8 @@ If your network **does NOT support** DHCP, run:
 
 Where ```<ADDR>``` is the IP address you want to assign.
 
-Next, run the U-Boot update command to copy the U-Boot loader files from the host PC to the target board, and write it into flash:
+Next, run the U-Boot update command to copy the U-Boot loader files from the
+host PC to the target board, and write it into flash:
 
 .. code-block:: console
 
@@ -418,8 +458,11 @@ You will see an output similar to the one below:
 
 
 
-At this point the U-Boot binary is stored in flash. You can now disconnect the ICE-1000 or ICE-2000 from the development board and make sure to switch the BMODE to position 1. You will only need to reconnect this if your board fails to boot and you need to re-follow these instructions.
-Reset the board after setting the boot mode to SPI, and break into U-boot by pressing any key.
+At this point the U-Boot binary is stored in flash. You can now disconnect the
+ICE-1000 or ICE-2000 from the development board and make sure to switch the
+BMODE to position 1. You will only need to reconnect this if your board fails
+to boot and you need to re-follow these instructions. Reset the board after
+setting the boot mode to SPI, and break into U-boot by pressing any key.
 
 Programming Linux
 -----------------
@@ -440,8 +483,10 @@ After logging in, run the following command:
 
    $/usr/firmware/init
 
-and follow the prompts to program the secure firmware to the SPI, eMMC or USB. For more detailed information about
-each of these steps see :doc:`Getting Started with SC598-{{ version }} <../getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-{{ version }})>`
+and follow the prompts to program the secure firmware to the SPI, eMMC or USB.
+For more detailed information about each of these steps see :doc:`Getting
+Started with SC598-{{ version }}
+<../getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-{{ version }})>`
 
 Program the secure boot key
 ---------------------------
@@ -508,7 +553,8 @@ Extract the Public key and copy it into the target
    64 bytes copied, 0.000347221 s, 184 kB/s
 
 
-* Copy ``testkey_pub.bin`` file to the target with ``scp``, then flash it with ``adiotp-cli``
+* Copy ``testkey_pub.bin`` file to the target with ``scp``, then flash it with
+  ``adiotp-cli``
 
 
 .. shell::
@@ -520,7 +566,8 @@ Program the key into the OTP flash memory
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-**Note:** This is a one-time, irreversible operation - the OTP (One-Time Programmable) Flash cannot be erased or rewritten.
+**Note:** This is a one-time, irreversible operation - the OTP (One-Time
+Programmable) Flash cannot be erased or rewritten.
 
 ```Terminal1: minicom```
 
@@ -553,7 +600,8 @@ Program the key into the OTP flash memory
    7c4888b77901b12b8fdd3f69e0124727286fcdc14a85214befc1fb181f273c59  /tmp/testkey_pub.bin
 
 
-Bravo, You have successfully programmed the secure boot key. You can now restart the board and use it normally.
+Bravo, You have successfully programmed the secure boot key. You can now
+restart the board and use it normally.
 
 Using the System
 ----------------
@@ -565,7 +613,8 @@ Running OP-TEE applications
 
 * Reboot your device then run ``xtest`` (**TEE sanity test suite**)
 
-First of all, let's check the status of the ``tee-supplicant`` systemd service, then run the ``xtest``.
+First of all, let's check the status of the ``tee-supplicant`` systemd service,
+then run the ``xtest``.
 
 
 .. shell::
@@ -616,7 +665,10 @@ Signing the SHARC firmware
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-First, copy the firmware files from ``/lib/firmware`` on the target system, to the host. Then, the following commands can be used to sign the firmware. Finally, transfer the signed files back to the target and place in ``/lib/firmware`` next to the original firmware.
+First, copy the firmware files from ``/lib/firmware`` on the target system, to
+the host. Then, the following commands can be used to sign the firmware.
+Finally, transfer the signed files back to the target and place in
+``/lib/firmware`` next to the original firmware.
 
 
 .. shell::
@@ -670,7 +722,8 @@ After running the ``modprobe`` command, you should see output similar to below:
 
 The SHARC cores are now up, and running the signed firmware images.
 
-In order to communicate with the cores, we must first bind some RPMsg endpoints:
+In order to communicate with the cores, we must first bind some RPMsg
+endpoints:
 
 
 .. shell::
@@ -716,7 +769,8 @@ Install ptest by adding the following to ``conf/auto.conf``:
    IMAGE_INSTALL:append = " ptest-runner mbedtls-ptest "
 
 
-This will build ``ptest`` and ``ptest-runner`` (used to run ``ptest`` test suites from the host system), and Mbed-TLS's test suite, ``mbedtls-ptest``.
+This will build ``ptest`` and ``ptest-runner`` (used to run ``ptest`` test
+suites from the host system), and Mbed-TLS's test suite, ``mbedtls-ptest``.
 
 To run the test suite, run the following from the target system:
 
