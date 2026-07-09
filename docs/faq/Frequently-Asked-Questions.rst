@@ -20,7 +20,7 @@ Method 1: Using local.conf (Recommended)
 
 Add the package to your image by appending this line to ``conf/local.conf``:
 
-.. code-block:: shell
+.. code-block::
 
    IMAGE_INSTALL:append = " ethtool"
 
@@ -51,9 +51,9 @@ Build the Image
 
 Build your image to include the new package:
 
-.. code-block:: shell
+.. shell::
 
-   bitbake adsp-custom-ramdisk
+   $bitbake adsp-custom-ramdisk
 
 The package will be deployed into the Linux filesystem during the build process.
 
@@ -125,17 +125,18 @@ Ensure your host PC is properly configured: :doc:`Setting Up Your Host PC <../ge
 Step 1: Download Source Code
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block:: shell
+.. shell::
 
-   mkdir ~/linux-dsp-own-repos
-   cd ~/linux-dsp-own-repos
-   mkdir bin
-   curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ./bin/repo
-   chmod a+x ./bin/repo
-   ./bin/repo init \
-      -u https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git \
-      -b main \
-      -m release-5.0.1.xml
+   $mkdir ~/linux-dsp-own-repos
+   $cd ~/linux-dsp-own-repos
+   $mkdir bin
+   $curl http://commondatastorage.googleapis.com/git-repo-downloads/repo \
+   $   > ./bin/repo
+   $chmod a+x ./bin/repo
+   $./bin/repo init \
+   $   -u https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git \
+   $   -b main \
+   $   -m release-5.0.1.xml
 
 .. note::
    Replace ``release-5.0.1.xml`` with your desired release version.
@@ -145,9 +146,9 @@ Step 2: Configure Manifest
 
 Modify the repo manifest to point to your custom repositories for ``lnxdsp-adi-meta`` and ``lnxdsp-scripts``:
 
-.. code-block:: shell
+.. shell::
 
-   cd ~/linux-dsp-own-repos/.repo/manifests/
+   $cd ~/linux-dsp-own-repos/.repo/manifests/
 
 Apply the following modifications to ``lnxdsp-repo-manifest``:
 
@@ -177,16 +178,16 @@ Replace ``$YOUR_REPO_PATH`` with your Git server URL (e.g., ``https://github.com
 
 Sync the repositories:
 
-.. code-block:: shell
+.. shell::
 
-   ./bin/repo sync
+   $./bin/repo sync
 
 Step 3: Configure Kernel and U-Boot Repositories
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Point U-Boot and Linux kernel recipes to your custom repositories by modifying ``conf/local.conf``:
 
-.. code-block:: shell
+.. code-block::
 
    # Add to conf/local.conf
    UBOOT_GIT_URI = "git://$YOUR_REPO_PATH/u-boot.git"
@@ -201,13 +202,11 @@ Step 4: Build with Custom Repositories
 
 Configure your build environment and start building:
 
-.. code-block:: shell
+.. shell::
 
-   cd ~/linux-dsp-own-repos/
-   source setup-environment -m adsp-sc598-som-ezkit
-
-   # Build your target
-   bitbake adsp-sc5xx-minimal
+   $cd ~/linux-dsp-own-repos/
+   $source setup-environment -m adsp-sc598-som-ezkit
+   $bitbake adsp-sc5xx-minimal
 
 **Common build targets:**
 
