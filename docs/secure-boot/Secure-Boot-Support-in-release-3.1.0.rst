@@ -12,9 +12,9 @@ keys generation
 * Create directory to store the keys
 
 
-.. code-block:: shell
+.. shell::
 
-   sudo mkdir /opt/adi-testkeys
+   $sudo mkdir /opt/adi-testkeys
 
 
 * Generate key Pair for LDR images signing using ``adi_signtool``
@@ -22,19 +22,19 @@ keys generation
 **Note:** install `CCES (CrossCore Embedded Studio) <https://www.analog.com/en/design-center/evaluation-hardware-and-software/software/adswt-cces.html#software-relatedsoftware>`_ package on your host machine.
 
 
-.. code-block:: shell
+.. shell::
 
-   cd /opt/adi-testkeys
-   /opt/analog/cces/2.11.1/adi_signtool genkeypair -algo ecdsa256 -outfile testkey.der
+   $cd /opt/adi-testkeys
+   $/opt/analog/cces/2.11.1/adi_signtool genkeypair -algo ecdsa256 -outfile testkey.der
 
 
 * Generate key and certificate for verified boot
 
 
-.. code-block:: shell
+.. shell::
 
-   openssl genrsa -F4 -out dev.key 2048
-   openssl req -batch -new -x509 -key dev.key -out dev.crt
+   $openssl genrsa -F4 -out dev.key 2048
+   $openssl req -batch -new -x509 -key dev.key -out dev.crt
 
 
 Build Linux image and SDK
@@ -44,27 +44,27 @@ Build Linux image and SDK
 * Fetch the sources
 
 
-.. code-block:: shell
+.. shell::
 
-   ./bin/repo init \
-      -u https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git \
-      -b develop/yocto-3.1.0 \
-      -m develop-yocto-3.1.0.xml
-   ./bin/repo sync -j$(nproc)
+   $./bin/repo init \
+   $   -u https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git \
+   $   -b develop/yocto-3.1.0 \
+   $   -m develop-yocto-3.1.0.xml
+   $./bin/repo sync -j$(nproc)
 
 
 * Preparing the build work directory
 
 
-.. code-block:: shell
+.. shell::
 
-   source setup-environment --machine adsp-sc598-som-ezkit --distro adi-security --builddir adsp-build
+   $source setup-environment --machine adsp-sc598-som-ezkit --distro adi-security --builddir adsp-build
 
 
 * Add the following lines into ``conf/local.conf``
 
 
-.. code-block:: shell
+.. code-block::
 
    ADI_SIGNTOOL_KEY="/opt/adi-testkeys/testkey.der"
    ADI_SIGNTOOL_PATH="/opt/analog/cces/2.11.1/adi_signtool"
@@ -77,35 +77,35 @@ Build Linux image and SDK
 * Building the Linux image
 
 
-.. code-block:: shell
+.. shell::
 
-   bitbake adsp-sc5xx-minimal 
+   $bitbake adsp-sc5xx-minimal 
 
 
 * Building the SDK
 
 
-.. code-block:: shell
+.. shell::
 
-   bitbake adsp-sc5xx-minimal -c populate_sdk
+   $bitbake adsp-sc5xx-minimal -c populate_sdk
 
 
 * Install the SDK
 
 
-.. code-block:: shell
+.. shell::
 
-   cd tmp/deploy/sdk
-   sudo ./adi-security-glibc-x86_64-adsp-sc5xx-minimal-cortexa55-adsp-sc598-som-ezkit-toolchain-3.1.0.sh 
-   Analog Devices Inc Reference Distro (glibc) SDK installer version 3.1.0
-   =======================================================================
-   Enter target directory for SDK (default: /opt/adi-security/3.1.0): 
-   You are about to install the SDK to "/opt/adi-security/3.1.0". Proceed [Y/n]? Y
-   Extracting SDK......................................................................................................................done
-   Setting it up...done
-   SDK has been successfully set up and is ready to be used.
-   Each time you wish to use the SDK in a new shell session, you need to source the environment setup script e.g.
-    $ . /opt/adi-security/3.1.0/environment-setup-cortexa55-adi_glibc-linux
+   $cd tmp/deploy/sdk
+   $sudo ./adi-security-glibc-x86_64-adsp-sc5xx-minimal-cortexa55-adsp-sc598-som-ezkit-toolchain-3.1.0.sh 
+   $Analog Devices Inc Reference Distro (glibc) SDK installer version 3.1.0
+   $=======================================================================
+   $Enter target directory for SDK (default: /opt/adi-security/3.1.0): 
+   $You are about to install the SDK to "/opt/adi-security/3.1.0". Proceed [Y/n]? Y
+   $Extracting SDK......................................................................................................................done
+   $Setting it up...done
+   $SDK has been successfully set up and is ready to be used.
+   $Each time you wish to use the SDK in a new shell session, you need to source the environment setup script e.g.
+   $ $ . /opt/adi-security/3.1.0/environment-setup-cortexa55-adi_glibc-linux
 
 
 Setup the hardware
@@ -158,14 +158,14 @@ Transfer and run U-Boot on RAM
 Copy the U-Boot binary & loader files to the tftp directory:
 
 
-.. code-block:: shell
+.. shell::
 
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/u-boot-proper-sc598-som-ezkit.elf /tftpboot/
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/u-boot-spl-sc598-som-ezkit.elf /tftpboot/
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot.ldr /tftpboot/
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot-unsigned.ldr /tftpboot/ 
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot.ldr /tftpboot/
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot-unsigned.ldr /tftpboot/
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/u-boot-proper-sc598-som-ezkit.elf /tftpboot/
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/u-boot-spl-sc598-som-ezkit.elf /tftpboot/
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot.ldr /tftpboot/
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot-unsigned.ldr /tftpboot/ 
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot.ldr /tftpboot/
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot-unsigned.ldr /tftpboot/
 
 
 The console output from U-Boot and later on Linux will appear on the USB serial port configured in minicom earlier so open up minicom.
@@ -173,9 +173,9 @@ The console output from U-Boot and later on Linux will appear on the USB serial 
 ```Terminal1: minicom```
 
 
-.. code-block:: shell
+.. shell::
 
-   sudo minicom
+   $sudo minicom
 
   
 In a separate console launch OpenOCD and connect to the development board.
@@ -184,10 +184,10 @@ In a separate console launch OpenOCD and connect to the development board.
 ```Terminal2: OpenOCD```
 
 
-.. code-block:: shell
+.. shell::
 
-   sdk_usr=/opt/adi-security/3.1.0/sysroots/x86_64-adi_glibc_sdk-linux/usr/
-   $sdk_usr/bin/openocd -f $sdk_usr/share/openocd/scripts/interface/<ICE>.cfg -f $sdk_usr/share/openocd/scripts/target/adspsc59x_a55.cfg
+   $sdk_usr=/opt/adi-security/3.1.0/sysroots/x86_64-adi_glibc_sdk-linux/usr/
+   $$sdk_usr/bin/openocd -f $sdk_usr/share/openocd/scripts/interface/<ICE>.cfg -f $sdk_usr/share/openocd/scripts/target/adspsc59x_a55.cfg
 
 Where ```<ICE>```` should be replaced with ````ice1000```` or ````ice2000``` depending on your hardware.
 When successful you should see a message similar to the console output below
@@ -195,7 +195,7 @@ When successful you should see a message similar to the console output below
 ```Terminal2: OpenOCD```
 
 
-.. code-block:: shell
+.. code-block:: text
 
    Open On-Chip Debugger (PKGVERSION)  OpenOCD 0.10.0-gf73da81ab (2023-10-12-17:05)
    Licensed under GNU GPL v2
@@ -221,10 +221,10 @@ In a third console window launch GDB and type ```target extended-remote :3333```
 ```Terminal3: GDB```
 
 
-.. code-block:: shell
+.. code-block:: console
 
-   cd /tftpboot
-   /opt/adi-security/3.1.0/sysroots/x86_64-adi_glibc_sdk-linux/usr/bin/aarch64-adi_glibc-linux/aarch64-adi_glibc-linux-gdb u-boot-spl-sc598-som-ezkit.elf
+   $ cd /tftpboot
+   $ /opt/adi-security/3.1.0/sysroots/x86_64-adi_glibc_sdk-linux/usr/bin/aarch64-adi_glibc-linux/aarch64-adi_glibc-linux-gdb u-boot-spl-sc598-som-ezkit.elf
    ...
    (gdb) target extended-remote :3333
    Remote debugging using :3333
@@ -248,7 +248,7 @@ You will see a message on Terminal 1 running minicom, informing you that you can
 ```Terminal1: minicom```
 
 
-.. code-block:: shell
+.. code-block:: text
 
    U-Boot SPL 2023.04 (Sep 21 2023 - 13:39:40 +0000)
    ADI Boot Mode: 0x0 (JTAG/BOOTROM)
@@ -260,7 +260,7 @@ Now, load U-Boot Proper into RAM.
 ```Terminal3: GDB```
 
 
-.. code-block:: shell
+.. code-block:: console
 
    (gdb) load u-boot-proper-sc598-som-ezkit.elf 
    Loading section .text, size 0x188 lma 0x96000000
@@ -286,10 +286,10 @@ At this point U-Boot will now be running in RAM on your target board. You should
 ```Terminal1: minicom```
 
 
-.. code-block:: shell
+.. code-block:: text
 
    U-Boot 2023.04 (Sep 21 2023 - 13:39:40 +0000)
-   
+
    CPU:   ADSP ADSP-SC598-0.0 (spi slave boot)
    Model: ADI sc598-som-ezkit
    DRAM:  224 MiB
@@ -301,8 +301,8 @@ At this point U-Boot will now be running in RAM on your target board. You should
    Out:   serial@0x31003000
    Err:   serial@0x31003000
    Net:   eth0: eth0
-   Hit any key to stop autoboot:  0 
-   => 
+   Hit any key to stop autoboot:  0
+   =>
 
 
 
@@ -317,7 +317,7 @@ In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot 
 ```Terminal1: minicom```
 
 
-.. code-block:: shell
+.. code-block:: console
 
    => setenv tftpserverip <SERVERIP>
 
@@ -330,14 +330,14 @@ In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot 
 
 If your network **supports** DHCP, run:
 
-.. code-block:: shell
+.. code-block:: console
 
    => dhcp
 
 
 If your network **does NOT support** DHCP, run:
 
-.. code-block:: shell
+.. code-block:: console
 
    => set ipaddr <ADDR>
 
@@ -346,7 +346,7 @@ Where ```<ADDR>``` is the IP address you want to assign.
 
 Next, run the U-Boot update command to copy the U-Boot loader files from the host PC to the target board, and write it into flash:
 
-.. code-block:: shell
+.. code-block:: console
 
    => sf probe 2:1
    => sf erase 0x0 0x01a0000
@@ -357,7 +357,7 @@ Next, run the U-Boot update command to copy the U-Boot loader files from the hos
 
 You will see an output similar to the one below:
 
-.. code-block:: shell
+.. code-block:: console
 
    => run update_spi_uboot_only 
    PHY 0x00: OUI = 0x80028, Model = 0x23, Rev = 0x01, 100baseT, FDX
@@ -412,20 +412,20 @@ Booting the minimal image from QSPI
 The U-Boot console is used to copy U-Boot (SPL and Proper), the minimal root filesystem image and the fitImage (which contains the kernel image and dtb file) into RAM and then write them to Flash. Copy the required files from ``<BUILD DIR>/tmp/deploy/images`` to your ``/tftpboot`` directory.
 
 
-.. code-block:: shell
+.. shell::
 
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot.ldr /tftpboot/
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot-unsigned.ldr /tftpboot/ 
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot.ldr /tftpboot/
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot-unsigned.ldr /tftpboot/
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/fitImage /tftpboot/
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/adsp-sc5xx-minimal-adsp-sc598-som-ezkit.jffs2 /tftpboot
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot.ldr /tftpboot/
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot-unsigned.ldr /tftpboot/ 
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot.ldr /tftpboot/
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot-unsigned.ldr /tftpboot/
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/fitImage /tftpboot/
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/adsp-sc5xx-minimal-adsp-sc598-som-ezkit.jffs2 /tftpboot
 
 
 
 If your network **supports** DHCP, run:
 
-.. code-block:: shell
+.. code-block:: console
 
    => run update_spi
 
@@ -434,7 +434,7 @@ If your network **supports** DHCP, run:
 
 In the U-Boot console configure the board IP address and remove "run init*ethernet;" from the "start*update_spi" command.
 
-.. code-block:: shell
+.. code-block:: console
 
    => setenv ipaddr <IPADDR>
    => edit start_update_spi
@@ -446,7 +446,7 @@ After editing ```start*update*spi````, proceed to running as ````update_spi```, 
 
 You should see output similar to the following.
 
-.. code-block:: shell
+.. code-block:: console
 
    => run update_spi
    PHY 0x00: OUI = 0x80028, Model = 0x23, Rev = 0x01, 100baseT, FDX
@@ -562,7 +562,7 @@ The U-Boot image, root filesystem and Linux kernel are now stored in QSPI. Adjus
 
 
 
-.. code-block:: shell
+.. code-block:: text
 
    U-Boot SPL 2023.04 (Sep 21 2023 - 13:39:40 +0000)
    ADI Boot Mode: 0x1 (QSPI Master)
@@ -727,35 +727,35 @@ Extract the Public key and copy it into the target
 * Extract the public key from the DER file ``with dd``
 
 
-.. code-block:: shell
+.. shell::
 
-   dd if=testkey.der bs=1 count=64 skip=57 | xxd 
-   00000000: 5a06 5d03 1919 feb5 ee87 ed47 6b4e e6c9  Z.]........GkN..
-   00000010: 5921 6fd0 11fa 77ae 6b99 5145 49b9 ec15  Y!o...w.k.QEI...
-   00000020: 919c c00e 2e3b 9f44 c14f f6a8 f80e a07d  .....;.D.O.....}
-   64+0 records in
-   64+0 records out
-   00000030: 6ad5 72b4 5f37 5931 efe8 bf21 fd76 4747  j.r._7Y1...!.vGG
-   64 bytes copied, 0.000160752 s, 398 kB/s
+   $dd if=testkey.der bs=1 count=64 skip=57 | xxd 
+   $00000000: 5a06 5d03 1919 feb5 ee87 ed47 6b4e e6c9  Z.]........GkN..
+   $00000010: 5921 6fd0 11fa 77ae 6b99 5145 49b9 ec15  Y!o...w.k.QEI...
+   $00000020: 919c c00e 2e3b 9f44 c14f f6a8 f80e a07d  .....;.D.O.....}
+   $64+0 records in
+   $64+0 records out
+   $00000030: 6ad5 72b4 5f37 5931 efe8 bf21 fd76 4747  j.r._7Y1...!.vGG
+   $64 bytes copied, 0.000160752 s, 398 kB/s
 
 
 * Save the public key into a file
 
 
-.. code-block:: shell
+.. shell::
 
-   dd if=testkey.der bs=1 count=64 skip=57 > testkey_pub.bin 
-   64+0 records in
-   64+0 records out
-   64 bytes copied, 0.000347221 s, 184 kB/s
+   $dd if=testkey.der bs=1 count=64 skip=57 > testkey_pub.bin 
+   $64+0 records in
+   $64+0 records out
+   $64 bytes copied, 0.000347221 s, 184 kB/s
 
 
 * Copy ``testkey_pub.bin`` file to the target ``with scp``, then flash it ``with adiotp-cli``
 
 
-.. code-block:: shell
+.. shell::
 
-   scp testkey_pub.bin root@TARGET_IP:/tmp/testkey_pub.bin
+   $scp testkey_pub.bin root@TARGET_IP:/tmp/testkey_pub.bin
 
 
 Program the key into the OTP flash memory
@@ -765,33 +765,33 @@ Program the key into the OTP flash memory
 ```Terminal1: minicom```
 
 
-.. code-block:: shell
+.. shell::
 
-   cd /tmp
-   cat testkey_pub.bin | adiotp-cli -s 12
+   $cd /tmp
+   $cat testkey_pub.bin | adiotp-cli -s 12
 
 
 * Print the key ``with adiotp-cli`` to verify it was programmed successfully 
 
 
-.. code-block:: shell
+.. shell::
 
-   adiotp-cli 12 | xxd
-   00000000: 5a06 5d03 1919 feb5 ee87 ed47 6b4e e6c9  Z.]........GkN..
-   00000010: 5921 6fd0 11fa 77ae 6b99 5145 49b9 ec15  Y!o...w.k.QEI...
-   00000020: 919c c00e 2e3b 9f44 c14f f6a8 f80e a07d  .....;.D.O.....}
-   00000030: 6ad5 72b4 5f37 5931 efe8 bf21 fd76 4747  j.r._7Y1...!.vGG
-   root@adsp-sc598-som-ezkit:~#
+    adiotp-cli 12 | xxd
+    00000000: 5a06 5d03 1919 feb5 ee87 ed47 6b4e e6c9  Z.]........GkN..
+    00000010: 5921 6fd0 11fa 77ae 6b99 5145 49b9 ec15  Y!o...w.k.QEI...
+    00000020: 919c c00e 2e3b 9f44 c14f f6a8 f80e a07d  .....;.D.O.....}
+    00000030: 6ad5 72b4 5f37 5931 efe8 bf21 fd76 4747  j.r._7Y1...!.vGG
+   $
 
 
 * Another method to verify key programmation successfully
 
 
-.. code-block:: shell
+.. shell::
 
-   adiotp-cli 12 | sha256sum - /tmp/testkey_pub.bin 
-   7c4888b77901b12b8fdd3f69e0124727286fcdc14a85214befc1fb181f273c59  -
-   7c4888b77901b12b8fdd3f69e0124727286fcdc14a85214befc1fb181f273c59  /tmp/testkey_pub.bin
+   $adiotp-cli 12 | sha256sum - /tmp/testkey_pub.bin 
+   $7c4888b77901b12b8fdd3f69e0124727286fcdc14a85214befc1fb181f273c59  -
+   $7c4888b77901b12b8fdd3f69e0124727286fcdc14a85214befc1fb181f273c59  /tmp/testkey_pub.bin
 
 
 Bravo, You have successfully programmed the secure boot key. 
@@ -805,51 +805,49 @@ Running OP-TEE applications
 First of all, let's check the status of the ``tee-supplicant`` systemd service, then run the ``xtest``. 
 
 
-.. code-block:: shell
+.. shell::
 
-   root@adsp-sc598-som-ezkit:~# systemctl status tee-supplicant
-   * tee-supplicant.service - TEE Supplicant
-        Loaded: loaded (8;;file://adsp-sc598-som-ezkit/lib/systemd/system/tee-supplicant.service/lib/systemd/system/tee-supplicant.service8;;; enabled; vendor preset: enabled)
-        Active: active (running) since Sat 2023-10-14 11:39:35 UTC; 15min ago
-      Main PID: 258 (tee-supplicant)
-         Tasks: 1 (limit: 239)
-        Memory: 272.0K
-        CGroup: /system.slice/tee-supplicant.service
-                `-258 /usr/sbin/tee-supplicant
-   
-   Oct 14 11:39:35 adsp-sc598-som-ezkit systemd[1]: Started TEE Supplicant.
-   root@adsp-sc598-som-ezkit:~# 
+   $systemctl status tee-supplicant
+    * tee-supplicant.service - TEE Supplicant
+         Loaded: loaded (8;;file://adsp-sc598-som-ezkit/lib/systemd/system/tee-supplicant.service/lib/systemd/system/tee-supplicant.service8;;; enabled; vendor preset: enabled)
+         Active: active (running) since Sat 2023-10-14 11:39:35 UTC; 15min ago
+       Main PID: 258 (tee-supplicant)
+          Tasks: 1 (limit: 239)
+         Memory: 272.0K
+         CGroup: /system.slice/tee-supplicant.service
+                 `-258 /usr/sbin/tee-supplicant
 
+    Oct 14 11:39:35 adsp-sc598-som-ezkit systemd[1]: Started TEE Supplicant.
 
 
-.. code-block:: shell
 
-   root@adsp-sc598-som-ezkit:~# xtest
-   Run test suite with level=0
-   
-   TEE test application started over default TEE instance
-   ######################################################
-   #
-   # regression
-   #
-   ######################################################
-    
-   * regression_1001 Core self tests
-   E/LD:  init_elf:439 sys_open_ta_bin(d96a5b40-c3e5-21e3-8794-1002a5d5c61b)
-   E/TC:? 0 ldelf_init_with_ldelf:130 ldelf failed with res: 0xffff0008
-    - 1001 -   skip test, pseudo TA not found
-     regression_1001 OK
-   
-   ...
-   
-   regression_8102 OK
-   regression_8103 OK
-   +-----------------------------------------------------
-   26175 subtests of which 0 failed
-   93 test cases of which 0 failed
-   0 test cases were skipped
-   TEE test application done!
-   root@adsp-sc598-som-ezkit:~# 
+.. shell::
+
+   $xtest
+    Run test suite with level=0
+
+    TEE test application started over default TEE instance
+    ######################################################
+    #
+    # regression
+    #
+    ######################################################
+     
+    * regression_1001 Core self tests
+    E/LD:  init_elf:439 sys_open_ta_bin(d96a5b40-c3e5-21e3-8794-1002a5d5c61b)
+    E/TC:? 0 ldelf_init_with_ldelf:130 ldelf failed with res: 0xffff0008
+     - 1001 -   skip test, pseudo TA not found
+      regression_1001 OK
+
+    ...
+
+    regression_8102 OK
+    regression_8103 OK
+    +-----------------------------------------------------
+    26175 subtests of which 0 failed
+    93 test cases of which 0 failed
+    0 test cases were skipped
+    TEE test application done!
 
 
 Load SHARC images from Linux
@@ -861,10 +859,10 @@ SHARC images signing
 
 
 
-.. code-block:: shell
+.. shell::
 
-   /opt/analog/cces/2.11.1/adi_signtool -proc ADSP-SC598 sign -type BLp -algo ecdsa256 -infile adi_adsp_core1_fw.ldr -outfile adi_adsp_core1_fw_signed.ldr -prikey /opt/adi-testkeys/testkey.der
-   /opt/analog/cces/2.11.1/adi_signtool -proc ADSP-SC598 sign -type BLp -algo ecdsa256 -infile adi_adsp_core2_fw.ldr -outfile adi_adsp_core2_fw_signed.ldr -prikey /opt/adi-testkeys/testkey.der
+   $/opt/analog/cces/2.11.1/adi_signtool -proc ADSP-SC598 sign -type BLp -algo ecdsa256 -infile adi_adsp_core1_fw.ldr -outfile adi_adsp_core1_fw_signed.ldr -prikey /opt/adi-testkeys/testkey.der
+   $/opt/analog/cces/2.11.1/adi_signtool -proc ADSP-SC598 sign -type BLp -algo ecdsa256 -infile adi_adsp_core2_fw.ldr -outfile adi_adsp_core2_fw_signed.ldr -prikey /opt/adi-testkeys/testkey.der
 
 
 Load SHARC images from Linux
@@ -872,31 +870,31 @@ Load SHARC images from Linux
 
 
 
-.. code-block:: shell
+.. shell::
 
-   root@adsp-sc598-som-ezkit:~# sharc-cli -z 0
-   root@adsp-sc598-som-ezkit:~# sharc-cli -z 1
-   root@adsp-sc598-som-ezkit:~# rmmod adi_rpmsg
-   root@adsp-sc598-som-ezkit:~# sharc-cli -l ./adi_adsp_core1_fw_signed.ldr 0
-   root@adsp-sc598-som-ezkit:~# sharc-cli -l ./adi_adsp_core2_fw_signed.ldr 1
-   root@adsp-sc598-som-ezkit:~# sharc-cli -g 0
-   root@adsp-sc598-som-ezkit:~# sharc-cli -g 1
-   root@adsp-sc598-som-ezkit:~# modprobe adi_rpmsg
-   [ 3086.967203] adi-rpmsg scb:core0-rpmsg@0x28240000: table TAG: AD-RESOURCE-TBL, Expected: AD-RESOURCE-TBL 
-   [ 3086.976656] adi-rpmsg scb:core0-rpmsg@0x28240000: table VERSION: 1, Expedted: 1 
-   [ 3086.989211] adi-rpmsg scb:core0-rpmsg@0x28240000: vrings in vdev-vring reserved-memory.
-   [ 3086.999120] adi-rpmsg scb:core0-rpmsg@0x28240000: assigned reserved memory node vdev0buffer@20084000
-   [ 3087.010222] adi-rpmsg scb:core0-rpmsg@0x28240000: msg buffers in memory-region.
-   [ 3087.027271] adi-rpmsg scb:core1-rpmsg@0x28a40000: table TAG: AD-RESOURCE-TBL, Expected: AD-RESOURCE-TBL 
-   [ 3087.044951] adi-rpmsg scb:core1-rpmsg@0x28a40000: table VERSION: 1, Expedted: 1 
-   [ 3087.063102] adi-rpmsg scb:core1-rpmsg@0x28a40000: vrings in vdev-vring reserved-memory.
-   [ 3087.080646] adi-rpmsg scb:core1-rpmsg@0x28a40000: assigned reserved memory node vdev0buffer@200A8000
-   [ 3087.093916] adi-rpmsg scb:core1-rpmsg@0x28a40000: msg buffers in memory-region.
-   [ 3087.119066] virtio_rpmsg_bus virtio0: creating channel sharc-echo addr 0x97
-   [ 3087.126098] virtio_rpmsg_bus virtio0: creating channel sharc-echo-cap addr 0xa1
-   [ 3087.135121] virtio_rpmsg_bus virtio1: creating channel sharc-echo addr 0x98
-   [ 3087.142135] virtio_rpmsg_bus virtio1: creating channel sharc-echo-cap addr 0xa2
-   [ 3087.149522] virtio_rpmsg_bus virtio1: rpmsg host is online
-   [ 3087.159091] virtio_rpmsg_bus virtio0: rpmsg host is online
-   root@adsp-sc598-som-ezkit:~# 
+   $sharc-cli -z 0
+   $sharc-cli -z 1
+   $rmmod adi_rpmsg
+   $sharc-cli -l ./adi_adsp_core1_fw_signed.ldr 0
+   $sharc-cli -l ./adi_adsp_core2_fw_signed.ldr 1
+   $sharc-cli -g 0
+   $sharc-cli -g 1
+   $modprobe adi_rpmsg
+    [ 3086.967203] adi-rpmsg scb:core0-rpmsg@0x28240000: table TAG: AD-RESOURCE-TBL, Expected: AD-RESOURCE-TBL 
+    [ 3086.976656] adi-rpmsg scb:core0-rpmsg@0x28240000: table VERSION: 1, Expedted: 1 
+    [ 3086.989211] adi-rpmsg scb:core0-rpmsg@0x28240000: vrings in vdev-vring reserved-memory.
+    [ 3086.999120] adi-rpmsg scb:core0-rpmsg@0x28240000: assigned reserved memory node vdev0buffer@20084000
+    [ 3087.010222] adi-rpmsg scb:core0-rpmsg@0x28240000: msg buffers in memory-region.
+    [ 3087.027271] adi-rpmsg scb:core1-rpmsg@0x28a40000: table TAG: AD-RESOURCE-TBL, Expected: AD-RESOURCE-TBL 
+    [ 3087.044951] adi-rpmsg scb:core1-rpmsg@0x28a40000: table VERSION: 1, Expedted: 1 
+    [ 3087.063102] adi-rpmsg scb:core1-rpmsg@0x28a40000: vrings in vdev-vring reserved-memory.
+    [ 3087.080646] adi-rpmsg scb:core1-rpmsg@0x28a40000: assigned reserved memory node vdev0buffer@200A8000
+    [ 3087.093916] adi-rpmsg scb:core1-rpmsg@0x28a40000: msg buffers in memory-region.
+    [ 3087.119066] virtio_rpmsg_bus virtio0: creating channel sharc-echo addr 0x97
+    [ 3087.126098] virtio_rpmsg_bus virtio0: creating channel sharc-echo-cap addr 0xa1
+    [ 3087.135121] virtio_rpmsg_bus virtio1: creating channel sharc-echo addr 0x98
+    [ 3087.142135] virtio_rpmsg_bus virtio1: creating channel sharc-echo-cap addr 0xa2
+    [ 3087.149522] virtio_rpmsg_bus virtio1: rpmsg host is online
+    [ 3087.159091] virtio_rpmsg_bus virtio0: rpmsg host is online
+   $
 
