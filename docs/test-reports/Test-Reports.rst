@@ -4,9 +4,16 @@ Test Reports
 Introduction
 ------------
 
-This section provides detailed test reports for each release of Linux for ADSP-SC5xx processors. These reports document the verification and validation testing performed on various hardware platforms and software components, helping you understand what features have been tested and their status across different board configurations.
+This section provides detailed test reports for each release of Linux for
+ADSP-SC5xx processors. These reports document the verification and validation
+testing performed on various hardware platforms and software components,
+helping you understand what features have been tested and their status across
+different board configurations.
 
-Each test report includes comprehensive results for key subsystems including audio drivers, inter-processor communication (RPMsg), peripherals, networking, and more. The reports indicate which features are verified, known limitations, and board-specific considerations.
+Each test report includes comprehensive results for key subsystems including
+audio drivers, inter-processor communication (RPMsg), peripherals, networking,
+and more. The reports indicate which features are verified, known limitations,
+and board-specific considerations.
 
 **Why test reports matter:**
 
@@ -17,7 +24,8 @@ Each test report includes comprehensive results for key subsystems including aud
 * Make informed decisions about board selection for your project
 
 .. note::
-   Test reports are cumulative for minor releases (e.g., 5.0.x). Regressions specific to patch releases are explicitly noted within each report.
+   Test reports are cumulative for minor releases (e.g., 5.0.x). Regressions
+   specific to patch releases are explicitly noted within each report.
 
 Available Test Reports
 ----------------------
@@ -27,7 +35,8 @@ Current Release
 
 **Version 5.0.1**
 
-Latest test report covering SC598-SOM, SC594-SOM, SC589-MINI, and SC573-EZKIT platforms.
+Latest test report covering SC598-SOM, SC594-SOM, SC589-MINI, and SC573-EZKIT
+platforms.
 
 :doc:`5.0.1 Test Report → <Test-Report-(5.0.1)>`
 
