@@ -19,7 +19,7 @@ keys generation
 
 * Generate key Pair for LDR images signing using ``adi_signtool``
 
-**Note:** install `CCES (CrossCore Embedded Studio) <https://www.analog.com/en/design-center/evaluation-hardware-and-software/software/adswt-cces.html#software-relatedsoftware>`_ package on your host machine.
+**Note:** install :adi:`CCES (CrossCore Embedded Studio) <en/design-center/evaluation-hardware-and-software/software/adswt-cces.html#software-relatedsoftware>` package on your host machine.
 
 
 .. shell::
