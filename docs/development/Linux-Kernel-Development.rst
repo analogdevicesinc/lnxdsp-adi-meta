@@ -37,8 +37,8 @@ Clone the ADSP Linux kernel repository:
 
 .. shell::
 
-   $git clone https://github.com/analogdevicesinc/lnxdsp-linux.git
-   $cd lnxdsp-linux
+   $git clone https://github.com/analogdevicesinc/linux.git
+   $cd linux
 
 Building the Kernel
 -------------------

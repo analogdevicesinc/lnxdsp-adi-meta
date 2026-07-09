@@ -88,7 +88,9 @@ After this point, there are two paths that the user can take:
 
 Once the MCAPI interface has been populated and metadata exchanged, the RPMsg driver initializes similarly to the previous section. For security purposes, Linux creates RPMsg devices for each RPMsg channel. These are dynamically created, following which, the system continues to boot as usual.
 
-It is recommended that the source code for the respective driver is referred to from `ADI's ADSP Linux repository <https://github.com/analogdevicesinc/lnxdsp-linux>`_ for a deeper understanding.
+It is recommended that the source code for the respective driver is referred to
+from the :git-linux:`analogdevicesinc/linux <>` repository for a deeper
+understanding.
 
 Testing
 -------
