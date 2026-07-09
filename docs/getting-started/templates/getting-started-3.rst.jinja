@@ -18,18 +18,18 @@ The source is fully contained in the `Analog Devices Linux for ADSP repositories
 
 To install the sources:
 
-.. code-block:: shell
+.. shell::
 
-   mkdir ~/{{ build_dir }}
-   cd ~/{{ build_dir }}
-   mkdir bin
-   curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ./bin/repo
-   chmod a+x ./bin/repo
-   ./bin/repo init \
-      -u https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git \
-      -b {{ git_branch }} \
-      -m {{ manifest_file }}
-   ./bin/repo sync
+   $mkdir ~/{{ build_dir }}
+   $cd ~/{{ build_dir }}
+   $mkdir bin
+   $curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ./bin/repo
+   $chmod a+x ./bin/repo
+   $./bin/repo init \
+   $   -u https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git \
+   $   -b {{ git_branch }} \
+   $   -m {{ manifest_file }}
+   $./bin/repo sync
 
 ------------------
 Building the Image
@@ -41,9 +41,9 @@ Preparing the buildtool
 Yocto requires the environment to be configured before building is possible. A setup-environment script in the {{ build_dir }} folder contains all the required environment settings for your build target.
 Source the setup script for your board:
 
-.. code-block:: shell
+.. shell::
 
-   source setup-environment -m {{ machine }}
+   $source setup-environment -m {{ machine }}
 
 Sourcing the script will configure your build environment and create a build folder along with a local build configuration file. See the Yocto Manual for further details.
 
@@ -58,7 +58,7 @@ Check and select the appropriate revision
 
 Change the following in your configuration file within the build directory (conf/local.conf):
 
-.. code-block:: shell
+.. code-block::
 
    SOM_REV = "<SOM revision>"
    CRR_REV = "<Carrier Revision>"
@@ -72,10 +72,10 @@ Building the example
 You can build two different versions of the root file system; minimal and full.
 To build the example images invoke bitbake from within the build directory created previously.
 
-.. code-block:: shell
+.. shell::
 
-   bitbake adsp-sc5xx-minimal
-   bitbake adsp-sc5xx-full
+   $bitbake adsp-sc5xx-minimal
+   $bitbake adsp-sc5xx-full
 
 When the build completes you will see a warning that the ELF binary has relocations in .text. It is OK to ignore this warning
 
@@ -90,15 +90,15 @@ The SDK will provide you with the cross toolchain needed to develop application 
 
 The SDK can be built for the ``adsp-sc5xx-minimal`` image or the ``adsp-sc5xx-full`` image. To build the SDK for the ``adsp-sc5xx-minimal`` image invoke bitbake from within the build directory created previously.
 
-.. code-block:: shell
+.. shell::
 
-   bitbake adsp-sc5xx-minimal -c populate_sdk
+   $bitbake adsp-sc5xx-minimal -c populate_sdk
 
 or for the adsp-sc5xx-full image
 
-.. code-block:: shell
+.. shell::
 
-   bitbake adsp-sc5xx-full -c populate_sdk
+   $bitbake adsp-sc5xx-full -c populate_sdk
 
 
 {% if sdk_machine_note %}
@@ -110,9 +110,9 @@ or for the adsp-sc5xx-full image
 
 When the build has completed you will find a set of files in the ``<BUILD_DIR>/tmp/deploy/sdk`` directory. For example, the minimal image on {{ board_name }}:
 
-.. code-block:: shell
+.. shell::
 
-   ls tmp/deploy/sdk
+   $ls tmp/deploy/sdk
 
 .. code-block:: text
 
@@ -127,9 +127,9 @@ Invoke the self-extracting archive.
 It will default to installing to ``{{ sdk_path }}`` but gives you the option to select your own install folder during the installation.
 For the minimal image on {{ board_name }}
 
-.. code-block:: shell
+.. shell::
 
-   ./{{ sdk_installer }}
+   $./{{ sdk_installer }}
 
 .. code-block:: text
 
@@ -174,36 +174,36 @@ Transfer and run U-Boot on RAM
 
 Copy the U-Boot binary & loader files to the tftp directory:
 
-.. code-block:: shell
+.. shell::
 
-   cp tmp/deploy/images/{{ machine }}/u-boot-proper-{{ machine_short }}.elf /tftpboot/
-   cp tmp/deploy/images/{{ machine }}/u-boot-spl-{{ machine_short }}.elf /tftpboot/
-   cp tmp/deploy/images/{{ machine }}/stage1-boot.ldr /tftpboot/
-   cp tmp/deploy/images/{{ machine }}/stage2-boot.ldr /tftpboot/
+   $cp tmp/deploy/images/{{ machine }}/u-boot-proper-{{ machine_short }}.elf /tftpboot/
+   $cp tmp/deploy/images/{{ machine }}/u-boot-spl-{{ machine_short }}.elf /tftpboot/
+   $cp tmp/deploy/images/{{ machine }}/stage1-boot.ldr /tftpboot/
+   $cp tmp/deploy/images/{{ machine }}/stage2-boot.ldr /tftpboot/
 
 The console output from U-Boot and later on Linux will appear on the USB serial port configured in minicom earlier so open up minicom.
 
 **Terminal1: minicom**
 
-.. code-block:: shell
+.. shell::
 
-   sudo minicom
+   $sudo minicom
 
 In a separate console launch OpenOCD and connect to the development board.
 
 **Terminal2: OpenOCD**
 
-.. code-block:: shell
+.. shell::
 
-   sdk_usr={{ sdk_path }}/sysroots/x86_64-adi_glibc_sdk-linux/usr/
-   $sdk_usr/bin/openocd -f $sdk_usr/share/openocd/scripts/interface/<ICE>.cfg -f $sdk_usr/share/openocd/scripts/target/{{ openocd_target }}.cfg
+   $sdk_usr={{ sdk_path }}/sysroots/x86_64-adi_glibc_sdk-linux/usr/
+   $$sdk_usr/bin/openocd -f $sdk_usr/share/openocd/scripts/interface/<ICE>.cfg -f $sdk_usr/share/openocd/scripts/target/{{ openocd_target }}.cfg
 
 Where ``<ICE>`` should be replaced with ``ice1000`` or ``ice2000`` depending on your hardware.
 When successful you should see a message similar to the console output below
 
 **Terminal2: OpenOCD**
 
-.. code-block:: shell
+.. code-block:: text
 
 {{openocd_output | indent(3, True)}}
 
@@ -211,7 +211,7 @@ In a third console window launch GDB and type ``target extended-remote :3333``. 
 
 **Terminal3: GDB**
 
-.. code-block:: shell
+.. code-block:: console
 
    cd /tftpboot
    {{ sdk_path }}/sysroots/x86_64-adi_glibc_sdk-linux/usr/bin/{{ gdb_prefix }}/{{ gdb_prefix }}-gdb u-boot-spl-{{ machine_short }}.elf
@@ -230,7 +230,7 @@ You will see a message on Terminal 1 running minicom, informing you that you can
 
 **Terminal1: minicom**
 
-.. code-block:: shell
+.. code-block:: text
 
 {{uboot_spl_message | indent(3, True)}}
 
@@ -238,7 +238,7 @@ Now, load U-Boot Proper into RAM.
 
 **Terminal3: GDB**
 
-.. code-block:: shell
+.. code-block:: console
 
    (gdb) load u-boot-proper-{{ machine_short }}.elf
 {{gdb_load_proper_output | indent(3, True)}}
@@ -249,7 +249,7 @@ At this point U-Boot will now be running in RAM on your target board. You should
 
 **Terminal1: minicom**
 
-.. code-block:: shell
+.. code-block:: console
 
 {{uboot_proper_boot | indent(3, True)}}
 
@@ -260,7 +260,7 @@ In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot 
 
 **Terminal1: minicom**
 
-.. code-block:: shell
+.. code-block:: console
 
    => setenv tftpserverip <SERVERIP>
 
@@ -270,13 +270,13 @@ In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot 
 
 If your network **supports** DHCP, run:
 
-.. code-block:: shell
+.. code-block:: console
 
    => dhcp
 
 If your network **does NOT support** DHCP, in the U-Boot console configure the board IP address you want the board to be assigned with (``<IPADDR>``) and remove "``dhcp;``" from the "``init_ethernet``" command:
 
-.. code-block:: shell
+.. code-block:: console
 
    => setenv ipaddr <IPADDR>
    => edit init_ethernet
@@ -291,19 +291,19 @@ i.e. ``init_ethernet`` should now be ``init_ethernet=mii info; setenv serverip $
 
 Next, run the U-Boot update command to copy the U-Boot loader files from the host PC to the target board, and write it into flash:
 
-.. code-block:: shell
+.. code-block:: console
 
    => run update_spi_uboot_only
 
 You will see an output similar to the one below:
 
-.. code-block:: shell
+.. code-block:: console
 
 {{uboot_flash_output | indent(3, True)}}
 
 In order to store the ``tftpserverip`` and the DHCP or otherwise assigned IP address of the board and have them available on next boot, you can run the following command:
 
-.. code-block:: shell
+.. code-block:: console
 
    => saveenv
    Saving Environment to SPIFlash... Erasing SPI flash...Writing to SPI flash...done
@@ -330,9 +330,9 @@ Network Booting
 
 In order to boot Linux via the network, the TFTP server should be setup as indicated in the :doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>` page, and a copy of the fitImage should be copied into the ``/tftpboot`` directory.
 
-.. code-block:: shell
+.. shell::
 
-   cp tmp/deploy/images/{{ machine }}/fitImage /tftpboot/
+   $cp tmp/deploy/images/{{ machine }}/fitImage /tftpboot/
 
 NFS Boot
 --------
@@ -341,13 +341,13 @@ In order to boot Linux via NFS, the NFS server should be setup as indicated in `
 
 The root filesystem should then be copied to ``/romfs``.
 
-.. code-block:: shell
+.. shell::
 
-   sudo tar -xf tmp/deploy/images/{{ machine }}/adsp-sc5xx-full-{{ machine }}.{{ file_extension }} -C /romfs
+   $sudo tar -xf tmp/deploy/images/{{ machine }}/adsp-sc5xx-full-{{ machine }}.{{ file_extension }} -C /romfs
 
 Next, on the target, from u-boot, run the following command:
 
-.. code-block:: shell
+.. code-block:: console
 
    => run nfsboot
    ......
@@ -378,45 +378,44 @@ To do this, follow the commands below. The example code in this section assumes 
 
    You can use ``sudo fdisk -l`` to list the available devices and partitions, in order to locate the USB device.
 
-.. code-block:: shell
+.. shell::
 
-   sudo fdisk /dev/sdb
-   /* Create primary partition 1, 256M size*/
+   $sudo fdisk /dev/sdb
+    /* Create primary partition 1, 256M size*/
    Command (m for help): n
    Select (default p): p
    Partition number (1-4, default 1): 1
    First sector (2048-3887103, default 2048): PRESS ENTER
    Last sector, +sectors or +size{K,M,G} (2048-3887103, default 3887103): PRESS ENTER
-
-   /* Save partition */
+    /* Save partition */
    Command (m for help): w
 
 Now that the storage device is partitioned, you need to format it to ext4:
 
-.. code-block:: shell
+.. shell::
 
-   sudo mkfs.ext4 /dev/sdb1
+   $sudo mkfs.ext4 /dev/sdb1
 
 Writing the Kernel and rootFS to the USB storage device
 -------------------------------------------------------
 
 Mount the device to a directory of your liking in your host machine (in the example, ``/mnt``), and run the following commands which will uncompress the root file system and then store the kernel image under ``/boot`` inside it.
 
-.. code-block:: shell
+.. shell::
 
-   sudo mkdir /mnt
-   sudo mount -t ext4 /dev/sdb1 /mnt
-   sudo mkdir /mnt/boot
-   sudo tar -xf tmp/deploy/images/{{ machine }}/adsp-sc5xx-minimal-{{ machine }}.{{ file_extension }} -C /mnt
-   sudo cp tmp/deploy/images/{{ machine }}/fitImage /mnt/boot/
-   sudo umount /mnt
+   $sudo mkdir /mnt
+   $sudo mount -t ext4 /dev/sdb1 /mnt
+   $sudo mkdir /mnt/boot
+   $sudo tar -xf tmp/deploy/images/{{ machine }}/adsp-sc5xx-minimal-{{ machine }}.{{ file_extension }} -C /mnt
+   $sudo cp tmp/deploy/images/{{ machine }}/fitImage /mnt/boot/
+   $sudo umount /mnt
 
 Booting from the USB storage device
 -----------------------------------
 
 Now, on U-Boot, set the following environment variables:
 
-.. code-block:: shell
+.. code-block:: console
 
    => setenv usbargs 'setenv bootargs root=/dev/sda1 rw rootfstype=ext4 rootwait earlycon=adi_uart,0x31003000 console=ttySC0,115200'
    => setenv usbload 'ext4load usb 0 ${loadaddr} /boot/${imagefile};'
@@ -424,7 +423,7 @@ Now, on U-Boot, set the following environment variables:
 
 And type to boot
 
-.. code-block:: shell
+.. code-block:: console
 
    => run usbboot
 
