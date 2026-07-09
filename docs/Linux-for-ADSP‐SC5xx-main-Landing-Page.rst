@@ -38,9 +38,11 @@ Supported Boards
      - 1.5 or later
      - :doc:`Getting Started with ADSP-SC573 EZLITE <getting-started/Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-main)>`
 
-Building of the Linux software requires a host PC running a recent flavour Linux.
+Building of the Linux software requires a host PC running a recent flavour
+Linux.
 Analog Devices uses `64-bit Ubuntu 22.04 LTS <https://discourse.ubuntu.com/t/jammy-jellyfish-release-notes/24668>`_ for its building and testing of Linux for ADSP-SC5xx.
-If you are new to Linux development we strongly recommend using a host PC with this installation of Linux.
+If you are new to Linux development we strongly recommend using a host PC with
+this installation of Linux.
 If you are confident in resolving variant specific problems feel free to use your `favourite distro <https://www.techradar.com/uk/best/best-linux-distros>`_.
 
 Changes Since the Latest Release
