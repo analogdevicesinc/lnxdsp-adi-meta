@@ -30,8 +30,8 @@ jobs:
           mkdir -p "${WORKSPACE}"
 
           # Create persistent cache directories in runner's home
-          YOCTO_DL_DIR="${HOME}/.yocto-downloads"
-          YOCTO_SSTATE_DIR="${HOME}/.yocto-sstate"
+          YOCTO_DL_DIR="/cache/yocto/downloads"
+          YOCTO_SSTATE_DIR="/cache/yocto/sstate"
           mkdir -p "${YOCTO_DL_DIR}"
           mkdir -p "${YOCTO_SSTATE_DIR}"
 
