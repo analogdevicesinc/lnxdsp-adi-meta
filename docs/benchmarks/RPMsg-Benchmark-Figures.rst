@@ -4,18 +4,25 @@ RPMsg Benchmark Figures
 Introduction
 ------------
 
-This page presents performance measurements for RPMsg communication with different channel counts, packet sizes, and transfer sizes. These results are indicative only and can vary significantly between implementations. Use them as a rough guide for performance expectations.
+This page presents performance measurements for RPMsg communication with
+different channel counts, packet sizes, and transfer sizes. These results are
+indicative only and can vary significantly between implementations. Use them as
+a rough guide for performance expectations.
 
-The `Setup`_ section provides examples for configuring benchmark endpoints with various channel, transfer, and packet size configurations. Note that device numbering and firmware filenames may vary by system.
+The `Setup`_ section provides examples for configuring benchmark endpoints with
+various channel, transfer, and packet size configurations. Note that device
+numbering and firmware filenames may vary by system.
 
-The `Benchmark Results`_ section contains performance tables for multiple configurations.
+The `Benchmark Results`_ section contains performance tables for multiple
+configurations.
 
 Source Code
 -----------
 
 Source code for rpmsg-examples is available in the
 `rpmsg-examples <https://github.com/analogdevicesinc/rpmsg-examples>`_ repository.
-Examples are compiled with CCES Studio on Windows and copied to the ADSP-SC598 board.
+Examples are compiled with CCES Studio on Windows and copied to the ADSP-SC598
+board.
 
 Setup
 -----
