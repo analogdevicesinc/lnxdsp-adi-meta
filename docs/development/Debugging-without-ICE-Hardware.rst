@@ -4,16 +4,20 @@ Debugging without ICE Hardware
 Introduction
 ------------
 
-If a dedicated ICE debugger is not available, it is still possible to load firmware into memory using the USB Debug Agent port available on some carrier boards.
+If a dedicated ICE debugger is not available, it is still possible to load
+firmware into memory using the USB Debug Agent port available on some carrier
+boards.
 
 .. note::
 
-   Although possible, it is always recommended to use a dedicated ICE-1000/2000 debugger for faster and more flexible debugging.
+   Although possible, it is always recommended to use a dedicated ICE-1000/2000
+   debugger for faster and more flexible debugging.
 
 Limitations
 -----------
 
-The following regularly used OpenOCD feature set may not work as intended or have undefined behaviours when using the USB Debug Agent:
+The following regularly used OpenOCD feature set may not work as intended or
+have undefined behaviours when using the USB Debug Agent:
 
 * Flashing QSPI
 * Hard reset
