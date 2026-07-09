@@ -13,7 +13,9 @@ The `Benchmark Results`_ section contains performance tables for multiple config
 Source Code
 -----------
 
-Source code for rpmsg-examples is available at `https://github.com/analogdevicesinc/rpmsg-examples <https://github.com/analogdevicesinc/rpmsg-examples>`_. Examples are compiled with CCES Studio on Windows and copied to the ADSP-SC598 board.
+Source code for rpmsg-examples is available in the
+`rpmsg-examples <https://github.com/analogdevicesinc/rpmsg-examples>`_ repository.
+Examples are compiled with CCES Studio on Windows and copied to the ADSP-SC598 board.
 
 Setup
 -----

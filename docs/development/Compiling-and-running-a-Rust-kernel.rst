@@ -139,6 +139,6 @@ Proceed to boot into the fitImage from your preferred boot method. Once in, you 
 References
 ----------
 
-* https://www.kernel.org/doc/html/v6.1/rust/quick-start.html
-* https://docs.kernel.org/rust/quick-start.html
+* `Rust in the Linux kernel (v6.1) <https://www.kernel.org/doc/html/v6.1/rust/quick-start.html>`_
+* `Rust quick-start guide (docs.kernel.org) <https://docs.kernel.org/rust/quick-start.html>`_
 * :doc:`Linux-Kernel-Development`
