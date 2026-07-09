@@ -14,9 +14,9 @@ Requirements
 
 Run the following to install the prerequisite packages on ubuntu 22.04:
 
-.. code-block:: shell
+.. shell::
 
-   sudo apt install llvm libclang-dev gcc-aarch64-linux-gnu -y
+   $sudo apt install llvm libclang-dev gcc-aarch64-linux-gnu -y
 
 Getting started
 ---------------
@@ -35,7 +35,7 @@ Getting started
 
 Edit the following file ``scripts/min-tool-version.sh`` with the following change:
 
-.. code-block:: shell
+.. code-block:: diff
 
    diff --git a/scripts/min-tool-version.sh b/scripts/min-tool-version.sh
    index 91c91201212c..dd09a4ed0e96 100755
@@ -53,28 +53,28 @@ Edit the following file ``scripts/min-tool-version.sh`` with the following chang
 
 Set the package/crate versions using the script
 
-.. code-block:: shell
+.. shell::
 
-   rustup override set $(scripts/min-tool-version.sh rustc)
-   rustup component add rust-src
-   cargo install --locked bindgen-cli
-   export PATH=$PATH:~/.cargo/bin
+   $rustup override set $(scripts/min-tool-version.sh rustc)
+   $rustup component add rust-src
+   $cargo install --locked bindgen-cli
+   $export PATH=$PATH:~/.cargo/bin
 
 Now setup the target architecture
 
-.. code-block:: shell
+.. shell::
 
-   rustup target add aarch64-unknown-linux-gnu
+   $rustup target add aarch64-unknown-linux-gnu
 
 5) Check if rust is now available to be compiled into the kernel:
 
-.. code-block:: shell
+.. shell::
 
-   ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make rustavailable
+   $ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make rustavailable
 
 You should see something like this:
 
-.. code-block:: shell
+.. code-block:: text
 
    Rust is available!
 
@@ -100,14 +100,14 @@ You can select it as a built-in module and an external kernel module. For this g
 
 Now compile the kernel with the following:
 
-.. code-block:: shell
+.. shell::
 
-   ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j$(nproc)
+   $ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j$(nproc)
 
 You should be able to see rust modules
 being compiled:
 
-.. code-block:: shell
+.. code-block:: text
 
      RUSTC L rust/core.o
      EXPORTS rust/exports_core_generated.h
@@ -125,7 +125,7 @@ Once this is done, follow the custom fitImage compilation guide in :doc:`Linux-K
 
 Proceed to boot into the fitImage from your preferred boot method. Once in, you should be able to spot the following in the kernel logs:
 
-.. code-block:: shell
+.. code-block:: text
 
    [    1.467785] virtio_rpmsg_bus virtio1: creating channel sharc-echo-cap addr 0xa2
    [    1.475113] virtio_rpmsg_bus virtio1: rpmsg host is online

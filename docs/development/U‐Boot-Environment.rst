@@ -130,7 +130,7 @@ Setting Default Boot Method
 
 In order to change the default boot method (i.e., boot used by autoboot or executed after issuing ``boot`` within U-Boot shell), run the following within U-Boot:
 
-.. code-block:: shell
+.. code-block:: console
 
    => setenv bootcmd <boot method>
    => saveenv
