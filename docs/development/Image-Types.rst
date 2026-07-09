@@ -136,11 +136,11 @@ Building an Image
 From the workspace created in the Getting Started guide, open a kas shell
 and build any image by name with ``bitbake``:
 
-.. code-block:: shell
+.. shell::
 
-   . .venv/bin/activate
-   KAS_MACHINE=adsp-sc598-som-ezkit kas shell config/kas/adsp-sc5xx.yml
-   bitbake adsp-sc5xx-full
+   $. .venv/bin/activate
+   $KAS_MACHINE=adsp-sc598-som-ezkit kas shell config/kas/adsp-sc5xx.yml
+   $bitbake adsp-sc5xx-full
 
 The resulting rootfs and programming images are written under
 ``build/tmp/deploy/images/<machine>/``.
@@ -190,9 +190,9 @@ Customise the image with the standard Yocto variables:
 * ``IMAGE_FEATURES`` — Enable Yocto image features such as ``debug-tweaks`` or
   ``tools-debug``.
 
-.. code-block:: shell
+.. shell::
 
-   bitbake adsp-sc5xx-myimage
+   $bitbake adsp-sc5xx-myimage
 
 .. note::
    If your customisation is product-specific and extends beyond just adding/removing packages,

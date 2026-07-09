@@ -35,10 +35,10 @@ Obtaining the Kernel Source
 
 Clone the ADSP Linux kernel repository:
 
-.. code-block:: shell
+.. shell::
 
-   git clone https://github.com/analogdevicesinc/lnxdsp-linux.git
-   cd lnxdsp-linux
+   $git clone https://github.com/analogdevicesinc/lnxdsp-linux.git
+   $cd lnxdsp-linux
 
 Building the Kernel
 -------------------
@@ -50,45 +50,45 @@ Load the default configuration for your target board.
 
 **For ADSP-SC598 (ARM64):**
 
-.. code-block:: shell
+.. shell::
 
-   ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make sc598-som-ezkit_defconfig
+   $ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make sc598-som-ezkit_defconfig
 
 **For ADSP-SC589-MINI (ARM):**
 
-.. code-block:: shell
+.. shell::
 
-   ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- make sc589-mini_defconfig
+   $ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- make sc589-mini_defconfig
 
 Compile Kernel, Modules, and Device Trees
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **For ADSP-SC598 (ARM64):**
 
-.. code-block:: shell
+.. shell::
 
-   ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j`nproc` Image.gz modules dtbs
+   $ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j$(nproc) Image.gz modules dtbs
 
 **For ADSP-SC589 (ARM):**
 
-.. code-block:: shell
+.. shell::
 
-   ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- make -j`nproc` zImage modules dtbs
+   $ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- make -j$(nproc) zImage modules dtbs
 
 Creating a fitImage
 -------------------
 
 The default boot format used is fitImage. Here's how to rebuild a fitImage with your newly compiled kernel:
 
-.. code-block:: shell
+.. shell::
 
-   mkdir new_fit_image
-   cd new_fit_image
-   cp <builddir>/tmp/deploy/images/adsp-sc598-som-ezkit/fit-image.its ./
-   cp <builddir>/tmp/deploy/images/adsp-sc598-som-ezkit/adsp-sc5xx-ramdisk-adsp-sc598-som-ezkit.cpio.gz ./
-   cp <kernel_builddir>/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtb ./
-   cp <kernel_builddir>/arch/arm64/boot/Image.gz ./
-   mkimage -f fit-image.its fitImage
+   $mkdir new_fit_image
+   $cd new_fit_image
+   $cp <builddir>/tmp/deploy/images/adsp-sc598-som-ezkit/fit-image.its ./
+   $cp <builddir>/tmp/deploy/images/adsp-sc598-som-ezkit/adsp-sc5xx-ramdisk-adsp-sc598-som-ezkit.cpio.gz ./
+   $cp <kernel_builddir>/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtb ./
+   $cp <kernel_builddir>/arch/arm64/boot/Image.gz ./
+   $mkimage -f fit-image.its fitImage
 
 Boot the fitImage using your preferred boot method.
 

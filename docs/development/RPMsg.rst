@@ -111,7 +111,7 @@ RPMsg with yocto
 
 2. Booting into Linux, the following messages should be visible in the kernel boot log:
 
-.. code-block:: console
+.. code-block:: text
 
    [    2.153877] adi_remoteproc 28240000.core1-rproc: Resource table set, enable rpmsg
    [    2.161710] adi_remoteproc 28240000.core1-rproc: Load verification enabled
@@ -129,7 +129,7 @@ RPMsg with yocto
 
    As it can be seen, the first boot method (as documented above) is utilized here, where remoteproc is responsible for populating the MCAPI region, load and execute the required firmware into the SHARC cores.
 
-.. code-block:: console
+.. code-block:: text
 
    [    2.246718] virtio_rpmsg_bus virtio0: creating channel sharc-echo addr 0x97
    [    2.253692] virtio_rpmsg_bus virtio0: creating channel sharc-echo-cap addr 0xa1
@@ -148,22 +148,22 @@ RPMsg with yocto
 
 3. Run the following commands to bind an RPMsg device to the rpmsg-char driver:
 
-.. code-block:: console
+.. shell::
 
-   root@adsp-sc598-som-ezkit:~# rpmsg-bind-chardev -p virtio0.sharc-echo.-1. -n 1 -e 151 -s 100
-   root@adsp-sc598-som-ezkit:~# rpmsg-bind-chardev -p virtio0.sharc-echo-cap.-1. -n 1 -e 352 -s 101
-   root@adsp-sc598-som-ezkit:~# rpmsg-bind-chardev -p virtio1.sharc-echo.-1. -n 1 -e 320 -s 102
-   root@adsp-sc598-som-ezkit:~# rpmsg-bind-chardev -p virtio1.sharc-echo-cap.-1. -n 1 -e 384 -s 103
+   $rpmsg-bind-chardev -p virtio0.sharc-echo.-1. -n 1 -e 151 -s 100
+   $rpmsg-bind-chardev -p virtio0.sharc-echo-cap.-1. -n 1 -e 352 -s 101
+   $rpmsg-bind-chardev -p virtio1.sharc-echo.-1. -n 1 -e 320 -s 102
+   $rpmsg-bind-chardev -p virtio1.sharc-echo-cap.-1. -n 1 -e 384 -s 103
 
 4. Test the mechanism with an echo example
 
-.. code-block:: shell
+.. shell::
 
-   root@adsp-sc598-som-ezkit:~# echo hello | rpmsg-xmit -n 5 /dev/rpmsg0
-   hello => echo from Core1
-   root@adsp-sc598-som-ezkit:~# echo hello | rpmsg-xmit -n 5 /dev/rpmsg1
-   HELLO => capitalized echo from Core1
-   root@adsp-sc598-som-ezkit:~# echo hello | rpmsg-xmit -n 5 /dev/rpmsg2
-   hello => echo from Core2
-   root@adsp-sc598-som-ezkit:~# echo hello | rpmsg-xmit -n 5 /dev/rpmsg3
-   HELLO => capitalized echo from Core2
+   $echo hello | rpmsg-xmit -n 5 /dev/rpmsg0
+    hello => echo from Core1
+   $echo hello | rpmsg-xmit -n 5 /dev/rpmsg1
+    HELLO => capitalized echo from Core1
+   $echo hello | rpmsg-xmit -n 5 /dev/rpmsg2
+    hello => echo from Core2
+   $echo hello | rpmsg-xmit -n 5 /dev/rpmsg3
+    HELLO => capitalized echo from Core2
