@@ -17,13 +17,17 @@ Getting Started with {{ board_name }} ({{ version }})
 Setting Up Your Host PC
 -----------------------
 
-The build system is currently supported on host PCs running Ubuntu {{ ubuntu_version }} 64-bit. For setting up your host PC, please see the :doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>` page.
+The build system is currently supported on host PCs running Ubuntu
+{{ ubuntu_version }} 64-bit. For setting up your host PC, please see the
+:doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>` page.
 
 --------------------
 Fetching the Sources
 --------------------
 
-The source is fully contained in the `Analog Devices Linux for ADSP repositories <https://github.com/analogdevicesinc?q=lnxdsp&type=all&language=&sort=>`_.
+The source is fully contained in the `Analog Devices Linux for ADSP
+repositories
+<https://github.com/analogdevicesinc?q=lnxdsp&type=all&language=&sort=>`_.
 
 To install the sources:
 
@@ -52,9 +56,9 @@ Open a shell configured by kas for your board:
    $. .venv/bin/activate
    $KAS_MACHINE={{ machine }} kas shell config/{{ kas_file | default('kas/adsp-sc5xx.yml') }}
 
-The shell starts in the ``build`` directory with the BitBake environment configured.
-Run the following build commands from this shell. To resume in another terminal,
-repeat the commands above.
+The shell starts in the ``build`` directory with the BitBake environment
+configured. Run the following build commands from this shell. To resume in
+another terminal, repeat the commands above.
 
 .. note::
 
@@ -73,7 +77,9 @@ Add the following to ``conf/auto.conf`` within the build directory:
    SOM_REV = "<SOM revision>"
    CRR_REV = "<Carrier Revision>"
 
-The default configuration is valid for {{ som_revision_default }}. `Guide to identify SOM and EZKit Carrier revision numbers <../faq/Frequently-Asked-Questions.html#how-do-i-identify-my-som-and-carrier-board-revisions>`_
+The default configuration is valid for {{ som_revision_default }}. `Guide to
+identify SOM and EZKit Carrier revision numbers
+<../faq/Frequently-Asked-Questions.html#how-do-i-identify-my-som-and-carrier-board-revisions>`_
 {% endif %}
 
 Building the example
@@ -94,15 +100,25 @@ When the build completes you will see a warning that the ELF binary has relocati
 
 .. note::
 
-   Building a Linux distribution with Yocto is a significantly demanding process, both in CPU and network usage. A full build from scratch is estimated to take around 170 minutes for an 11th Gen Intel Core i5-11500T with 16 GB of RAM and a stable, fast Internet connection. This estimate can go up significantly for a poorer Internet connection or CPU resources, so set aside plenty of time for a clean build.
+   Building a Linux distribution with Yocto is a significantly demanding
+   process, both in CPU and network usage. A full build from scratch is
+   estimated to take around 170 minutes for an 11th Gen Intel Core i5-11500T
+   with 16 GB of RAM and a stable, fast Internet connection. This estimate can
+   go up significantly for a poorer Internet connection or CPU resources, so
+   set aside plenty of time for a clean build.
 
 Building the SDK
 ----------------
 
-The SDK will provide you with the cross toolchain needed to develop application for the target board, alongside various miscellaneous tools. Notably, it will provide you with OpenOCD and GDB, which you can use to run and flash U-Boot on the board.
+The SDK will provide you with the cross toolchain needed to develop application
+for the target board, alongside various miscellaneous tools. Notably, it will
+provide you with OpenOCD and GDB, which you can use to run and flash U-Boot on
+the board.
 
 {% if images | length > 1 -%}
-The SDK can be built for the ``adsp-sc5xx-minimal`` image or the ``adsp-sc5xx-full`` image. To build the SDK for the ``adsp-sc5xx-minimal`` image invoke bitbake from within the build directory created previously.
+The SDK can be built for the ``adsp-sc5xx-minimal`` image or the
+``adsp-sc5xx-full`` image. To build the SDK for the ``adsp-sc5xx-minimal``
+image invoke bitbake from within the build directory created previously.
 {% else -%}
 To build the SDK for the ``{{ image }}`` image invoke bitbake from within the build directory created previously.
 {% endif %}
@@ -121,10 +137,14 @@ or for the adsp-sc5xx-full image
 
 .. note::
 
-   Set ``SDKMACHINE = "aarch64"`` in ``conf/auto.conf`` or other architecture as needed to target another non-x86 host to run these tools
+   Set ``SDKMACHINE = "aarch64"`` in ``conf/auto.conf`` or other architecture
+   as needed to target another non-x86 host to run these tools
 {% endif %}
 
-When the build has completed you will find a set of files in the ``<BUILD_DIR>/tmp/deploy/sdk`` directory. For example, the {{ 'minimal' if image == 'adsp-sc5xx-minimal' else image }} image on {{ board_name }}:
+When the build has completed you will find a set of files in the
+``<BUILD_DIR>/tmp/deploy/sdk`` directory. For example, the
+{{ 'minimal' if image == 'adsp-sc5xx-minimal' else image }} image on
+{{ board_name }}:
 
 .. shell::
 
@@ -139,9 +159,11 @@ The ``{{ sdk_installer }}`` is a self-extracting archive containing the SDK.
 Installing the SDK
 ------------------
 
-Invoke the self-extracting archive.
-It will default to installing to ``{{ sdk_path }}`` but gives you the option to select your own install folder during the installation.
-For the {{ 'minimal' if image == 'adsp-sc5xx-minimal' else image }} image on {{ board_name }}
+Invoke the self-extracting archive. It will default to installing to
+``{{ sdk_path }}`` but gives you the option to select your own install folder
+during the installation. For the
+{{ 'minimal' if image == 'adsp-sc5xx-minimal' else image }} image on
+{{ board_name }}
 
 .. shell::
 
@@ -165,7 +187,8 @@ Your SDK is now installed.
 Setup the hardware
 ------------------
 
-Before installing the software on to the development board, ensure that the following cables are connected:
+Before installing the software on to the development board, ensure that the
+following cables are connected:
 
 .. image:: {{ hardware_image }}
    :width: 400
@@ -182,14 +205,17 @@ Programming the board for the first time
 
 .. note::
 
-   It's always good practice to erase the contents of the folders mentioned below before running and/or flashing a new build of U-Boot or Linux. You can do so by executing ``rm /<folder>/*`` on your host PC before proceeding.
+   It's always good practice to erase the contents of the folders mentioned
+   below before running and/or flashing a new build of U-Boot or Linux. You can
+   do so by executing ``rm /<folder>/*`` on your host PC before proceeding.
    This will erase the contents of the folders but not the folders themselves.
 
 ------------------------------
 Bootstrapping to Linux
 ------------------------------
 
-The programming sequence uses nfsboot to bootstrap to Linux, and from there program all available boot media. Before beginning, follow these steps.
+The programming sequence uses nfsboot to bootstrap to Linux, and from there
+program all available boot media. Before beginning, follow these steps.
 
 Populate the NFS file system with the files for booting:
 
@@ -198,7 +224,8 @@ Populate the NFS file system with the files for booting:
    $sudo tar -xf tmp/deploy/images/{{ machine }}/{{ nfs_image }}-{{ machine }}.rootfs.tar.xz -C /romfs
 
 .. note::
-   The directory for this extraction is `/romfs` if you followed the directions in :doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>`.
+   The directory for this extraction is `/romfs` if you followed the directions
+   in :doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>`.
 {% if images | length > 1 %}   The adsp-sc5xx-minimal image can also be used, but will not include some of the debugging tools that the full image will have
    if there are problems.
 {% endif %}
@@ -220,14 +247,17 @@ Start the Python web server to serve the files
    $python3 -m http.server 8000
 
 .. note::
-   The Python web server can be run directly from the images/{{ machine }}/programming-images directory, however it is advised to copy the images to another directory and serve them from that folder,
-   as the images in the tmp/deploy directory are overwritten with each new build
+   The Python web server can be run directly from the
+   images/{{ machine }}/programming-images directory, however it is advised to
+   copy the images to another directory and serve them from that folder, as the
+   images in the tmp/deploy directory are overwritten with each new build
 
 --------------------------------
 Setting Up Terminal Connections
 --------------------------------
 
-The console output from U-Boot and later on Linux will appear on the USB serial port configured in minicom earlier so open up minicom.
+The console output from U-Boot and later on Linux will appear on the USB serial
+port configured in minicom earlier so open up minicom.
 
 **Terminal1: minicom**
 
@@ -244,8 +274,9 @@ In a separate console launch OpenOCD and connect to the development board.
    $sdk_usr={{ sdk_path }}/sysroots/x86_64-adi_{{ libc }}_sdk-linux/usr/
    $$sdk_usr/bin/openocd -f $sdk_usr/share/openocd/scripts/interface/<ICE>.cfg -f $sdk_usr/share/openocd/scripts/target/{{ openocd_target }}.cfg
 
-Where ``<ICE>`` should be replaced with ``ice1000`` or ``ice2000`` depending on your hardware.
-When successful you should see a message similar to the console output below
+Where ``<ICE>`` should be replaced with ``ice1000`` or ``ice2000`` depending on
+your hardware. When successful you should see a message similar to the console
+output below
 
 **Terminal2: OpenOCD**
 
@@ -253,7 +284,10 @@ When successful you should see a message similar to the console output below
 
 {{openocd_output | indent(3, True)}}
 
-In a third console window launch GDB and type ``target extended-remote :3333``. This will make GDB to connect to the gdbserver on the local host using port 3333. Then, load the U-Boot SPL into RAM by typing ``load``. Hit ``Ctrl+C`` to interrupt thereafter.
+In a third console window launch GDB and type ``target extended-remote :3333``.
+This will make GDB to connect to the gdbserver on the local host using
+port 3333. Then, load the U-Boot SPL into RAM by typing ``load``. Hit
+``Ctrl+C`` to interrupt thereafter.
 
 **Terminal3: GDB**
 
@@ -272,7 +306,8 @@ In a third console window launch GDB and type ``target extended-remote :3333``. 
    ^C
    Program received signal SIGINT, Interrupt.
 
-You will see a message on Terminal 1 running minicom, informing you that you can now load U-Boot Proper
+You will see a message on Terminal 1 running minicom, informing you that you
+can now load U-Boot Proper
 
 **Terminal1: minicom**
 
@@ -291,7 +326,9 @@ Now, load U-Boot Proper into RAM.
    (gdb) c
    Continuing.
 
-At this point U-Boot will now be running in RAM on your target board. You should see U-Boot booting in the minicom console (Terminal 1). Press a key to interrupt the boot process before the countdown terminates:
+At this point U-Boot will now be running in RAM on your target board. You
+should see U-Boot booting in the minicom console (Terminal 1). Press a key to
+interrupt the boot process before the countdown terminates:
 
 **Terminal1: minicom**
 
@@ -303,7 +340,8 @@ At this point U-Boot will now be running in RAM on your target board. You should
 Programming Images
 -------------------------
 
-In the U-Boot console, set the IP address of the Linux PC that hosts the Python webserver, and the IP address of the board itself, if not using dhcp.
+In the U-Boot console, set the IP address of the Linux PC that hosts the Python
+webserver, and the IP address of the board itself, if not using dhcp.
 
 **Terminal1: minicom**
 
@@ -314,7 +352,8 @@ In the U-Boot console, set the IP address of the Linux PC that hosts the Python 
 
 .. note::
 
-   To find the IP address of your host Linux PC you can issue the ``ip addr`` command from the shell or console.
+   To find the IP address of your host Linux PC you can issue the ``ip addr``
+   command from the shell or console.
 
 If your network **supports** DHCP, run:
 
@@ -337,11 +376,13 @@ After logging in, run the following command:
 
    $/usr/firmware/init
 
-This will call the programming script which will walk you through programming the boot media on the board
+This will call the programming script which will walk you through programming
+the boot media on the board
 
 {% if has_qspi_boot %}
 
-The first images to be programmed are the SPI flash images. The terminal will prompt asking approval to program the SPI flash.
+The first images to be programmed are the SPI flash images. The terminal will
+prompt asking approval to program the SPI flash.
 
 .. code-block:: text
 
@@ -351,8 +392,9 @@ The first images to be programmed are the SPI flash images. The terminal will pr
    This will erase and program SPI flash.                                                                                                                                                              
    Continue? [y/i/N]:
 
-Select y to program everything, or i to enter interactive mode (to selectively program certain partitions on the SPI flash).
-The default for this and all programming prompts is N for no.
+Select y to program everything, or i to enter interactive mode (to selectively
+program certain partitions on the SPI flash). The default for this and all
+programming prompts is N for no.
 
 {% endif %}
 
@@ -394,8 +436,10 @@ Booting Linux after programming
 Default Login
 ---------------
 
-The default login credentials for the development build of the ADSP Yocto images is shown below. User/passwords can be set or changed in the Yocto
-adsp-sc5xx.bbclass file, and the default credentials should be changed before a production deployment.
+The default login credentials for the development build of the ADSP Yocto
+images is shown below. User/passwords can be set or changed in the Yocto
+adsp-sc5xx.bbclass file, and the default credentials should be changed before a
+production deployment.
 
 .. code-block:: text
 
@@ -407,21 +451,25 @@ adsp-sc5xx.bbclass file, and the default credentials should be changed before a 
 Booting the minimal image from QSPI
 -----------------------------------
 
-The default boot method for the {{ machine }} is SPI boot. Turn the bootmode selector to 1, and reset the board.
-The board should now automatically boot to the Linux login.
+The default boot method for the {{ machine }} is SPI boot. Turn the bootmode
+selector to 1, and reset the board. The board should now automatically boot to
+the Linux login.
 
 {% endif %}
 
 Network Booting
 ---------------
 
-In order to boot Linux via the network, the Python web server should be setup as indicated above with the fitImage populated for booting.
+In order to boot Linux via the network, the Python web server should be setup
+as indicated above with the fitImage populated for booting.
 
 --------
 NFS Boot
 --------
 
-In order to boot Linux via NFS, the NFS server should be setup as indicated in `Setting Up Your Host PC: Configure NFS Server <Setting-Up-Your-Host-PC.html#configure-nfs-server>`_.
+In order to boot Linux via NFS, the NFS server should be setup as indicated in
+`Setting Up Your Host PC: Configure NFS Server
+<Setting-Up-Your-Host-PC.html#configure-nfs-server>`_.
 
 The root filesystem should then be copied to ``/romfs``.
 
@@ -454,7 +502,8 @@ Program the eMMC using the init script mmc instructions above.
 Booting from the eMMC
 ---------------------------------
 
-Now, boot to U-boot and interrupt autoboot to drop to the shell and enter the following command
+Now, boot to U-boot and interrupt autoboot to drop to the shell and enter the
+following command
 
 .. code-block:: console
 
@@ -474,7 +523,8 @@ mmc part of the init script.
 
 Program the SD card using the init script mmc instructions above.
 
-Alternatively, the SD card can be programmed by the host PC before being inserted into the board.
+Alternatively, the SD card can be programmed by the host PC before being
+inserted into the board.
 
 ---------------------------------
 Formatting the SD card
@@ -527,7 +577,8 @@ Programming the SD card
 Booting from the SD card
 ---------------------------------
 
-Now, boot to U-boot and interrupt autoboot to drop to the shell and enter the following command
+Now, boot to U-boot and interrupt autoboot to drop to the shell and enter the
+following command
 
 .. code-block:: console
 
@@ -545,20 +596,26 @@ Formatting the USB storage device
 {% if s9x_usb %}
 
 .. note::
-   Make sure to set the variable ``ADSP_SC59X_USB`` in ``conf/auto.conf`` when building to enable the USB before attempting to boot.
+   Make sure to set the variable ``ADSP_SC59X_USB`` in ``conf/auto.conf`` when
+   building to enable the USB before attempting to boot.
 
 {% endif %}
 
-The USB can be programmed by the init script from the instructions mentioned above if plugged into the board. However, the USB can also be formatted by the host PC before
-plugging into the board as well, following the instructions below.
+The USB can be programmed by the init script from the instructions mentioned
+above if plugged into the board. However, the USB can also be formatted by the
+host PC before plugging into the board as well, following the instructions
+below.
 
 The first step is to format the USB stick to a format that U-Boot supports.
 
-To do this, follow the commands below. The example code in this section assumes that the USB device is reported to be ``/dev/sda``. Ensure that you change these commands to use your device.
+To do this, follow the commands below. The example code in this section assumes
+that the USB device is reported to be ``/dev/sda``. Ensure that you change
+these commands to use your device.
 
 .. note::
 
-   You can use ``sudo fdisk -l`` to list the available devices and partitions, in order to locate the USB device.
+   You can use ``sudo fdisk -l`` to list the available devices and partitions,
+   in order to locate the USB device.
 
 .. shell::
 
@@ -607,12 +664,14 @@ Copying to the USB storage device
 Booting from the USB storage device
 -----------------------------------
 
-Now, boot to U-boot and interrupt autoboot to drop to the shell and enter the following command
+Now, boot to U-boot and interrupt autoboot to drop to the shell and enter the
+following command
 
 .. code-block:: console
 
    => run usbboot
 
-Now the rootfs is set to be your USB storage device, and the amount of space is the size of the partition created earlier on the device.
+Now the rootfs is set to be your USB storage device, and the amount of space is
+the size of the partition created earlier on the device.
 
 {% endif %}
