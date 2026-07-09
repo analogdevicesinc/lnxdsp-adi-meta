@@ -26,7 +26,7 @@ RPMsg is a communication protocol for heterogeneous inter-processor communicatio
 RPMsg Working
 -------------
 
-Considering one of ADI's DSP offerings as an example: the `ADSP-SC598 <https://www.analog.com/en/products/adsp-sc598.html>`_. This board contains 2 SHARC+ processing cores and 1 Arm Cortex A55, where the Arm processor is used to run Linux and is isolated, via software, from both the SHARC cores. All processors however share the memory provided to the system (L2 and L3).
+Considering one of ADI's DSP offerings as an example: the :adi:`ADSP-SC598 <en/products/adsp-sc598.html>`. This board contains 2 SHARC+ processing cores and 1 Arm Cortex A55, where the Arm processor is used to run Linux and is isolated, via software, from both the SHARC cores. All processors however share the memory provided to the system (L2 and L3).
 
 In this scenario, we will aim to establish communication between a SHARC core and the cortex-A55. Both sides will require clients to handle RPMsg related activity. For the Arm processor, since it is running Linux, the kernel includes support for RPMsg via a `dedicated driver <https://docs.kernel.org/staging/rpmsg.html>`_.
 

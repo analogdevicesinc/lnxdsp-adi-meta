@@ -32,8 +32,8 @@ Step 2: Configure JTAG Interface Switches
 
 Set all JTAG interface switches to the required configuration:
 
-* **SOMCRR-EZKIT**: SW1 (all ON) - `See EV-SOMCRR-EZKIT Manual, Table 3-5 <https://www.analog.com/media/en/technical-documentation/user-guides/ev-somcrr-ezkit-manual.pdf>`_
-* **SOMCRR-EZLITE**: S4 (1-6 ON, 7-8 OFF) - `See EV-SOMCRR-EZLITE Manual, Table 3-3 <https://www.analog.com/media/en/technical-documentation/user-guides/ev-somcrr-ezlite_manual.pdf>`_
+* **SOMCRR-EZKIT**: SW1 (all ON) - :adi:`See EV-SOMCRR-EZKIT Manual, Table 3-5 <media/en/technical-documentation/user-guides/ev-somcrr-ezkit-manual.pdf>`
+* **SOMCRR-EZLITE**: S4 (1-6 ON, 7-8 OFF) - :adi:`See EV-SOMCRR-EZLITE Manual, Table 3-3 <media/en/technical-documentation/user-guides/ev-somcrr-ezlite_manual.pdf>`
 
 .. warning::
 
@@ -102,5 +102,5 @@ This command triggers a system reset without requiring physical hardware reset.
 References
 ----------
 
-* `EV-SOMCRR-EZKIT Manual <https://www.analog.com/media/en/technical-documentation/user-guides/ev-somcrr-ezkit-manual.pdf>`_ (Table 3-5: JTAG Switch Configuration)
-* `EV-SOMCRR-EZLITE Manual <https://www.analog.com/media/en/technical-documentation/user-guides/ev-somcrr-ezlite_manual.pdf>`_ (Table 3-3: JTAG Switch Configuration)
+* :adi:`EV-SOMCRR-EZKIT Manual <media/en/technical-documentation/user-guides/ev-somcrr-ezkit-manual.pdf>` (Table 3-5: JTAG Switch Configuration)
+* :adi:`EV-SOMCRR-EZLITE Manual <media/en/technical-documentation/user-guides/ev-somcrr-ezlite_manual.pdf>` (Table 3-3: JTAG Switch Configuration)
