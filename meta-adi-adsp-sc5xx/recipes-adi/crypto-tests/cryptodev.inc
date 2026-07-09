@@ -1,7 +1,7 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/cryptodev-linux:"
 
-
-SRCREV = "277d4574c10bb8e16ab6ab3f38b8e1cb6cd6c678"
+# TODO: Update this SRCREV once meta layer moves from Yocto 5(scarthgap) to Yocto 6(wyrnrose)
+SRCREV = "08644db02d43478f802755903212f5ee506af73b"
 
 NON_COMPAT_PACTH = "file://0001-Disable-installing-header-file-provided-by-another-p.patch"
 SRC_URI:remove = "${@d.getVar('NON_COMPAT_PACTH')}"
