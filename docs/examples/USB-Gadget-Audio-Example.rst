@@ -4,15 +4,21 @@ USB Gadget Audio Example
 Introduction
 ------------
 
-This page provides a guide on how to use the USB Gadget Audio on ADSP-SC5XX boards. It provides the capability for the board to be used (and appear to Host PCs) as an audio card.
+This page provides a guide on how to use the USB Gadget Audio on ADSP-SC5XX
+boards. It provides the capability for the board to be used (and appear to Host
+PCs) as an audio card.
 
 .. note::
-   The USB Gadget Audio feature can be enabled when following the Getting Started Guides (version 3.0.0 or later). You need to append the following line to the ``conf/local.conf`` file - ``DISTRO_FEATURES:append = " adi_usb_gadget_audio"`` - before building the image.
+   The USB Gadget Audio feature can be enabled when following the Getting
+   Started Guides (version 3.0.0 or later). You need to append the following
+   line to the ``conf/local.conf`` file - ``DISTRO_FEATURES:append = "
+   adi_usb_gadget_audio"`` - before building the image.
 
 Hardware Configuration
 ----------------------
 
-Connect the USB micro-B plug cable into the USB HS/OTG Device port, as showing below:
+Connect the USB micro-B plug cable into the USB HS/OTG Device port, as showing
+below:
 
 .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/1c72a9cf-90e9-42eb-a5f5-ac0ffc7dc4af
    :width: 400
@@ -68,7 +74,8 @@ Record audio data from the new generated UAC2 sound card (arecord ``card 1``,
 Play audio over USB on Host
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-With following command you should be able to see the USB Gadget Audio device is there on your host PC:
+With following command you should be able to see the USB Gadget Audio device is
+there on your host PC:
 
 .. shell::
 

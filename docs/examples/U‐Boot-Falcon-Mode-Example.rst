@@ -4,11 +4,13 @@ U-Boot Falcon Mode Example
 Introduction
 ------------
 
-This page provides instructions for using U-Boot Falcon Mode and ADI Fastboot on ADSP-SC59x boards.
+This page provides instructions for using U-Boot Falcon Mode and ADI Fastboot
+on ADSP-SC59x boards.
 
 .. note::
 
-   The Falcon Mode feature is supported on Linux for ADSP-SC5xx Processors version 3.0.0 and later, and on SC59x platforms.
+   The Falcon Mode feature is supported on Linux for ADSP-SC5xx Processors
+   version 3.0.0 and later, and on SC59x platforms.
 
 What is Falcon Mode?
 ~~~~~~~~~~~~~~~~~~~~
@@ -33,7 +35,8 @@ After following the Getting Started guides and sourcing the setup script:
 
    $source setup-environment -m adsp-sc598-som-ezkit
 
-A build folder and local configuration file will be created at ``$PROJECT_DIR/build/conf/local.conf``.
+A build folder and local configuration file will be created at
+``$PROJECT_DIR/build/conf/local.conf``.
 
 Step 2: Enable Falcon Mode
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,7 +51,8 @@ Edit ``conf/local.conf`` and append the following lines:
 Step 3: Build and Flash
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Proceed with building and flashing the image as described in the Getting Started guides.
+Proceed with building and flashing the image as described in the Getting
+Started guides.
 
 Booting with Falcon Mode
 -------------------------
@@ -56,7 +60,9 @@ Booting with Falcon Mode
 Default Falcon Mode Behavior
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When U-Boot with Falcon Mode support is flashed onto the board, the default behavior is to boot directly from SPL using the configured boot method (typically SPI boot):
+When U-Boot with Falcon Mode support is flashed onto the board, the default
+behavior is to boot directly from SPL using the configured boot method
+(typically SPI boot):
 
 .. code-block:: text
 
@@ -92,7 +98,8 @@ When U-Boot with Falcon Mode support is flashed onto the board, the default beha
 Fallback to U-Boot Proper
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can bypass Falcon Mode and fall back to full U-Boot by holding down the push button ``PB1`` on the carrier board during reset/boot:
+You can bypass Falcon Mode and fall back to full U-Boot by holding down the
+push button ``PB1`` on the carrier board during reset/boot:
 
 .. code-block:: text
 
@@ -122,7 +129,9 @@ ADI Fastboot
 Overview
 ~~~~~~~~
 
-Yocto release 5.0.0 introduces ADI Fastboot, which combines U-Boot Falcon Mode with kernel modifications to achieve the fastest possible boot times, enabling hardware initialization and userspace application execution with minimal delay.
+Yocto release 5.0.0 introduces ADI Fastboot, which combines U-Boot Falcon Mode
+with kernel modifications to achieve the fastest possible boot times, enabling
+hardware initialization and userspace application execution with minimal delay.
 
 **Currently supported boards:**
 
@@ -131,9 +140,13 @@ Yocto release 5.0.0 introduces ADI Fastboot, which combines U-Boot Falcon Mode w
 U-Boot Configuration
 ~~~~~~~~~~~~~~~~~~~~
 
-SOMs with the EZKIT carrier default to using OSPI flash (device 0 on bus 0) for booting, instead of the standard QSPI configuration present on the SOM. This is coupled with DMA and maximum clock frequencies to achieve extremely fast transactions.
+SOMs with the EZKIT carrier default to using OSPI flash (device 0 on bus 0) for
+booting, instead of the standard QSPI configuration present on the SOM. This is
+coupled with DMA and maximum clock frequencies to achieve extremely fast
+transactions.
 
-Flash the OSPI on the EZKIT carrier via U-Boot. Once U-Boot is loaded via GDB, execute:
+Flash the OSPI on the EZKIT carrier via U-Boot. Once U-Boot is loaded via GDB,
+execute:
 
 .. code-block:: console
 
@@ -145,7 +158,8 @@ This will flash U-Boot to QSPI and the fitImage to OSPI.
 Kernel Configuration
 ~~~~~~~~~~~~~~~~~~~~
 
-The Linux kernel has been trimmed to achieve minimal boot time. The following drivers and devices are disabled:
+The Linux kernel has been trimmed to achieve minimal boot time. The following
+drivers and devices are disabled:
 
 * Crypto (CRC and PKTE)
 * SHARC (both cores and remoteproc)
@@ -365,7 +379,8 @@ The following is example kernel boot output for ADI Fastboot:
    [2025-08-08 12:17:07.929]
    [2025-08-08 12:17:07.929] adsp-sc598-som-ezkit login:
 
-**Expected boot time:** Approximately 3-4 seconds after powering on or resetting the board.
+**Expected boot time:** Approximately 3-4 seconds after powering on or
+resetting the board.
 
 References
 ----------
