@@ -1,7 +1,7 @@
 =Frequently Asked Questions
 ===========================
 
-This page answers common questions about developing with Linux for ADSP-SC5xx processors. For additional support, visit the `EngineerZone forum <https://ez.analog.com/linux-software-drivers>`_ or check the `GitHub issues <https://github.com/analogdevicesinc/lnxdsp-adi-meta/issues>`_.
+This page answers common questions about developing with Linux for ADSP-SC5xx processors. For additional support, visit the :ez:`EngineerZone forum <linux-software-drivers>` or check the `GitHub issues <https://github.com/analogdevicesinc/lnxdsp-adi-meta/issues>`_.
 
 How do I add packages to my Linux filesystem?
 ----------------------------------------------

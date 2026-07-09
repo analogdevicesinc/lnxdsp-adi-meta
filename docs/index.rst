@@ -84,14 +84,16 @@ Quick Links
 * **Setup**: :doc:`Setting Up Your Host PC <getting-started/Setting-Up-Your-Host-PC>` | :doc:`Boot Sequence <development/Boot-Sequence>`
 * **Development**: :doc:`Development Guide <development/Development>` | :doc:`Kernel Development <development/Linux-Kernel-Development>` | :doc:`RPMsg Communication <development/RPMsg>`
 * **Examples**: :doc:`SHARC-ALSA Audio <examples/SHARC‐ALSA-Example>` | :doc:`USB Audio Gadget <examples/USB-Gadget-Audio-Example>`
-* **Support**: :doc:`FAQ <faq/Frequently-Asked-Questions>` | `Forum <https://ez.analog.com/linux-software-drivers>`_ | `Issues <https://github.com/analogdevicesinc/lnxdsp-adi-meta/issues>`_
+* **Support**: :doc:`FAQ <faq/Frequently-Asked-Questions>` | :ez:`Forum <linux-software-drivers>` | `Issues <https://github.com/analogdevicesinc/lnxdsp-adi-meta/issues>`_
 
 Resources
 ---------
 
 **Source Code**: `lnxdsp-adi-meta <https://github.com/analogdevicesinc/lnxdsp-adi-meta>`_ | `linux-adi <https://github.com/analogdevicesinc/linux>`_ | `u-boot-adi <https://github.com/analogdevicesinc/u-boot>`_
 
-**Support**: `Hardware Docs <https://www.analog.com/en/products/adsp-sc598.html>`_ | `EngineerZone <https://ez.analog.com/linux-software-drivers>`_ | `Technical Support <https://www.analog.com/en/support/technical-support.html>`_
+**Support**: :adi:`Hardware Docs <en/products/adsp-sc598.html>` |
+:ez:`EngineerZone <linux-software-drivers>` |
+:adi:`Technical Support <en/support/technical-support.html>`
 
 Documentation
 -------------
