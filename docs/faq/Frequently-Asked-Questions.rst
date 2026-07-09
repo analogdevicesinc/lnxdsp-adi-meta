@@ -25,7 +25,8 @@ Add the package to your image by appending this line to ``conf/auto.conf``:
    IMAGE_INSTALL:append = " ethtool"
 
 .. note::
-   Always include a space before the package name when using ``:append`` to avoid concatenation with the previous entry.
+   Always include a space before the package name when using ``:append`` to
+   avoid concatenation with the previous entry.
 
 Method 2: Using a Custom Recipe
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,9 +58,11 @@ Getting Started guide:
    $KAS_MACHINE=adsp-sc598-som-ezkit kas build config/kas/adsp-sc5xx.yml --target adsp-custom-ramdisk
 
 If the recipe is in your own layer, use the kas configuration that includes it
-instead, see :doc:`Creating a Custom Meta Layer <../development/Custom-Meta-Layer>`.
+instead, see :doc:`Creating a Custom Meta Layer
+<../development/Custom-Meta-Layer>`.
 
-The package will be deployed into the Linux filesystem during the build process.
+The package will be deployed into the Linux filesystem during the build
+process.
 
 **See also:** :doc:`Linux Kernel Development <../development/Linux-Kernel-Development>`
 
@@ -69,7 +72,10 @@ How do I debug a SHARC application while running Linux on ARM?
 Overview
 ~~~~~~~~
 
-When debugging SHARC applications using CrossCore Embedded Studio (CCES) while Linux runs on the ARM core, you must configure the debug session carefully to avoid interfering with Linux execution. Since the ARM core boots first and starts Linux, the system is already running when you connect the debugger.
+When debugging SHARC applications using CrossCore Embedded Studio (CCES) while
+Linux runs on the ARM core, you must configure the debug session carefully to
+avoid interfering with Linux execution. Since the ARM core boots first and
+starts Linux, the system is already running when you connect the debugger.
 
 Required Debug Session Settings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -83,7 +89,8 @@ To debug SHARC cores safely while Linux runs on ARM:
 Step 1: Do Not Load ARM Core Applications
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Problem:** By default, CCES attempts to load applications onto the ARM core, which overwrites the L2 and L3 memory used by Linux.
+**Problem:** By default, CCES attempts to load applications onto the ARM core,
+which overwrites the L2 and L3 memory used by Linux.
 
 **Solution:** When creating the debug session:
 
@@ -92,12 +99,14 @@ Step 1: Do Not Load ARM Core Applications
 * This preserves the memory regions reserved for Linux
 
 .. note::
-   This assumes you're using the default memory configuration or have correctly partitioned memory between cores. See :doc:`Configuring System Memory <../development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>`.
+   This assumes you're using the default memory configuration or have correctly
+   partitioned memory between cores. See :doc:`Configuring System Memory <../development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>`.
 
 Step 2: Disable Processor Reset on Reload
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Problem:** CCES resets the entire processor when starting a debug session, which erases Linux from memory.
+**Problem:** CCES resets the entire processor when starting a debug session,
+which erases Linux from memory.
 
 **Solution:** In the debug session settings:
 
@@ -107,19 +116,23 @@ Step 2: Disable Processor Reset on Reload
 Step 3: Disable Semihosting
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Problem:** CCES uses ARM Supervisor Call (SVC) instructions for host communication. Linux also uses these instructions for system calls, causing severe performance degradation or crashes when semihosting is enabled.
+**Problem:** CCES uses ARM Supervisor Call (SVC) instructions for host
+communication. Linux also uses these instructions for system calls, causing
+severe performance degradation or crashes when semihosting is enabled.
 
 **Solution:** In the debug session settings:
 
 * Uncheck **"Use semihosting"**
 * This prevents the emulator from halting on every SVC instruction
 
-**Result:** Linux continues running normally while you debug SHARC applications.
+**Result:** Linux continues running normally while you debug SHARC
+applications.
 
 How do I use my own development repositories?
 ----------------------------------------------
 
-This guide explains how to configure your Yocto build to use custom Git repositories, allowing you to work with your own forks or private repositories.
+This guide explains how to configure your Yocto build to use custom Git
+repositories, allowing you to work with your own forks or private repositories.
 
 Prerequisites
 ~~~~~~~~~~~~~
@@ -168,7 +181,8 @@ Point U-Boot and Linux kernel recipes to your custom repositories by adding
    KERNEL_GIT_URI = "git://$YOUR_REPO_PATH/linux.git"
    KERNEL_BRANCH = "main"
 
-Replace ``$YOUR_REPO_PATH`` with your repository locations and adjust branch names as needed.
+Replace ``$YOUR_REPO_PATH`` with your repository locations and adjust branch
+names as needed.
 
 Step 4: Build with Custom Repositories
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -201,9 +215,13 @@ How do I allocate a peripheral to the SHARC cores?
 Understanding Peripheral Allocation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-By default, all peripherals are allocated to the ARM core. The ARM core, as the booting processor, manages **pinmux** (pin multiplexing) configuration for all peripherals. Only one core should configure the pinmux to avoid conflicts.
+By default, all peripherals are allocated to the ARM core. The ARM core, as the
+booting processor, manages **pinmux** (pin multiplexing) configuration for all
+peripherals. Only one core should configure the pinmux to avoid conflicts.
 
-Peripheral allocation is controlled through Linux device tree files, located in the kernel source at ``arch/arm/boot/dts`` (ARM) or ``arch/arm64/boot/dts/adi`` (ARM64). Each platform has:
+Peripheral allocation is controlled through Linux device tree files, located in
+the kernel source at ``arch/arm/boot/dts`` (ARM) or ``arch/arm64/boot/dts/adi``
+(ARM64). Each platform has:
 
 * A family-level device tree (e.g., ``sc59x.dtsi``)
 * A board-specific device tree (e.g., ``sc594-som-ezkit.dts``)
@@ -237,11 +255,14 @@ Board-specific device tree (``sc594-som-ezkit.dts``) enables the peripheral:
 Allocating a Peripheral to SHARC
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To allocate a peripheral to SHARC cores, modify the board-specific device tree. The ARM core still configures the pinmux but doesn't interact with the peripheral otherwise.
+To allocate a peripheral to SHARC cores, modify the board-specific device tree.
+The ARM core still configures the pinmux but doesn't interact with the
+peripheral otherwise.
 
 **Example: Allocating Linkport0 to SHARC**
 
-**Step 1:** Disable the peripheral in Linux by setting ``status = "disabled"`` in the board device tree:
+**Step 1:** Disable the peripheral in Linux by setting ``status = "disabled"``
+in the board device tree:
 
 .. code-block:: dts
 
@@ -251,7 +272,8 @@ To allocate a peripheral to SHARC cores, modify the board-specific device tree. 
        status = "disabled";
    };
 
-**Step 2:** Configure the pinmux for the peripheral using the ``icc`` (inter-core communication) driver:
+**Step 2:** Configure the pinmux for the peripheral using the ``icc``
+(inter-core communication) driver:
 
 .. code-block:: dts
 
@@ -274,12 +296,16 @@ To allocate a peripheral to SHARC cores, modify the board-specific device tree. 
        status = "okay";
    };
 
-**Result:** Linux configures the pinmux at boot but doesn't access the peripheral. The SHARC core can use Linkport0 exclusively without interference.
+**Result:** Linux configures the pinmux at boot but doesn't access the
+peripheral. The SHARC core can use Linkport0 exclusively without interference.
 
 .. note::
-   After modifying device trees, rebuild the kernel and deploy the updated device tree blob (DTB) to your target. The changes take effect on the next boot.
+   After modifying device trees, rebuild the kernel and deploy the updated
+   device tree blob (DTB) to your target. The changes take effect on the next
+   boot.
 
-**See also:** :doc:`Configuring System Memory <../development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>` for memory partitioning between cores.
+**See also:** :doc:`Configuring System Memory <../development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>`
+for memory partitioning between cores.
 
 How do I identify my SOM and Carrier board revisions?
 ------------------------------------------------------
@@ -287,7 +313,8 @@ How do I identify my SOM and Carrier board revisions?
 SOM Board Revision
 ~~~~~~~~~~~~~~~~~~
 
-The revision number is located on the top side of the SOM board, on the opposite side from the USB UART port connector.
+The revision number is located on the top side of the SOM board, on the
+opposite side from the USB UART port connector.
 
 .. image:: /images/som_adsp_sc598.jpg
    :alt: ADSP-SC598 SOM
@@ -297,7 +324,8 @@ The revision number is located on the top side of the SOM board, on the opposite
    :alt: SOM Board Revision
    :width: 600
 
-On the ADSP-SC846 SOM, the revision is printed on the top near the edge of the connector.
+On the ADSP-SC846 SOM, the revision is printed on the top near the edge of the
+connector.
 
 .. image:: /images/som_rev_sc846.jpg
    :alt: ADSP-SC846 SOM Board Revision
@@ -316,7 +344,8 @@ Revision numbers are on the bottom part of the carrier board.
    :alt: Carrier Board Revision
    :width: 600
 
-On the EZ-KIT 2 carrier (``EV-SOMCRR2-EZKIT``), the revision is printed in the corner on the top of the board.
+On the EZ-KIT 2 carrier (``EV-SOMCRR2-EZKIT``), the revision is printed in the
+corner on the top of the board.
 
 .. image:: /images/ezkit2_rev.jpg
    :alt: EZ-KIT 2 Carrier Board Revision
