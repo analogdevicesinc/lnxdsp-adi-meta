@@ -1,12 +1,10 @@
-=======================
 Setting Up Your Host PC
 =======================
 
 The build system is currently supported on host PCs running **Ubuntu 22.04 LTS 64-bit**.
 
-""""""""""""""""""""""""""""
 Installing Required Packages
-""""""""""""""""""""""""""""
+----------------------------
 
 In order to build and deploy Linux to your ADSP-SC5xx development board you will need to install the following packages on your host PC.
 
@@ -15,9 +13,8 @@ In order to build and deploy Linux to your ADSP-SC5xx development board you will
    sudo apt-get update
    sudo apt-get install -y gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat libsdl1.2-dev xterm u-boot-tools openssl curl tftpd-hpa python3 zstd liblz4-tool
 
-"""""""""""""""""
 Configure Minicom
-"""""""""""""""""
+-----------------
 
 In order to communicate with the U-Boot bootloader, a UART connection must be made between the host PC and the development board. It is recommended that you use minicom to do this. Minicom must be configured to connect to U-Boot correctly.
 
@@ -58,9 +55,8 @@ On the host PC open a terminal and execute the following commands:
 
    ``/dev/ttyUSB0`` might not correspond to the serial port of the board on every system. You can determine which ``/dev`` entry your board uses by running ``ls -l /dev/ttyUSB*`` twice, once when the serial port of the board is plugged in, and once when it isn't.
 
-""""""""""""""""""""""
 Configure TFTP Service
-""""""""""""""""""""""
+----------------------
 
 A TFTP server on the host is used to transfer images to the development board.
 Install and configure.
@@ -84,9 +80,8 @@ Install and configure.
    sudo chmod 777 /tftpboot
    sudo systemctl restart tftpd-hpa
 
-""""""""""""""""""""
 Configure NFS Server
-""""""""""""""""""""
+--------------------
 
 For NFS boot we use the Network File System which is stored in local Ubuntu Host. This is suggested when you do application development. To setup the NFS server:
 
@@ -141,9 +136,8 @@ The output will indicate that the server is active, i.e.
 
 If it's reported as inactive, wait a few moments and check the status again.
 
-""""""""""""""""""""""""""""""""""""""""""""
 Configuring USB permissions for ICE debugger
-""""""""""""""""""""""""""""""""""""""""""""
+--------------------------------------------
 
 In order to allow OpenOCD to use the ICE debugger, we need to provide the user appropriate access via udev.
 
