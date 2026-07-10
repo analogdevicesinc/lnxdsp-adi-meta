@@ -1,11 +1,10 @@
-===================================
 Compiling and running a Rust kernel
 ===================================
 
 Yocto 5 onward, all supported boards have now been ported to kernel 6.12. As a result, it is now possible to compile the linux kernel with Rust support for ADSP-SC598 boards.
 
 Requirements
-============
+------------
 
 * rust (installed via rustup)
 * Linux kernel source code
@@ -20,7 +19,7 @@ Run the following to install the prerequisite packages on ubuntu 22.04:
    sudo apt install llvm libclang-dev gcc-aarch64-linux-gnu -y
 
 Getting started
-===============
+---------------
 
 1) On your host/build machine, install rust via `rustup <https://www.rust-lang.org/tools/install>`_
 
@@ -137,7 +136,7 @@ Proceed to boot into the fitImage from your preferred boot method. Once in, you 
    [    1.811804] NET: Registered PF_PACKET protocol family
 
 References
-==========
+----------
 
 * https://www.kernel.org/doc/html/v6.1/rust/quick-start.html
 * https://docs.kernel.org/rust/quick-start.html

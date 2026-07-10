@@ -1,9 +1,8 @@
-============
 RPMsg-Lite
 ============
 
 Introduction
-============
+------------
 
 This guide helps you implement RPMsg-Lite for bare-metal applications on ADSP-SC5xx processors. RPMsg-Lite is a lightweight implementation of the RPMsg protocol designed specifically for bare-metal and RTOS environments where the full Linux RPMsg stack is not available.
 
@@ -29,12 +28,12 @@ While Linux on the ARM core includes native RPMsg support through kernel drivers
 * `RPMsg Examples <https://github.com/analogdevicesinc/lnxdsp-examples>`_
 
 Overview
-========
+--------
 
 RPMsg-Lite enables message transfer between cores on ADSP devices. An implementation is available for ARM when running Linux, and for bare-metal applications, a port of RPMsg-Lite is available for ARM and SHARC+ cores. It allows for transmitting a message to a specific endpoint on a different core via a dedicated transport link. Multiple endpoints can be registered against a single link.
 
 Resources used
---------------
+~~~~~~~~~~~~~~
 
 In order to allow for message transmission between cores on ADSP-SC5xx devices, RPMsg-Lite makes use of the following resources:
 
@@ -88,10 +87,10 @@ For the sake of compatibility, the resource table used in the examples has an id
    Additional details can be found on `remoteproc.h (RPMsg-Lite repo) <https://github.com/analogdevicesinc/rpmsg-lite/blob/adi/release/yocto-2.1.0/lib/include/remoteproc.h>`_
 
 Using RPMsg-Lite on SC5xx
-=========================
+-------------------------
 
 Allocate memory for vring buffers
-----------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The memory allocation for for the vring buffers should be done on a single core and the location of those buffers shared with the other cores via a resource table. To ensure that the cores pick up the data from the shared memory, it is necessary to mark the memory as  not cached on all cores using the buffers. Allocating memory and ensuring it is not cached is done differently on ARM and SHARC. If using RPMsg-Lite on the ARM it is recommended that the memory is allocated on the ARM as the SHARCs allow for simple run-time changes to caching via a set of registers.
 
@@ -102,7 +101,7 @@ Create an array for the vring buffers on the heap.
    uint8_t vring_buffer[ADI_VRING_BUFFER_SIZE];
 
 Disable cache on ARM
-~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^
 
 Disabling cache on the ARM for the vring buffers requires changes to the linker files. For example, to allocate 4MB of L3 memory as not cached memory on an SC594:
 
@@ -156,7 +155,7 @@ Disabling cache on the ARM for the vring buffers requires changes to the linker 
       uint8_t vring_buffer[ADI_VRING_BUFFER_SIZE];
 
 Disable cache on SHARC
-~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^
 
 The SHARCs have a number of range registers allowing for sections of memory to be marked as non-cached. We make use of these to mark the descriptor buffer range and the message buffer range as not cached like in the following example
 
@@ -171,7 +170,7 @@ The SHARCs have a number of range registers allowing for sections of memory to b
 If the SHARC is acting as an RPMsg-Lite remote the ranges to mark as non-cached are retrieved from the resource table.
 
 Create Resource Table
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 
 On the core on which the memory for the vring buffers was declared, create the resource table used to provide information on the shared memory resources used for RPMsg-lite and instruct the linker to store it at a fixed location in L2 memory, which is by default marked as non-cached.
 
@@ -230,7 +229,7 @@ On the core on which the memory for the vring buffers was declared, create the r
    volatile struct sharc_resource_table *resource_table;
 
 Adding an rpmsg-lite instance
-------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. note::
 
@@ -295,7 +294,7 @@ Adding an rpmsg-lite instance
               &rpmsg_ARM_channel);
 
 Adding an endpoint
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 A unique endpoint is determined by a ``uint32`` address.
 
@@ -328,7 +327,7 @@ A unique endpoint is determined by a ``uint32`` address.
               &sharc_ping_endpoint_context);
 
 Sending a message
-~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^
 
 In order to send a message the recipient endpoint address must be known.
 
@@ -345,14 +344,14 @@ In order to send a message the recipient endpoint address must be known.
    		msg, len, 0);
 
 Additional Information
-======================
+----------------------
 
 Downloads
----------
+~~~~~~~~~
 
 RPMsg-Lite for ADSP devices is available for Bare-Metal applications running on SHARC+, ARM A5 and ARM A55 on the `RPMsg-Lite repo <https://github.com/analogdevicesinc/rpmsg-lite>`_. To guarantee compatibility, use the same version of RPMsg-Lite on all cores. If running Linux on the ARM use the RPMsg-Lite version matching the Linux for ADSP-SC5xx release version running on the ARM.
 
 Examples
---------
+~~~~~~~~
 
 `lnxdsp-examples repo <https://github.com/analogdevicesinc/lnxdsp-examples>`_

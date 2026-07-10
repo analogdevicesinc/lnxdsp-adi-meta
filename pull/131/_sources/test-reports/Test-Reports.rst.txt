@@ -1,9 +1,8 @@
-============
 Test Reports
 ============
 
 Introduction
-============
+------------
 
 This section provides detailed test reports for each release of Linux for ADSP-SC5xx processors. These reports document the verification and validation testing performed on various hardware platforms and software components, helping you understand what features have been tested and their status across different board configurations.
 
@@ -21,7 +20,7 @@ Each test report includes comprehensive results for key subsystems including aud
    Test reports are cumulative for minor releases (e.g., 5.0.x). Regressions specific to patch releases are explicitly noted within each report.
 
 Available Test Reports
-======================
+----------------------
 
 Current Release
 ---------------
@@ -50,7 +49,7 @@ Previous Releases
      - :doc:`3.1.0 Test Report <Test-Report-(3.1.0)>`
 
 Understanding Test Results
-===========================
+--------------------------
 
 Test reports use the following symbols to indicate component status:
 
@@ -97,7 +96,7 @@ Each test report typically covers:
   * Boot mode switching
 
 Using Test Reports
-==================
+------------------
 
 **Before deployment:**
 
@@ -121,7 +120,7 @@ When reporting issues, include:
 * Whether the issue reproduces on a known-good configuration
 
 Additional Resources
-====================
+--------------------
 
 * **Release Notes**: `GitHub Releases <https://github.com/analogdevicesinc/lnxdsp-adi-meta/releases>`_
 * **Issue Tracking**: `GitHub Issues <https://github.com/analogdevicesinc/lnxdsp-adi-meta/issues>`_

@@ -1,15 +1,12 @@
 ADSP Yocto
 ==========
 
-Welcome to the official Yocto documentation for ADI Digitial Signal Processors
+Welcome to the official Yocto documentation for ADI Digital Signal Processors
 (ADSP).
 
-See `analogdevicesinc.github.io/documentation
-<https://analogdevicesinc.github.io/documentation/products/adsp/index.html>`_
-for generic ADSP documentation including `a list of supported SoCs
-<https://analogdevicesinc.github.io/documentation/products/adsp/index.html#id1>`_
-and a description of the various `use cases
-<https://analogdevicesinc.github.io/documentation/products/adsp/use-cases.html>`_.
+See :external+documentation:doc:`products/adsp/index` for generic ADSP
+documentation including a list of supported SoCs and a description of the
+various :external+documentation:doc:`use cases <products/adsp/use-cases>`.
 
 **Platform Highlights**
 
