@@ -1,9 +1,8 @@
-=====================================
 Secure Boot Support (Release 3.1.1)
 =====================================
 
 Introduction
-============
+------------
 
 This guide helps you build and deploy a security-hardened Linux distribution for ADSP-SC5xx processors with secure boot capabilities. Secure boot ensures that only authenticated software runs on your hardware, protecting against unauthorized firmware modifications and establishing a chain of trust from the bootloader through the Linux kernel.
 
@@ -34,15 +33,15 @@ By following this guide, you'll create a complete secure boot environment that i
 * Secure boot alone does not guarantee system security—implement defense in depth
 
 Getting Started
-===============
+---------------
 
 Prerequisites
--------------
+~~~~~~~~~~~~~
 
 System requirements and dependencies are the same as the standard (non-secure) distribution, with the addition of CCES for signing tools.
 
 Build System Setup
-==================
+------------------
 
 
 *These steps can be skipped if you have previously followed one of the Getting Started guides, such as :doc:`Getting Started with ADSP‐SC598 (Linux for ADSP‐SC5xx Processors 3.1.1) <../getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-3.1.1)>`*.
@@ -65,7 +64,7 @@ Fetch and install the sources:
 
 
 Key Generation
-==============
+--------------
 
 
 * Create directory to store the keys
@@ -98,7 +97,7 @@ Key Generation
 
 
 Build Linux image and SDK
-=========================
+-------------------------
 
 
 * Prepare the build work directory:
@@ -131,7 +130,7 @@ Build Linux image and SDK
 
 
 Building the SDK
-----------------
+~~~~~~~~~~~~~~~~
 
 
 * Build the SDK with:
@@ -161,7 +160,7 @@ Building the SDK
 
 
 Setup the hardware
-==================
+------------------
 
 
 
@@ -194,7 +193,7 @@ On the carrier board is a set of micro switches labelled SW1.  These should all 
 
 
 Transfer, run and flash U-Boot on the board for the first time
-=======================================================================
+-----------------------------------------------------------------------
 
 
 
@@ -204,7 +203,7 @@ Transfer, run and flash U-Boot on the board for the first time
 
 
 Transfer and run U-Boot on RAM
-------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 Copy the U-Boot binary & loader files to the tftp directory:
@@ -359,7 +358,7 @@ At this point U-Boot will now be running in RAM on your target board. You should
 
 
 Flash (Unsigned) U-Boot to SPI Flash
-------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot loader files (```stage1-boot.ldr````, ````stage1-boot-unsigned.ldr````, ````stage2-boot.ldr````, ````stage2-boot-unsigned.ldr```) on TFTP.
@@ -456,11 +455,11 @@ You will see an output similar to the one below:
 At this point the U-Boot binary is stored in flash. You can now disconnect the ICE-1000 or ICE-2000 from the development board and make sure to switch the BMODE to position 1. You will only need to reconnect this if your board fails to boot and you need to re-follow these instructions. **Do not reset the board at this stage.**
 
 Booting Linux
-=============
+-------------
 
 
 Booting the minimal image from QSPI
------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The U-Boot console is used to copy U-Boot (SPL and Proper), the minimal root filesystem image and the fitImage (which contains the kernel image and dtb file) into RAM and then write them to Flash. Copy the required files from ``<BUILD DIR>/tmp/deploy/images`` to your ``/tftpboot`` directory.
 
@@ -750,11 +749,11 @@ The U-Boot image, root filesystem and Linux kernel are now stored in QSPI. Adjus
 The username is **root** and the password is **adi**.
 
 Program the secure boot key
-===========================
+---------------------------
 
 
 Extract the Public key and copy it into the target
----------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 * cd into the directory where the keys were generated:
@@ -822,7 +821,7 @@ Extract the Public key and copy it into the target
 
 
 Program the key into the OTP flash memory
-------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 **Note:** This is a one-time, irreversible operation - the OTP (One-Time Programmable) Flash cannot be erased or rewritten.
@@ -862,11 +861,11 @@ Program the key into the OTP flash memory
 Bravo, You have successfully programmed the secure boot key.
 
 Using the System
-================
+----------------
 
 
 Running OP-TEE applications
----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 * Reboot your device then run ``xtest`` (**TEE sanity test suite**)
@@ -922,11 +921,11 @@ First of all, let's check the status of the ``tee-supplicant`` systemd service, 
 
 
 Using the SHARC Cores
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 
 
 Signing the SHARC firmware
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 First, copy the firmware files from ``/lib/firmware`` on the target system, to the host. Then, the following commands can be used to sign the firmware. Finally, transfer the signed files back to the target and place in ``/lib/firmware`` next to the original firmware.
@@ -939,7 +938,7 @@ First, copy the firmware files from ``/lib/firmware`` on the target system, to t
 
 
 Using the Signed Firmware
-~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 The following commands can then be used to load the signed firmware images.
@@ -1018,7 +1017,7 @@ Finally, we can  communicate with the SHARC cores. For example:
 
 
 Mbed-TLS test suite
-===================
+-------------------
 
 
 Mbed-TLS provides a test suite for Yocto's ``ptest``.

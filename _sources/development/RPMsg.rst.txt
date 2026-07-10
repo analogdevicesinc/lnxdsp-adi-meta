@@ -1,9 +1,8 @@
-================
 RPMsg
 ================
 
 Introduction
-============
+------------
 
 This guide introduces RPMsg, the inter-processor communication protocol that enables ADSP-SC5xx processors to seamlessly coordinate between the ARM Cortex-A cores running Linux and the SHARC+ DSP cores running bare-metal or RTOS applications. Understanding RPMsg is essential for building applications that leverage the full heterogeneous computing capabilities of your ADSP-SC5xx platform.
 
@@ -20,12 +19,12 @@ RPMsg allows different processors on the same system-on-chip to communicate effi
    This guide provides an introduction to RPMsg concepts and basic testing. For deeper implementation details, refer to the specific project documentation for `Linux RPMsg driver <https://docs.kernel.org/staging/rpmsg.html>`_, `OpenAMP <https://www.openampproject.org/>`_, or `RPMsg-Lite <https://github.com/analogdevicesinc/rpmsg-lite>`__.
 
 What is RPMsg?
-==============
+--------------
 
 RPMsg is a communication protocol for heterogeneous inter-processor communication. These processors are often on the same SoC but isolated from each other via software (for instance, a board may boot up Linux with an ARM processor while additional microcontrollers (remote processors) run an RTOS or some bare-metal application).
 
 RPMsg Working
-=============
+-------------
 
 Considering one of ADI's DSP offerings as an example: the `ADSP-SC598 <https://www.analog.com/en/products/adsp-sc598.html>`_. This board contains 2 SHARC+ processing cores and 1 Arm Cortex A55, where the Arm processor is used to run Linux and is isolated, via software, from both the SHARC cores. All processors however share the memory provided to the system (L2 and L3).
 
@@ -36,7 +35,7 @@ The latter, however, is currently assumed to be running bare-metal applications/
 Although RPMsg-based communication is possible between any combination of processors (Arm-SHARC/SHARC-SHARC), the following is discussed with respect to Arm-SHARC interactions.
 
 Fundamental workings
---------------------
+~~~~~~~~~~~~~~~~~~~~
 
 The communication takes place via shared memory, and hence, these processors share and know certain regions in the common memory space to search for the relevant data structures. Depending on which processor gets access to the memory first, it will assume the role of the "main" processor, while the other assumes the role of the "sub" processor. The main processor populates the MCAPI region with relevant data structures (such as the resource table) indicating its presence as well as determines the memory regions to be used for the inter-processor communication. Once the "sub" boots up, it discovers the MCAPI region has already been populated, parses the data structures and sets a flag in the region to indicate that it is ready to establish communication.
 
@@ -54,12 +53,12 @@ It should be noted that a channel is a software concept and hence, a single devi
 When the Arm processor wants to communicate via the abovementioned channel, it populates the shared memory region associated with the channel and triggers and interrupt on the SHARC core via the TRU, notifying it about the change made. The SHARC core can now update its values and process the new changes accordingly. The inverse is also true when a SHARC core wants to communicate to the Arm processor.
 
 RPMsg and Linux
----------------
+~~~~~~~~~~~~~~~
 
 Before discussing the RPMsg interaction between a SHARC core running a baremetal application and an Arm core running linux, it is essential that the boot process of the machine in focus is discussed since it also provides a couple of options to the user, allowing changing the "main" and "sub" processors.
 
 Boot process
-~~~~~~~~~~~~
+^^^^^^^^^^^^
 
 When a board is powered up, the following takes place:
 
@@ -92,7 +91,7 @@ Once the MCAPI interface has been populated and metadata exchanged, the RPMsg dr
 It is recommended that the source code for the respective driver is referred to from `ADI's ADSP Linux repository <https://github.com/analogdevicesinc/lnxdsp-linux>`_ for a deeper understanding.
 
 Testing
-=======
+-------
 
 Testing can be conducted via following methods:
 
@@ -102,7 +101,7 @@ Testing can be conducted via following methods:
 Since this is an introductory guide, it will only document the former approach. For a more in-depth usage, it is encouraged for the user to refer to the abovementioned repositories.
 
 RPMsg with yocto
-----------------
+~~~~~~~~~~~~~~~~
 
 1. In your local.conf file, append the following: ``INSTALL_IMAGE:append = " rpmsg-utils "``
 

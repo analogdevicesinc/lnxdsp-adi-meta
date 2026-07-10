@@ -8,14 +8,15 @@
 
     <title>Secure Boot Support (Release 3.1.1) &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8e8a900e" />
-    <link rel="stylesheet" type="text/css" href="../_static/app.min.css?v=ac863bf0" />
-    <script async="async" src="../_static/app.umd.js?v=09b0c6bc"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/app.min.css?v=d3f78147" />
+    <script async="async" src="../_static/app.umd.js?v=26d0298f"></script>
     <link rel="icon" href="../_static/icon.svg"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Secure Boot Support (Release 3.1.0)" href="Secure-Boot-Support-in-release-3.1.0.html" />
     <link rel="prev" title="Secure Boot Support" href="Secure-Boot-Support.html" />
    
+  
   
   
   <meta name="repository" content="lnxdsp-adi-meta">
@@ -126,9 +127,9 @@
 <li><a class="reference internal" href="#using-the-sharc-cores">Using the SHARC Cores</a><ul>
 <li><a class="reference internal" href="#signing-the-sharc-firmware">Signing the SHARC firmware</a></li>
 <li><a class="reference internal" href="#using-the-signed-firmware">Using the Signed Firmware</a></li>
-<li><a class="reference internal" href="#communicating-with-the-sharc-cores">Communicating with the SHARC Cores</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#communicating-with-the-sharc-cores">Communicating with the SHARC Cores</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#mbed-tls-test-suite">Mbed-TLS test suite</a></li>
@@ -1071,8 +1072,9 @@ rpmsg-bind-chardev<span class="w"> </span>-p<span class="w"> </span>virtio1.shar
 </pre></div>
 </div>
 </section>
+</section>
 <section id="communicating-with-the-sharc-cores">
-<h4>Communicating with the SHARC Cores<a class="headerlink" href="#communicating-with-the-sharc-cores" title="Link to this heading"></a></h4>
+<h3>Communicating with the SHARC Cores<a class="headerlink" href="#communicating-with-the-sharc-cores" title="Link to this heading"></a></h3>
 <p>Finally, we can  communicate with the SHARC cores. For example:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>hello<span class="w"> </span><span class="p">|</span><span class="w"> </span>rpmsg-xmit<span class="w"> </span>-n<span class="w"> </span><span class="m">5</span><span class="w"> </span>/dev/rpmsg0
 <span class="nv">hello</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>from<span class="w"> </span>Core1
@@ -1084,7 +1086,6 @@ $<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>hel
 <span class="nv">HELLO</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>capitalized<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>from<span class="w"> </span>Core2
 </pre></div>
 </div>
-</section>
 </section>
 </section>
 <section id="mbed-tls-test-suite">
