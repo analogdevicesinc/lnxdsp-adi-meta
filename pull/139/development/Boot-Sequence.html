@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="This page aims to outline the boot sequence of ADSP-SC5xx platforms." name="description" />
+
+    <title>Boot Sequence &#8212; ADSP Processors  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8e8a900e" />
+    <link rel="stylesheet" type="text/css" href="../_static/app.min.css?v=d3f78147" />
+    <script async="async" src="../_static/app.umd.js?v=26d0298f"></script>
+    <link rel="icon" href="../_static/icon.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="U-Boot Environment" href="U%E2%80%90Boot-Environment.html" />
+    <link rel="prev" title="Debugging without ICE Hardware" href="Debugging-without-ICE-Hardware.html" />
+   
+  
+  
+  
+  <meta name="repository" content="lnxdsp-adi-meta">
+  <meta name="version" content="">
+  
+    <meta name="page_source_suffix" content=".rst">
+  
+  
+  
+
+
+<style>
+  body {
+    
+  }
+
+  body.dark {
+    
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body:not(.light) {
+      
+    }
+  }
+</style>
+  </head>
+  
+    <body>
+  
+  <input type="checkbox" id="input-show-toc">
+  <input type="checkbox" id="input-show-localtoc">
+  <input type="checkbox" id="input-show-repotoc">
+
+  
+  <div class="search-area">
+    <form action="" method="get">
+      <input type="text" name="q" aria-labelledby="search-documentation" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" role="search" placeholder="Search"/>
+      <button class="icon"></button>
+    </form>
+  </div>
+  
+
+  <header>
+    <div id="left">
+      <label id="show-sidebar" class="icon" for="input-show-toc" title="Show/hide index"></label>
+    </div>
+    <div id="right">
+      <span>
+        <a id="logo-org" href="https://analog.com" aria-label="Analog Devices Inc. landing page"></a>
+        <div class="vertical-divider"></div>
+        
+        <label id="show-repotoc" for="input-show-repotoc" title="Show/hide docs">Docs</label>
+        
+        <a id="logo" href="../index.html">
+          <div>ADI DSP Linux</div>
+        </a>
+      </span>
+      <span class="reverse">
+        <label id="show-localtoc" class="icon" for="input-show-localtoc" title="Show/hide contents"></label>
+      </span>
+    </div>
+  </header>
+
+
+  <div class="repotoc-tree overlay">
+    <root>
+  <a href="../index.html" class="current">ADI DSP Linux</a>
+</root>
+
+  </div>
+    <div class="localtoc">
+      <div class="tocwrapper">
+        <div class="header localtoc-header">
+          <a id="scroll-up" href="#top-anchor" title="Back to top"></a>
+        </div>
+        <nav>
+          <ul>
+<li><a class="reference internal" href="#">Boot Sequence</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#sharc-core-initialisation">SHARC Core initialisation</a><ul>
+<li><a class="reference internal" href="#u-boot">U-Boot</a></li>
+<li><a class="reference internal" href="#linux">Linux</a><ul>
+<li><a class="reference internal" href="#id1">Overview</a></li>
+<li><a class="reference internal" href="#in-more-detail">In More Detail</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </nav>
+      </div>
+    </div>
+
+  
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+    <a id="no-logo" href="../index.html">
+      ADSP Processors
+    </a><input id="input-switch-toc" type="checkbox">
+<label id="show-repotoc" for="input-switch-toc">
+All content
+</label>
+<label id="show-toc" for="input-switch-toc">
+Content on this topic
+</label>
+<div class="repotoc-tree">
+  <root>
+  <a href="../index.html" class="current">ADI DSP Linux</a>
+</root>
+
+</div>
+<div class="toc-tree">
+  <ul class="current">
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-1" id="toctree-collapse-1"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.0.1-Landing-Page.html">Linux for ADSP SC5xx 5.0.1</a><label for="toctree-collapse-1"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC598 (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC594 (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC589-MINI (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC573 (5.0.1)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2" id="toctree-collapse-2"/><div class="collapse"><a class="reference internal" href="../Older-Releases.html">Older Releases</a><label for="toctree-collapse-2"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2-1" id="toctree-collapse-2-1"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.0.0-Landing-Page.html">Linux for ADSP-SC5xx Processors 5.0.0</a><label for="toctree-collapse-2-1"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC598 (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC594 (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC589-MINI (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC573 (5.0.0)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2-2" id="toctree-collapse-2-2"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.2-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.2</a><label for="toctree-collapse-2-2"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC598 (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC594 (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC589-MINI (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC573 (3.1.2)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2-3" id="toctree-collapse-2-3"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.1-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.1</a><label for="toctree-collapse-2-3"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC598 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC594 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC589-MINI (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90EZ%E2%80%90KIT-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC589-EZ-KIT (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC584-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC584 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC573 (3.1.1)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2-4" id="toctree-collapse-2-4"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.0-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.0</a><label for="toctree-collapse-2-4"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC598 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC594 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC589-MINI (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90EZ%E2%80%90KIT-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC589-EZ-KIT (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC584-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC584 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC573 (3.1.0)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3" id="toctree-collapse-3"/><div class="collapse"><a class="reference internal" href="../examples/Examples.html">Examples</a><label for="toctree-collapse-3"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples/SHARC%E2%80%90ALSA-Example.html">SHARC-ALSA Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/USB-Gadget-Audio-Example.html">USB Gadget Audio Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/The-Kitchen-Sink.html">The Kitchen Sink</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/U%E2%80%90Boot-Falcon-Mode-Example.html">U-Boot Falcon Mode Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-4" id="toctree-collapse-4" checked=""/><div class="collapse"><a class="reference internal" href="Development.html">Development</a><label for="toctree-collapse-4"><div class="icon"></div></label></div><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Setting-Up-Your-Host-PC.html">Setting Up Your Host PC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Debugging-without-ICE-Hardware.html">Debugging without ICE Hardware</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Boot Sequence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="U%E2%80%90Boot-Environment.html">U-Boot Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Linux-Kernel-Development.html">Linux Kernel Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Compiling-and-running-a-Rust-kernel.html">Compiling and running a Rust kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Custom-Meta-Layer.html">Creating a Custom Meta Layer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RPMsg.html">RPMsg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RPMsg%E2%80%90Lite.html">RPMsg-Lite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications.html">Configuring System Memory When Using Linux and SHARC Applications</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-5" id="toctree-collapse-5"/><div class="collapse"><a class="reference internal" href="../benchmarks/Benchmarking.html">Benchmarks</a><label for="toctree-collapse-5"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../benchmarks/RPMsg-Benchmark-Figures.html">RPMsg Benchmark Figures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../benchmarks/Booting-Benchmark-Figures.html">Booting Benchmark Figures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/Frequently-Asked-Questions.html">FAQ</a></li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-6" id="toctree-collapse-6"/><div class="collapse"><a class="reference internal" href="../secure-boot/Secure-Boot-Support.html">Secure Boot</a><label for="toctree-collapse-6"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../secure-boot/Secure-Boot-Support-in-release-3.1.1.html">Secure Boot Support (Release 3.1.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../secure-boot/Secure-Boot-Support-in-release-3.1.0.html">Secure Boot Support (Release 3.1.0)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-7" id="toctree-collapse-7"/><div class="collapse"><a class="reference internal" href="../test-reports/Test-Reports.html">Test Reports</a><label for="toctree-collapse-7"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%285.0.1%29.html">Test Report (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%285.0.0%29.html">Test Report (5.0.0)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%283.1.0%29.html">Test Report (3.1.0)</a></li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+        </div>
+      </div>
+
+  <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper" id="top-anchor">
+          <div class="body-header">
+  <nav class="breadcrumb"><ol><li><a href="Development.html">Development</a></li></ol></nav>
+</div>
+          <div class="body" role="main">
+            
+  <section id="boot-sequence">
+<h1>Boot Sequence<a class="headerlink" href="#boot-sequence" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>This page aims to outline the boot sequence of ADSP-SC5xx platforms.</p>
+</section>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The Boot ROM is responsible for initial start up - when the board powers on,
+the cores are brought online, and the Arm core will begin executing from the
+Boot ROM.</p>
+<p>The Boot ROM will then boot the system according to the Boot Mode - set by a
+rotary switch on the carrier boards, or 3 pins on the SoC more generally. Boot
+modes 0 through 6 are available, with 7 reserved. They are defined in the HRM
+of the relevant SoC (Table 47-15 for the SC598, for example) as follows:</p>
+<div class="table-wrapper colwidths-given docutils container" id="id2">
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">Boot Modes</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 10.0%" />
+<col style="width: 10.0%" />
+<col style="width: 10.0%" />
+<col style="width: 10.0%" />
+<col style="width: 15.0%" />
+<col style="width: 45.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Number (SC57x) <a class="icon adi reference external" href="https://www.analog.com/media/en/dsp-documentation/processor-manuals/adsp-sc57x-2157x_hwr.pdf#page=2696" target="_blank">(HRM)</a></p></th>
+<th class="head"><p>Number (SC58x) <a class="icon adi reference external" href="https://www.analog.com/media/en/dsp-documentation/processor-manuals/SC58x-2158x-hrm.pdf#page=3440" target="_blank">(HRM)</a></p></th>
+<th class="head"><p>Number (SC591/2/4) <a class="icon adi reference external" href="https://www.analog.com/media/en/dsp-documentation/processor-manuals/adsp-2159x-sc591-592-594-hrm.pdf#page=2951" target="_blank">(HRM)</a></p></th>
+<th class="head"><p>Number (SC596/8) <a class="icon adi reference external" href="https://www.analog.com/media/en/dsp-documentation/processor-manuals/adsp-sc595-sc596-sc598-hrm.pdf#page=3501" target="_blank">(HRM)</a></p></th>
+<th class="head"><p>Boot Source</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>No Boot</p></td>
+<td><p>The processor does not boot. Rather the boot kernel executes some of
+the preboot operations then enters an endless WFI/IDLE state. Used
+generally when there is no other boot source available, e.g. during
+first setup or if the usual boot source is corrupted, or in debugging.
+JTAG or another debugging connection can then be used to boot the
+system.</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>SPI Controller Boot</p></td>
+<td><p>Boot from the onboard SPI Flash memory. The most commonly used mode
+to boot U-Boot and Linux.</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>2</p></td>
+<td><p>2</p></td>
+<td><p>2</p></td>
+<td><p>SPI Target Boot</p></td>
+<td><p>Boot from the SPI interface, configured as a target.</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>7</p></td>
+<td><p>3</p></td>
+<td><p>3</p></td>
+<td><p>UART Boot</p></td>
+<td><p>Boot through the UART interface, configured as a target.</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>6</p></td>
+<td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>LINKPORT Boot</p></td>
+<td><p>Boot through the LINKPORT peripheral, configured as a target. Only
+available on some systems.</p></td>
+</tr>
+<tr class="row-odd"><td><p>-</p></td>
+<td><p>-</p></td>
+<td><p>5</p></td>
+<td><p>5</p></td>
+<td><p>OSPI Controller Boot</p></td>
+<td><p>Boot from the onboard Octal SPI Flash memory. Only available on
+systems with OSPI.</p></td>
+</tr>
+<tr class="row-even"><td><p>-</p></td>
+<td><p>-</p></td>
+<td><p>-</p></td>
+<td><p>6</p></td>
+<td><p>eMMC Controller Boot</p></td>
+<td><p>Boot from an eMMC chip or card.</p></td>
+</tr>
+<tr class="row-odd"><td><p>5,6,7</p></td>
+<td><p>3,4,5</p></td>
+<td><p>6,7</p></td>
+<td><p>7</p></td>
+<td><p>Reserved</p></td>
+<td><p>-</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Note, there are <em>Controller</em> and <em>Target</em> boot modes. In <em>Target</em> boot modes,
+the processor functions as a target to a host device. In these modes, the host
+device usually applies the reset sequence and waits until the processor is
+ready to boot, depending on the peripheral in use, and transmits the boot
+stream data to the processor. In <em>Controller</em> boot modes, the processor
+controls the peripheral and requests data via the peripheral as and when
+required.</p>
+<p>Below is a flowchart that gives an overview of the U-Boot/Linux boot process in
+some of these modes.</p>
+<figure class="align-default" id="id3">
+<img alt="Boot Order Overview Flowchart" src="https://github.com/user-attachments/assets/e16d6c26-9f5b-429f-9f43-d78f8f6edb3e" />
+<figcaption>
+<p><span class="caption-text">Boot Order Overview Flowchart</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="sharc-core-initialisation">
+<h2>SHARC Core initialisation<a class="headerlink" href="#sharc-core-initialisation" title="Link to this heading"></a></h2>
+<p>There are two main ways the SHARC cores can be brought online, both of which use the <a class="icon link reference external" href="https://docs.kernel.org/staging/remoteproc.html" target="_blank">remoteproc framework</a>:</p>
+<ul class="simple">
+<li><p>In U-Boot, using the <code class="docutils literal notranslate"><span class="pre">rproc</span></code> command, leaving communication with the
+Linux Kernel to the rpmsg framework.</p></li>
+<li><p>Within Linux, using the Linux remoteproc driver.</p></li>
+</ul>
+<section id="u-boot">
+<h3>U-Boot<a class="headerlink" href="#u-boot" title="Link to this heading"></a></h3>
+<p>U-Boot does not perform any intialisation during boot - instead, the <code class="docutils literal notranslate"><span class="pre">rproc</span></code>
+command is used after booting into the U-Boot shell. When the <code class="docutils literal notranslate"><span class="pre">rproc</span> <span class="pre">init</span></code>
+command is run, U-Boot will probe any available SHARC cores and initialise
+them. They can then be brought online by loading firmware with <code class="docutils literal notranslate"><span class="pre">rproc</span> <span class="pre">load</span>
+<span class="pre">...</span></code> and <code class="docutils literal notranslate"><span class="pre">rproc</span> <span class="pre">start</span> <span class="pre">&lt;n&gt;</span></code>.</p>
+<p>Currently, only <code class="docutils literal notranslate"><span class="pre">init</span></code>, <code class="docutils literal notranslate"><span class="pre">list</span></code>, <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">load</span></code> are supported by
+U-Boot for ADSP-SC5xx. No documentation for these commands exists online, but
+the following is the help information from the U-Boot shell for these commands:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>rproc - Control operation of remote processors in an SoC
+
+Usage:
+rproc  [init|list|load|start|stop|reset|is_running|ping]
+                 Where:
+                [addr] is a memory address
+                &lt;id&gt; is a numerical identifier for the remote processor
+                     provided by &#39;list&#39; command.
+                Note: Remote processors must be initalized prior to usage
+                Note: Services are dependent on the driver capability
+                      &#39;list&#39; command shows the capability of each device
+
+        Subcommands:
+        init &lt;id&gt; - Enumerate and initalize the remote processor.
+                          if id is not passed, initialize all the remote prcessors
+        list   - list available remote processors
+        load &lt;id&gt; [addr] [size]- Load the remote processor with binary
+                          image stored at address [addr] in memory
+        start &lt;id&gt;      - Start the remote processor(must be loaded)
+</pre></div>
+</div>
+<p><a class="icon link reference external" href="https://docs.u-boot.org/en/latest/develop/driver-model/remoteproc-framework.html" target="_blank">Technical information on U-Boot’s remoteproc support</a> is available in the U-Boot developer documentation.</p>
+</section>
+<section id="linux">
+<h3>Linux<a class="headerlink" href="#linux" title="Link to this heading"></a></h3>
+<section id="id1">
+<h4>Overview<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<p>After the system has booted the kernel and mounted the initramfs, the
+remoteproc driver is initialised. It first probes the cores, before loading
+default firmware (located in <code class="docutils literal notranslate"><span class="pre">/lib/firmware</span></code>, both in the initramfs and in
+the normal root filesystem), normally <code class="docutils literal notranslate"><span class="pre">adi_adsp_core&lt;n&gt;_fw.ldr</span></code>.</p>
+<p>The rpmsg interface is then brought online to enable communication with the
+cores, creating a communication channel for each core.</p>
+<p>The firmware of the cores can be controlled from within Linux using the
+remoteproc interface, under <code class="docutils literal notranslate"><span class="pre">/sys/class/remoteproc/remoteproc&lt;core</span> <span class="pre">n&gt;/</span></code>. For
+example usage, see the “Using Linux (remoteproc)” section in the
+<a class="reference internal" href="../examples/SHARC%E2%80%90ALSA-Example.html"><span class="doc">SHARC-ALSA Example</span></a>.</p>
+</section>
+<section id="in-more-detail">
+<h4>In More Detail<a class="headerlink" href="#in-more-detail" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Initial bring-up occurs within the probe function of the ADI remoteproc driver - <a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/ci/adi_remoteproc_probe" target="_blank">c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/adi_remoteproc.c#L809</a>. This makes a number of calls to the core Linux remoteproc driver:</p>
+<ul>
+<li><p><a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/ci/rproc_alloc" target="_blank">c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/remoteproc_core.c#L2515</a> to allocate a remoteproc handle</p></li>
+<li><p><a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/ci/rproc_add" target="_blank">c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/remoteproc_core.c#L2341</a> to register the device, which also calls <a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/ci/rproc_validate" target="_blank">c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/remoteproc_core.c#L2284</a> to ensure the device can be started by the driver.</p>
+<ul>
+<li><p>e.g. if the device is offline and has no start function, <code class="docutils literal notranslate"><span class="pre">rproc_validate</span></code> will fail.</p></li>
+<li><p>If this succeeds, <code class="docutils literal notranslate"><span class="pre">&lt;device</span> <span class="pre">name&gt;</span> <span class="pre">is</span> <span class="pre">available</span></code> is printed.</p></li>
+<li><p>Finally, <a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/ci/rproc_boot" target="_blank">c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/remoteproc_core.c#L1994</a> is triggered, and the core is powered up.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>After <code class="docutils literal notranslate"><span class="pre">rproc_boot</span></code>, firmware loading begins. <code class="docutils literal notranslate"><span class="pre">adi_adsp_core&lt;core</span> <span class="pre">n&gt;_fw.ldr</span></code>
+is loaded from the initramfs by
+<a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/ci/request_firmware" target="_blank">c4403f406eff867723e10acf414afdfe8132102f:drivers/base/firmware_loader/main.c#L888</a> (from Linux’s generic firmware loader driver), then
+<a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/ci/rproc_start" target="_blank">c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/remoteproc_core.c#L1376</a> is called, passing the loaded firmware. The firmware is then
+loaded onto the core over DMA, using
+<a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/ci/ldr_load" target="_blank">c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/adi_remoteproc.c#L242</a>, as well as the resource table (which was loaded during probing).
+Finally, the core is reset and started, and begins running the default
+firmware.</p>
+</section>
+</section>
+</section>
+</section>
+
+
+          </div>
+              <div class="related">
+                &nbsp;
+    <a href="Debugging-without-ICE-Hardware.html" title="Previous document (Alt+Shift+LeftArrow)" class="prev">Debugging without ICE Hardware</a>
+    <a href="U%E2%80%90Boot-Environment.html" title="Next document (Alt+Shift+RightArrow)" class="next">U-Boot Environment</a>
+              </div>
+          
+        </div>
+      </div>
+  </div>
+
+  <label id="cancel-area-show-toc" for="input-show-toc"></label>
+  <label id="cancel-area-show-localtoc" for="input-show-localtoc"></label>
+    <footer>
+      &#169;2026, Analog Devices, Inc.
+      
+      |
+      Made with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+      &amp; <a href="https://github.com/analogdevicesinc/doctools">Doctools</a>
+      
+    </footer>
+  </body>
+</html>

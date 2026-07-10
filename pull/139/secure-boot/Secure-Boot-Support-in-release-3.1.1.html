@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="This guide helps you build and deploy a security-hardened Linux distribution for ADSP-SC5xx processors with secure boot capabilities. Secure boot ensures that only authenticated software runs on your hardware, protecting against unauthorized firmware modifications and establishing a chain of trust from the bootloader through the Linux kernel." name="description" />
+
+    <title>Secure Boot Support (Release 3.1.1) &#8212; ADSP Processors  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8e8a900e" />
+    <link rel="stylesheet" type="text/css" href="../_static/app.min.css?v=d3f78147" />
+    <script async="async" src="../_static/app.umd.js?v=26d0298f"></script>
+    <link rel="icon" href="../_static/icon.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Secure Boot Support (Release 3.1.0)" href="Secure-Boot-Support-in-release-3.1.0.html" />
+    <link rel="prev" title="Secure Boot Support" href="Secure-Boot-Support.html" />
+   
+  
+  
+  
+  <meta name="repository" content="lnxdsp-adi-meta">
+  <meta name="version" content="">
+  
+    <meta name="page_source_suffix" content=".rst">
+  
+  
+  
+
+
+<style>
+  body {
+    
+  }
+
+  body.dark {
+    
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body:not(.light) {
+      
+    }
+  }
+</style>
+  </head>
+  
+    <body>
+  
+  <input type="checkbox" id="input-show-toc">
+  <input type="checkbox" id="input-show-localtoc">
+  <input type="checkbox" id="input-show-repotoc">
+
+  
+  <div class="search-area">
+    <form action="" method="get">
+      <input type="text" name="q" aria-labelledby="search-documentation" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" role="search" placeholder="Search"/>
+      <button class="icon"></button>
+    </form>
+  </div>
+  
+
+  <header>
+    <div id="left">
+      <label id="show-sidebar" class="icon" for="input-show-toc" title="Show/hide index"></label>
+    </div>
+    <div id="right">
+      <span>
+        <a id="logo-org" href="https://analog.com" aria-label="Analog Devices Inc. landing page"></a>
+        <div class="vertical-divider"></div>
+        
+        <label id="show-repotoc" for="input-show-repotoc" title="Show/hide docs">Docs</label>
+        
+        <a id="logo" href="../index.html">
+          <div>ADI DSP Linux</div>
+        </a>
+      </span>
+      <span class="reverse">
+        <label id="show-localtoc" class="icon" for="input-show-localtoc" title="Show/hide contents"></label>
+      </span>
+    </div>
+  </header>
+
+
+  <div class="repotoc-tree overlay">
+    <root>
+  <a href="../index.html" class="current">ADI DSP Linux</a>
+</root>
+
+  </div>
+    <div class="localtoc">
+      <div class="tocwrapper">
+        <div class="header localtoc-header">
+          <a id="scroll-up" href="#top-anchor" title="Back to top"></a>
+        </div>
+        <nav>
+          <ul>
+<li><a class="reference internal" href="#">Secure Boot Support (Release 3.1.1)</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#getting-started">Getting Started</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#build-system-setup">Build System Setup</a></li>
+<li><a class="reference internal" href="#key-generation">Key Generation</a></li>
+<li><a class="reference internal" href="#build-linux-image-and-sdk">Build Linux image and SDK</a><ul>
+<li><a class="reference internal" href="#building-the-sdk">Building the SDK</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#setup-the-hardware">Setup the hardware</a></li>
+<li><a class="reference internal" href="#transfer-run-and-flash-u-boot-on-the-board-for-the-first-time">Transfer, run and flash U-Boot on the board for the first time</a><ul>
+<li><a class="reference internal" href="#transfer-and-run-u-boot-on-ram">Transfer and run U-Boot on RAM</a></li>
+<li><a class="reference internal" href="#flash-unsigned-u-boot-to-spi-flash">Flash (Unsigned) U-Boot to SPI Flash</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#booting-linux">Booting Linux</a><ul>
+<li><a class="reference internal" href="#booting-the-minimal-image-from-qspi">Booting the minimal image from QSPI</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#program-the-secure-boot-key">Program the secure boot key</a><ul>
+<li><a class="reference internal" href="#extract-the-public-key-and-copy-it-into-the-target">Extract the Public key and copy it into the target</a></li>
+<li><a class="reference internal" href="#program-the-key-into-the-otp-flash-memory">Program the key into the OTP flash memory</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#using-the-system">Using the System</a><ul>
+<li><a class="reference internal" href="#running-op-tee-applications">Running OP-TEE applications</a></li>
+<li><a class="reference internal" href="#using-the-sharc-cores">Using the SHARC Cores</a><ul>
+<li><a class="reference internal" href="#signing-the-sharc-firmware">Signing the SHARC firmware</a></li>
+<li><a class="reference internal" href="#using-the-signed-firmware">Using the Signed Firmware</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#communicating-with-the-sharc-cores">Communicating with the SHARC Cores</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mbed-tls-test-suite">Mbed-TLS test suite</a></li>
+</ul>
+</li>
+</ul>
+
+        </nav>
+      </div>
+    </div>
+
+  
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+    <a id="no-logo" href="../index.html">
+      ADSP Processors
+    </a><input id="input-switch-toc" type="checkbox">
+<label id="show-repotoc" for="input-switch-toc">
+All content
+</label>
+<label id="show-toc" for="input-switch-toc">
+Content on this topic
+</label>
+<div class="repotoc-tree">
+  <root>
+  <a href="../index.html" class="current">ADI DSP Linux</a>
+</root>
+
+</div>
+<div class="toc-tree">
+  <ul class="current">
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-1" id="toctree-collapse-1"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.0.1-Landing-Page.html">Linux for ADSP SC5xx 5.0.1</a><label for="toctree-collapse-1"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC598 (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC594 (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC589-MINI (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC573 (5.0.1)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2" id="toctree-collapse-2"/><div class="collapse"><a class="reference internal" href="../Older-Releases.html">Older Releases</a><label for="toctree-collapse-2"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2-1" id="toctree-collapse-2-1"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.0.0-Landing-Page.html">Linux for ADSP-SC5xx Processors 5.0.0</a><label for="toctree-collapse-2-1"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC598 (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC594 (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC589-MINI (5.0.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC573 (5.0.0)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2-2" id="toctree-collapse-2-2"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.2-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.2</a><label for="toctree-collapse-2-2"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC598 (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC594 (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC589-MINI (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC573 (3.1.2)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2-3" id="toctree-collapse-2-3"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.1-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.1</a><label for="toctree-collapse-2-3"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC598 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC594 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC589-MINI (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90EZ%E2%80%90KIT-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC589-EZ-KIT (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC584-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC584 (3.1.1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.1%29.html">Getting Started with ADSP-SC573 (3.1.1)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2-4" id="toctree-collapse-2-4"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.0-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.0</a><label for="toctree-collapse-2-4"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC598 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC594 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC589-MINI (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90EZ%E2%80%90KIT-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC589-EZ-KIT (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC584-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC584 (3.1.0)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.0%29.html">Getting Started with ADSP-SC573 (3.1.0)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3" id="toctree-collapse-3"/><div class="collapse"><a class="reference internal" href="../examples/Examples.html">Examples</a><label for="toctree-collapse-3"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples/SHARC%E2%80%90ALSA-Example.html">SHARC-ALSA Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/USB-Gadget-Audio-Example.html">USB Gadget Audio Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/The-Kitchen-Sink.html">The Kitchen Sink</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/U%E2%80%90Boot-Falcon-Mode-Example.html">U-Boot Falcon Mode Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-4" id="toctree-collapse-4"/><div class="collapse"><a class="reference internal" href="../development/Development.html">Development</a><label for="toctree-collapse-4"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/Setting-Up-Your-Host-PC.html">Setting Up Your Host PC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Debugging-without-ICE-Hardware.html">Debugging without ICE Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Boot-Sequence.html">Boot Sequence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/U%E2%80%90Boot-Environment.html">U-Boot Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Linux-Kernel-Development.html">Linux Kernel Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Compiling-and-running-a-Rust-kernel.html">Compiling and running a Rust kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Custom-Meta-Layer.html">Creating a Custom Meta Layer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/RPMsg.html">RPMsg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/RPMsg%E2%80%90Lite.html">RPMsg-Lite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications.html">Configuring System Memory When Using Linux and SHARC Applications</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-5" id="toctree-collapse-5"/><div class="collapse"><a class="reference internal" href="../benchmarks/Benchmarking.html">Benchmarks</a><label for="toctree-collapse-5"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../benchmarks/RPMsg-Benchmark-Figures.html">RPMsg Benchmark Figures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../benchmarks/Booting-Benchmark-Figures.html">Booting Benchmark Figures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/Frequently-Asked-Questions.html">FAQ</a></li>
+<li class="toctree-l1 current"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-6" id="toctree-collapse-6" checked=""/><div class="collapse"><a class="reference internal" href="Secure-Boot-Support.html">Secure Boot</a><label for="toctree-collapse-6"><div class="icon"></div></label></div><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Secure Boot Support (Release 3.1.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Secure-Boot-Support-in-release-3.1.0.html">Secure Boot Support (Release 3.1.0)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-7" id="toctree-collapse-7"/><div class="collapse"><a class="reference internal" href="../test-reports/Test-Reports.html">Test Reports</a><label for="toctree-collapse-7"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%285.0.1%29.html">Test Report (5.0.1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%285.0.0%29.html">Test Report (5.0.0)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%283.1.0%29.html">Test Report (3.1.0)</a></li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+        </div>
+      </div>
+
+  <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper" id="top-anchor">
+          <div class="body-header">
+  <nav class="breadcrumb"><ol><li><a href="Secure-Boot-Support.html">Secure Boot Support</a></li></ol></nav>
+</div>
+          <div class="body" role="main">
+            
+  <section id="secure-boot-support-release-3-1-1">
+<h1>Secure Boot Support (Release 3.1.1)<a class="headerlink" href="#secure-boot-support-release-3-1-1" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>This guide helps you build and deploy a security-hardened Linux distribution
+for ADSP-SC5xx processors with secure boot capabilities. Secure boot ensures
+that only authenticated software runs on your hardware, protecting against
+unauthorized firmware modifications and establishing a chain of trust from the
+bootloader through the Linux kernel.</p>
+<p>By following this guide, you’ll create a complete secure boot environment that
+integrates OP-TEE (Open Portable Trusted Execution Environment), ARM Trusted
+Firmware-A, and Mbed-TLS into your U-Boot and Linux images. The system will
+verify cryptographic signatures at each boot stage, ensuring the integrity of
+your software stack.</p>
+<p><strong>What you’ll learn:</strong></p>
+<ul class="simple">
+<li><p>Setting up the secure boot build environment</p></li>
+<li><p>Generating and managing cryptographic keys for signing</p></li>
+<li><p>Building security-focused Linux images with OP-TEE and ARM TF-A</p></li>
+<li><p>Programming one-time programmable (OTP) secure boot keys</p></li>
+<li><p>Flashing signed bootloader and kernel images</p></li>
+<li><p>Signing and loading secure SHARC+ firmware</p></li>
+<li><p>Testing the secure environment with OP-TEE and Mbed-TLS test suites</p></li>
+</ul>
+<p><strong>Prerequisites:</strong></p>
+<ul class="simple">
+<li><p>CCES (CrossCore Embedded Studio) installed on your host machine—this guide references version 2.12.1, but you can use newer versions by updating version numbers in commands</p></li>
+<li><p>Standard Linux build environment configured—see <a class="reference internal" href="../getting-started/Setting-Up-Your-Host-PC.html"><span class="doc">Setting Up Your Host PC</span></a></p></li>
+<li><p>Understanding of PKI concepts (public/private keys, certificates, signing)</p></li>
+<li><p>Development board with ICE-1000 or ICE-2000 debugger</p></li>
+</ul>
+<p><strong>Important security considerations:</strong></p>
+<ul class="simple">
+<li><p>OTP key programming is irreversible—test thoroughly with unsigned images first</p></li>
+<li><p>Keep private keys secure—loss or compromise requires new hardware</p></li>
+<li><p>This guide uses test keys for demonstration—never use test keys in production</p></li>
+<li><p>Secure boot alone does not guarantee system security—implement defense in depth</p></li>
+</ul>
+</section>
+<section id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h3>
+<p>System requirements and dependencies are the same as the standard (non-secure)
+distribution, with the addition of CCES for signing tools.</p>
+</section>
+</section>
+<section id="build-system-setup">
+<h2>Build System Setup<a class="headerlink" href="#build-system-setup" title="Link to this heading"></a></h2>
+<p><em>These steps can be skipped if you have previously followed one of the Getting
+Started guides, such as :doc:`Getting Started with ADSP‐SC598 (Linux for
+ADSP‐SC5xx Processors 3.1.1)
+&lt;../getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-3.1.1)&gt;`</em>.</p>
+<p>Fetch and install the sources:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>~/gxp2
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/gxp2
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~/gxp2$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>bin
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~/gxp2$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://commondatastorage.googleapis.com/git-repo-downloads/repo<span class="w"> </span>&gt;<span class="w"> </span>./bin/repo
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~/gxp2$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chmod<span class="w"> </span>a+x<span class="w"> </span>./bin/repo
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~/gxp2$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./bin/repo<span class="w"> </span>init<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-u<span class="w"> </span>https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-b<span class="w"> </span>develop/3.1.1-security<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-m<span class="w"> </span>release-3.1.1.xml
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~/gxp2$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./bin/repo<span class="w"> </span>sync
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div></section>
+<section id="key-generation">
+<h2>Key Generation<a class="headerlink" href="#key-generation" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Create directory to store the keys</p></li>
+</ul>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/adi-testkeys
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># ensures the normal user can read/write the directory</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>chown<span class="w"> </span><span class="k">$(</span>whoami<span class="k">)</span>:<span class="k">$(</span>whoami<span class="k">)</span><span class="w"> </span>/opt/adi-testkeys
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><ul class="simple">
+<li><p>Generate key Pair for LDR images signing using <code class="docutils literal notranslate"><span class="pre">adi_signtool</span></code></p></li>
+</ul>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/opt/adi-testkeys
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>/opt/adi-testkeys$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/opt/analog/cces/2.12.1/adi_signtool<span class="w"> </span>genkeypair<span class="w"> </span>-algo<span class="w"> </span>ecdsa256<span class="w"> </span>-outfile<span class="w"> </span>testkey.der
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><ul class="simple">
+<li><p>Generate key and certificate for verified boot</p></li>
+</ul>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openssl<span class="w"> </span>genrsa<span class="w"> </span>-F4<span class="w"> </span>-out<span class="w"> </span>dev.key<span class="w"> </span><span class="m">2048</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openssl<span class="w"> </span>req<span class="w"> </span>-batch<span class="w"> </span>-new<span class="w"> </span>-x509<span class="w"> </span>-key<span class="w"> </span>dev.key<span class="w"> </span>-out<span class="w"> </span>dev.crt
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div></section>
+<section id="build-linux-image-and-sdk">
+<h2>Build Linux image and SDK<a class="headerlink" href="#build-linux-image-and-sdk" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Prepare the build work directory:</p></li>
+</ul>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>setup-environment<span class="w"> </span>--machine<span class="w"> </span>adsp-sc598-som-ezkit<span class="w"> </span>--distro<span class="w"> </span>adi-security<span class="w"> </span>--builddir<span class="w"> </span>build-security
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><ul class="simple">
+<li><p>Add the following lines into <code class="docutils literal notranslate"><span class="pre">conf/local.conf</span></code>:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ADI_SIGNTOOL_KEY</span><span class="o">=</span><span class="s2">&quot;/opt/adi-testkeys/testkey.der&quot;</span>
+<span class="n">ADI_SIGNTOOL_PATH</span><span class="o">=</span><span class="s2">&quot;/opt/analog/cces/2.12.1/adi_signtool&quot;</span>
+
+<span class="n">UBOOT_SIGN_KEYDIR</span> <span class="o">=</span> <span class="s2">&quot;/opt/adi-testkeys/&quot;</span>
+<span class="n">UBOOT_SIGN_KEYNAME</span> <span class="o">=</span> <span class="s2">&quot;dev&quot;</span>
+<span class="n">UBOOT_MKIMAGE_DTCOPTS</span> <span class="o">=</span> <span class="s2">&quot;-I dts -O dtb -p 2000&quot;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The complete system (Linux Image, root filesystem and bootloader) can now be built with:</p></li>
+</ul>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bitbake<span class="w"> </span>adsp-sc5xx-minimal
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><section id="building-the-sdk">
+<h3>Building the SDK<a class="headerlink" href="#building-the-sdk" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Build the SDK with:</p></li>
+</ul>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bitbake<span class="w"> </span>adsp-sc5xx-minimal<span class="w"> </span>-c<span class="w"> </span>populate_sdk
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><ul class="simple">
+<li><p>It can then be installed by invoking the self-extracting archive, as follows:</p></li>
+</ul>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>tmp/deploy/sdk
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~/tmp/deploy/sdk$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./adi-security-glibc-x86_64-adsp-sc5xx-minimal-cortexa55-adsp-sc598-som-ezkit-toolchain-3.1.1.sh
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~/tmp/deploy/sdk$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Analog<span class="w"> </span>Devices<span class="w"> </span>Inc<span class="w"> </span>Reference<span class="w"> </span>Distro<span class="w"> </span><span class="o">(</span>glibc<span class="o">)</span><span class="w"> </span>SDK<span class="w"> </span>installer<span class="w"> </span>version<span class="w"> </span><span class="m">3</span>.1.1
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~/tmp/deploy/sdk$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">=======================================================================</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~/tmp/deploy/sdk$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Enter<span class="w"> </span>target<span class="w"> </span>directory<span class="w"> </span><span class="k">for</span><span class="w"> </span>SDK<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span>/opt/adi-security/3.1.1<span class="o">)</span>:
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~/tmp/deploy/sdk$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>You<span class="w"> </span>are<span class="w"> </span>about<span class="w"> </span>to<span class="w"> </span>install<span class="w"> </span>the<span class="w"> </span>SDK<span class="w"> </span>to<span class="w"> </span><span class="s2">&quot;/opt/adi-security/3.1.1&quot;</span>.<span class="w"> </span>Proceed<span class="w"> </span><span class="o">[</span>Y/n<span class="o">]</span>?<span class="w"> </span>y
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~/tmp/deploy/sdk$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Extracting<span class="w"> </span>SDK.......................................................................................................................done
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~/tmp/deploy/sdk$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Setting<span class="w"> </span>it<span class="w"> </span>up...done
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~/tmp/deploy/sdk$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>SDK<span class="w"> </span>has<span class="w"> </span>been<span class="w"> </span>successfully<span class="w"> </span><span class="nb">set</span><span class="w"> </span>up<span class="w"> </span>and<span class="w"> </span>is<span class="w"> </span>ready<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>used.
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~/tmp/deploy/sdk$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Each<span class="w"> </span><span class="nb">time</span><span class="w"> </span>you<span class="w"> </span>wish<span class="w"> </span>to<span class="w"> </span>use<span class="w"> </span>the<span class="w"> </span>SDK<span class="w"> </span><span class="k">in</span><span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>shell<span class="w"> </span>session,<span class="w"> </span>you<span class="w"> </span>need<span class="w"> </span>to<span class="w"> </span><span class="nb">source</span><span class="w"> </span>the<span class="w"> </span>environment<span class="w"> </span>setup<span class="w"> </span>script<span class="w"> </span>e.g.
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~/tmp/deploy/sdk$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>.<span class="w"> </span>/opt/adi-security/3.1.1/environment-setup-cortexa55-adi_glibc-linux
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div></section>
+</section>
+<section id="setup-the-hardware">
+<h2>Setup the hardware<a class="headerlink" href="#setup-the-hardware" title="Link to this heading"></a></h2>
+<p>Before installing the software on to the development board, ensure that the
+following cables are connected:</p>
+<a class="reference internal image-reference" href="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5471efe3-9cb0-44a1-a96e-72f453e1431f"><img alt="Hardware setup" src="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5471efe3-9cb0-44a1-a96e-72f453e1431f" width="400" />
+</a>
+<ul class="simple">
+<li><p>Board connected to network via ethernet cable using J13 connector.</p></li>
+<li><p>Board connected to host PC using USB micro cable, connected to USB/UART port on the development board</p></li>
+<li><p>Board connected to the ICE 1000 or ICE 2000 via the DEBUG port on the board</p></li>
+<li><p>ICE is also connected to host PC via USB mini cable</p></li>
+</ul>
+<p>On the carrier board is a set of micro switches labelled SW1.  These should all
+be set to the OFF position before continuing.</p>
+<a class="reference internal image-reference" href="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5e285aff-e67d-4d9c-8157-7f596c32134b"><img alt="SW1 switches" src="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5e285aff-e67d-4d9c-8157-7f596c32134b" width="400" />
+</a>
+<ul class="simple">
+<li><p>The Power jumper JP1 on the EV-SC598-SOM board should be fitted so that it shorts the two pins closest to the edge.  This will enable the routing of power from the SOMCRR-EZKIT.</p></li>
+<li><p>The BOOT MODE selector on the EV-SC598-SOM board should be turned to “0”.</p></li>
+</ul>
+<a class="reference internal image-reference" href="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/16242018-95c7-4494-a471-d088a5f52d33"><img alt="Boot mode selector" src="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/16242018-95c7-4494-a471-d088a5f52d33" width="400" />
+</a>
+</section>
+<section id="transfer-run-and-flash-u-boot-on-the-board-for-the-first-time">
+<h2>Transfer, run and flash U-Boot on the board for the first time<a class="headerlink" href="#transfer-run-and-flash-u-boot-on-the-board-for-the-first-time" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It’s always good practice to erase the contents of <code class="docutils literal notranslate"><span class="pre">/tftpboot/</span></code> before
+running and/or flashing a new build of U-Boot or Linux. You can do so by
+executing <code class="docutils literal notranslate"><span class="pre">rm</span> <span class="pre">/tftpboot/*</span></code> on your host PC before proceeding</p>
+</div>
+<section id="transfer-and-run-u-boot-on-ram">
+<h3>Transfer and run U-Boot on RAM<a class="headerlink" href="#transfer-and-run-u-boot-on-ram" title="Link to this heading"></a></h3>
+<p>Copy the U-Boot binary &amp; loader files to the tftp directory:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/u-boot-proper-sc598-som-ezkit.elf<span class="w"> </span>/tftpboot/
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/u-boot-spl-sc598-som-ezkit.elf<span class="w"> </span>/tftpboot/
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot.ldr<span class="w"> </span>/tftpboot/
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot-unsigned.ldr<span class="w"> </span>/tftpboot/
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot.ldr<span class="w"> </span>/tftpboot/
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot-unsigned.ldr<span class="w"> </span>/tftpboot/
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>The console output from U-Boot and later on Linux will appear on the USB serial
+port configured in minicom earlier so open up minicom.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`Terminal1:</span> <span class="pre">minicom`</span></code></p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>minicom
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>In a separate console launch OpenOCD and connect to the development board.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`Terminal2:</span> <span class="pre">OpenOCD`</span></code></p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">sdk_usr</span><span class="o">=</span>/opt/adi-security/3.1.1/sysroots/x86_64-adi_glibc_sdk-linux/usr/
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">$sdk_usr</span>/bin/openocd<span class="w"> </span>-f<span class="w"> </span><span class="nv">$sdk_usr</span>/share/openocd/scripts/interface/&lt;ICE&gt;.cfg<span class="w"> </span>-f<span class="w"> </span><span class="nv">$sdk_usr</span>/share/openocd/scripts/target/adspsc59x_a55.cfg
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>Where <code class="docutils literal notranslate"><span class="pre">`&lt;ICE&gt;``</span></code> should be replaced with <code class="docutils literal notranslate"><span class="pre">``ice1000``</span></code> or <code class="docutils literal notranslate"><span class="pre">``ice2000`</span></code>
+depending on your hardware. When successful you should see a message similar to
+the console output below</p>
+<p><code class="docutils literal notranslate"><span class="pre">`Terminal2:</span> <span class="pre">OpenOCD`</span></code></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Open On-Chip Debugger (PKGVERSION)  OpenOCD 0.10.0-gf73da81ab (2024-01-31-15:39)
+Licensed under GNU GPL v2
+Report bugs to &lt;processor.tools.support@analog.com&gt;
+Info : only one transport option; autoselect &#39;jtag&#39;
+adapter speed: 5000 kHz
+
+Info : halt and restart using CTI enabled
+Info : Listening on port 6666 for tcl connections
+Info : Listening on port 4444 for telnet connections
+Info : ICE-1000 firmware version is 1.0.2
+Info : clock speed 5000 kHz
+Info : JTAG tap: adspsc59x.adjc tap/device found: 0x0282e0cb (mfg: 0x065 (Analog Devices), part: 0x282e, ver: 0x0)
+Info : JTAG tap: adspsc59x.cpu enabled
+Info : DAP adspsc59x.cpu DPIDR indicates ADIv6 protocol is being used
+Info : adspsc59x.cpu: hardware has 6 breakpoints, 4 watchpoints
+Info : starting gdb server for adspsc59x.cpu on 3333
+Info : Listening on port 3333 for gdb connections
+</pre></div>
+</div>
+<p>In a third console window launch GDB and type <code class="docutils literal notranslate"><span class="pre">`target</span> <span class="pre">extended-remote</span>
+<span class="pre">:3333``</span></code>. This will make GDB to connect to the gdbserver on the local host
+using port 3333. Then, load the U-Boot SPL into RAM by typing <code class="docutils literal notranslate"><span class="pre">``load``</span></code>. Hit
+<code class="docutils literal notranslate"><span class="pre">``Ctrl+C`</span></code> to interrupt thereafter.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`Terminal3:</span> <span class="pre">GDB`</span></code></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd /tftpboot</span>
+<span class="go">/opt/adi-security/3.1.1/sysroots/x86_64-adi_glibc_sdk-linux/usr/bin/aarch64-adi_glibc-linux/aarch64-adi_glibc-linux-gdb u-boot-spl-sc598-som-ezkit.elf</span>
+<span class="go">...</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">target extended-remote :3333</span>
+<span class="go">Remote debugging using :3333</span>
+<span class="go">0x000000000000352c in ?? ()</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">load</span>
+<span class="go">Loading section .text, size 0xe430 lma 0x20080000Loading section .rodata, size 0x1d97 lma 0x2008e430</span>
+<span class="go">Loading section .dtb.init.rodata, size 0x1a50 lma 0x200901d0</span>
+<span class="go">Loading section .data, size 0xad1 lma 0x20091c20</span>
+<span class="go">Loading section __u_boot_list, size 0x1468 lma 0x200926f8</span>
+<span class="go">Start address 0x0000000020080000, load size 80720</span>
+<span class="go">Transfer rate: 29 KB/sec, 10090 bytes/write.</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">c</span>
+<span class="go">Continuing.</span>
+</pre></div>
+</div>
+<p>You will see a message on Terminal 1 running minicom, informing you that you
+can now load U-Boot Proper</p>
+<p><code class="docutils literal notranslate"><span class="pre">`Terminal1:</span> <span class="pre">minicom`</span></code></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>U-Boot SPL 2023.04 (Sep 21 2023 - 13:39:40 +0000)
+ADI Boot Mode: 0x0 (JTAG/BOOTROM)
+SPL execution has completed.  Please load U-Boot Proper via JTAG
+</pre></div>
+</div>
+<p>Now, press Ctrl-C to halt SPL, and load U-Boot Proper into RAM.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`Terminal3:</span> <span class="pre">GDB`</span></code></p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>^C
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Program<span class="w"> </span>received<span class="w"> </span>signal<span class="w"> </span>SIGINT,<span class="w"> </span>Interrupt.
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>...
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>load<span class="w"> </span>u-boot-proper-sc598-som-ezkit.elf
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Loading<span class="w"> </span>section<span class="w"> </span>.text,<span class="w"> </span>size<span class="w"> </span>0x188<span class="w"> </span>lma<span class="w"> </span>0x96000000
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Loading<span class="w"> </span>section<span class="w"> </span>.efi_runtime,<span class="w"> </span>size<span class="w"> </span>0xb80<span class="w"> </span>lma<span class="w"> </span>0x96000188
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Loading<span class="w"> </span>section<span class="w"> </span>.text_rest,<span class="w"> </span>size<span class="w"> </span>0x6c348<span class="w"> </span>lma<span class="w"> </span>0x96001000
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Loading<span class="w"> </span>section<span class="w"> </span>.rodata,<span class="w"> </span>size<span class="w"> </span>0x15ee9<span class="w"> </span>lma<span class="w"> </span>0x9606d348
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Loading<span class="w"> </span>section<span class="w"> </span>.hash,<span class="w"> </span>size<span class="w"> </span>0x18<span class="w"> </span>lma<span class="w"> </span>0x96083238
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Loading<span class="w"> </span>section<span class="w"> </span>.dtb.init.rodata,<span class="w"> </span>size<span class="w"> </span>0x2290<span class="w"> </span>lma<span class="w"> </span>0x96083250
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Loading<span class="w"> </span>section<span class="w"> </span>.data,<span class="w"> </span>size<span class="w"> </span>0x4678<span class="w"> </span>lma<span class="w"> </span>0x960854e0
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Loading<span class="w"> </span>section<span class="w"> </span>.got,<span class="w"> </span>size<span class="w"> </span>0x8<span class="w"> </span>lma<span class="w"> </span>0x96089b58
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Loading<span class="w"> </span>section<span class="w"> </span>.got.plt,<span class="w"> </span>size<span class="w"> </span>0x18<span class="w"> </span>lma<span class="w"> </span>0x96089b60
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Loading<span class="w"> </span>section<span class="w"> </span>__u_boot_list,<span class="w"> </span>size<span class="w"> </span>0x3b40<span class="w"> </span>lma<span class="w"> </span>0x96089b78
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Loading<span class="w"> </span>section<span class="w"> </span>.efi_runtime_rel,<span class="w"> </span>size<span class="w"> </span>0x1b0<span class="w"> </span>lma<span class="w"> </span>0x9608d6b8
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Loading<span class="w"> </span>section<span class="w"> </span>.rela.dyn,<span class="w"> </span>size<span class="w"> </span>0xd8f0<span class="w"> </span>lma<span class="w"> </span>0x9608d868
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Start<span class="w"> </span>address<span class="w"> </span>0x0000000096000000,<span class="w"> </span>load<span class="w"> </span>size<span class="w"> </span><span class="m">634457</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Transfer<span class="w"> </span>rate:<span class="w"> </span><span class="m">28</span><span class="w"> </span>KB/sec,<span class="w"> </span><span class="m">13217</span><span class="w"> </span>bytes/write.
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>c
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Continuing.
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>At this point U-Boot will now be running in RAM on your target board. You
+should see U-Boot booting in the minicom console (Terminal 1). Press a key to
+interrupt the boot process before the countdown terminates:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`Terminal1:</span> <span class="pre">minicom`</span></code></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>U-Boot 2023.04 (Dec 11 2023 - 16:04:11 +0000)
+
+CPU:   ADSP ADSP-SC598-0.0 (spi slave boot)
+Model: ADI sc598-som-ezkit
+DRAM:  224 MiB
+Core:  142 devices, 22 uclasses, devicetree: embed
+MMC:   mmc@310C7000: 0
+Loading Environment from SPIFlash... SF: Detected is25lp512 with page size 256 Bytes, erase size 4 KiB, total 64 MiB
+OK
+In:    serial@0x31003000
+Out:   serial@0x31003000
+Err:   serial@0x31003000
+Net:   eth0: eth0
+Hit any key to stop autoboot:  0
+=&gt;
+</pre></div>
+</div>
+</section>
+<section id="flash-unsigned-u-boot-to-spi-flash">
+<h3>Flash (Unsigned) U-Boot to SPI Flash<a class="headerlink" href="#flash-unsigned-u-boot-to-spi-flash" title="Link to this heading"></a></h3>
+<p>In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot
+loader files (<code class="docutils literal notranslate"><span class="pre">`stage1-boot.ldr``</span></code>, <code class="docutils literal notranslate"><span class="pre">``stage1-boot-unsigned.ldr``</span></code>,
+<code class="docutils literal notranslate"><span class="pre">``stage2-boot.ldr``</span></code>, <code class="docutils literal notranslate"><span class="pre">``stage2-boot-unsigned.ldr`</span></code>) on TFTP.</p>
+<p><strong>Note:</strong> We are going to use <strong>stage1-boot-unsigned.ldr</strong> and
+<strong>stage2-boot-unsigned.ldr</strong> to boot the device then burn the secure boot key.
+This is needed only for the first time secure boot key burning. For the next
+flash you should use <strong>stage1-boot.ldr</strong> and <strong>stage2-boot.ldr</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">`Terminal1:</span> <span class="pre">minicom`</span></code></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">=&gt; setenv tftpserverip &lt;SERVERIP&gt;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To find the IP address of your host Linux PC you can issue the <code class="docutils literal notranslate"><span class="pre">ip</span> <span class="pre">addr</span></code>
+command from the shell or console.</p>
+</div>
+<p>If your network <strong>supports</strong> DHCP, run:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">=&gt; dhcp</span>
+</pre></div>
+</div>
+<p>If your network <strong>does NOT support</strong> DHCP, run:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">=&gt; set ipaddr &lt;ADDR&gt;</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">`&lt;ADDR&gt;`</span></code> is the IP address you want to assign.</p>
+<p>Next, run the U-Boot update command to copy the U-Boot loader files from the
+host PC to the target board, and write it into flash:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">=&gt; sf probe 2:1</span>
+<span class="go">=&gt; sf erase 0x0 0x01a0000</span>
+<span class="go">=&gt; setenv stage1file stage1-boot-unsigned.ldr</span>
+<span class="go">=&gt; setenv stage2file stage2-boot-unsigned.ldr</span>
+<span class="go">=&gt; run update_spi_uboot_only</span>
+</pre></div>
+</div>
+<p>You will see an output similar to the one below:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">=&gt; run update_spi_uboot_only</span>
+<span class="go">PHY 0x00: OUI = 0x80028, Model = 0x23, Rev = 0x01, 100baseT, FDX</span>
+<span class="go">Speed: 1000, full duplex</span>
+<span class="go">BOOTP broadcast 1</span>
+<span class="go">BOOTP broadcast 2</span>
+<span class="go">BOOTP broadcast 3</span>
+<span class="go">BOOTP broadcast 4</span>
+<span class="go">BOOTP broadcast 5</span>
+<span class="go">BOOTP broadcast 6</span>
+<span class="go">BOOTP broadcast 7</span>
+<span class="go">DHCP client bound to address 10.37.65.95 (7845 ms)</span>
+<span class="go">SF: Detected is25lp512 with page size 256 Bytes, erase size 4 KiB, total 64 MiB</span>
+<span class="go">Speed: 1000, full duplex</span>
+<span class="go">Using eth0 device</span>
+<span class="go">TFTP from server 10.37.65.102; our IP address is 10.37.65.95</span>
+<span class="go">Filename &#39;stage1-boot-unsigned.ldr&#39;.</span>
+<span class="go">Load address: 0x90000000</span>
+<span class="go">Loading: ######</span>
+<span class="go">         4.5 MiB/s</span>
+<span class="go">done</span>
+<span class="go">Bytes transferred = 80832 (13bc0 hex)</span>
+<span class="go">SF: Detected is25lp512 with page size 256 Bytes, erase size 4 KiB, total 64 MiB</span>
+<span class="go">device 0 offset 0x0, size 0x13bc0</span>
+<span class="go">0 bytes written, 80832 bytes skipped in 0.35s, speed 2178209 B/s</span>
+<span class="go">Speed: 1000, full duplex</span>
+<span class="go">Using eth0 device</span>
+<span class="go">TFTP from server 10.37.65.102; our IP address is 10.37.65.95</span>
+<span class="go">Filename &#39;stage2-boot-unsigned.ldr&#39;.</span>
+<span class="go">Load address: 0x90000000</span>
+<span class="go">Loading: #################################################################</span>
+<span class="gp">         #</span><span class="c1">##########</span>
+<span class="go">         6.2 MiB/s</span>
+<span class="go">done</span>
+<span class="go">Bytes transferred = 1113216 (10fc80 hex)</span>
+<span class="go">SF: Detected is25lp512 with page size 256 Bytes, erase size 4 KiB, total 64 MiB</span>
+<span class="go">device 0 offset 0x40000, size 0x10fc80</span>
+<span class="go">0 bytes written, 1113216 bytes skipped in 0.484s, speed 2335928 B/s</span>
+<span class="go">Saving Environment to SPIFlash... Erasing SPI flash...Writing to SPI flash...done</span>
+<span class="go">OK</span>
+<span class="go">=&gt;</span>
+</pre></div>
+</div>
+<p>At this point the U-Boot binary is stored in flash. You can now disconnect the
+ICE-1000 or ICE-2000 from the development board and make sure to switch the
+BMODE to position 1. You will only need to reconnect this if your board fails
+to boot and you need to re-follow these instructions. <strong>Do not reset the board
+at this stage.</strong></p>
+</section>
+</section>
+<section id="booting-linux">
+<h2>Booting Linux<a class="headerlink" href="#booting-linux" title="Link to this heading"></a></h2>
+<section id="booting-the-minimal-image-from-qspi">
+<h3>Booting the minimal image from QSPI<a class="headerlink" href="#booting-the-minimal-image-from-qspi" title="Link to this heading"></a></h3>
+<p>The U-Boot console is used to copy U-Boot (SPL and Proper), the minimal root
+filesystem image and the fitImage (which contains the kernel image and dtb
+file) into RAM and then write them to Flash. Copy the required files from
+<code class="docutils literal notranslate"><span class="pre">&lt;BUILD</span> <span class="pre">DIR&gt;/tmp/deploy/images</span></code> to your <code class="docutils literal notranslate"><span class="pre">/tftpboot</span></code> directory.</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot.ldr<span class="w"> </span>/tftpboot/
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot-unsigned.ldr<span class="w"> </span>/tftpboot/
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot.ldr<span class="w"> </span>/tftpboot/
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot-unsigned.ldr<span class="w"> </span>/tftpboot/
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/fitImage<span class="w"> </span>/tftpboot/
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>tmp/deploy/images/adsp-sc598-som-ezkit/adsp-sc5xx-minimal-adsp-sc598-som-ezkit.jffs2<span class="w"> </span>/tftpboot
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>If your network <strong>supports</strong> DHCP, run:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">=&gt; run update_spi</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>&lt;details closed&gt;</dt><dd><p>&lt;summary&gt;If your network does NOT support DHCP&lt;/summary&gt;</p>
+</dd>
+</dl>
+<p>In the U-Boot console configure the board IP address and remove “run
+init*ethernet;” from the “start*update_spi” command.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">=&gt; setenv ipaddr &lt;IPADDR&gt;</span>
+<span class="go">=&gt; edit start_update_spi</span>
+<span class="go">=&gt; edit: &lt;remove &quot;run init_ethernet;&quot; from here&gt; sf probe ${sfdev}; sf erase 0 ${sfsize}; run update_spi_uboot; run update_spi_fit; run update_spi_rfs; sleep 3; saveenv</span>
+</pre></div>
+</div>
+<p>After editing <code class="docutils literal notranslate"><span class="pre">`start*update*spi``</span></code>, proceed to running as <code class="docutils literal notranslate"><span class="pre">``update_spi`</span></code>,
+as above. &lt;/details&gt;</p>
+<p>You should see output similar to the following.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">=&gt; run update_spi</span>
+<span class="go">PHY 0x00: OUI = 0x80028, Model = 0x23, Rev = 0x01, 100baseT, FDX</span>
+<span class="go">Speed: 1000, full duplex</span>
+<span class="go">BOOTP broadcast 1</span>
+<span class="go">BOOTP broadcast 2</span>
+<span class="go">BOOTP broadcast 3</span>
+<span class="go">BOOTP broadcast 4</span>
+<span class="go">BOOTP broadcast 5</span>
+<span class="go">BOOTP broadcast 6</span>
+<span class="go">BOOTP broadcast 7</span>
+<span class="go">DHCP client bound to address 10.37.65.95 (7850 ms)</span>
+<span class="go">SF: Detected is25lp512 with page size 256 Bytes, erase size 4 KiB, total 64 MiB</span>
+<span class="go">Speed: 1000, full duplex</span>
+<span class="go">Using eth0 device</span>
+<span class="go">TFTP from server 10.37.65.102; our IP address is 10.37.65.95</span>
+<span class="go">Filename &#39;stage1-boot-unsigned.ldr&#39;.</span>
+<span class="go">Load address: 0x90000000</span>
+<span class="go">Loading: ######</span>
+<span class="go">         4.3 MiB/s</span>
+<span class="go">done</span>
+<span class="go">Bytes transferred = 80832 (13bc0 hex)</span>
+<span class="go">SF: Detected is25lp512 with page size 256 Bytes, erase size 4 KiB, total 64 MiB</span>
+<span class="go">device 0 offset 0x0, size 0x13bc0</span>
+<span class="go">0 bytes written, 80832 bytes skipped in 0.35s, speed 2178209 B/s</span>
+<span class="go">Speed: 1000, full duplex</span>
+<span class="go">Using eth0 device</span>
+<span class="go">TFTP from server 10.37.65.102; our IP address is 10.37.65.95</span>
+<span class="go">Filename &#39;stage2-boot-unsigned.ldr&#39;.</span>
+<span class="go">Load address: 0x90000000</span>
+<span class="go">Loading: #################################################################</span>
+<span class="gp">         #</span><span class="c1">##########</span>
+<span class="go">         6.1 MiB/s</span>
+<span class="go">done</span>
+<span class="go">Bytes transferred = 1113216 (10fc80 hex)</span>
+<span class="go">SF: Detected is25lp512 with page size 256 Bytes, erase size 4 KiB, total 64 MiB</span>
+<span class="go">device 0 offset 0x40000, size 0x10fc80</span>
+<span class="go">0 bytes written, 1113216 bytes skipped in 0.485s, speed 2335928 B/s</span>
+<span class="go">Speed: 1000, full duplex</span>
+<span class="go">Using eth0 device</span>
+<span class="go">TFTP from server 10.37.65.102; our IP address is 10.37.65.95</span>
+<span class="go">Filename &#39;fitImage&#39;.</span>
+<span class="go">Load address: 0x90000000</span>
+<span class="go">Loading: #################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">###############</span>
+<span class="go">         6.4 MiB/s</span>
+<span class="go">done</span>
+<span class="go">Bytes transferred = 8817402 (868afa hex)</span>
+<span class="go">SF: Detected is25lp512 with page size 256 Bytes, erase size 4 KiB, total 64 MiB</span>
+<span class="go">device 0 offset 0x1a0000, size 0x868afa</span>
+<span class="go">8817402 bytes written, 0 bytes skipped in 139.394s, speed 64833 B/s</span>
+<span class="go">Speed: 1000, full duplex</span>
+<span class="go">Using eth0 device</span>
+<span class="go">TFTP from server 10.37.65.102; our IP address is 10.37.65.95</span>
+<span class="go">Filename &#39;adsp-sc5xx-minimal-adsp-sc598-som-ezkit.jffs2&#39;.</span>
+<span class="go">Load address: 0x90000000</span>
+<span class="go">Loading: #################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">################################################################</span>
+<span class="gp">         #</span><span class="c1">########</span>
+<span class="go">         6.6 MiB/s</span>
+<span class="go">done</span>
+<span class="go">Bytes transferred = 34471936 (20e0000 hex)</span>
+<span class="go">SF: Detected is25lp512 with page size 256 Bytes, erase size 4 KiB, total 64 MiB</span>
+<span class="go">device 0 offset 0x1020000, size 0x20e0000</span>
+<span class="go">34451456 bytes written, 20480 bytes skipped in 525.324s, speed 67196 B/s</span>
+<span class="go">Saving Environment to SPIFlash... Erasing SPI flash...Writing to SPI flash...done</span>
+<span class="go">OK</span>
+<span class="go">=&gt;</span>
+</pre></div>
+</div>
+<p>The U-Boot image, root filesystem and Linux kernel are now stored in QSPI.
+Adjust the BOOT MODE selector to <strong>position 1</strong> and press the RESET button, the
+board should boot into Linux.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>U-Boot SPL 2023.04 (Dec 11 2023 - 16:04:11 +0000)
+ADI Boot Mode: 0x1 (QSPI Master)
+Trying to boot from BOOTROM
+NOTICE:  BL31: v2.6(release):v2.6-7-g85b6e2a3a-dirty
+NOTICE:  BL31: Built : 03:30:41, Sep 15 2023
+E/TC:0 0 tee_otp_get_hw_unique_key:49 HUK OTP is programmed with zeroes--please program a real HUK or enable CFG_ADI_AUTOGEN_HUK
+
+
+U-Boot 2023.04 (Dec 11 2023 - 16:04:11 +0000)
+
+CPU:   ADSP ADSP-SC598-0.0 (spi slave boot)
+Model: ADI sc598-som-ezkit
+DRAM:  224 MiB
+Core:  142 devices, 22 uclasses, devicetree: embed
+MMC:   mmc@310C7000: 0
+Loading Environment from SPIFlash... SF: Detected is25lp512 with page size 256 Bytes, erase size 4 KiB, total 64 MiB
+OK
+In:    serial@0x31003000
+Out:   serial@0x31003000
+Err:   serial@0x31003000
+Net:   eth0: eth0
+Hit any key to stop autoboot:  0
+SF: Detected is25lp512 with page size 256 Bytes, erase size 4 KiB, total 64 MiB
+device 0 offset 0x1a0000, size 0x868afa
+SF: 8817402 bytes @ 0x1a0000 Read: OK
+## Loading kernel from FIT Image at 90000000 ...
+   Using &#39;conf-1&#39; configuration
+   Verifying Hash Integrity ... OK
+   Trying &#39;kernel-1&#39; kernel subimage
+     Description:  Linux kernel
+     Type:         Kernel Image
+     Compression:  gzip compressed
+     Data Start:   0x900000e0
+     Data Size:    6048922 Bytes = 5.8 MiB
+     Architecture: AArch64
+     OS:           Linux
+     Load Address: 0x9a200000
+     Entry Point:  0x9a200000
+     Hash algo:    sha1
+     Hash value:   2535fa3f1aa7f8eeb0f1705b8bfa51e4eb83ce90
+     Sign algo:    sha1,rsa2048:dev
+     Sign value:   unavailable
+   Verifying Hash Integrity ... sha1+ sha1,rsa2048:dev- OK
+## Loading ramdisk from FIT Image at 90000000 ...
+   Using &#39;conf-1&#39; configuration
+   Verifying Hash Integrity ... OK
+   Trying &#39;ramdisk-3&#39; ramdisk subimage
+     Description:  Initial Ram File System
+     Type:         RAMDisk Image
+     Compression:  uncompressed
+     Data Start:   0x905cc0a4
+     Data Size:    2738160 Bytes = 2.6 MiB
+     Architecture: AArch64
+     OS:           Linux
+     Load Address: 0x9c000000
+     Entry Point:  0x9c000000
+     Hash algo:    sha1
+     Hash value:   290cfca3369ae22d7db6ae85deabf02505d16a0a
+     Sign algo:    sha1,rsa2048:dev
+     Sign value:   unavailable
+   Verifying Hash Integrity ... sha1+ sha1,rsa2048:dev- OK
+   Loading ramdisk from 0x905cc0a4 to 0x9c000000
+## Loading fdt from FIT Image at 90000000 ...
+   Using &#39;conf-1&#39; configuration
+   Verifying Hash Integrity ... OK
+   Trying &#39;fdt-2&#39; fdt subimage
+     Description:  Flattened Device Tree Blob
+     Type:         Flat Device Tree
+     Compression:  uncompressed
+     Data Start:   0x905c4eb4
+     Data Size:    28890 Bytes = 28.2 KiB
+     Architecture: AArch64
+     Load Address: 0x99000000
+     Hash algo:    sha1
+     Hash value:   fcc1a1eb9d09961853352904131e04e9dfabe459
+     Sign algo:    sha1,rsa2048:dev
+     Sign value:   unavailable
+   Verifying Hash Integrity ... sha1+ sha1,rsa2048:dev- OK
+   Loading fdt from 0x905c4eb4 to 0x99000000
+   Booting using the fdt blob at 0x99000000
+Working FDT set to 99000000
+   Uncompressing Kernel Image
+   Using Device Tree in place at 0000000099000000, end 000000009900a0d9
+Working FDT set to 99000000
+
+Starting kernel ...
+
+[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x412fd050]
+[    0.000000] Linux version 5.15.148-yocto-standard (oe-user@oe-host) (aarch64-adi_glibc-linux-gcc (GCC) 11.4.0, GNU ld (GNU Binutils) 2.38.20220708) #1 SMP PREEMPT Mon Feb 12 09:52:51 UTC 2024
+[    0.000000] Machine model: ADI 64-bit SC598 SOM EZ Kit
+
+...
+
+
+     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+     @@@@@@@@  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+     @@@@@@@@     @@@@@@@@@@@@@@@@@@@@@@@@@@
+     @@@@@@@@        @@@@@@@@@@@@@@@@@@@@@@@
+     @@@@@@@@            @@@@@@@@@@@@@@@@@@@
+     @@@@@@@@               @@@@@@@@@@@@@@@@
+     @@@@@@@@                   @@@@@@@@@@@@
+     @@@@@@@@                     @@@@@@@@@@
+     @@@@@@@@                        @@@@@@@
+     @@@@@@@@                     @@@@@@@@@@
+     @@@@@@@@                   @@@@@@@@@@@@
+     @@@@@@@@               @@@@@@@@@@@@@@@@
+     @@@@@@@@            @@@@@@@@@@@@@@@@@@@
+     @@@@@@@@        @@@@@@@@@@@@@@@@@@@@@@@
+     @@@@@@@@     @@@@@@@@@@@@@@@@@@@@@@@@@@
+     @@@@@@@@  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+        Analog Devices Yocto Distribution
+                 www.analog.com
+              www.yoctoproject.org
+
+     ***************************************
+     ************* PLEASE NOTE *************
+     ***************************************
+     * This is an evaluation system with   *
+     * default username/password           *
+     ***************************************
+     ******* NOT FIT FOR PRODUCTION ********
+     ***************************************
+
+adsp-sc598-som-ezkit login:
+</pre></div>
+</div>
+<p>The username is <strong>root</strong> and the password is <strong>adi</strong>.</p>
+</section>
+</section>
+<section id="program-the-secure-boot-key">
+<h2>Program the secure boot key<a class="headerlink" href="#program-the-secure-boot-key" title="Link to this heading"></a></h2>
+<section id="extract-the-public-key-and-copy-it-into-the-target">
+<h3>Extract the Public key and copy it into the target<a class="headerlink" href="#extract-the-public-key-and-copy-it-into-the-target" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>cd into the directory where the keys were generated:</p></li>
+</ul>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/opt/adi-testkeys
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><ul class="simple">
+<li><p>Dump the Key Pair to verify the content</p></li>
+</ul>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>openssl asn1parse -in testkey.der -inform der -dump
+    0:d=0  hl=2 l= 119 cons: SEQUENCE
+    2:d=1  hl=2 l=   1 prim: INTEGER           :01
+    5:d=1  hl=2 l=  32 prim: OCTET STRING
+      0000 - 87 e8 15 3c a6 7a bf 82-2a 21 1f 27 6f 81 1a ae   ...&lt;.z..*!.&#39;o...
+      0010 - b2 cd e6 7d 03 a7 ab 1e-39 26 c0 57 97 b3 e2 54   ...}....9&amp;.W...T
+   39:d=1  hl=2 l=  10 cons: cont [ 0 ]
+   41:d=2  hl=2 l=   8 prim: OBJECT            :prime256v1
+   51:d=1  hl=2 l=  68 cons: cont [ 1 ]
+   53:d=2  hl=2 l=  66 prim: BIT STRING
+      0000 - 00 04 5a 06 5d 03 19 19-fe b5 ee 87 ed 47 6b 4e   ..Z.]........GkN
+      0010 - e6 c9 59 21 6f d0 11 fa-77 ae 6b 99 51 45 49 b9   ..Y!o...w.k.QEI.
+      0020 - ec 15 91 9c c0 0e 2e 3b-9f 44 c1 4f f6 a8 f8 0e   .......;.D.O....
+      0030 - a0 7d 6a d5 72 b4 5f 37-59 31 ef e8 bf 21 fd 76   .}j.r._7Y1...!.v
+      0040 - 47 47                                             GG
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Extract the public key from the DER file with <code class="docutils literal notranslate"><span class="pre">dd</span></code></p></li>
+</ul>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dd<span class="w"> </span><span class="k">if</span><span class="o">=</span>testkey.der<span class="w"> </span><span class="nv">bs</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">count</span><span class="o">=</span><span class="m">64</span><span class="w"> </span><span class="nv">skip</span><span class="o">=</span><span class="m">57</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>xxd
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">00000000</span>:<span class="w"> </span>5a06<span class="w"> </span>5d03<span class="w"> </span><span class="m">1919</span><span class="w"> </span>feb5<span class="w"> </span>ee87<span class="w"> </span>ed47<span class="w"> </span>6b4e<span class="w"> </span>e6c9<span class="w">  </span>Z.<span class="o">]</span>........GkN..
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">00000010</span>:<span class="w"> </span><span class="m">5921</span><span class="w"> </span>6fd0<span class="w"> </span>11fa<span class="w"> </span>77ae<span class="w"> </span>6b99<span class="w"> </span><span class="m">5145</span><span class="w"> </span>49b9<span class="w"> </span>ec15<span class="w">  </span>Y!o...w.k.QEI...
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">00000020</span>:<span class="w"> </span>919c<span class="w"> </span>c00e<span class="w"> </span>2e3b<span class="w"> </span>9f44<span class="w"> </span>c14f<span class="w"> </span>f6a8<span class="w"> </span>f80e<span class="w"> </span>a07d<span class="w">  </span>.....<span class="p">;</span>.D.O.....<span class="o">}</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">64</span>+0<span class="w"> </span>records<span class="w"> </span><span class="k">in</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">64</span>+0<span class="w"> </span>records<span class="w"> </span>out
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">00000030</span>:<span class="w"> </span>6ad5<span class="w"> </span>72b4<span class="w"> </span>5f37<span class="w"> </span><span class="m">5931</span><span class="w"> </span>efe8<span class="w"> </span>bf21<span class="w"> </span>fd76<span class="w"> </span><span class="m">4747</span><span class="w">  </span>j.r._7Y1...!.vGG
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">64</span><span class="w"> </span>bytes<span class="w"> </span>copied,<span class="w"> </span><span class="m">0</span>.000160752<span class="w"> </span>s,<span class="w"> </span><span class="m">398</span><span class="w"> </span>kB/s
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><ul class="simple">
+<li><p>Save the public key into a file</p></li>
+</ul>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dd<span class="w"> </span><span class="k">if</span><span class="o">=</span>testkey.der<span class="w"> </span><span class="nv">bs</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">count</span><span class="o">=</span><span class="m">64</span><span class="w"> </span><span class="nv">skip</span><span class="o">=</span><span class="m">57</span><span class="w"> </span>&gt;<span class="w"> </span>testkey_pub.bin
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">64</span>+0<span class="w"> </span>records<span class="w"> </span><span class="k">in</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">64</span>+0<span class="w"> </span>records<span class="w"> </span>out
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">64</span><span class="w"> </span>bytes<span class="w"> </span>copied,<span class="w"> </span><span class="m">0</span>.000347221<span class="w"> </span>s,<span class="w"> </span><span class="m">184</span><span class="w"> </span>kB/s
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><ul class="simple">
+<li><p>Copy <code class="docutils literal notranslate"><span class="pre">testkey_pub.bin</span></code> file to the target with <code class="docutils literal notranslate"><span class="pre">scp</span></code>, then flash it with <code class="docutils literal notranslate"><span class="pre">adiotp-cli</span></code></p></li>
+</ul>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>scp<span class="w"> </span>testkey_pub.bin<span class="w"> </span>root@&lt;TARGET_IP&gt;:/tmp/testkey_pub.bin
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div></section>
+<section id="program-the-key-into-the-otp-flash-memory">
+<h3>Program the key into the OTP flash memory<a class="headerlink" href="#program-the-key-into-the-otp-flash-memory" title="Link to this heading"></a></h3>
+<p><strong>Note:</strong> This is a one-time, irreversible operation - the OTP (One-Time
+Programmable) Flash cannot be erased or rewritten.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`Terminal1:</span> <span class="pre">minicom`</span></code></p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/tmp
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>/tmp$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span>testkey_pub.bin<span class="w"> </span><span class="p">|</span><span class="w"> </span>adiotp-cli<span class="w"> </span>-s<span class="w"> </span><span class="m">12</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><ul class="simple">
+<li><p>Print the key with <code class="docutils literal notranslate"><span class="pre">adiotp-cli</span></code> to verify it was programmed successfully</p></li>
+</ul>
+<div class="code-shell"><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>adiotp-cli 12 | xxd
+00000000: 5a06 5d03 1919 feb5 ee87 ed47 6b4e e6c9  Z.]........GkN..
+00000010: 5921 6fd0 11fa 77ae 6b99 5145 49b9 ec15  Y!o...w.k.QEI...
+00000020: 919c c00e 2e3b 9f44 c14f f6a8 f80e a07d  .....;.D.O.....}
+00000030: 6ad5 72b4 5f37 5931 efe8 bf21 fd76 4747  j.r._7Y1...!.vGG
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><ul class="simple">
+<li><p>Another method to verify key programmation successfully</p></li>
+</ul>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>adiotp-cli<span class="w"> </span><span class="m">12</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sha256sum<span class="w"> </span>-<span class="w"> </span>/tmp/testkey_pub.bin
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>7c4888b77901b12b8fdd3f69e0124727286fcdc14a85214befc1fb181f273c59<span class="w">  </span>-
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>7c4888b77901b12b8fdd3f69e0124727286fcdc14a85214befc1fb181f273c59<span class="w">  </span>/tmp/testkey_pub.bin
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>Bravo, You have successfully programmed the secure boot key.</p>
+</section>
+</section>
+<section id="using-the-system">
+<h2>Using the System<a class="headerlink" href="#using-the-system" title="Link to this heading"></a></h2>
+<section id="running-op-tee-applications">
+<h3>Running OP-TEE applications<a class="headerlink" href="#running-op-tee-applications" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Reboot your device then run <code class="docutils literal notranslate"><span class="pre">xtest</span></code> (<strong>TEE sanity test suite</strong>)</p></li>
+</ul>
+<p>First of all, let’s check the status of the <code class="docutils literal notranslate"><span class="pre">tee-supplicant</span></code> systemd service,
+then run the <code class="docutils literal notranslate"><span class="pre">xtest</span></code>.</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl<span class="w"> </span>status<span class="w"> </span>tee-supplicant
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>* tee-supplicant.service - TEE Supplicant
+     Loaded: loaded (8;;file://adsp-sc598-som-ezkit/lib/systemd/system/tee-supplicant.service/lib/systemd/system/tee-supplicant.service8;;; enabled; vendor preset: enabled)
+     Active: active (running) since Thu 2022-04-28 17:42:33 UTC; 3min 36s ago
+   Main PID: 268 (tee-supplicant)
+      Tasks: 1 (limit: 238)
+     Memory: 544.0K
+     CGroup: /system.slice/tee-supplicant.service
+             `- 268 /usr/sbin/tee-supplicant
+
+Apr 28 17:42:33 adsp-sc598-som-ezkit systemd[1]: Started TEE Supplicant.
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xtest
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Run test suite with level=0
+
+TEE test application started over default TEE instance
+######################################################
+#
+# regression
+#
+######################################################
+
+* regression_1001 Core self tests
+E/LD:  init_elf:439 sys_open_ta_bin(d96a5b40-c3e5-21e3-8794-1002a5d5c61b)
+E/TC:? 0 ldelf_init_with_ldelf:130 ldelf failed with res: 0xffff0008
+ - 1001 -   skip test, pseudo TA not found
+  regression_1001 OK
+
+...
+
+regression_8102 OK
+regression_8103 OK
++-----------------------------------------------------
+26175 subtests of which 0 failed
+93 test cases of which 0 failed
+0 test cases were skipped
+TEE test application done!
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div></section>
+<section id="using-the-sharc-cores">
+<h3>Using the SHARC Cores<a class="headerlink" href="#using-the-sharc-cores" title="Link to this heading"></a></h3>
+<section id="signing-the-sharc-firmware">
+<h4>Signing the SHARC firmware<a class="headerlink" href="#signing-the-sharc-firmware" title="Link to this heading"></a></h4>
+<p>First, copy the firmware files from <code class="docutils literal notranslate"><span class="pre">/lib/firmware</span></code> on the target system, to
+the host. Then, the following commands can be used to sign the firmware.
+Finally, transfer the signed files back to the target and place in
+<code class="docutils literal notranslate"><span class="pre">/lib/firmware</span></code> next to the original firmware.</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/opt/analog/cces/2.12.1/adi_signtool<span class="w"> </span>-proc<span class="w"> </span>ADSP-SC598<span class="w"> </span>sign<span class="w"> </span>-type<span class="w"> </span>BLp<span class="w"> </span>-algo<span class="w"> </span>ecdsa256<span class="w"> </span>-infile<span class="w"> </span>adi_adsp_core1_fw.ldr<span class="w"> </span>-outfile<span class="w"> </span>adi_adsp_core1_fw_signed.ldr<span class="w"> </span>-prikey<span class="w"> </span>/opt/adi-testkeys/testkey.der
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/opt/analog/cces/2.12.1/adi_signtool<span class="w"> </span>-proc<span class="w"> </span>ADSP-SC598<span class="w"> </span>sign<span class="w"> </span>-type<span class="w"> </span>BLp<span class="w"> </span>-algo<span class="w"> </span>ecdsa256<span class="w"> </span>-infile<span class="w"> </span>adi_adsp_core2_fw.ldr<span class="w"> </span>-outfile<span class="w"> </span>adi_adsp_core2_fw_signed.ldr<span class="w"> </span>-prikey<span class="w"> </span>/opt/adi-testkeys/testkey.der
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div></section>
+<section id="using-the-signed-firmware">
+<h4>Using the Signed Firmware<a class="headerlink" href="#using-the-signed-firmware" title="Link to this heading"></a></h4>
+<p>The following commands can then be used to load the signed firmware images.</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Stop the SHARC cores</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sharc-cli<span class="w"> </span>-z<span class="w"> </span><span class="m">0</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sharc-cli<span class="w"> </span>-z<span class="w"> </span><span class="m">1</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Halt the RPMsg driver</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rmmod<span class="w"> </span>adi_rpmsg
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load the firmware</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sharc-cli<span class="w"> </span>-l<span class="w"> </span>/lib/firmware/adi_adsp_core1_fw_signed.ldr<span class="w"> </span><span class="m">0</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sharc-cli<span class="w"> </span>-l<span class="w"> </span>/lib/firmware/adi_adsp_core2_fw_signed.ldr<span class="w"> </span><span class="m">1</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Re-start the SHARC cores</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sharc-cli<span class="w"> </span>-g<span class="w"> </span><span class="m">0</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sharc-cli<span class="w"> </span>-g<span class="w"> </span><span class="m">1</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Re-load the RPMsg driver</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>modprobe<span class="w"> </span>adi_rpmsg
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>After running the <code class="docutils literal notranslate"><span class="pre">modprobe</span></code> command, you should see output similar to below:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[   77.043231] adi-rpmsg scb:core0-rpmsg@0x28240000: vrings in vdev-vring reserved-memory.
+[   77.059071] adi-rpmsg scb:core0-rpmsg@0x28240000: assigned reserved memory node vdev0buffer@20084000
+[   77.079176] adi-rpmsg scb:core0-rpmsg@0x28240000: msg buffers in memory-region.
+[   77.104359] adi-rpmsg scb:core1-rpmsg@0x28a40000: vrings in vdev-vring reserved-memory.
+[   77.125730] adi-rpmsg scb:core1-rpmsg@0x28a40000: assigned reserved memory node vdev0buffer@200A8000
+[   77.155792] adi-rpmsg scb:core1-rpmsg@0x28a40000: msg buffers in memory-region.
+[   77.183193] virtio_rpmsg_bus virtio0: creating channel sharc-echo addr 0x97
+[   77.190225] virtio_rpmsg_bus virtio0: creating channel sharc-echo-cap addr 0xa1
+[   77.199660] virtio_rpmsg_bus virtio0: rpmsg host is online
+[   77.207199] virtio_rpmsg_bus virtio1: creating channel sharc-echo addr 0x98
+[   77.214204] virtio_rpmsg_bus virtio1: creating channel sharc-echo-cap addr 0xa2
+[   77.221576] virtio_rpmsg_bus virtio1: rpmsg host is online
+</pre></div>
+</div>
+<p>The SHARC cores are now up, and running the signed firmware images.</p>
+<p>In order to communicate with the cores, we must first bind some RPMsg
+endpoints:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rpmsg-bind-chardev<span class="w"> </span>-p<span class="w"> </span>virtio0.sharc-echo.-1.<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>-e<span class="w"> </span><span class="m">151</span><span class="w"> </span>-s<span class="w"> </span><span class="m">50</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rpmsg-bind-chardev<span class="w"> </span>-p<span class="w"> </span>virtio0.sharc-echo-cap.-1.<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>-e<span class="w"> </span><span class="m">161</span><span class="w"> </span>-s<span class="w"> </span><span class="m">61</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rpmsg-bind-chardev<span class="w"> </span>-p<span class="w"> </span>virtio1.sharc-echo.-1.<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>-e<span class="w"> </span><span class="m">152</span><span class="w"> </span>-s<span class="w"> </span><span class="m">51</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rpmsg-bind-chardev<span class="w"> </span>-p<span class="w"> </span>virtio1.sharc-echo-cap.-1.<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>-e<span class="w"> </span><span class="m">162</span><span class="w"> </span>-s<span class="w"> </span><span class="m">62</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div></section>
+</section>
+<section id="communicating-with-the-sharc-cores">
+<h3>Communicating with the SHARC Cores<a class="headerlink" href="#communicating-with-the-sharc-cores" title="Link to this heading"></a></h3>
+<p>Finally, we can  communicate with the SHARC cores. For example:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>hello<span class="w"> </span><span class="p">|</span><span class="w"> </span>rpmsg-xmit<span class="w"> </span>-n<span class="w"> </span><span class="m">5</span><span class="w"> </span>/dev/rpmsg0
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">hello</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>from<span class="w"> </span>Core1
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>hello<span class="w"> </span><span class="p">|</span><span class="w"> </span>rpmsg-xmit<span class="w"> </span>-n<span class="w"> </span><span class="m">5</span><span class="w"> </span>/dev/rpmsg1
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">HELLO</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>capitalized<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>from<span class="w"> </span>Core1
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>hello<span class="w"> </span><span class="p">|</span><span class="w"> </span>rpmsg-xmit<span class="w"> </span>-n<span class="w"> </span><span class="m">5</span><span class="w"> </span>/dev/rpmsg2
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">hello</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>from<span class="w"> </span>Core2
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>hello<span class="w"> </span><span class="p">|</span><span class="w"> </span>rpmsg-xmit<span class="w"> </span>-n<span class="w"> </span><span class="m">5</span><span class="w"> </span>/dev/rpmsg3
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">HELLO</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>capitalized<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>from<span class="w"> </span>Core2
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div></section>
+</section>
+<section id="mbed-tls-test-suite">
+<h2>Mbed-TLS test suite<a class="headerlink" href="#mbed-tls-test-suite" title="Link to this heading"></a></h2>
+<p>Mbed-TLS provides a test suite for Yocto’s <code class="docutils literal notranslate"><span class="pre">ptest</span></code>.</p>
+<p>Install ptest by adding the following to <code class="docutils literal notranslate"><span class="pre">conf/local.conf</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Test Suite
+DISTRO_FEATURES:append = &quot; ptest &quot;
+IMAGE_INSTALL:append = &quot; ptest-runner mbedtls-ptest &quot;
+</pre></div>
+</div>
+<p>This will build <code class="docutils literal notranslate"><span class="pre">ptest</span></code> and <code class="docutils literal notranslate"><span class="pre">ptest-runner</span></code> (used to run <code class="docutils literal notranslate"><span class="pre">ptest</span></code> test
+suites from the host system), and Mbed-TLS’s test suite, <code class="docutils literal notranslate"><span class="pre">mbedtls-ptest</span></code>.</p>
+<p>To run the test suite, run the following from the target system:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ptest-runner
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>You should see output similar to the following:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>root@adsp-sc598-som-ezkit:/usr/lib/mbedtls/ptest/tests# ptest-runner
+START: ptest-runner
+2024-09-17T12:44
+BEGIN: /usr/lib/mbedtls/ptest
+PASS: test_suite_aes.cbc
+PASS: test_suite_aes.cfb
+PASS: test_suite_aes.ctr
+PASS: test_suite_aes.ecb
+PASS: test_suite_aes.ofb
+PASS: test_suite_aes.rest
+PASS: test_suite_aes.xts
+PASS: test_suite_alignment
+...
+PASS: test_suite_x509parse
+PASS: test_suite_x509write
+DURATION: 556
+END: /usr/lib/mbedtls/ptest
+2024-09-17T12:53
+STOP: ptest-runner
+TOTAL: 1 FAIL: 0
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </div>
+              <div class="related">
+                &nbsp;
+    <a href="Secure-Boot-Support.html" title="Previous document (Alt+Shift+LeftArrow)" class="prev">Secure Boot Support</a>
+    <a href="Secure-Boot-Support-in-release-3.1.0.html" title="Next document (Alt+Shift+RightArrow)" class="next">Secure Boot Support (Release 3.1.0)</a>
+              </div>
+          
+        </div>
+      </div>
+  </div>
+
+  <label id="cancel-area-show-toc" for="input-show-toc"></label>
+  <label id="cancel-area-show-localtoc" for="input-show-localtoc"></label>
+    <footer>
+      &#169;2026, Analog Devices, Inc.
+      
+      |
+      Made with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+      &amp; <a href="https://github.com/analogdevicesinc/doctools">Doctools</a>
+      
+    </footer>
+  </body>
+</html>
