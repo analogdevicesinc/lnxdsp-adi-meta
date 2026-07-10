@@ -64,7 +64,7 @@ Where ``sdk_usr`` is the SDK installation's ``usr`` directory, for example:
 
 .. code-block:: text
 
-   /opt/adi-distro-glibc/<version>/sysroots/x86_64-adi_glibc_sdk-linux/usr/
+   /opt/adi-distro-glibc/5.0.1/sysroots/x86_64-adi_glibc_sdk-linux/usr/
 
 .. note::
 
