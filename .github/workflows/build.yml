@@ -14,7 +14,7 @@ on:
         default: main
       manifest_repo:
         description: "Manifest repository"
-        default: "https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git"
+        default: ""
   workflow_call:
     inputs:
       machine:
@@ -28,7 +28,7 @@ on:
         default: main
       manifest_repo:
         type: string
-        default: "https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git"
+        default: ""
 
 permissions:
   contents: read
@@ -65,9 +65,11 @@ jobs:
 
       - name: Initialize repo manifest
         run: |
+          manifest_repo="${{ inputs.manifest_repo }}"
+          [[ -n "$manifest_repo" ]] || manifest_repo="https://github.com/${{ github.repository_owner }}/lnxdsp-repo-manifest.git"
           cd "${YOCTO_WORKSPACE}"
           ./bin/repo init \
-            -u ${{ inputs.manifest_repo }} \
+            -u "$manifest_repo" \
             -m "${{ inputs.manifest }}.xml"
 
       - name: Sync all sources
