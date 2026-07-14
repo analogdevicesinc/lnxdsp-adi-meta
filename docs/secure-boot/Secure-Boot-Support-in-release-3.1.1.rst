@@ -4,9 +4,17 @@ Secure Boot Support (Release 3.1.1)
 Introduction
 ------------
 
-This guide helps you build and deploy a security-hardened Linux distribution for ADSP-SC5xx processors with secure boot capabilities. Secure boot ensures that only authenticated software runs on your hardware, protecting against unauthorized firmware modifications and establishing a chain of trust from the bootloader through the Linux kernel.
+This guide helps you build and deploy a security-hardened Linux distribution
+for ADSP-SC5xx processors with secure boot capabilities. Secure boot ensures
+that only authenticated software runs on your hardware, protecting against
+unauthorized firmware modifications and establishing a chain of trust from the
+bootloader through the Linux kernel.
 
-By following this guide, you'll create a complete secure boot environment that integrates OP-TEE (Open Portable Trusted Execution Environment), ARM Trusted Firmware-A, and Mbed-TLS into your U-Boot and Linux images. The system will verify cryptographic signatures at each boot stage, ensuring the integrity of your software stack.
+By following this guide, you'll create a complete secure boot environment that
+integrates OP-TEE (Open Portable Trusted Execution Environment), ARM Trusted
+Firmware-A, and Mbed-TLS into your U-Boot and Linux images. The system will
+verify cryptographic signatures at each boot stage, ensuring the integrity of
+your software stack.
 
 **What you'll learn:**
 
@@ -38,29 +46,33 @@ Getting Started
 Prerequisites
 ~~~~~~~~~~~~~
 
-System requirements and dependencies are the same as the standard (non-secure) distribution, with the addition of CCES for signing tools.
+System requirements and dependencies are the same as the standard (non-secure)
+distribution, with the addition of CCES for signing tools.
 
 Build System Setup
 ------------------
 
 
-*These steps can be skipped if you have previously followed one of the Getting Started guides, such as :doc:`Getting Started with ADSP‐SC598 (Linux for ADSP‐SC5xx Processors 3.1.1) <../getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-3.1.1)>`*.
+*These steps can be skipped if you have previously followed one of the Getting
+Started guides, such as :doc:`Getting Started with ADSP‐SC598 (Linux for
+ADSP‐SC5xx Processors 3.1.1)
+<../getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-3.1.1)>`*.
 
 Fetch and install the sources:
 
 
-.. code-block:: shell
+.. shell::
 
-   mkdir ~/gxp2
-   cd ~/gxp2
-   mkdir bin
-   curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ./bin/repo
-   chmod a+x ./bin/repo
-   ./bin/repo init \
-      -u https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git \
-      -b develop/3.1.1-security \
-      -m release-3.1.1.xml
-   ./bin/repo sync
+   $mkdir ~/gxp2
+   $cd ~/gxp2
+   $mkdir bin
+   $curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ./bin/repo
+   $chmod a+x ./bin/repo
+   $./bin/repo init \
+   $   -u https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git \
+   $   -b develop/3.1.1-security \
+   $   -m release-3.1.1.xml
+   $./bin/repo sync
 
 
 Key Generation
@@ -70,30 +82,30 @@ Key Generation
 * Create directory to store the keys
 
 
-.. code-block:: shell
+.. shell::
 
-   sudo mkdir /opt/adi-testkeys
-   
-   # ensures the normal user can read/write the directory
-   sudo chown $(whoami):$(whoami) /opt/adi-testkeys
+   $sudo mkdir /opt/adi-testkeys
+
+   $# ensures the normal user can read/write the directory
+   $sudo chown $(whoami):$(whoami) /opt/adi-testkeys
 
 
 * Generate key Pair for LDR images signing using ``adi_signtool``
 
 
-.. code-block:: shell
+.. shell::
 
-   cd /opt/adi-testkeys
-   /opt/analog/cces/2.12.1/adi_signtool genkeypair -algo ecdsa256 -outfile testkey.der
+   $cd /opt/adi-testkeys
+   $/opt/analog/cces/2.12.1/adi_signtool genkeypair -algo ecdsa256 -outfile testkey.der
 
 
 * Generate key and certificate for verified boot
 
 
-.. code-block:: shell
+.. shell::
 
-   openssl genrsa -F4 -out dev.key 2048
-   openssl req -batch -new -x509 -key dev.key -out dev.crt
+   $openssl genrsa -F4 -out dev.key 2048
+   $openssl req -batch -new -x509 -key dev.key -out dev.crt
 
 
 Build Linux image and SDK
@@ -103,15 +115,15 @@ Build Linux image and SDK
 * Prepare the build work directory:
 
 
-.. code-block:: shell
+.. shell::
 
-   source setup-environment --machine adsp-sc598-som-ezkit --distro adi-security --builddir build-security
+   $source setup-environment --machine adsp-sc598-som-ezkit --distro adi-security --builddir build-security
 
 
 * Add the following lines into ``conf/local.conf``:
 
 
-.. code-block:: shell
+.. code-block::
 
    ADI_SIGNTOOL_KEY="/opt/adi-testkeys/testkey.der"
    ADI_SIGNTOOL_PATH="/opt/analog/cces/2.12.1/adi_signtool"
@@ -124,9 +136,9 @@ Build Linux image and SDK
 * The complete system (Linux Image, root filesystem and bootloader) can now be built with:
 
 
-.. code-block:: shell
+.. shell::
 
-   bitbake adsp-sc5xx-minimal
+   $bitbake adsp-sc5xx-minimal
 
 
 Building the SDK
@@ -136,27 +148,27 @@ Building the SDK
 * Build the SDK with:
 
 
-.. code-block:: shell
+.. shell::
 
-   bitbake adsp-sc5xx-minimal -c populate_sdk
+   $bitbake adsp-sc5xx-minimal -c populate_sdk
 
 
 * It can then be installed by invoking the self-extracting archive, as follows:
 
 
-.. code-block:: shell
+.. shell::
 
-   cd tmp/deploy/sdk
-   sudo ./adi-security-glibc-x86_64-adsp-sc5xx-minimal-cortexa55-adsp-sc598-som-ezkit-toolchain-3.1.1.sh
-   Analog Devices Inc Reference Distro (glibc) SDK installer version 3.1.1
-   =======================================================================
-   Enter target directory for SDK (default: /opt/adi-security/3.1.1):
-   You are about to install the SDK to "/opt/adi-security/3.1.1". Proceed [Y/n]? y
-   Extracting SDK.......................................................................................................................done
-   Setting it up...done
-   SDK has been successfully set up and is ready to be used.
-   Each time you wish to use the SDK in a new shell session, you need to source the environment setup script e.g.
-    $ . /opt/adi-security/3.1.1/environment-setup-cortexa55-adi_glibc-linux
+   $cd tmp/deploy/sdk
+   $sudo ./adi-security-glibc-x86_64-adsp-sc5xx-minimal-cortexa55-adsp-sc598-som-ezkit-toolchain-3.1.1.sh
+   $Analog Devices Inc Reference Distro (glibc) SDK installer version 3.1.1
+   $=======================================================================
+   $Enter target directory for SDK (default: /opt/adi-security/3.1.1):
+   $You are about to install the SDK to "/opt/adi-security/3.1.1". Proceed [Y/n]? y
+   $Extracting SDK.......................................................................................................................done
+   $Setting it up...done
+   $SDK has been successfully set up and is ready to be used.
+   $Each time you wish to use the SDK in a new shell session, you need to source the environment setup script e.g.
+   $ $ . /opt/adi-security/3.1.1/environment-setup-cortexa55-adi_glibc-linux
 
 
 Setup the hardware
@@ -164,7 +176,8 @@ Setup the hardware
 
 
 
-Before installing the software on to the development board, ensure that the following cables are connected:
+Before installing the software on to the development board, ensure that the
+following cables are connected:
 
 .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5471efe3-9cb0-44a1-a96e-72f453e1431f
    :width: 400
@@ -176,7 +189,8 @@ Before installing the software on to the development board, ensure that the foll
 * ICE is also connected to host PC via USB mini cable
 
 
-On the carrier board is a set of micro switches labelled SW1.  These should all be set to the OFF position before continuing.
+On the carrier board is a set of micro switches labelled SW1.  These should all
+be set to the OFF position before continuing.
 
 .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5e285aff-e67d-4d9c-8157-7f596c32134b
    :width: 400
@@ -199,7 +213,9 @@ Transfer, run and flash U-Boot on the board for the first time
 
 .. note::
 
-   It's always good practice to erase the contents of ``/tftpboot/`` before running and/or flashing a new build of U-Boot or Linux. You can do so by executing ``rm /tftpboot/*`` on your host PC before proceeding
+   It's always good practice to erase the contents of ``/tftpboot/`` before
+   running and/or flashing a new build of U-Boot or Linux. You can do so by
+   executing ``rm /tftpboot/*`` on your host PC before proceeding
 
 
 Transfer and run U-Boot on RAM
@@ -209,24 +225,25 @@ Transfer and run U-Boot on RAM
 Copy the U-Boot binary & loader files to the tftp directory:
 
 
-.. code-block:: shell
+.. shell::
 
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/u-boot-proper-sc598-som-ezkit.elf /tftpboot/
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/u-boot-spl-sc598-som-ezkit.elf /tftpboot/
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot.ldr /tftpboot/
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot-unsigned.ldr /tftpboot/
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot.ldr /tftpboot/
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot-unsigned.ldr /tftpboot/
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/u-boot-proper-sc598-som-ezkit.elf /tftpboot/
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/u-boot-spl-sc598-som-ezkit.elf /tftpboot/
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot.ldr /tftpboot/
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot-unsigned.ldr /tftpboot/
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot.ldr /tftpboot/
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot-unsigned.ldr /tftpboot/
 
 
-The console output from U-Boot and later on Linux will appear on the USB serial port configured in minicom earlier so open up minicom.
+The console output from U-Boot and later on Linux will appear on the USB serial
+port configured in minicom earlier so open up minicom.
 
 ```Terminal1: minicom```
 
 
-.. code-block:: shell
+.. shell::
 
-   sudo minicom
+   $sudo minicom
 
 
 In a separate console launch OpenOCD and connect to the development board.
@@ -235,18 +252,19 @@ In a separate console launch OpenOCD and connect to the development board.
 ```Terminal2: OpenOCD```
 
 
-.. code-block:: shell
+.. shell::
 
-   sdk_usr=/opt/adi-security/3.1.1/sysroots/x86_64-adi_glibc_sdk-linux/usr/
-   $sdk_usr/bin/openocd -f $sdk_usr/share/openocd/scripts/interface/<ICE>.cfg -f $sdk_usr/share/openocd/scripts/target/adspsc59x_a55.cfg
+   $sdk_usr=/opt/adi-security/3.1.1/sysroots/x86_64-adi_glibc_sdk-linux/usr/
+   $$sdk_usr/bin/openocd -f $sdk_usr/share/openocd/scripts/interface/<ICE>.cfg -f $sdk_usr/share/openocd/scripts/target/adspsc59x_a55.cfg
 
-Where ```<ICE>```` should be replaced with ````ice1000```` or ````ice2000``` depending on your hardware.
-When successful you should see a message similar to the console output below
+Where ```<ICE>```` should be replaced with ````ice1000```` or ````ice2000```
+depending on your hardware. When successful you should see a message similar to
+the console output below
 
 ```Terminal2: OpenOCD```
 
 
-.. code-block:: shell
+.. code-block:: text
 
    Open On-Chip Debugger (PKGVERSION)  OpenOCD 0.10.0-gf73da81ab (2024-01-31-15:39)
    Licensed under GNU GPL v2
@@ -267,12 +285,15 @@ When successful you should see a message similar to the console output below
    Info : Listening on port 3333 for gdb connections
 
 
-In a third console window launch GDB and type ```target extended-remote :3333````. This will make GDB to connect to the gdbserver on the local host using port 3333. Then, load the U-Boot SPL into RAM by typing ````load````. Hit ````Ctrl+C``` to interrupt thereafter.
+In a third console window launch GDB and type ```target extended-remote
+:3333````. This will make GDB to connect to the gdbserver on the local host
+using port 3333. Then, load the U-Boot SPL into RAM by typing ````load````. Hit
+````Ctrl+C``` to interrupt thereafter.
 
 ```Terminal3: GDB```
 
 
-.. code-block:: shell
+.. code-block:: console
 
    cd /tftpboot
    /opt/adi-security/3.1.1/sysroots/x86_64-adi_glibc_sdk-linux/usr/bin/aarch64-adi_glibc-linux/aarch64-adi_glibc-linux-gdb u-boot-spl-sc598-som-ezkit.elf
@@ -291,12 +312,13 @@ In a third console window launch GDB and type ```target extended-remote :3333```
    Continuing.
 
 
-You will see a message on Terminal 1 running minicom, informing you that you can now load U-Boot Proper
+You will see a message on Terminal 1 running minicom, informing you that you
+can now load U-Boot Proper
 
 ```Terminal1: minicom```
 
 
-.. code-block:: shell
+.. code-block:: text
 
    U-Boot SPL 2023.04 (Sep 21 2023 - 13:39:40 +0000)
    ADI Boot Mode: 0x0 (JTAG/BOOTROM)
@@ -308,36 +330,38 @@ Now, press Ctrl-C to halt SPL, and load U-Boot Proper into RAM.
 ```Terminal3: GDB```
 
 
-.. code-block:: shell
+.. shell::
 
-   ^C
-   Program received signal SIGINT, Interrupt.
-   ...
-   (gdb) load u-boot-proper-sc598-som-ezkit.elf
-   Loading section .text, size 0x188 lma 0x96000000
-   Loading section .efi_runtime, size 0xb80 lma 0x96000188
-   Loading section .text_rest, size 0x6c348 lma 0x96001000
-   Loading section .rodata, size 0x15ee9 lma 0x9606d348
-   Loading section .hash, size 0x18 lma 0x96083238
-   Loading section .dtb.init.rodata, size 0x2290 lma 0x96083250
-   Loading section .data, size 0x4678 lma 0x960854e0
-   Loading section .got, size 0x8 lma 0x96089b58
-   Loading section .got.plt, size 0x18 lma 0x96089b60
-   Loading section __u_boot_list, size 0x3b40 lma 0x96089b78
-   Loading section .efi_runtime_rel, size 0x1b0 lma 0x9608d6b8
-   Loading section .rela.dyn, size 0xd8f0 lma 0x9608d868
-   Start address 0x0000000096000000, load size 634457
-   Transfer rate: 28 KB/sec, 13217 bytes/write.
-   (gdb) c
-   Continuing.
+   $^C
+   $Program received signal SIGINT, Interrupt.
+   $...
+   $(gdb) load u-boot-proper-sc598-som-ezkit.elf
+   $Loading section .text, size 0x188 lma 0x96000000
+   $Loading section .efi_runtime, size 0xb80 lma 0x96000188
+   $Loading section .text_rest, size 0x6c348 lma 0x96001000
+   $Loading section .rodata, size 0x15ee9 lma 0x9606d348
+   $Loading section .hash, size 0x18 lma 0x96083238
+   $Loading section .dtb.init.rodata, size 0x2290 lma 0x96083250
+   $Loading section .data, size 0x4678 lma 0x960854e0
+   $Loading section .got, size 0x8 lma 0x96089b58
+   $Loading section .got.plt, size 0x18 lma 0x96089b60
+   $Loading section __u_boot_list, size 0x3b40 lma 0x96089b78
+   $Loading section .efi_runtime_rel, size 0x1b0 lma 0x9608d6b8
+   $Loading section .rela.dyn, size 0xd8f0 lma 0x9608d868
+   $Start address 0x0000000096000000, load size 634457
+   $Transfer rate: 28 KB/sec, 13217 bytes/write.
+   $(gdb) c
+   $Continuing.
 
 
-At this point U-Boot will now be running in RAM on your target board. You should see U-Boot booting in the minicom console (Terminal 1). Press a key to interrupt the boot process before the countdown terminates:
+At this point U-Boot will now be running in RAM on your target board. You
+should see U-Boot booting in the minicom console (Terminal 1). Press a key to
+interrupt the boot process before the countdown terminates:
 
 ```Terminal1: minicom```
 
 
-.. code-block:: shell
+.. code-block:: text
 
    U-Boot 2023.04 (Dec 11 2023 - 16:04:11 +0000)
    
@@ -361,14 +385,19 @@ Flash (Unsigned) U-Boot to SPI Flash
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot loader files (```stage1-boot.ldr````, ````stage1-boot-unsigned.ldr````, ````stage2-boot.ldr````, ````stage2-boot-unsigned.ldr```) on TFTP.
+In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot
+loader files (```stage1-boot.ldr````, ````stage1-boot-unsigned.ldr````,
+````stage2-boot.ldr````, ````stage2-boot-unsigned.ldr```) on TFTP.
 
-**Note:** We are going to use **stage1-boot-unsigned.ldr** and **stage2-boot-unsigned.ldr** to boot the device then burn the secure boot key. This is needed only for the first time secure boot key burning. For the next flash you should use **stage1-boot.ldr** and **stage2-boot.ldr**
+**Note:** We are going to use **stage1-boot-unsigned.ldr** and
+**stage2-boot-unsigned.ldr** to boot the device then burn the secure boot key.
+This is needed only for the first time secure boot key burning. For the next
+flash you should use **stage1-boot.ldr** and **stage2-boot.ldr**
 
 ```Terminal1: minicom```
 
 
-.. code-block:: shell
+.. code-block:: console
 
    => setenv tftpserverip <SERVERIP>
 
@@ -376,28 +405,30 @@ In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot 
 
 .. note::
 
-   To find the IP address of your host Linux PC you can issue the ``ip addr`` command from the shell or console.
+   To find the IP address of your host Linux PC you can issue the ``ip addr``
+   command from the shell or console.
 
 
 If your network **supports** DHCP, run:
 
-.. code-block:: shell
+.. code-block:: console
 
    => dhcp
 
 
 If your network **does NOT support** DHCP, run:
 
-.. code-block:: shell
+.. code-block:: console
 
    => set ipaddr <ADDR>
 
 
 Where ```<ADDR>``` is the IP address you want to assign.
 
-Next, run the U-Boot update command to copy the U-Boot loader files from the host PC to the target board, and write it into flash:
+Next, run the U-Boot update command to copy the U-Boot loader files from the
+host PC to the target board, and write it into flash:
 
-.. code-block:: shell
+.. code-block:: console
 
    => sf probe 2:1
    => sf erase 0x0 0x01a0000
@@ -408,7 +439,7 @@ Next, run the U-Boot update command to copy the U-Boot loader files from the hos
 
 You will see an output similar to the one below:
 
-.. code-block:: shell
+.. code-block:: console
 
    => run update_spi_uboot_only
    PHY 0x00: OUI = 0x80028, Model = 0x23, Rev = 0x01, 100baseT, FDX
@@ -452,7 +483,11 @@ You will see an output similar to the one below:
    =>
 
 
-At this point the U-Boot binary is stored in flash. You can now disconnect the ICE-1000 or ICE-2000 from the development board and make sure to switch the BMODE to position 1. You will only need to reconnect this if your board fails to boot and you need to re-follow these instructions. **Do not reset the board at this stage.**
+At this point the U-Boot binary is stored in flash. You can now disconnect the
+ICE-1000 or ICE-2000 from the development board and make sure to switch the
+BMODE to position 1. You will only need to reconnect this if your board fails
+to boot and you need to re-follow these instructions. **Do not reset the board
+at this stage.**
 
 Booting Linux
 -------------
@@ -461,44 +496,48 @@ Booting Linux
 Booting the minimal image from QSPI
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The U-Boot console is used to copy U-Boot (SPL and Proper), the minimal root filesystem image and the fitImage (which contains the kernel image and dtb file) into RAM and then write them to Flash. Copy the required files from ``<BUILD DIR>/tmp/deploy/images`` to your ``/tftpboot`` directory.
+The U-Boot console is used to copy U-Boot (SPL and Proper), the minimal root
+filesystem image and the fitImage (which contains the kernel image and dtb
+file) into RAM and then write them to Flash. Copy the required files from
+``<BUILD DIR>/tmp/deploy/images`` to your ``/tftpboot`` directory.
 
 
-.. code-block:: shell
+.. shell::
 
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot.ldr /tftpboot/
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot-unsigned.ldr /tftpboot/
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot.ldr /tftpboot/
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot-unsigned.ldr /tftpboot/
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/fitImage /tftpboot/
-   cp tmp/deploy/images/adsp-sc598-som-ezkit/adsp-sc5xx-minimal-adsp-sc598-som-ezkit.jffs2 /tftpboot
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot.ldr /tftpboot/
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/stage1-boot-unsigned.ldr /tftpboot/
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot.ldr /tftpboot/
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/stage2-boot-unsigned.ldr /tftpboot/
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/fitImage /tftpboot/
+   $cp tmp/deploy/images/adsp-sc598-som-ezkit/adsp-sc5xx-minimal-adsp-sc598-som-ezkit.jffs2 /tftpboot
 
 
 
 If your network **supports** DHCP, run:
 
-.. code-block:: shell
+.. code-block:: console
 
    => run update_spi
 
 <details closed>
   <summary>If your network does NOT support DHCP</summary>
 
-In the U-Boot console configure the board IP address and remove "run init*ethernet;" from the "start*update_spi" command.
+In the U-Boot console configure the board IP address and remove "run
+init*ethernet;" from the "start*update_spi" command.
 
-.. code-block:: shell
+.. code-block:: console
 
    => setenv ipaddr <IPADDR>
    => edit start_update_spi
    => edit: <remove "run init_ethernet;" from here> sf probe ${sfdev}; sf erase 0 ${sfsize}; run update_spi_uboot; run update_spi_fit; run update_spi_rfs; sleep 3; saveenv
 
 
-After editing ```start*update*spi````, proceed to running as ````update_spi```, as above.
-</details>
+After editing ```start*update*spi````, proceed to running as ````update_spi```,
+as above. </details>
 
 You should see output similar to the following.
 
-.. code-block:: shell
+.. code-block:: console
 
    => run update_spi
    PHY 0x00: OUI = 0x80028, Model = 0x23, Rev = 0x01, 100baseT, FDX
@@ -612,12 +651,14 @@ You should see output similar to the following.
 
 
 
-The U-Boot image, root filesystem and Linux kernel are now stored in QSPI. Adjust the BOOT MODE selector to **position 1** and press the RESET button, the board should boot into Linux.
+The U-Boot image, root filesystem and Linux kernel are now stored in QSPI.
+Adjust the BOOT MODE selector to **position 1** and press the RESET button, the
+board should boot into Linux.
 
 
 
 
-.. code-block:: shell
+.. code-block:: text
 
    U-Boot SPL 2023.04 (Dec 11 2023 - 16:04:11 +0000)
    ADI Boot Mode: 0x1 (QSPI Master)
@@ -759,9 +800,9 @@ Extract the Public key and copy it into the target
 * cd into the directory where the keys were generated:
 
 
-.. code-block:: shell
+.. shell::
 
-   cd /opt/adi-testkeys
+   $cd /opt/adi-testkeys
 
 
 * Dump the Key Pair to verify the content
@@ -789,73 +830,74 @@ Extract the Public key and copy it into the target
 * Extract the public key from the DER file with ``dd``
 
 
-.. code-block:: shell
+.. shell::
 
-   dd if=testkey.der bs=1 count=64 skip=57 | xxd
-   00000000: 5a06 5d03 1919 feb5 ee87 ed47 6b4e e6c9  Z.]........GkN..
-   00000010: 5921 6fd0 11fa 77ae 6b99 5145 49b9 ec15  Y!o...w.k.QEI...
-   00000020: 919c c00e 2e3b 9f44 c14f f6a8 f80e a07d  .....;.D.O.....}
-   64+0 records in
-   64+0 records out
-   00000030: 6ad5 72b4 5f37 5931 efe8 bf21 fd76 4747  j.r._7Y1...!.vGG
-   64 bytes copied, 0.000160752 s, 398 kB/s
+   $dd if=testkey.der bs=1 count=64 skip=57 | xxd
+   $00000000: 5a06 5d03 1919 feb5 ee87 ed47 6b4e e6c9  Z.]........GkN..
+   $00000010: 5921 6fd0 11fa 77ae 6b99 5145 49b9 ec15  Y!o...w.k.QEI...
+   $00000020: 919c c00e 2e3b 9f44 c14f f6a8 f80e a07d  .....;.D.O.....}
+   $64+0 records in
+   $64+0 records out
+   $00000030: 6ad5 72b4 5f37 5931 efe8 bf21 fd76 4747  j.r._7Y1...!.vGG
+   $64 bytes copied, 0.000160752 s, 398 kB/s
 
 
 * Save the public key into a file
 
 
-.. code-block:: shell
+.. shell::
 
-   dd if=testkey.der bs=1 count=64 skip=57 > testkey_pub.bin
-   64+0 records in
-   64+0 records out
-   64 bytes copied, 0.000347221 s, 184 kB/s
+   $dd if=testkey.der bs=1 count=64 skip=57 > testkey_pub.bin
+   $64+0 records in
+   $64+0 records out
+   $64 bytes copied, 0.000347221 s, 184 kB/s
 
 
 * Copy ``testkey_pub.bin`` file to the target with ``scp``, then flash it with ``adiotp-cli``
 
 
-.. code-block:: shell
+.. shell::
 
-   scp testkey_pub.bin root@<TARGET_IP>:/tmp/testkey_pub.bin
+   $scp testkey_pub.bin root@<TARGET_IP>:/tmp/testkey_pub.bin
 
 
 Program the key into the OTP flash memory
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-**Note:** This is a one-time, irreversible operation - the OTP (One-Time Programmable) Flash cannot be erased or rewritten.
+**Note:** This is a one-time, irreversible operation - the OTP (One-Time
+Programmable) Flash cannot be erased or rewritten.
 
 ```Terminal1: minicom```
 
 
-.. code-block:: shell
+.. shell::
 
-   cd /tmp
-   cat testkey_pub.bin | adiotp-cli -s 12
+   $cd /tmp
+   $cat testkey_pub.bin | adiotp-cli -s 12
 
 
 * Print the key with ``adiotp-cli`` to verify it was programmed successfully
 
 
-.. code-block:: shell
+.. shell::
 
-   adiotp-cli 12 | xxd
-   00000000: 5a06 5d03 1919 feb5 ee87 ed47 6b4e e6c9  Z.]........GkN..
-   00000010: 5921 6fd0 11fa 77ae 6b99 5145 49b9 ec15  Y!o...w.k.QEI...
-   00000020: 919c c00e 2e3b 9f44 c14f f6a8 f80e a07d  .....;.D.O.....}
-   00000030: 6ad5 72b4 5f37 5931 efe8 bf21 fd76 4747  j.r._7Y1...!.vGG
-   root@adsp-sc598-som-ezkit:~#
+    adiotp-cli 12 | xxd
+    00000000: 5a06 5d03 1919 feb5 ee87 ed47 6b4e e6c9  Z.]........GkN..
+    00000010: 5921 6fd0 11fa 77ae 6b99 5145 49b9 ec15  Y!o...w.k.QEI...
+    00000020: 919c c00e 2e3b 9f44 c14f f6a8 f80e a07d  .....;.D.O.....}
+    00000030: 6ad5 72b4 5f37 5931 efe8 bf21 fd76 4747  j.r._7Y1...!.vGG
+   $
 
 
 * Another method to verify key programmation successfully
 
 
-.. code-block:: shell
+.. shell::
 
-   adiotp-cli 12 | sha256sum - /tmp/testkey_pub.bin
-   7c4888b77901b12b8fdd3f69e0124727286fcdc14a85214befc1fb181f273c59  -
-   7c4888b77901b12b8fdd3f69e0124727286fcdc14a85214befc1fb181f273c59  /tmp/testkey_pub.bin
+   $adiotp-cli 12 | sha256sum - /tmp/testkey_pub.bin
+   $7c4888b77901b12b8fdd3f69e0124727286fcdc14a85214befc1fb181f273c59  -
+   $7c4888b77901b12b8fdd3f69e0124727286fcdc14a85214befc1fb181f273c59  /tmp/testkey_pub.bin
 
 
 Bravo, You have successfully programmed the secure boot key.
@@ -870,54 +912,55 @@ Running OP-TEE applications
 
 * Reboot your device then run ``xtest`` (**TEE sanity test suite**)
 
-First of all, let's check the status of the ``tee-supplicant`` systemd service, then run the ``xtest``.
+First of all, let's check the status of the ``tee-supplicant`` systemd service,
+then run the ``xtest``.
 
 
-.. code-block:: shell
+.. shell::
 
-   root@adsp-sc598-som-ezkit:~# systemctl status tee-supplicant
-   * tee-supplicant.service - TEE Supplicant
-        Loaded: loaded (8;;file://adsp-sc598-som-ezkit/lib/systemd/system/tee-supplicant.service/lib/systemd/system/tee-supplicant.service8;;; enabled; vendor preset: enabled)
-        Active: active (running) since Thu 2022-04-28 17:42:33 UTC; 3min 36s ago
-      Main PID: 268 (tee-supplicant)
-         Tasks: 1 (limit: 238)
-        Memory: 544.0K
-        CGroup: /system.slice/tee-supplicant.service
-                `- 268 /usr/sbin/tee-supplicant
-   
-   Apr 28 17:42:33 adsp-sc598-som-ezkit systemd[1]: Started TEE Supplicant.
-   root@adsp-sc598-som-ezkit:~#
+   $systemctl status tee-supplicant
+    * tee-supplicant.service - TEE Supplicant
+         Loaded: loaded (8;;file://adsp-sc598-som-ezkit/lib/systemd/system/tee-supplicant.service/lib/systemd/system/tee-supplicant.service8;;; enabled; vendor preset: enabled)
+         Active: active (running) since Thu 2022-04-28 17:42:33 UTC; 3min 36s ago
+       Main PID: 268 (tee-supplicant)
+          Tasks: 1 (limit: 238)
+         Memory: 544.0K
+         CGroup: /system.slice/tee-supplicant.service
+                 `- 268 /usr/sbin/tee-supplicant
+
+    Apr 28 17:42:33 adsp-sc598-som-ezkit systemd[1]: Started TEE Supplicant.
+   $
 
 
 
-.. code-block:: shell
+.. shell::
 
-   root@adsp-sc598-som-ezkit:~# xtest
-   Run test suite with level=0
-   
-   TEE test application started over default TEE instance
-   ######################################################
-   #
-   # regression
-   #
-   ######################################################
-   
-   * regression_1001 Core self tests
-   E/LD:  init_elf:439 sys_open_ta_bin(d96a5b40-c3e5-21e3-8794-1002a5d5c61b)
-   E/TC:? 0 ldelf_init_with_ldelf:130 ldelf failed with res: 0xffff0008
-    - 1001 -   skip test, pseudo TA not found
-     regression_1001 OK
-   
-   ...
-   
-   regression_8102 OK
-   regression_8103 OK
-   +-----------------------------------------------------
-   26175 subtests of which 0 failed
-   93 test cases of which 0 failed
-   0 test cases were skipped
-   TEE test application done!
-   root@adsp-sc598-som-ezkit:~#
+   $xtest
+    Run test suite with level=0
+
+    TEE test application started over default TEE instance
+    ######################################################
+    #
+    # regression
+    #
+    ######################################################
+
+    * regression_1001 Core self tests
+    E/LD:  init_elf:439 sys_open_ta_bin(d96a5b40-c3e5-21e3-8794-1002a5d5c61b)
+    E/TC:? 0 ldelf_init_with_ldelf:130 ldelf failed with res: 0xffff0008
+     - 1001 -   skip test, pseudo TA not found
+      regression_1001 OK
+
+    ...
+
+    regression_8102 OK
+    regression_8103 OK
+    +-----------------------------------------------------
+    26175 subtests of which 0 failed
+    93 test cases of which 0 failed
+    0 test cases were skipped
+    TEE test application done!
+   $
 
 
 Using the SHARC Cores
@@ -928,13 +971,16 @@ Signing the SHARC firmware
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-First, copy the firmware files from ``/lib/firmware`` on the target system, to the host. Then, the following commands can be used to sign the firmware. Finally, transfer the signed files back to the target and place in ``/lib/firmware`` next to the original firmware.
+First, copy the firmware files from ``/lib/firmware`` on the target system, to
+the host. Then, the following commands can be used to sign the firmware.
+Finally, transfer the signed files back to the target and place in
+``/lib/firmware`` next to the original firmware.
 
 
-.. code-block:: shell
+.. shell::
 
-   /opt/analog/cces/2.12.1/adi_signtool -proc ADSP-SC598 sign -type BLp -algo ecdsa256 -infile adi_adsp_core1_fw.ldr -outfile adi_adsp_core1_fw_signed.ldr -prikey /opt/adi-testkeys/testkey.der
-   /opt/analog/cces/2.12.1/adi_signtool -proc ADSP-SC598 sign -type BLp -algo ecdsa256 -infile adi_adsp_core2_fw.ldr -outfile adi_adsp_core2_fw_signed.ldr -prikey /opt/adi-testkeys/testkey.der
+   $/opt/analog/cces/2.12.1/adi_signtool -proc ADSP-SC598 sign -type BLp -algo ecdsa256 -infile adi_adsp_core1_fw.ldr -outfile adi_adsp_core1_fw_signed.ldr -prikey /opt/adi-testkeys/testkey.der
+   $/opt/analog/cces/2.12.1/adi_signtool -proc ADSP-SC598 sign -type BLp -algo ecdsa256 -infile adi_adsp_core2_fw.ldr -outfile adi_adsp_core2_fw_signed.ldr -prikey /opt/adi-testkeys/testkey.der
 
 
 Using the Signed Firmware
@@ -944,25 +990,25 @@ Using the Signed Firmware
 The following commands can then be used to load the signed firmware images.
 
 
-.. code-block:: shell
+.. shell::
 
-   # Stop the SHARC cores
-   sharc-cli -z 0
-   sharc-cli -z 1
-   
-   # Halt the RPMsg driver
-   rmmod adi_rpmsg
-   
-   # Load the firmware
-   sharc-cli -l /lib/firmware/adi_adsp_core1_fw_signed.ldr 0
-   sharc-cli -l /lib/firmware/adi_adsp_core2_fw_signed.ldr 1
-   
-   # Re-start the SHARC cores
-   sharc-cli -g 0
-   sharc-cli -g 1
-   
-   # Re-load the RPMsg driver
-   modprobe adi_rpmsg
+   $# Stop the SHARC cores
+   $sharc-cli -z 0
+   $sharc-cli -z 1
+
+   $# Halt the RPMsg driver
+   $rmmod adi_rpmsg
+
+   $# Load the firmware
+   $sharc-cli -l /lib/firmware/adi_adsp_core1_fw_signed.ldr 0
+   $sharc-cli -l /lib/firmware/adi_adsp_core2_fw_signed.ldr 1
+
+   $# Re-start the SHARC cores
+   $sharc-cli -g 0
+   $sharc-cli -g 1
+
+   $# Re-load the RPMsg driver
+   $modprobe adi_rpmsg
 
 
 After running the ``modprobe`` command, you should see output similar to below:
@@ -986,15 +1032,16 @@ After running the ``modprobe`` command, you should see output similar to below:
 
 The SHARC cores are now up, and running the signed firmware images.
 
-In order to communicate with the cores, we must first bind some RPMsg endpoints:
+In order to communicate with the cores, we must first bind some RPMsg
+endpoints:
 
 
-.. code-block:: shell
+.. shell::
 
-   rpmsg-bind-chardev -p virtio0.sharc-echo.-1. -n 1 -e 151 -s 50
-   rpmsg-bind-chardev -p virtio0.sharc-echo-cap.-1. -n 1 -e 161 -s 61
-   rpmsg-bind-chardev -p virtio1.sharc-echo.-1. -n 1 -e 152 -s 51
-   rpmsg-bind-chardev -p virtio1.sharc-echo-cap.-1. -n 1 -e 162 -s 62
+   $rpmsg-bind-chardev -p virtio0.sharc-echo.-1. -n 1 -e 151 -s 50
+   $rpmsg-bind-chardev -p virtio0.sharc-echo-cap.-1. -n 1 -e 161 -s 61
+   $rpmsg-bind-chardev -p virtio1.sharc-echo.-1. -n 1 -e 152 -s 51
+   $rpmsg-bind-chardev -p virtio1.sharc-echo-cap.-1. -n 1 -e 162 -s 62
 
 
 Communicating with the SHARC Cores
@@ -1004,16 +1051,16 @@ Communicating with the SHARC Cores
 Finally, we can  communicate with the SHARC cores. For example:
 
 
-.. code-block:: shell
+.. shell::
 
-   $ echo hello | rpmsg-xmit -n 5 /dev/rpmsg0
-   hello => echo from Core1
-   $ echo hello | rpmsg-xmit -n 5 /dev/rpmsg1
-   HELLO => capitalized echo from Core1
-   $ echo hello | rpmsg-xmit -n 5 /dev/rpmsg2
-   hello => echo from Core2
-   $ echo hello | rpmsg-xmit -n 5 /dev/rpmsg3
-   HELLO => capitalized echo from Core2
+   $$ echo hello | rpmsg-xmit -n 5 /dev/rpmsg0
+   $hello => echo from Core1
+   $$ echo hello | rpmsg-xmit -n 5 /dev/rpmsg1
+   $HELLO => capitalized echo from Core1
+   $$ echo hello | rpmsg-xmit -n 5 /dev/rpmsg2
+   $hello => echo from Core2
+   $$ echo hello | rpmsg-xmit -n 5 /dev/rpmsg3
+   $HELLO => capitalized echo from Core2
 
 
 Mbed-TLS test suite
@@ -1032,14 +1079,15 @@ Install ptest by adding the following to ``conf/local.conf``:
    IMAGE_INSTALL:append = " ptest-runner mbedtls-ptest "
 
 
-This will build ``ptest`` and ``ptest-runner`` (used to run ``ptest`` test suites from the host system), and Mbed-TLS's test suite, ``mbedtls-ptest``.
+This will build ``ptest`` and ``ptest-runner`` (used to run ``ptest`` test
+suites from the host system), and Mbed-TLS's test suite, ``mbedtls-ptest``.
 
 To run the test suite, run the following from the target system:
 
 
-.. code-block:: shell
+.. shell::
 
-   ptest-runner
+   $ptest-runner
 
 
 You should see output similar to the following:

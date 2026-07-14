@@ -1,16 +1,18 @@
 The Kitchen Sink
 ================
 
-This image is fully loaded with all the features offered with the full image with the addition of a few notable packages.
-This example is intended to exhibit the versatility of an open source build and operating system, coupled with our
-ARM-SHARC SoC can allow the user to leverage some extremely complex readily available software.
+This image is fully loaded with all the features offered with the full image
+with the addition of a few notable packages. This example is intended to
+exhibit the versatility of an open source build and operating system, coupled
+with our ARM-SHARC SoC can allow the user to leverage some extremely complex
+readily available software.
 
 Building the image
 ------------------
 
 Go to ``sources/meta/meta-adi/tools`` sources and run
 
-.. code-block:: shell
+.. code-block:: text
 
    machine :: sources/meta-adi/tools » git checkout kitchen_sink
    machine :: sources/meta-adi/tools » chmod +x prepare-kitchen-sink.sh
@@ -29,11 +31,13 @@ Go to ``sources/meta/meta-adi/tools`` sources and run
    Done
    Please proceed to setup environment and build the image.
 
-This will clone and patch the relevant repositories required for compiling the kitchen-sink image.
+This will clone and patch the relevant repositories required for compiling the
+kitchen-sink image.
 
-Go back to the yocto directory and create the build directory as usual with setup-environment, then build ``sc5xx-kitchen-sink``
+Go back to the yocto directory and create the build directory as usual with
+setup-environment, then build ``sc5xx-kitchen-sink``
 
-.. code-block:: shell
+.. code-block:: text
 
    machine :: yocto » source setup-environment -m adsp-sc598-som-ezkit
    Your build environment has been configured with:
@@ -52,16 +56,19 @@ Go back to the yocto directory and create the build directory as usual with setu
            adsp-sc5xx-ramdisk
            adsp-sc5xx-tiny
 
-This can now either be booted via NFS/eMMC/SD card boot (spiboot is not available due to image size).
+This can now either be booted via NFS/eMMC/SD card boot (spiboot is not
+available due to image size).
 
 Neofetch
 --------
 
-This is a commonly found package within package managers which showcases some details about the current Linux Distribution and hardware
-specifications of the machine. The support is however not maintained for Yocto. Since we are working in an open source environment however, we
+This is a commonly found package within package managers which showcases some
+details about the current Linux Distribution and hardware specifications of the
+machine. The support is however not maintained for Yocto. Since we are working
+in an open source environment however, we
 can add our `own instructions for Yocto <https://github.com/analogdevicesinc/lnxdsp-adi-meta/blob/glencos%2Bjupyter/meta-adi-adsp-sc5xx/recipes-adi/neofetch/neofetch.bb>`_ to include it.
 
-.. code-block:: shell
+.. code-block:: text
 
            Analog Devices Yocto Distribution
                     www.analog.com
@@ -107,28 +114,34 @@ This is a simple python library written from scratch that exhibits the Linux RPM
 Usage instructions can be found `here <https://github.com/analogdevicesinc/lnxdsp-adi-meta/tree/glencos%2Bjupyter/meta-adi-adsp-sc5xx/recipes-adi/python3-pyrpmsg/python3-pyrpmsg/source>`_.
 
 .. warning::
-   This is NOT maintained and should ONLY be used for evaluation purposes. It is meant to be an example for including custom userspace programs in the meta layer
+   This is NOT maintained and should ONLY be used for evaluation purposes. It
+   is meant to be an example for including custom userspace programs in the
+   meta layer
 
 JupyterLab
 ----------
 
-This is the de facto interactive python notebook and is a complex piece of software. Getting such functionality enabled, out of the box, with custom bare metal software would incur significant costs.
+This is the de facto interactive python notebook and is a complex piece of
+software. Getting such functionality enabled, out of the box, with custom bare
+metal software would incur significant costs.
 
 Since this package is available for Linux (like several other larger projects) and support is maintained for Yocto by `Xilinx <https://github.com/Xilinx/meta-jupyter>`_, we have the option to supplement our build with it via `a few changes <https://github.com/analogdevicesinc/lnxdsp-adi-meta/blob/glencos%2Bjupyter/meta-adi-adsp-sc5xx/recipes-adi/images/adsp-sc5xx-kitchen-sink.bb>`_.
 
-You can connect to the jupyter-lab using port forwarding. On your local machine, run the following to connect to the board via SSH:
+You can connect to the jupyter-lab using port forwarding. On your local
+machine, run the following to connect to the board via SSH:
 
-.. code-block:: shell
+.. shell::
 
-   ssh -L 9091:localhost:9091 root@10.42.0.109
+   $ssh -L 9091:localhost:9091 root@10.42.0.109
 
-Once connected, this should now be forwarding the port 9091 from the board to your local machine.
+Once connected, this should now be forwarding the port 9091 from the board to
+your local machine.
 
 On the board, start jupyter lab:
 
-.. code-block:: shell
+.. shell::
 
-   root@adsp-sc598-som-ezkit:~# jupyter-lab --allow-root --no-browser --port=9091
+   $jupyter-lab --allow-root --no-browser --port=9091
    [I 2024-02-27 17:32:45.013 ServerApp] jupyterlab | extension was successfully linked.
    [I 2024-02-27 17:32:45.057 ServerApp] nbclassic | extension was successfully linked.
    [I 2024-02-27 17:32:49.281 ServerApp] notebook_shim | extension was successfully linked.
@@ -150,9 +163,11 @@ On the board, start jupyter lab:
            http://localhost:9091/lab?token=3943b8d4efaf585f2d06e30dae719eece5102ca5878d0493
         or http://127.0.0.1:9091/lab?token=3943b8d4efaf585f2d06e30dae719eece5102ca5878d0493
 
-You should now be able to access the instance from your local machine from ``http://localhost:9091``
+You should now be able to access the instance from your local machine from
+``http://localhost:9091``
 
-NOTE: If you cannot access a browser on your build machine, you can daisy chain the port forwarding via multiple SSH sessions.
+NOTE: If you cannot access a browser on your build machine, you can daisy chain
+the port forwarding via multiple SSH sessions.
 
 You should be able to see the following page:
 

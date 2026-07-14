@@ -1,7 +1,9 @@
 Compiling and running a Rust kernel
 ===================================
 
-Yocto 5 onward, all supported boards have now been ported to kernel 6.12. As a result, it is now possible to compile the linux kernel with Rust support for ADSP-SC598 boards.
+Yocto 5 onward, all supported boards have now been ported to kernel 6.12. As a
+result, it is now possible to compile the linux kernel with Rust support for
+ADSP-SC598 boards.
 
 Requirements
 ------------
@@ -14,18 +16,21 @@ Requirements
 
 Run the following to install the prerequisite packages on ubuntu 22.04:
 
-.. code-block:: shell
+.. shell::
 
-   sudo apt install llvm libclang-dev gcc-aarch64-linux-gnu -y
+   $sudo apt install llvm libclang-dev gcc-aarch64-linux-gnu -y
 
 Getting started
 ---------------
 
-1) On your host/build machine, install rust via `rustup <https://www.rust-lang.org/tools/install>`_
+1) On your host/build machine, install rust via `rustup
+<https://www.rust-lang.org/tools/install>`_
 
-2) Clone the Linux kernel tree you wish to use. In our case, we will use `this <https://github.com/analogdevicesinc/linux/tree/adsp-main-6.12>`_.
+2) Clone the Linux kernel tree you wish to use. In our case, we will use the
+   :git-linux:`adsp-main-6.12` branch.
 
-3) Once cloned, configure the kernel using either ``ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make menuconfig/defconfig/olddefconfig``
+3) Once cloned, configure the kernel using either ``ARCH=arm64
+CROSS_COMPILE=aarch64-linux-gnu- make menuconfig/defconfig/olddefconfig``
 
 4) Set up the rust environment:
 
@@ -33,9 +38,10 @@ Getting started
 
    cd linux
 
-Edit the following file ``scripts/min-tool-version.sh`` with the following change:
+Edit the following file ``scripts/min-tool-version.sh`` with the following
+change:
 
-.. code-block:: shell
+.. code-block:: diff
 
    diff --git a/scripts/min-tool-version.sh b/scripts/min-tool-version.sh
    index 91c91201212c..dd09a4ed0e96 100755
@@ -53,28 +59,28 @@ Edit the following file ``scripts/min-tool-version.sh`` with the following chang
 
 Set the package/crate versions using the script
 
-.. code-block:: shell
+.. shell::
 
-   rustup override set $(scripts/min-tool-version.sh rustc)
-   rustup component add rust-src
-   cargo install --locked bindgen-cli
-   export PATH=$PATH:~/.cargo/bin
+   $rustup override set $(scripts/min-tool-version.sh rustc)
+   $rustup component add rust-src
+   $cargo install --locked bindgen-cli
+   $export PATH=$PATH:~/.cargo/bin
 
 Now setup the target architecture
 
-.. code-block:: shell
+.. shell::
 
-   rustup target add aarch64-unknown-linux-gnu
+   $rustup target add aarch64-unknown-linux-gnu
 
 5) Check if rust is now available to be compiled into the kernel:
 
-.. code-block:: shell
+.. shell::
 
-   ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make rustavailable
+   $ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make rustavailable
 
 You should see something like this:
 
-.. code-block:: shell
+.. code-block:: text
 
    Rust is available!
 
@@ -87,7 +93,8 @@ Start the kernel config with ``menuconfig`` and enable ``CONFIG_RUST``:
    General Setup
        -> Rust support
 
-To enable a kernel rust sample, head to the following and enable the ``minimal`` example:
+To enable a kernel rust sample, head to the following and enable the
+``minimal`` example:
 
 .. code-block:: text
 
@@ -96,18 +103,19 @@ To enable a kernel rust sample, head to the following and enable the ``minimal``
            -> Rust samples
                  -> minimal
 
-You can select it as a built-in module and an external kernel module. For this guide, we will keep it as a built-in module.
+You can select it as a built-in module and an external kernel module. For this
+guide, we will keep it as a built-in module.
 
 Now compile the kernel with the following:
 
-.. code-block:: shell
+.. shell::
 
-   ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j$(nproc)
+   $ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j$(nproc)
 
 You should be able to see rust modules
 being compiled:
 
-.. code-block:: shell
+.. code-block:: text
 
      RUSTC L rust/core.o
      EXPORTS rust/exports_core_generated.h
@@ -121,11 +129,13 @@ being compiled:
      EXPORTS rust/exports_helpers_generated.h
      RUSTC L rust/bindings.o
 
-Once this is done, follow the custom fitImage compilation guide in :doc:`Linux-Kernel-Development` and generate your own fitImage.
+Once this is done, follow the custom fitImage compilation guide in
+:doc:`Linux-Kernel-Development` and generate your own fitImage.
 
-Proceed to boot into the fitImage from your preferred boot method. Once in, you should be able to spot the following in the kernel logs:
+Proceed to boot into the fitImage from your preferred boot method. Once in, you
+should be able to spot the following in the kernel logs:
 
-.. code-block:: shell
+.. code-block:: text
 
    [    1.467785] virtio_rpmsg_bus virtio1: creating channel sharc-echo-cap addr 0xa2
    [    1.475113] virtio_rpmsg_bus virtio1: rpmsg host is online
@@ -138,6 +148,6 @@ Proceed to boot into the fitImage from your preferred boot method. Once in, you 
 References
 ----------
 
-* https://www.kernel.org/doc/html/v6.1/rust/quick-start.html
-* https://docs.kernel.org/rust/quick-start.html
+* `Rust in the Linux kernel (v6.1) <https://www.kernel.org/doc/html/v6.1/rust/quick-start.html>`_
+* `Rust quick-start guide (docs.kernel.org) <https://docs.kernel.org/rust/quick-start.html>`_
 * :doc:`Linux-Kernel-Development`

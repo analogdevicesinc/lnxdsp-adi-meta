@@ -1,7 +1,8 @@
 Older Releases
 ==============
 
-This page provides links to documentation for previous releases of Linux for ADSP-SC5xx Processors.
+This page provides links to documentation for previous releases of Linux for
+ADSP-SC5xx Processors.
 
 For the latest release, see :doc:`Linux for ADSP-SC5xx 5.0.1 <Linux-for-ADSP‐SC5xx-5.0.1-Landing-Page>`.
 
@@ -29,7 +30,8 @@ Available Releases
      - :doc:`3.1.0 Docs <Linux-for-ADSP‐SC5xx-3.1.0-Landing-Page>`
 
 .. note::
-   Older releases may have different board support and features. Please refer to each release's documentation for specific details.
+   Older releases may have different board support and features. Please refer
+   to each release's documentation for specific details.
 
 .. toctree::
    :maxdepth: 1
@@ -42,4 +44,4 @@ Available Releases
 
 ----
 
-.. centered:: **For support with older releases, visit** `EngineerZone <https://ez.analog.com/linux-software-drivers>`_
+.. centered:: **For support with older releases, visit** :ez:`EngineerZone <linux-software-drivers>`

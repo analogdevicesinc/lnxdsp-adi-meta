@@ -4,7 +4,10 @@ Booting Benchmark Figures
 Introduction
 ------------
 
-Boot benchmark results were obtained using a logic analyzer connected to the Sigma DSP (P3) port on the carrier board. The measurements were captured using a Logic 8CH Hobby Craft analyzer, compatible with `PulseView <https://sigrok.org/wiki/PulseView>`_, which runs on Windows and Linux.
+Boot benchmark results were obtained using a logic analyzer connected to the
+Sigma DSP (P3) port on the carrier board. The measurements were captured using
+a Logic 8CH Hobby Craft analyzer, compatible with `PulseView
+<https://sigrok.org/wiki/PulseView>`_, which runs on Windows and Linux.
 
 Test Setup
 ----------
@@ -12,7 +15,9 @@ Test Setup
 Logic Analyzer Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The logic analyzer was connected to specific GPIO pins on the carrier board's expansion port (Sigma DSP P3 connector). These pins were toggled at key boot milestones to measure timing.
+The logic analyzer was connected to specific GPIO pins on the carrier board's
+expansion port (Sigma DSP P3 connector). These pins were toggled at key boot
+milestones to measure timing.
 
 ADSP-SC598 Pin Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

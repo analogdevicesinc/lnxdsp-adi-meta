@@ -4,16 +4,25 @@ RPMsg Benchmark Figures
 Introduction
 ------------
 
-This page presents performance measurements for RPMsg communication with different channel counts, packet sizes, and transfer sizes. These results are indicative only and can vary significantly between implementations. Use them as a rough guide for performance expectations.
+This page presents performance measurements for RPMsg communication with
+different channel counts, packet sizes, and transfer sizes. These results are
+indicative only and can vary significantly between implementations. Use them as
+a rough guide for performance expectations.
 
-The `Setup`_ section provides examples for configuring benchmark endpoints with various channel, transfer, and packet size configurations. Note that device numbering and firmware filenames may vary by system.
+The `Setup`_ section provides examples for configuring benchmark endpoints with
+various channel, transfer, and packet size configurations. Note that device
+numbering and firmware filenames may vary by system.
 
-The `Benchmark Results`_ section contains performance tables for multiple configurations.
+The `Benchmark Results`_ section contains performance tables for multiple
+configurations.
 
 Source Code
 -----------
 
-Source code for rpmsg-examples is available at `https://github.com/analogdevicesinc/rpmsg-examples <https://github.com/analogdevicesinc/rpmsg-examples>`_. Examples are compiled with CCES Studio on Windows and copied to the ADSP-SC598 board.
+Source code for rpmsg-examples is available in the
+`rpmsg-examples <https://github.com/analogdevicesinc/rpmsg-examples>`_ repository.
+Examples are compiled with CCES Studio on Windows and copied to the ADSP-SC598
+board.
 
 Setup
 -----
@@ -30,12 +39,12 @@ Generated LDR file names:
 
 Load Core 1 firmware for benchmarking:
 
-.. code-block:: shell
+.. shell::
 
-   cd /lib/firmware
-   echo stop > /sys/class/remoteproc/remoteproc0/state
-   echo rpmsg_echo_example_Core1.ldr > /sys/class/remoteproc/remoteproc0/firmware
-   echo start > /sys/class/remoteproc/remoteproc0/state
+   ~/lib/firmware
+   $echo stop > /sys/class/remoteproc/remoteproc0/state
+   $echo rpmsg_echo_example_Core1.ldr > /sys/class/remoteproc/remoteproc0/firmware
+   $echo start > /sys/class/remoteproc/remoteproc0/state
 
 Binding Channels
 ~~~~~~~~~~~~~~~~
@@ -48,84 +57,84 @@ After firmware is loaded and started, endpoints are created under:
 
 Bind 1 channel:
 
-.. code-block:: shell
+.. shell::
 
-   rpmsg-bind-chardev -p virtio0.sharc-echo.-1. -n 1 -e 288 -s 100
+   $rpmsg-bind-chardev -p virtio0.sharc-echo.-1. -n 1 -e 288 -s 100
 
 Bind 8 channels:
 
-.. code-block:: shell
+.. shell::
 
-   rpmsg-bind-chardev -p virtio0.sharc-echo.-1. -n 8 -e 288 -s 100
+   $rpmsg-bind-chardev -p virtio0.sharc-echo.-1. -n 8 -e 288 -s 100
 
 Bind 32 channels:
 
-.. code-block:: shell
+.. shell::
 
-   rpmsg-bind-chardev -p virtio0.sharc-echo.-1. -n 32 -e 288 -s 100
+   $rpmsg-bind-chardev -p virtio0.sharc-echo.-1. -n 32 -e 288 -s 100
 
 Testing Channels
 ~~~~~~~~~~~~~~~~
 
 Run 1 channel:
 
-.. code-block:: shell
+.. shell::
 
-   rpmsg-xmit-p /dev/rpmsg -n 1 -e 0 -t 1000000
+   $rpmsg-xmit-p /dev/rpmsg -n 1 -e 0 -t 1000000
 
 Run 8 channels:
 
-.. code-block:: shell
+.. shell::
 
-   rpmsg-xmit-p /dev/rpmsg -n 8 -e 0 -t 1000000
+   $rpmsg-xmit-p /dev/rpmsg -n 8 -e 0 -t 1000000
 
 Run 32 channels:
 
-.. code-block:: shell
+.. shell::
 
-   rpmsg-xmit-p /dev/rpmsg -n 32 -e 0 -t 1000000
+   $rpmsg-xmit-p /dev/rpmsg -n 32 -e 0 -t 1000000
 
 Testing Different Transfer Sizes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Run 10k transfers:
 
-.. code-block:: shell
+.. shell::
 
-   rpmsg-xmit-p /dev/rpmsg -n 1 -e 0 -t 10000
+   $rpmsg-xmit-p /dev/rpmsg -n 1 -e 0 -t 10000
 
 Run 100k transfers:
 
-.. code-block:: shell
+.. shell::
 
-   rpmsg-xmit-p /dev/rpmsg -n 1 -e 0 -t 100000
+   $rpmsg-xmit-p /dev/rpmsg -n 1 -e 0 -t 100000
 
 Run 1M transfers:
 
-.. code-block:: shell
+.. shell::
 
-   rpmsg-xmit-p /dev/rpmsg -n 1 -e 0 -t 1000000
+   $rpmsg-xmit-p /dev/rpmsg -n 1 -e 0 -t 1000000
 
 Testing Different Packet Sizes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Set packet size 1:
 
-.. code-block:: shell
+.. shell::
 
-   rpmsg-xmit-p /dev/rpmsg -n 1 -e 0 -t 1000000 -s 1
+   $rpmsg-xmit-p /dev/rpmsg -n 1 -e 0 -t 1000000 -s 1
 
 Set packet size 32:
 
-.. code-block:: shell
+.. shell::
 
-   rpmsg-xmit-p /dev/rpmsg -n 1 -e 0 -t 1000000 -s 32
+   $rpmsg-xmit-p /dev/rpmsg -n 1 -e 0 -t 1000000 -s 32
 
 Set packet size 496:
 
-.. code-block:: shell
+.. shell::
 
-   rpmsg-xmit-p /dev/rpmsg -n 1 -e 0 -t 1000000 -s 496
+   $rpmsg-xmit-p /dev/rpmsg -n 1 -e 0 -t 1000000 -s 496
 
 Benchmark Results
 -----------------

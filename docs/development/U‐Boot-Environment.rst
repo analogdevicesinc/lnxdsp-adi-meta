@@ -116,10 +116,10 @@ environment. This is defined by a number of configuration options,
 within the ``include/configs`` directory in U-Boot’s source.
 
 Some common values are defined under ``CFG_EXTRA_ENV_SETTINGS`` in
-`sc_adi_common.h <https://github.com/analogdevicesinc/lnxdsp-u-boot/blob/main/include/configs/sc_adi_common.h#L201>`__,
+`sc_adi_common.h <https://github.com/analogdevicesinc/u-boot/blob/main/include/configs/sc_adi_common.h#L201>`__,
 with board specific options being defined with ``ADI_ENV_SETTINGS`` in
 the relevant board file - for example, for SC598, in
-`sc598-som.h <https://github.com/analogdevicesinc/lnxdsp-u-boot/blob/main/include/configs/sc598-som.h#L141>`__.
+`sc598-som.h <https://github.com/analogdevicesinc/u-boot/blob/main/include/configs/sc598-som.h#L141>`__.
 
 The default environment can also be manually loaded using the
 ``env default`` command, described in the `env command <#env-command>`__
@@ -128,9 +128,11 @@ section.
 Setting Default Boot Method
 ----------------------------
 
-In order to change the default boot method (i.e., boot used by autoboot or executed after issuing ``boot`` within U-Boot shell), run the following within U-Boot:
+In order to change the default boot method (i.e., boot used by autoboot or
+executed after issuing ``boot`` within U-Boot shell), run the following within
+U-Boot:
 
-.. code-block:: shell
+.. code-block:: console
 
    => setenv bootcmd <boot method>
    => saveenv
