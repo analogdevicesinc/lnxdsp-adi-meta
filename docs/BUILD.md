@@ -6,49 +6,21 @@ The easiest way to build the documentation is:
 
 ```bash
 cd docs
+pip3 install -r requirements.txt
 make html
 ```
 
 The Makefile automatically detects and uses the `documentation-env` virtual environment if it exists.
 
-## Alternative Build Methods
+## Using venv + adoc live edit server
 
-### Using the build script
 ```bash
 cd docs
-./build-docs.sh
-```
-
-### Manual virtual environment activation
-```bash
-cd docs
-source ../documentation-env/bin/activate
-make html
-```
-
-## First Time Setup
-
-If the virtual environment doesn't exist:
-
-```bash
-# Create virtual environment
-python3 -m venv documentation-env
-
-# Activate it
-source documentation-env/bin/activate
-
-# Install dependencies
-cd docs
-pip install -r requirements.txt
-```
-
-## Viewing the Documentation
-
-After building, open `_build/html/index.html` in your browser, or run a local server:
-
-```bash
-python3 -m http.server 8000 --directory _build/html
-# Then open: http://localhost:8000
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements.txt
+adoc serve --verbose
+# Open the live server: http://127.0.0.1:8080
 ```
 
 ## Troubleshooting
