@@ -22,7 +22,7 @@ needs_extensions = {
     'adi_doctools': '0.3'
 }
 
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'documentation-venv', 'BUILD.md', 'getting-started/README-TEMPLATE-SYSTEM.md']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'venv', 'BUILD.md', 'getting-started/README-TEMPLATE-SYSTEM.md']
 source_suffix = {
     '.rst': 'restructuredtext',
     '.md': 'markdown',
