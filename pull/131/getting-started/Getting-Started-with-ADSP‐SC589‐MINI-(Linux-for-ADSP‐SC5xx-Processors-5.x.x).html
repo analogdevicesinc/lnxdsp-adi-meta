@@ -6,15 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta content="The build system is currently supported on host PCs running Ubuntu 22.04 LTS 64-bit. For setting up your host PC, please see the Setting Up Your Host PC page." name="description" />
 
-    <title>Getting Started with ADSP-SC573 (3.1.2) &#8212; ADSP Processors  documentation</title>
+    <title>Getting Started with ADSP-SC589-MINI (5.x.x) &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8e8a900e" />
     <link rel="stylesheet" type="text/css" href="../_static/app.min.css?v=d3f78147" />
     <script async="async" src="../_static/app.umd.js?v=26d0298f"></script>
     <link rel="icon" href="../_static/icon.svg"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Linux for ADSP-SC5xx Processors 3.1.1" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.1-Landing-Page.html" />
-    <link rel="prev" title="Getting Started with ADSP-SC589-MINI (3.1.2)" href="Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html" />
+    <link rel="next" title="Getting Started with ADSP-SC573 (5.x.x)" href="Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html" />
+    <link rel="prev" title="Getting Started with ADSP-SC594 (5.x.x)" href="Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html" />
    
   
   
@@ -95,7 +95,7 @@
         </div>
         <nav>
           <ul>
-<li><a class="reference internal" href="#">Getting Started with ADSP-SC573 (3.1.2)</a><ul>
+<li><a class="reference internal" href="#">Getting Started with ADSP-SC589-MINI (5.x.x)</a><ul>
 <li><a class="reference internal" href="#setting-up-your-host-pc">Setting Up Your Host PC</a><ul>
 <li><a class="reference internal" href="#fetching-the-sources">Fetching the Sources</a></li>
 <li><a class="reference internal" href="#building-the-image">Building the Image</a></li>
@@ -106,21 +106,32 @@
 <li><a class="reference internal" href="#building-the-sdk">Building the SDK</a></li>
 <li><a class="reference internal" href="#installing-the-sdk">Installing the SDK</a><ul>
 <li><a class="reference internal" href="#setup-the-hardware">Setup the hardware</a></li>
-<li><a class="reference internal" href="#transfer-run-and-flash-u-boot-on-the-board-for-the-first-time">Transfer, run and flash U-Boot on the board for the first time</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#transfer-and-run-u-boot-on-ram">Transfer and run U-Boot on RAM</a></li>
-<li><a class="reference internal" href="#flash-u-boot-to-spi-flash">Flash U-Boot to SPI Flash</a><ul>
-<li><a class="reference internal" href="#booting-linux">Booting Linux</a></li>
+<li><a class="reference internal" href="#programming-the-board-for-the-first-time">Programming the board for the first time</a><ul>
+<li><a class="reference internal" href="#bootstrapping-to-linux">Bootstrapping to Linux</a></li>
+<li><a class="reference internal" href="#starting-the-python-webserver">Starting the Python webserver</a></li>
+<li><a class="reference internal" href="#setting-up-terminal-connections">Setting Up Terminal Connections</a></li>
+<li><a class="reference internal" href="#programming-images">Programming Images</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#network-booting">Network Booting</a></li>
+<li><a class="reference internal" href="#booting-linux-after-programming">Booting Linux after programming</a></li>
+<li><a class="reference internal" href="#network-booting">Network Booting</a><ul>
 <li><a class="reference internal" href="#nfs-boot">NFS Boot</a></li>
-<li><a class="reference internal" href="#booting-linux-using-sd-card">Booting Linux Using SD Card</a></li>
-<li><a class="reference internal" href="#booting-linux-from-usb-mass-storage">Booting Linux from USB Mass Storage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#booting-linux-using-sd-card">Booting Linux Using SD Card</a><ul>
+<li><a class="reference internal" href="#formatting-the-sd-card">Formatting the SD card</a></li>
+<li><a class="reference internal" href="#programming-the-sd-card">Programming the SD card</a></li>
+<li><a class="reference internal" href="#booting-from-the-sd-card">Booting from the SD card</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#booting-linux-from-usb-mass-storage">Booting Linux from USB Mass Storage</a><ul>
 <li><a class="reference internal" href="#formatting-the-usb-storage-device">Formatting the USB storage device</a></li>
-<li><a class="reference internal" href="#writing-the-kernel-and-rootfs-to-the-usb-storage-device">Writing the Kernel and rootFS to the USB storage device</a></li>
+<li><a class="reference internal" href="#copying-to-the-usb-storage-device">Copying to the USB storage device</a></li>
 <li><a class="reference internal" href="#booting-from-the-usb-storage-device">Booting from the USB storage device</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -156,14 +167,14 @@ Content on this topic
 <li class="toctree-l2"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.1%29.html">Getting Started with ADSP-SC573 (5.0.1)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2" id="toctree-collapse-2"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.x.x-Landing-Page.html"> Linux for ADSP SC5xx 5.x.x</a><label for="toctree-collapse-2"><div class="icon"></div></label></div><ul>
+<li class="toctree-l1 current"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2" id="toctree-collapse-2" checked=""/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.x.x-Landing-Page.html"> Linux for ADSP SC5xx 5.x.x</a><label for="toctree-collapse-2"><div class="icon"></div></label></div><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC598 (5.x.x)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC594 (5.x.x)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC589-MINI (5.x.x)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Getting Started with ADSP-SC589-MINI (5.x.x)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html">Getting Started with ADSP-SC573 (5.x.x)</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3" id="toctree-collapse-3" checked=""/><div class="collapse"><a class="reference internal" href="../Older-Releases.html">Older Releases</a><label for="toctree-collapse-3"><div class="icon"></div></label></div><ul class="current">
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3" id="toctree-collapse-3"/><div class="collapse"><a class="reference internal" href="../Older-Releases.html">Older Releases</a><label for="toctree-collapse-3"><div class="icon"></div></label></div><ul>
 <li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-1" id="toctree-collapse-3-1"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-5.0.0-Landing-Page.html">Linux for ADSP-SC5xx Processors 5.0.0</a><label for="toctree-collapse-3-1"><div class="icon"></div></label></div><ul>
 <li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC598 (5.0.0)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC594 (5.0.0)</a></li>
@@ -171,11 +182,11 @@ Content on this topic
 <li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.0.0%29.html">Getting Started with ADSP-SC573 (5.0.0)</a></li>
 </ul>
 </li>
-<li class="toctree-l2 current"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-2" id="toctree-collapse-3-2" checked=""/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.2-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.2</a><label for="toctree-collapse-3-2"><div class="icon"></div></label></div><ul class="current">
+<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-2" id="toctree-collapse-3-2"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.2-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.2</a><label for="toctree-collapse-3-2"><div class="icon"></div></label></div><ul>
 <li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC598 (3.1.2)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC594 (3.1.2)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC589-MINI (3.1.2)</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Getting Started with ADSP-SC573 (3.1.2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html">Getting Started with ADSP-SC573 (3.1.2)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-3" id="toctree-collapse-3-3"/><div class="collapse"><a class="reference internal" href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.1-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.1</a><label for="toctree-collapse-3-3"><div class="icon"></div></label></div><ul>
@@ -246,12 +257,12 @@ Content on this topic
       <div class="documentwrapper">
         <div class="bodywrapper" id="top-anchor">
           <div class="body-header">
-  <nav class="breadcrumb"><ol><li><a href="../Older-Releases.html">Older Releases</a></li><li><a href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.2-Landing-Page.html">Linux for ADSP-SC5xx Processors 3.1.2</a></li></ol></nav>
+  <nav class="breadcrumb"><ol><li><a href="../Linux-for-ADSP%E2%80%90SC5xx-5.x.x-Landing-Page.html">Linux for ADSP-SC5xx Processors 5.x.x</a></li></ol></nav>
 </div>
           <div class="body" role="main">
             
-  <section id="getting-started-with-adsp-sc573-3-1-2">
-<h1>Getting Started with ADSP-SC573 (3.1.2)<a class="headerlink" href="#getting-started-with-adsp-sc573-3-1-2" title="Link to this heading"></a></h1>
+  <section id="getting-started-with-adsp-sc589-mini-5-x-x">
+<h1>Getting Started with ADSP-SC589-MINI (5.x.x)<a class="headerlink" href="#getting-started-with-adsp-sc589-mini-5-x-x" title="Link to this heading"></a></h1>
 <section id="setting-up-your-host-pc">
 <h2>Setting Up Your Host PC<a class="headerlink" href="#setting-up-your-host-pc" title="Link to this heading"></a></h2>
 <p>The build system is currently supported on host PCs running Ubuntu 22.04 LTS 64-bit. For setting up your host PC, please see the <a class="reference internal" href="Setting-Up-Your-Host-PC.html"><span class="doc">Setting Up Your Host PC</span></a> page.</p>
@@ -259,15 +270,15 @@ Content on this topic
 <h3>Fetching the Sources<a class="headerlink" href="#fetching-the-sources" title="Link to this heading"></a></h3>
 <p>The source is fully contained in the <a class="icon link reference external" href="https://github.com/analogdevicesinc?q=lnxdsp&amp;type=all&amp;language=&amp;sort=" target="_blank">Analog Devices Linux for ADSP repositories</a>.</p>
 <p>To install the sources:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>~/adsp-sc573-ezkit-yocto-build
-<span class="nb">cd</span><span class="w"> </span>~/adsp-sc573-ezkit-yocto-build
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>~/adsp-sc589-mini-yocto-build
+<span class="nb">cd</span><span class="w"> </span>~/adsp-sc589-mini-yocto-build
 mkdir<span class="w"> </span>bin
 curl<span class="w"> </span>http://commondatastorage.googleapis.com/git-repo-downloads/repo<span class="w"> </span>&gt;<span class="w"> </span>./bin/repo
 chmod<span class="w"> </span>a+x<span class="w"> </span>./bin/repo
 ./bin/repo<span class="w"> </span>init<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-u<span class="w"> </span>https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>-b<span class="w"> </span>main<span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-m<span class="w"> </span>release-3.1.2.xml
+<span class="w">   </span>-m<span class="w"> </span>release-5.x.x.xml
 ./bin/repo<span class="w"> </span>sync
 </pre></div>
 </div>
@@ -278,9 +289,9 @@ chmod<span class="w"> </span>a+x<span class="w"> </span>./bin/repo
 </section>
 <section id="preparing-the-buildtool">
 <h2>Preparing the buildtool<a class="headerlink" href="#preparing-the-buildtool" title="Link to this heading"></a></h2>
-<p>Yocto requires the environment to be configured before building is possible. A setup-environment script in the adsp-sc573-ezkit-yocto-build folder contains all the required environment settings for your build target.
+<p>Yocto requires the environment to be configured before building is possible. A setup-environment script in the adsp-sc589-mini-yocto-build folder contains all the required environment settings for your build target.
 Source the setup script for your board:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>setup-environment<span class="w"> </span>-m<span class="w"> </span>adsp-sc573-ezkit
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>setup-environment<span class="w"> </span>-m<span class="w"> </span>adsp-sc589-mini
 </pre></div>
 </div>
 <p>Sourcing the script will configure your build environment and create a build folder along with a local build configuration file. See the Yocto Manual for further details.</p>
@@ -314,70 +325,94 @@ bitbake<span class="w"> </span>adsp-sc5xx-full
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bitbake<span class="w"> </span>adsp-sc5xx-full<span class="w"> </span>-c<span class="w"> </span>populate_sdk
 </pre></div>
 </div>
-<p>When the build has completed you will find a set of files in the <code class="docutils literal notranslate"><span class="pre">&lt;BUILD_DIR&gt;/tmp/deploy/sdk</span></code> directory. For example, the minimal image on ADSP-SC573:</p>
+<p>When the build has completed you will find a set of files in the <code class="docutils literal notranslate"><span class="pre">&lt;BUILD_DIR&gt;/tmp/deploy/sdk</span></code> directory. For example, the minimal image on ADSP-SC589-MINI:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>tmp/deploy/sdk
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-3.1.2.host.manifest
-adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-3.1.2.sh
-adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-3.1.2.target.manifest
-adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-3.1.2.testdata.json
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc589-mini-toolchain-5.x.x.host.manifest
+adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc589-mini-toolchain-5.x.x-host.spdx.tar.zst
+adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc589-mini-toolchain-5.x.x.sh
+adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc589-mini-toolchain-5.x.x.target.manifest
+adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc589-mini-toolchain-5.x.x-target.spdx.tar.zst
+adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc589-mini-toolchain-5.x.x.testdata.json
 </pre></div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-3.1.2.sh</span></code> is a self-extracting archive containing the SDK.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc589-mini-toolchain-5.x.x.sh</span></code> is a self-extracting archive containing the SDK.</p>
 </section>
 <section id="installing-the-sdk">
 <h2>Installing the SDK<a class="headerlink" href="#installing-the-sdk" title="Link to this heading"></a></h2>
 <p>Invoke the self-extracting archive.
-It will default to installing to <code class="docutils literal notranslate"><span class="pre">/opt/adi-distro-glibc/3.1.2</span></code> but gives you the option to select your own install folder during the installation.
-For the minimal image on ADSP-SC573</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-3.1.2.sh
+It will default to installing to <code class="docutils literal notranslate"><span class="pre">/opt/adi-distro-glibc/5.x.x</span></code> but gives you the option to select your own install folder during the installation.
+For the minimal image on ADSP-SC589-MINI</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc589-mini-toolchain-5.x.x.sh
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Analog Devices Inc Reference Distro (glibc) SDK installer version 3.1.2
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Analog Devices Inc Reference Distro (glibc) SDK installer version 5.x.x
 --------------------------------------------------------------------------
-Enter target directory for SDK (default: /opt/adi-distro-glibc/3.1.2):
-You are about to install the SDK to &quot;/opt/adi-distro-glibc/3.1.2&quot;. Proceed [Y/n]?
+Enter target directory for SDK (default: /opt/adi-distro-glibc/5.x.x):
+You are about to install the SDK to &quot;/opt/adi-distro-glibc/5.x.x&quot;. Proceed [Y/n]?
 Extracting SDK....................................................................................................................done
 Setting it up...done
 SDK has been successfully set up and is ready to be used.
 Each time you wish to use the SDK in a new shell session, you need to source the environment setup script e.g.
- $ . /opt/adi-distro-glibc/3.1.2/environment-setup-cortexa5t2hf-neon-adi_glibc-linux
+ $ . /opt/adi-distro-glibc/5.x.x/environment-setup-cortexa5t2hf-neon-adi_glibc-linux
 </pre></div>
 </div>
 <p>Your SDK is now installed.</p>
 <section id="setup-the-hardware">
 <h3>Setup the hardware<a class="headerlink" href="#setup-the-hardware" title="Link to this heading"></a></h3>
 <p>Before installing the software on to the development board, ensure that the following cables are connected:</p>
-<a class="reference internal image-reference" href="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5ecd55a3-4572-4c77-97e5-8f4db302464f"><img alt="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5ecd55a3-4572-4c77-97e5-8f4db302464f" src="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/5ecd55a3-4572-4c77-97e5-8f4db302464f" width="400" />
+<a class="reference internal image-reference" href="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/sc589-mini-hardware.png"><img alt="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/sc589-mini-hardware.png" src="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/sc589-mini-hardware.png" width="400" />
 </a>
 <ul class="simple">
-<li><p>Board connected to network via ethernet cable using J4 connector.</p></li>
+<li><p>Board connected to network via ethernet cable using J13 connector.</p></li>
 <li><p>Board connected to host PC using USB micro cable, connected to USB/UART port on the development board</p></li>
 <li><p>Board connected to the ICE 1000 or ICE 2000 via the DEBUG port on the board</p></li>
 <li><p>ICE is also connected to host PC via USB mini cable</p></li>
-<li><p>The BOOT MODE selector on the SC573 board should be turned to “0”.</p></li>
+<li><p>The BOOT MODE selector should be turned to “0”.</p></li>
 </ul>
-<a class="reference internal image-reference" href="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/fcf62f04-ebe3-469c-b271-2b5a6096182e"><img alt="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/fcf62f04-ebe3-469c-b271-2b5a6096182e" src="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/fcf62f04-ebe3-469c-b271-2b5a6096182e" width="400" />
-</a>
 </section>
-<section id="transfer-run-and-flash-u-boot-on-the-board-for-the-first-time">
-<h3>Transfer, run and flash U-Boot on the board for the first time<a class="headerlink" href="#transfer-run-and-flash-u-boot-on-the-board-for-the-first-time" title="Link to this heading"></a></h3>
+</section>
+<section id="programming-the-board-for-the-first-time">
+<h2>Programming the board for the first time<a class="headerlink" href="#programming-the-board-for-the-first-time" title="Link to this heading"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>It’s always good practice to erase the contents of <code class="docutils literal notranslate"><span class="pre">/tftpboot/</span></code> before running and/or flashing a new build of U-Boot or Linux. You can do so by executing <code class="docutils literal notranslate"><span class="pre">rm</span> <span class="pre">/tftpboot/*</span></code> on your host PC before proceeding</p>
+<p>It’s always good practice to erase the contents of the folders mentioned below before running and/or flashing a new build of U-Boot or Linux. You can do so by executing <code class="docutils literal notranslate"><span class="pre">rm</span> <span class="pre">/&lt;folder&gt;/*</span></code> on your host PC before proceeding.
+This will erase the contents of the folders but not the folders themselves.</p>
 </div>
-</section>
-</section>
-<section id="transfer-and-run-u-boot-on-ram">
-<h2>Transfer and run U-Boot on RAM<a class="headerlink" href="#transfer-and-run-u-boot-on-ram" title="Link to this heading"></a></h2>
-<p>Copy the U-Boot binary &amp; loader files to the tftp directory:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>tmp/deploy/images/adsp-sc573-ezkit/u-boot-proper-sc573-ezkit.elf<span class="w"> </span>/tftpboot/
-cp<span class="w"> </span>tmp/deploy/images/adsp-sc573-ezkit/u-boot-spl-sc573-ezkit.elf<span class="w"> </span>/tftpboot/
-cp<span class="w"> </span>tmp/deploy/images/adsp-sc573-ezkit/stage1-boot.ldr<span class="w"> </span>/tftpboot/
-cp<span class="w"> </span>tmp/deploy/images/adsp-sc573-ezkit/stage2-boot.ldr<span class="w"> </span>/tftpboot/
+<section id="bootstrapping-to-linux">
+<h3>Bootstrapping to Linux<a class="headerlink" href="#bootstrapping-to-linux" title="Link to this heading"></a></h3>
+<p>The programming sequence uses nfsboot to bootstrap to Linux, and from there program all boot medias available. Before beginning, follow these steps.</p>
+<p>Populate the NFS file system with the files for booting:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tar<span class="w"> </span>-xf<span class="w"> </span>tmp/deploy/images/adsp-sc5xx-full<span class="o">=</span>adsp-sc589-mini.rootfs.tar.xz<span class="w"> </span>-C<span class="w"> </span>/romfs
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The directory for this extraction is <cite>/romfs</cite> if you followed the directions in <a class="reference internal" href="Setting-Up-Your-Host-PC.html"><span class="doc">Setting Up Your Host PC</span></a>.
+Also, the adsp-sc5xx-minimal image can also be used, but will not include installed some of the debugging tools that the full image will have
+if there are problems.</p>
+</div>
+<p>Copy the programming files into the /usr/firmware directory in the NFS filesystem</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>cp<span class="w"> </span>tmp/deploy/images/programming-images/adsp-sc5xx-minimal/*<span class="w"> </span>/romfs/usr/firmware
+</pre></div>
+</div>
+</section>
+<section id="starting-the-python-webserver">
+<h3>Starting the Python webserver<a class="headerlink" href="#starting-the-python-webserver" title="Link to this heading"></a></h3>
+<p>Start the python web server to serve the files</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>&lt;folder&gt;
+python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8000</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The python web server can be run directly from the images/programming-images directory, however it is advised to copy the images to another directory and serve them from that folder,
+as the images in the tmp/deploy directory are overwritten with each new build</p>
+</div>
+</section>
+<section id="setting-up-terminal-connections">
+<h3>Setting Up Terminal Connections<a class="headerlink" href="#setting-up-terminal-connections" title="Link to this heading"></a></h3>
 <p>The console output from U-Boot and later on Linux will appear on the USB serial port configured in minicom earlier so open up minicom.</p>
 <p><strong>Terminal1: minicom</strong></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>minicom
@@ -385,20 +420,20 @@ cp<span class="w"> </span>tmp/deploy/images/adsp-sc573-ezkit/stage2-boot.ldr<spa
 </div>
 <p>In a separate console launch OpenOCD and connect to the development board.</p>
 <p><strong>Terminal2: OpenOCD</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">sdk_usr</span><span class="o">=</span>/opt/adi-distro-glibc/3.1.2/sysroots/x86_64-adi_glibc_sdk-linux/usr/
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">sdk_usr</span><span class="o">=</span>/opt/adi-distro-glibc/5.x.x/sysroots/x86_64-adi_glibc_sdk-linux/usr/
 <span class="nv">$sdk_usr</span>/bin/openocd<span class="w"> </span>-f<span class="w"> </span><span class="nv">$sdk_usr</span>/share/openocd/scripts/interface/&lt;ICE&gt;.cfg<span class="w"> </span>-f<span class="w"> </span><span class="nv">$sdk_usr</span>/share/openocd/scripts/target/adspsc57x.cfg
 </pre></div>
 </div>
 <p>Where <code class="docutils literal notranslate"><span class="pre">&lt;ICE&gt;</span></code> should be replaced with <code class="docutils literal notranslate"><span class="pre">ice1000</span></code> or <code class="docutils literal notranslate"><span class="pre">ice2000</span></code> depending on your hardware.
 When successful you should see a message similar to the console output below</p>
 <p><strong>Terminal2: OpenOCD</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Open<span class="w"> </span>On-Chip<span class="w"> </span>Debugger<span class="w"> </span><span class="m">0</span>.10.0...
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Open<span class="w"> </span>On-Chip<span class="w"> </span>Debugger<span class="w"> </span><span class="m">0</span>.12.0...
 </pre></div>
 </div>
 <p>In a third console window launch GDB and type <code class="docutils literal notranslate"><span class="pre">target</span> <span class="pre">extended-remote</span> <span class="pre">:3333</span></code>. This will make GDB to connect to the gdbserver on the local host using port 3333. Then, load the U-Boot SPL into RAM by typing <code class="docutils literal notranslate"><span class="pre">load</span></code>. Hit <code class="docutils literal notranslate"><span class="pre">Ctrl+C</span></code> to interrupt thereafter.</p>
 <p><strong>Terminal3: GDB</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/tftpboot
-/opt/adi-distro-glibc/3.1.2/sysroots/x86_64-adi_glibc_sdk-linux/usr/bin/arm-adi_glibc-linux-gnueabi/arm-adi_glibc-linux-gnueabi-gdb<span class="w"> </span>u-boot-spl-sc573-ezkit.elf
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>build/tmp/deploy/images/programming-images/adsp-sc5xx-minimal<span class="w">  </span><span class="c1"># or wherever the Python webserver is serving from</span>
+/opt/adi-distro-glibc/5.x.x/sysroots/x86_64-adi_glibc_sdk-linux/usr/bin/arm-adi_glibc-linux-gnueabi/arm-adi_glibc-linux-gnueabi-gdb<span class="w"> </span>u-boot-spl-sc589-mini.elf
 ...
 <span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>target<span class="w"> </span>extended-remote<span class="w"> </span>:3333
 Remote<span class="w"> </span>debugging<span class="w"> </span>using<span class="w"> </span>:3333
@@ -413,14 +448,14 @@ Program<span class="w"> </span>received<span class="w"> </span>signal<span class
 </div>
 <p>You will see a message on Terminal 1 running minicom, informing you that you can now load U-Boot Proper</p>
 <p><strong>Terminal1: minicom</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>U-Boot<span class="w"> </span>SPL<span class="w"> </span><span class="m">2020</span>.10
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>U-Boot<span class="w"> </span>SPL<span class="w"> </span><span class="m">2025</span>.10
 ADI<span class="w"> </span>Boot<span class="w"> </span>Mode:<span class="w"> </span>0x0<span class="w"> </span><span class="o">(</span>JTAG/BOOTROM<span class="o">)</span>
 SPL<span class="w"> </span>execution<span class="w"> </span>has<span class="w"> </span>completed.
 </pre></div>
 </div>
 <p>Now, load U-Boot Proper into RAM.</p>
 <p><strong>Terminal3: GDB</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>load<span class="w"> </span>u-boot-proper-sc573-ezkit.elf
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>load<span class="w"> </span>u-boot-proper-sc589-mini.elf
 Loading<span class="w"> </span>sections...<span class="w"> </span>Transfer<span class="w"> </span>rate:<span class="w"> </span><span class="m">28</span><span class="w"> </span>KB/sec
 <span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>c
 Continuing.
@@ -428,18 +463,19 @@ Continuing.
 </div>
 <p>At this point U-Boot will now be running in RAM on your target board. You should see U-Boot booting in the minicom console (Terminal 1). Press a key to interrupt the boot process before the countdown terminates:</p>
 <p><strong>Terminal1: minicom</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>U-Boot<span class="w"> </span><span class="m">2020</span>.10
-CPU:<span class="w"> </span>ADSP<span class="w"> </span>ADSP-SC573
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>U-Boot<span class="w"> </span><span class="m">2025</span>.10
+CPU:<span class="w"> </span>ADSP<span class="w"> </span>ADSP-SC589-MINI
 Hit<span class="w"> </span>any<span class="w"> </span>key<span class="w"> </span>to<span class="w"> </span>stop<span class="w"> </span>autoboot:<span class="w"> </span><span class="nv">0</span>
 <span class="o">=</span>&gt;
 </pre></div>
 </div>
 </section>
-<section id="flash-u-boot-to-spi-flash">
-<h2>Flash U-Boot to SPI Flash<a class="headerlink" href="#flash-u-boot-to-spi-flash" title="Link to this heading"></a></h2>
-<p>In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot loader files (<code class="docutils literal notranslate"><span class="pre">stage1-boot.ldr</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">stage2-boot.ldr</span></code>) on TFTP.</p>
+<section id="programming-images">
+<h3>Programming Images<a class="headerlink" href="#programming-images" title="Link to this heading"></a></h3>
+<p>In the U-Boot console, set the IP address of the Linux PC that hosts the Python webserver, and the IP address of the board itself, if not using dhcp.</p>
 <p><strong>Terminal1: minicom</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>setenv<span class="w"> </span>tftpserverip<span class="w"> </span>&lt;SERVERIP&gt;
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>setenv<span class="w"> </span>serverip<span class="w"> </span>&lt;SERVERIP&gt;
+<span class="o">=</span>&gt;<span class="w"> </span>setenv<span class="w"> </span>ipaddr<span class="w"> </span>&lt;IPADDR&gt;
 </pre></div>
 </div>
 <div class="admonition note">
@@ -450,57 +486,45 @@ Hit<span class="w"> </span>any<span class="w"> </span>key<span class="w"> </span
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>dhcp
 </pre></div>
 </div>
-<p>If your network <strong>does NOT support</strong> DHCP, in the U-Boot console configure the board IP address you want the board to be assigned with (<code class="docutils literal notranslate"><span class="pre">&lt;IPADDR&gt;</span></code>) and remove “<code class="docutils literal notranslate"><span class="pre">dhcp;</span></code>” from the “<code class="docutils literal notranslate"><span class="pre">init_ethernet</span></code>” command:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>setenv<span class="w"> </span>ipaddr<span class="w"> </span>&lt;IPADDR&gt;
-<span class="o">=</span>&gt;<span class="w"> </span>edit<span class="w"> </span><span class="nv">init_ethernet</span>
-<span class="o">=</span>&gt;<span class="w"> </span>edit:<span class="w"> </span>mii<span class="w"> </span>info<span class="p">;</span><span class="w"> </span>&lt;remove<span class="w"> </span><span class="s2">&quot;dhcp;&quot;</span><span class="w"> </span>from<span class="w"> </span>here&gt;<span class="p">;</span><span class="w"> </span>setenv<span class="w"> </span>serverip<span class="w"> </span><span class="si">${</span><span class="nv">tftpserverip</span><span class="si">}</span><span class="p">;</span>
-<span class="o">=</span>&gt;<span class="w"> </span>saveenv
+<p>Start the boot to Linux using nfsboot, and wait for the login prompt.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>run<span class="w"> </span>nfsboot
+...
+...
+adsp-sc589-mini<span class="w"> </span>login:
 </pre></div>
 </div>
-<p>i.e. <code class="docutils literal notranslate"><span class="pre">init_ethernet</span></code> should now be <code class="docutils literal notranslate"><span class="pre">init_ethernet=mii</span> <span class="pre">info;</span> <span class="pre">setenv</span> <span class="pre">serverip</span> <span class="pre">${tftpserverip};</span></code>, where prior to this change it was <code class="docutils literal notranslate"><span class="pre">init_ethernet=mii</span> <span class="pre">info;</span> <span class="pre">dhcp;</span> <span class="pre">setenv</span> <span class="pre">serverip</span> <span class="pre">${tftpserverip};</span></code></p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If flashing a board that had been previously programmed, it’s good to erase the whole flash before as sometimes previous U-Boot installations might leave remnants. You can do that by typing <code class="docutils literal notranslate"><span class="pre">=&gt;</span> <span class="pre">run</span> <span class="pre">erase_spi</span></code> on the U-Boot prompt before proceeding to the following instructions</p>
-</div>
-<p>Next, run the U-Boot update command to copy the U-Boot loader files from the host PC to the target board, and write it into flash:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>run<span class="w"> </span>update_spi_uboot_only
+<p>After logging in, run the following command:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>/usr/firmware/init
 </pre></div>
 </div>
-<p>You will see an output similar to the one below:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>run<span class="w"> </span>update_spi_uboot_only
-Speed:<span class="w"> </span><span class="m">1000</span>,<span class="w"> </span>full<span class="w"> </span>duplex
-TFTP<span class="w"> </span>from<span class="w"> </span>server...
-Bytes<span class="w"> </span><span class="nv">transferred</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">115008</span><span class="w"> </span><span class="o">(</span>1c140<span class="w"> </span>hex<span class="o">)</span>
-SF:<span class="w"> </span><span class="m">115008</span><span class="w"> </span>bytes<span class="w"> </span>@<span class="w"> </span>0x0<span class="w"> </span>Written:<span class="w"> </span>OK
+<p>This will call the programming script which will walk you through programming the boot media on the board</p>
+<p>The init script will then move on to the USB programming</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Install<span class="w"> </span>U-Boot<span class="w"> </span>to<span class="w"> </span>USB
+
+This<span class="w"> </span>will<span class="w"> </span>erase<span class="w"> </span>and<span class="w"> </span>program<span class="w"> </span>the<span class="w"> </span>USB.
+Continue?<span class="w"> </span><span class="o">[</span>y/N<span class="o">]</span>:
 </pre></div>
 </div>
-<p>In order to store the <code class="docutils literal notranslate"><span class="pre">tftpserverip</span></code> and the DHCP or otherwise assigned IP address of the board and have them available on next boot, you can run the following command:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>saveenv
-Saving<span class="w"> </span>Environment<span class="w"> </span>to<span class="w"> </span>SPIFlash...<span class="w"> </span>Erasing<span class="w"> </span>SPI<span class="w"> </span>flash...Writing<span class="w"> </span>to<span class="w"> </span>SPI<span class="w"> </span>flash...done
-OK
-</pre></div>
-</div>
-<p>At this point the U-Boot binary is stored in flash. You can now disconnect the ICE-1000 or ICE-2000 from the development board and make sure to switch the BMODE to position 1. You will only need to reconnect this if your board fails to boot and you need to re-follow these instructions.</p>
-<section id="booting-linux">
-<h3>Booting Linux<a class="headerlink" href="#booting-linux" title="Link to this heading"></a></h3>
+<p>Select y to program the USB, or N to skip programming.</p>
 </section>
+</section>
+<section id="booting-linux-after-programming">
+<h2>Booting Linux after programming<a class="headerlink" href="#booting-linux-after-programming" title="Link to this heading"></a></h2>
 </section>
 <section id="network-booting">
 <h2>Network Booting<a class="headerlink" href="#network-booting" title="Link to this heading"></a></h2>
-<p>In order to boot Linux via the network, the TFTP server should be setup as indicated in the <a class="reference internal" href="Setting-Up-Your-Host-PC.html"><span class="doc">Setting Up Your Host PC</span></a> page, and a copy of the fitImage should be copied into the <code class="docutils literal notranslate"><span class="pre">/tftpboot</span></code> directory.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>tmp/deploy/images/adsp-sc573-ezkit/fitImage<span class="w"> </span>/tftpboot/
-</pre></div>
-</div>
-</section>
+<p>In order to boot Linux via the network, the Python web server should be setup as indicated above with the fitImage populated for booting.</p>
 <section id="nfs-boot">
-<h2>NFS Boot<a class="headerlink" href="#nfs-boot" title="Link to this heading"></a></h2>
+<h3>NFS Boot<a class="headerlink" href="#nfs-boot" title="Link to this heading"></a></h3>
 <p>In order to boot Linux via NFS, the NFS server should be setup as indicated in <a class="reference external" href="Setting-Up-Your-Host-PC.html#configure-nfs-server">Setting Up Your Host PC: Configure NFS Server</a>.</p>
 <p>The root filesystem should then be copied to <code class="docutils literal notranslate"><span class="pre">/romfs</span></code>.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tar<span class="w"> </span>-xf<span class="w"> </span>tmp/deploy/images/adsp-sc573-ezkit/adsp-sc5xx-full-adsp-sc573-ezkit.tar.xz<span class="w"> </span>-C<span class="w"> </span>/romfs
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tar<span class="w"> </span>-xf<span class="w"> </span>tmp/deploy/images/adsp-sc589-mini/adsp-sc5xx-full-adsp-sc589-mini.rootfs.tar.xz<span class="w"> </span>-C<span class="w"> </span>/romfs
 </pre></div>
 </div>
-<p>Next, on the target, from u-boot, run the following command:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>run<span class="w"> </span>nfsboot
+<p>Next, on the target, from u-boot, run the following commands:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>setenv<span class="w"> </span>ipaddr<span class="w"> </span>&lt;IPADDR&gt;
+<span class="o">=</span>&gt;<span class="w"> </span>setenv<span class="w"> </span>serverip<span class="w"> </span>&lt;SERVERIP&gt;
+<span class="o">=</span>&gt;<span class="w"> </span>run<span class="w"> </span>nfsboot
 ......
 ......
 Starting<span class="w"> </span>services...
@@ -510,63 +534,141 @@ Password:<span class="w"> </span>adi
 </pre></div>
 </div>
 </section>
+</section>
 <section id="booting-linux-using-sd-card">
 <h2>Booting Linux Using SD Card<a class="headerlink" href="#booting-linux-using-sd-card" title="Link to this heading"></a></h2>
-<p>SD card boot instructions here…</p>
+<p>Program the SD card using the init script mmc instructions above.</p>
+<p>Alternatively, the SD card can be programmed by the host PC before being inserted into the board.</p>
+<section id="formatting-the-sd-card">
+<h3>Formatting the SD card<a class="headerlink" href="#formatting-the-sd-card" title="Link to this heading"></a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>fdisk<span class="w"> </span>/dev/mmcblk0
+
+Welcome<span class="w"> </span>to<span class="w"> </span>fdisk<span class="w"> </span><span class="o">(</span>util-linux<span class="w"> </span><span class="m">2</span>.39.3<span class="o">)</span>.
+Changes<span class="w"> </span>will<span class="w"> </span>remain<span class="w"> </span><span class="k">in</span><span class="w"> </span>memory<span class="w"> </span>only,<span class="w"> </span><span class="k">until</span><span class="w"> </span>you<span class="w"> </span>decide<span class="w"> </span>to<span class="w"> </span>write<span class="w"> </span>them.
+Be<span class="w"> </span>careful<span class="w"> </span>before<span class="w"> </span>using<span class="w"> </span>the<span class="w"> </span>write<span class="w"> </span>command.
+
+
+Command<span class="w"> </span><span class="o">(</span>m<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nb">help</span><span class="o">)</span>:<span class="w"> </span>n
+Partition<span class="w"> </span><span class="nb">type</span>
+<span class="w">   </span>p<span class="w">   </span>primary<span class="w"> </span><span class="o">(</span><span class="m">0</span><span class="w"> </span>primary,<span class="w"> </span><span class="m">0</span><span class="w"> </span>extended,<span class="w"> </span><span class="m">4</span><span class="w"> </span>free<span class="o">)</span>
+<span class="w">   </span>e<span class="w">   </span>extended<span class="w"> </span><span class="o">(</span>container<span class="w"> </span><span class="k">for</span><span class="w"> </span>logical<span class="w"> </span>partitions<span class="o">)</span>
+Select<span class="w"> </span><span class="o">(</span>default<span class="w"> </span>p<span class="o">)</span>:<span class="w"> </span>p
+Partition<span class="w"> </span>number<span class="w"> </span><span class="o">(</span><span class="m">1</span>-4,<span class="w"> </span>default<span class="w"> </span><span class="m">1</span><span class="o">)</span>:<span class="w"> </span><span class="m">1</span>
+First<span class="w"> </span>sector<span class="w"> </span><span class="o">(</span><span class="m">2048</span>-15269887,<span class="w"> </span>default<span class="w"> </span><span class="m">2048</span><span class="o">)</span>:
+Last<span class="w"> </span>sector,<span class="w"> </span>+/-sectors<span class="w"> </span>or<span class="w"> </span>+/-size<span class="o">{</span>K,M,G,T,P<span class="o">}</span><span class="w"> </span><span class="o">(</span><span class="m">2048</span>-15269887,<span class="w"> </span>default<span class="w"> </span><span class="m">15269887</span><span class="o">)</span>:<span class="w"> </span>+32M
+
+Created<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>partition<span class="w"> </span><span class="m">1</span><span class="w"> </span>of<span class="w"> </span><span class="nb">type</span><span class="w"> </span><span class="s1">&#39;Linux&#39;</span><span class="w"> </span>and<span class="w"> </span>of<span class="w"> </span>size<span class="w"> </span><span class="m">32</span><span class="w"> </span>MiB.
+Partition<span class="w"> </span><span class="c1">#1 contains a ext4 signature.</span>
+
+Command<span class="w"> </span><span class="o">(</span>m<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nb">help</span><span class="o">)</span>:<span class="w"> </span>n
+Partition<span class="w"> </span><span class="nb">type</span>
+<span class="w">   </span>p<span class="w">   </span>primary<span class="w"> </span><span class="o">(</span><span class="m">1</span><span class="w"> </span>primary,<span class="w"> </span><span class="m">0</span><span class="w"> </span>extended,<span class="w"> </span><span class="m">3</span><span class="w"> </span>free<span class="o">)</span>
+<span class="w">   </span>e<span class="w">   </span>extended<span class="w"> </span><span class="o">(</span>container<span class="w"> </span><span class="k">for</span><span class="w"> </span>logical<span class="w"> </span>partitions<span class="o">)</span>
+Select<span class="w"> </span><span class="o">(</span>default<span class="w"> </span>p<span class="o">)</span>:<span class="w"> </span>p
+Partition<span class="w"> </span>number<span class="w"> </span><span class="o">(</span><span class="m">2</span>-4,<span class="w"> </span>default<span class="w"> </span><span class="m">2</span><span class="o">)</span>:<span class="w"> </span><span class="m">2</span>
+First<span class="w"> </span>sector<span class="w"> </span><span class="o">(</span><span class="m">67584</span>-15269887,<span class="w"> </span>default<span class="w"> </span><span class="m">67584</span><span class="o">)</span>:
+Last<span class="w"> </span>sector,<span class="w"> </span>+/-sectors<span class="w"> </span>or<span class="w"> </span>+/-size<span class="o">{</span>K,M,G,T,P<span class="o">}</span><span class="w"> </span><span class="o">(</span><span class="m">67584</span>-15269887,<span class="w"> </span>default<span class="w"> </span><span class="m">15269887</span><span class="o">)</span>:
+
+Created<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>partition<span class="w"> </span><span class="m">2</span><span class="w"> </span>of<span class="w"> </span><span class="nb">type</span><span class="w"> </span><span class="s1">&#39;Linux&#39;</span><span class="w"> </span>and<span class="w"> </span>of<span class="w"> </span>size<span class="w"> </span><span class="m">7</span>.2<span class="w"> </span>GiB.
+Partition<span class="w"> </span><span class="c1">#2 contains a ext4 signature.</span>
+
+Command<span class="w"> </span><span class="o">(</span>m<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nb">help</span><span class="o">)</span>:<span class="w"> </span>w
+</pre></div>
+</div>
+</section>
+<section id="programming-the-sd-card">
+<h3>Programming the SD card<a class="headerlink" href="#programming-the-sd-card" title="Link to this heading"></a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mke2fs<span class="w"> </span>-F<span class="w"> </span>-t<span class="w"> </span>ext4<span class="w"> </span>-L<span class="w"> </span><span class="s2">&quot;BOOT&quot;</span><span class="w"> </span>/dev/mmcblk0p1
+mkdir<span class="w"> </span>-p<span class="w"> </span>/tmp/boot_mount
+mount<span class="w"> </span>/dev/mmcblk0p1<span class="w"> </span>/tmp/boot_mount
+cp<span class="w"> </span>fitImage<span class="w"> </span>/tmp/boot_mount
+sync
+umount<span class="w"> </span>/tmp/boot_mount
+
+dd<span class="w"> </span><span class="k">if</span><span class="o">=</span>rootfs.ext4<span class="w"> </span><span class="nv">of</span><span class="o">=</span>/dev/mmcblk0p2<span class="w"> </span><span class="nv">bs</span><span class="o">=</span><span class="m">512</span>
+
+sync
+</pre></div>
+</div>
+</section>
+<section id="booting-from-the-sd-card">
+<h3>Booting from the SD card<a class="headerlink" href="#booting-from-the-sd-card" title="Link to this heading"></a></h3>
+<p>Now, boot to U-boot and interrupt autoboot to drop to the shell and enter the following command</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>run<span class="w"> </span>mmcboot
+</pre></div>
+</div>
+</section>
 </section>
 <section id="booting-linux-from-usb-mass-storage">
 <h2>Booting Linux from USB Mass Storage<a class="headerlink" href="#booting-linux-from-usb-mass-storage" title="Link to this heading"></a></h2>
-</section>
 <section id="formatting-the-usb-storage-device">
-<h2>Formatting the USB storage device<a class="headerlink" href="#formatting-the-usb-storage-device" title="Link to this heading"></a></h2>
+<h3>Formatting the USB storage device<a class="headerlink" href="#formatting-the-usb-storage-device" title="Link to this heading"></a></h3>
+<p>The USB can be programmed by the init script from the instructions mentioned above if plugged into the board. However, the USB can also be formatted by the host PC before
+plugging into the board as well, following the instructions below.</p>
 <p>The first step is to format the USB stick to a format that U-Boot supports.</p>
-<p>To do this, follow the commands below. The example code in this section assumes that the USB device is reported to be <code class="docutils literal notranslate"><span class="pre">/dev/sdb</span></code>. Ensure that you change these commands to use your device.</p>
+<p>To do this, follow the commands below. The example code in this section assumes that the USB device is reported to be <code class="docutils literal notranslate"><span class="pre">/dev/sda</span></code>. Ensure that you change these commands to use your device.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You can use <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">fdisk</span> <span class="pre">-l</span></code> to list the available devices and partitions, in order to locate the USB device.</p>
 </div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>fdisk<span class="w"> </span>/dev/sdb
-/*<span class="w"> </span>Create<span class="w"> </span>primary<span class="w"> </span>partition<span class="w"> </span><span class="m">1</span>,<span class="w"> </span>256M<span class="w"> </span>size*/
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>fdisk<span class="w"> </span>/dev/sda
+
+Welcome<span class="w"> </span>to<span class="w"> </span>fdisk<span class="w"> </span><span class="o">(</span>util-linux<span class="w"> </span><span class="m">2</span>.39.3<span class="o">)</span>.
+Changes<span class="w"> </span>will<span class="w"> </span>remain<span class="w"> </span><span class="k">in</span><span class="w"> </span>memory<span class="w"> </span>only,<span class="w"> </span><span class="k">until</span><span class="w"> </span>you<span class="w"> </span>decide<span class="w"> </span>to<span class="w"> </span>write<span class="w"> </span>them.
+Be<span class="w"> </span>careful<span class="w"> </span>before<span class="w"> </span>using<span class="w"> </span>the<span class="w"> </span>write<span class="w"> </span>command.
+
+
 Command<span class="w"> </span><span class="o">(</span>m<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nb">help</span><span class="o">)</span>:<span class="w"> </span>n
+Partition<span class="w"> </span><span class="nb">type</span>
+<span class="w">   </span>p<span class="w">   </span>primary<span class="w"> </span><span class="o">(</span><span class="m">0</span><span class="w"> </span>primary,<span class="w"> </span><span class="m">0</span><span class="w"> </span>extended,<span class="w"> </span><span class="m">4</span><span class="w"> </span>free<span class="o">)</span>
+<span class="w">   </span>e<span class="w">   </span>extended<span class="w"> </span><span class="o">(</span>container<span class="w"> </span><span class="k">for</span><span class="w"> </span>logical<span class="w"> </span>partitions<span class="o">)</span>
 Select<span class="w"> </span><span class="o">(</span>default<span class="w"> </span>p<span class="o">)</span>:<span class="w"> </span>p
 Partition<span class="w"> </span>number<span class="w"> </span><span class="o">(</span><span class="m">1</span>-4,<span class="w"> </span>default<span class="w"> </span><span class="m">1</span><span class="o">)</span>:<span class="w"> </span><span class="m">1</span>
-First<span class="w"> </span>sector<span class="w"> </span><span class="o">(</span><span class="m">2048</span>-3887103,<span class="w"> </span>default<span class="w"> </span><span class="m">2048</span><span class="o">)</span>:<span class="w"> </span>PRESS<span class="w"> </span>ENTER
-Last<span class="w"> </span>sector,<span class="w"> </span>+sectors<span class="w"> </span>or<span class="w"> </span>+size<span class="o">{</span>K,M,G<span class="o">}</span><span class="w"> </span><span class="o">(</span><span class="m">2048</span>-3887103,<span class="w"> </span>default<span class="w"> </span><span class="m">3887103</span><span class="o">)</span>:<span class="w"> </span>PRESS<span class="w"> </span>ENTER
+First<span class="w"> </span>sector<span class="w"> </span><span class="o">(</span><span class="m">2048</span>-15269887,<span class="w"> </span>default<span class="w"> </span><span class="m">2048</span><span class="o">)</span>:
+Last<span class="w"> </span>sector,<span class="w"> </span>+/-sectors<span class="w"> </span>or<span class="w"> </span>+/-size<span class="o">{</span>K,M,G,T,P<span class="o">}</span><span class="w"> </span><span class="o">(</span><span class="m">2048</span>-15269887,<span class="w"> </span>default<span class="w"> </span><span class="m">15269887</span><span class="o">)</span>:<span class="w"> </span>+32M
 
-/*<span class="w"> </span>Save<span class="w"> </span>partition<span class="w"> </span>*/
+Created<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>partition<span class="w"> </span><span class="m">1</span><span class="w"> </span>of<span class="w"> </span><span class="nb">type</span><span class="w"> </span><span class="s1">&#39;Linux&#39;</span><span class="w"> </span>and<span class="w"> </span>of<span class="w"> </span>size<span class="w"> </span><span class="m">32</span><span class="w"> </span>MiB.
+Partition<span class="w"> </span><span class="c1">#1 contains a ext4 signature.</span>
+
+Command<span class="w"> </span><span class="o">(</span>m<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nb">help</span><span class="o">)</span>:<span class="w"> </span>n
+Partition<span class="w"> </span><span class="nb">type</span>
+<span class="w">   </span>p<span class="w">   </span>primary<span class="w"> </span><span class="o">(</span><span class="m">1</span><span class="w"> </span>primary,<span class="w"> </span><span class="m">0</span><span class="w"> </span>extended,<span class="w"> </span><span class="m">3</span><span class="w"> </span>free<span class="o">)</span>
+<span class="w">   </span>e<span class="w">   </span>extended<span class="w"> </span><span class="o">(</span>container<span class="w"> </span><span class="k">for</span><span class="w"> </span>logical<span class="w"> </span>partitions<span class="o">)</span>
+Select<span class="w"> </span><span class="o">(</span>default<span class="w"> </span>p<span class="o">)</span>:<span class="w"> </span>p
+Partition<span class="w"> </span>number<span class="w"> </span><span class="o">(</span><span class="m">2</span>-4,<span class="w"> </span>default<span class="w"> </span><span class="m">2</span><span class="o">)</span>:<span class="w"> </span><span class="m">2</span>
+First<span class="w"> </span>sector<span class="w"> </span><span class="o">(</span><span class="m">67584</span>-15269887,<span class="w"> </span>default<span class="w"> </span><span class="m">67584</span><span class="o">)</span>:
+Last<span class="w"> </span>sector,<span class="w"> </span>+/-sectors<span class="w"> </span>or<span class="w"> </span>+/-size<span class="o">{</span>K,M,G,T,P<span class="o">}</span><span class="w"> </span><span class="o">(</span><span class="m">67584</span>-15269887,<span class="w"> </span>default<span class="w"> </span><span class="m">15269887</span><span class="o">)</span>:
+
+Created<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>partition<span class="w"> </span><span class="m">2</span><span class="w"> </span>of<span class="w"> </span><span class="nb">type</span><span class="w"> </span><span class="s1">&#39;Linux&#39;</span><span class="w"> </span>and<span class="w"> </span>of<span class="w"> </span>size<span class="w"> </span><span class="m">7</span>.2<span class="w"> </span>GiB.
+Partition<span class="w"> </span><span class="c1">#2 contains a ext4 signature.</span>
+
 Command<span class="w"> </span><span class="o">(</span>m<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nb">help</span><span class="o">)</span>:<span class="w"> </span>w
 </pre></div>
 </div>
-<p>Now that the storage device is partitioned, you need to format it to ext4:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkfs.ext4<span class="w"> </span>/dev/sdb1
-</pre></div>
-</div>
 </section>
-<section id="writing-the-kernel-and-rootfs-to-the-usb-storage-device">
-<h2>Writing the Kernel and rootFS to the USB storage device<a class="headerlink" href="#writing-the-kernel-and-rootfs-to-the-usb-storage-device" title="Link to this heading"></a></h2>
-<p>Mount the device to a directory of your liking in your host machine (in the example, <code class="docutils literal notranslate"><span class="pre">/mnt</span></code>), and run the following commands which will uncompress the root file system and then store the kernel image under <code class="docutils literal notranslate"><span class="pre">/boot</span></code> inside it.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>/mnt
-sudo<span class="w"> </span>mount<span class="w"> </span>-t<span class="w"> </span>ext4<span class="w"> </span>/dev/sdb1<span class="w"> </span>/mnt
-sudo<span class="w"> </span>mkdir<span class="w"> </span>/mnt/boot
-sudo<span class="w"> </span>tar<span class="w"> </span>-xf<span class="w"> </span>tmp/deploy/images/adsp-sc573-ezkit/adsp-sc5xx-minimal-adsp-sc573-ezkit.tar.xz<span class="w"> </span>-C<span class="w"> </span>/mnt
-sudo<span class="w"> </span>cp<span class="w"> </span>tmp/deploy/images/adsp-sc573-ezkit/fitImage<span class="w"> </span>/mnt/boot/
-sudo<span class="w"> </span>umount<span class="w"> </span>/mnt
+<section id="copying-to-the-usb-storage-device">
+<h3>Copying to the USB storage device<a class="headerlink" href="#copying-to-the-usb-storage-device" title="Link to this heading"></a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mke2fs<span class="w"> </span>-F<span class="w"> </span>-t<span class="w"> </span>ext4<span class="w"> </span>-L<span class="w"> </span><span class="s2">&quot;BOOT&quot;</span><span class="w"> </span>/dev/sda1
+mkdir<span class="w"> </span>-p<span class="w"> </span>/tmp/boot_mount
+mount<span class="w"> </span>/dev/sda1<span class="w"> </span>/tmp/boot_mount
+cp<span class="w"> </span>fitImage<span class="w"> </span>/tmp/boot_mount
+sync
+umount<span class="w"> </span>/tmp/boot_mount
+
+dd<span class="w"> </span><span class="k">if</span><span class="o">=</span>rootfs.ext4<span class="w"> </span><span class="nv">of</span><span class="o">=</span>/dev/sda2<span class="w"> </span><span class="nv">bs</span><span class="o">=</span><span class="m">512</span>
+
+sync
 </pre></div>
 </div>
 </section>
 <section id="booting-from-the-usb-storage-device">
-<h2>Booting from the USB storage device<a class="headerlink" href="#booting-from-the-usb-storage-device" title="Link to this heading"></a></h2>
-<p>Now, on U-Boot, set the following environment variables:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>setenv<span class="w"> </span>usbargs<span class="w"> </span><span class="s1">&#39;setenv bootargs root=/dev/sda1 rw rootfstype=ext4 rootwait earlycon=adi_uart,0x31003000 console=ttySC0,115200&#39;</span>
-<span class="o">=</span>&gt;<span class="w"> </span>setenv<span class="w"> </span>usbload<span class="w"> </span><span class="s1">&#39;ext4load usb 0 ${loadaddr} /boot/${imagefile};&#39;</span>
-<span class="o">=</span>&gt;<span class="w"> </span>setenv<span class="w"> </span>usbboot<span class="w"> </span><span class="s1">&#39;usb start; run usbload; run usbargs; bootm ${loadaddr};&#39;</span>
-</pre></div>
-</div>
-<p>And type to boot</p>
+<h3>Booting from the USB storage device<a class="headerlink" href="#booting-from-the-usb-storage-device" title="Link to this heading"></a></h3>
+<p>Now, boot to U-boot and interrupt autoboot to drop to the shell and enter the following command</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>run<span class="w"> </span>usbboot
 </pre></div>
 </div>
 <p>Now the rootfs is set to be your USB storage device, and the amount of space is the size of the partition created earlier on the device.</p>
+</section>
 </section>
 </section>
 
@@ -574,8 +676,8 @@ sudo<span class="w"> </span>umount<span class="w"> </span>/mnt
           </div>
               <div class="related">
                 &nbsp;
-    <a href="Getting-Started-with-ADSP%E2%80%90SC589%E2%80%90MINI-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-3.1.2%29.html" title="Previous document (Alt+Shift+LeftArrow)" class="prev">Getting Started with ADSP-SC589-MINI (3.1.2)</a>
-    <a href="../Linux-for-ADSP%E2%80%90SC5xx-3.1.1-Landing-Page.html" title="Next document (Alt+Shift+RightArrow)" class="next">Linux for ADSP-SC5xx Processors 3.1.1</a>
+    <a href="Getting-Started-with-ADSP%E2%80%90SC594-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html" title="Previous document (Alt+Shift+LeftArrow)" class="prev">Getting Started with ADSP-SC594 (5.x.x)</a>
+    <a href="Getting-Started-with-ADSP%E2%80%90SC573-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.x.x%29.html" title="Next document (Alt+Shift+RightArrow)" class="next">Getting Started with ADSP-SC573 (5.x.x)</a>
               </div>
           
         </div>
