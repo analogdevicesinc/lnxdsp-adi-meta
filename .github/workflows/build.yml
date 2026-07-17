@@ -102,6 +102,7 @@ jobs:
           umask 022
           source setup-environment -b build
           bitbake ${{ inputs.image }}
+          bitbake ${{ inputs.image }} -c populate_sdk
 
       - name: Set artifact name
         run: |
@@ -114,6 +115,19 @@ jobs:
         with:
           name: ${{ env.ARTIFACT_NAME }}
           path: ${{ env.YOCTO_WORKSPACE }}/build/tmp/deploy/images/${{ inputs.machine }}
+
+      - name: Locate SDK installer
+        if: ${{ github.event_name == 'release' || github.event_name == 'workflow_dispatch' }}
+        run: |
+          SDK_INSTALLER=$(ls "${YOCTO_WORKSPACE}/build/tmp/deploy/sdk/"*.sh | head -n1)
+          echo "SDK_INSTALLER=${SDK_INSTALLER}" >> $GITHUB_ENV
+
+      - name: Upload SDK installer as artifact
+        uses: actions/upload-artifact@v6
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        with:
+          name: sdk-${{ inputs.machine }}-${{ inputs.image }}
+          path: ${{ env.SDK_INSTALLER }}
 
       - name: Archive output images directory
         if: ${{ github.event_name == 'release' }}
@@ -128,4 +142,12 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ env.YOCTO_WORKSPACE }}/images-${{ inputs.machine }}-${{ inputs.image }}-${{ github.event.release.tag_name }}.tar.xz
+          tag: ${{ github.ref }}
+
+      - name: Upload SDK installer to release
+        uses: svenstaro/upload-release-action@v2
+        if: ${{ github.event_name == 'release' }}
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ env.SDK_INSTALLER }}
           tag: ${{ github.ref }}
