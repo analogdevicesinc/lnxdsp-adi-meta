@@ -15,6 +15,10 @@ on:
       manifest_repo:
         description: "Manifest repository"
         default: ""
+      override_meta_adi:
+        description: "Override sources/meta-adi with the checked-out ref"
+        type: boolean
+        default: false
   workflow_call:
     inputs:
       machine:
@@ -29,6 +33,9 @@ on:
       manifest_repo:
         type: string
         default: ""
+      override_meta_adi:
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -41,7 +48,7 @@ jobs:
       - name: Setup build workspace
         run: |
           # Create ephemeral workspace directory for this run
-          WORKSPACE="${GITHUB_WORKSPACE}/yocto-build-${GITHUB_RUN_ID}"
+          WORKSPACE="${GITHUB_WORKSPACE}/yocto-build-${GITHUB_RUN_ID}-${{ inputs.machine }}-${{ inputs.image }}-${{ inputs.manifest }}"
           mkdir -p "${WORKSPACE}"
 
           # Use known persistent cache path if mounted
@@ -72,16 +79,24 @@ jobs:
             -u "$manifest_repo" \
             -m "${{ inputs.manifest }}.xml"
 
+      - name: Override meta-adi revision via local manifest
+        if: ${{ inputs.override_meta_adi }}
+        run: |
+          cd "${YOCTO_WORKSPACE}"
+          override_rev="${{ github.event.pull_request.head.sha || github.sha }}"
+          mkdir -p .repo/local_manifests
+          cat > .repo/local_manifests/meta-adi-override.xml <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <manifest>
+            <remote fetch="${{ github.server_url }}/${{ github.repository_owner }}" name="ci"/>
+            <extend-project name="lnxdsp-adi-meta" path="sources/meta-adi" remote="ci" revision="${override_rev}"/>
+          </manifest>
+          EOF
+
       - name: Sync all sources
         run: |
           cd "${YOCTO_WORKSPACE}"
           ./bin/repo sync
-
-      - name: Checkout ref into sources/meta-adi
-        uses: actions/checkout@v7
-        with:
-          # Override yocto's revision="main"
-          path: ${{ env.YOCTO_WORKSPACE }}/sources/meta-adi
 
       - name: Setup build environment
         run: |
