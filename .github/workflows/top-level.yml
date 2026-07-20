@@ -35,3 +35,4 @@ jobs:
       machine: ${{ matrix.machine }}
       image: ${{ matrix.image }}
       manifest: ${{ matrix.manifest }}
+      override_meta_adi: true
