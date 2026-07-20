@@ -1,0 +1,386 @@
+From 596c331343577b0a0a1465dfa18ee3dbc40860ac Mon Sep 17 00:00:00 2001
+From: Utsav Agarwal <utsav.agarwal@analog.com>
+Date: Wed, 23 Jul 2025 14:54:38 +0100
+Subject: [PATCH] sc598: Security configuration
+
+Disable peripherals restricted by the SPU:
+- Crypto accelerators
+- SEC, RCU reboot
+- remoteproc because it uses the RCU and accesses L2 directly
+- DMC PMU
+- TRNG
+- All TRU register accesses
+
+Enable:
+- OPTEE support
+- ARM PSCI support to reboot with TFA
+- ADI_RPMSG as a module to communicate after loading SHARCs
+- TRU uses SMC method to request triggers
+
+Signed-off-by: Utsav Agarwal <utsav.agarwal@analog.com>
+---
+ arch/arm64/boot/dts/adi/sc598-som-ezkit.dts  |  7 --
+ arch/arm64/boot/dts/adi/sc598-som.dtsi       | 18 ++++--
+ arch/arm64/boot/dts/adi/sc59x-64.dtsi        | 20 +++---
+ arch/arm64/configs/sc598-som-ezkit_defconfig | 67 ++++++--------------
+ 4 files changed, 39 insertions(+), 73 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
+index 85c686ff08e0..0848e4ea20cf 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
++++ b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
+@@ -305,13 +305,6 @@ route {
+ 	};
+ };
+ 
+-&pkte1 {
+-	status = "okay";
+-	mode = "arm";        /* autonomous ring mode */
+-	/* mode = "tcm"; */  /* target command mode  */
+-	/* mode = "dhm"; */  /* direct host mode     */
+-};
+-
+ &crc0 {
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+index 47060d5bce61..accf110ece82 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
++++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+@@ -78,7 +78,7 @@ sharc0: core1-rproc@28240000 {
+ 			adi,verify = <1>;
+ 			adi,tru = <&tru>;
+ 			adi,tru-master-id = <135>; /* trigger master SOFT4 */
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 
+ 		sharc1: core2-rproc@28a40000 {
+@@ -96,15 +96,14 @@ sharc1: core2-rproc@28a40000 {
+ 			adi,verify = <1>;
+ 			adi,tru = <&tru>;
+ 			adi,tru-master-id = <136>; /* trigger master SOFT5 */
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 
+ 		sharc0_rpmsg: core0-rpmsg@28240000 {
+-				status = "disabled";
++				status = "okay";
+ 				compatible = "adi,rpmsg-SC598";
+ 				core-id = <1>;
+ 				adi,rcu = <&rcu>;
+-				adi,check-idle;
+ 				adi,rsc-table = <&rsc_tbl0>;
+ 				interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
+ 				adi,tru = <&tru>;
+@@ -114,11 +113,10 @@ sharc0_rpmsg: core0-rpmsg@28240000 {
+ 		};
+ 
+ 		sharc1_rpmsg: core1-rpmsg@28a40000 {
+-				status = "disabled";
++				status = "okay";
+ 				compatible = "adi,rpmsg-SC598";
+ 				core-id = <2>;
+ 				adi,rcu = <&rcu>;
+-				adi,check-idle;
+ 				adi,rsc-table = <&rsc_tbl1>;
+ 				interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
+ 				adi,tru = <&tru>;
+@@ -128,8 +126,16 @@ sharc1_rpmsg: core1-rpmsg@28a40000 {
+ 		};
+ 	};
+ 
++	firmware {
++		optee {
++			compatible = "linaro,optee-tz";
++			method = "smc";
++		};
++	};
++
+ };
+ 
++
+ &tru {
+ 	rpmsg_to_a55: channel@0 {
+ 		adi,tru-master-id = <134>; /* trigger master SOFT3 */
+diff --git a/arch/arm64/boot/dts/adi/sc59x-64.dtsi b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
+index f3f05804e720..0481f41d14ca 100644
+--- a/arch/arm64/boot/dts/adi/sc59x-64.dtsi
++++ b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
+@@ -69,6 +69,11 @@ pmu {
+ 		interrupt-parent = <&gic>;
+ 	};
+ 
++	psci {
++		compatible = "arm,psci-1.0";
++		method = "smc";
++	};
++
+ 	gic: interrupt-controller@31200000 {
+ 		compatible = "arm,gic-v3";
+ 		#interrupt-cells = <3>;
+@@ -210,7 +215,7 @@ scb {
+ 		pads_system_config: adi-control@31004600 {
+ 			compatible = "adi,pads-system-config";
+ 			reg = <0x31004600 0x100>;
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 
+ 		dmc_pmu: dmc-pmu@31070000 {
+@@ -237,7 +242,6 @@ rcu: rcu@3108c000 {
+ 			reg = <0x3108c000 0x1000>;
+ 			adi,sharc-min = <1>;
+ 			adi,sharc-max = <2>;
+-			adi,enable-reboot;
+ 			status = "okay";
+ 		};
+ 
+@@ -246,7 +250,7 @@ sec: sec@31089000 {
+ 			reg = <0x31089000 0x1000>;
+ 			adi,rcu = <&rcu>;
+ 			adi,sharc-cores = <2>;
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 
+ 		tru: tru@3108a000 {
+@@ -254,6 +258,7 @@ tru: tru@3108a000 {
+ 			reg = <0x3108a000 0x1000>;
+ 			adi,max-master-id = <182>;
+ 			adi,max-slave-id = <187>;
++			adi,use-smc;
+ 			status = "okay";
+ 		};
+ 
+@@ -811,13 +816,6 @@ usb0: usb@310c5000 {
+ 			status = "disabled";
+ 		};
+ 
+-		pkte1: pkte@310CD000 {
+-			compatible = "adi,pkte";
+-			reg = <0x310CD000 0x400>;
+-			interrupts = <GIC_SPI 161 IRQ_TYPE_LEVEL_HIGH>;
+-			status = "disabled";
+-		};
+-
+ //		dma0: dma@0 {
+ //			compatible = "adi,dma2";
+ //			reg = <0x31022000 0x7F>;
+@@ -1302,7 +1300,7 @@ trng: rng@0x310D0000 {
+ 			alarm-thresh  = <0xff>;
+ 			shdn-thresh = <0x04>;
+ 			poll-data = <0>; /* Use IRQ for data */
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 
+ 	};
+diff --git a/arch/arm64/configs/sc598-som-ezkit_defconfig b/arch/arm64/configs/sc598-som-ezkit_defconfig
+index 041abcf35b61..177836a0041c 100644
+--- a/arch/arm64/configs/sc598-som-ezkit_defconfig
++++ b/arch/arm64/configs/sc598-som-ezkit_defconfig
+@@ -16,7 +16,6 @@ CONFIG_TASK_IO_ACCOUNTING=y
+ CONFIG_IKCONFIG=y
+ CONFIG_IKCONFIG_PROC=y
+ CONFIG_LOG_BUF_SHIFT=12
+-CONFIG_PRINTK_SAFE_LOG_BUF_SHIFT=12
+ CONFIG_NUMA_BALANCING=y
+ CONFIG_MEMCG=y
+ CONFIG_BLK_CGROUP=y
+@@ -26,7 +25,6 @@ CONFIG_CPUSETS=y
+ CONFIG_CGROUP_DEVICE=y
+ CONFIG_CGROUP_CPUACCT=y
+ CONFIG_CGROUP_PERF=y
+-CONFIG_NAMESPACES=y
+ CONFIG_USER_NS=y
+ CONFIG_SCHED_AUTOGROUP=y
+ CONFIG_BLK_DEV_INITRD=y
+@@ -37,17 +35,11 @@ CONFIG_BLK_DEV_INITRD=y
+ # CONFIG_RD_LZ4 is not set
+ # CONFIG_RD_ZSTD is not set
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+-# CONFIG_ELF_CORE is not set
+-# CONFIG_BASE_FULL is not set
+-# CONFIG_KALLSYMS is not set
+-CONFIG_EMBEDDED=y
+-# CONFIG_COMPAT_BRK is not set
+ CONFIG_PROFILING=y
+ CONFIG_ARCH_SC59X_64=y
+ CONFIG_ARM64_VA_BITS_48=y
+ CONFIG_HOTPLUG_CPU=y
+ CONFIG_NUMA=y
+-CONFIG_CRASH_DUMP=y
+ CONFIG_XEN=y
+ CONFIG_COMPAT=y
+ # CONFIG_ARM64_HW_AFDBM is not set
+@@ -57,7 +49,6 @@ CONFIG_COMPAT=y
+ # CONFIG_ARM64_PTR_AUTH is not set
+ # CONFIG_SUSPEND is not set
+ CONFIG_PM=y
+-CONFIG_ARM_CPUIDLE=y
+ CONFIG_ARM_PSCI_CPUIDLE=y
+ CONFIG_CPU_FREQ=y
+ CONFIG_CPU_FREQ_STAT=y
+@@ -66,8 +57,8 @@ CONFIG_CPU_FREQ_GOV_USERSPACE=y
+ CONFIG_CPU_FREQ_GOV_ONDEMAND=y
+ CONFIG_CPU_FREQ_GOV_CONSERVATIVE=m
+ CONFIG_CPUFREQ_DT=y
+-CONFIG_ACPI_CPPC_CPUFREQ=m
+ CONFIG_ARM_SCPI_CPUFREQ=y
++CONFIG_ACPI_CPPC_CPUFREQ=m
+ CONFIG_ACPI=y
+ # CONFIG_ACPI_AC is not set
+ # CONFIG_ACPI_BATTERY is not set
+@@ -76,24 +67,12 @@ CONFIG_ACPI=y
+ CONFIG_ACPI_APEI=y
+ CONFIG_ACPI_APEI_GHES=y
+ CONFIG_ACPI_APEI_MEMORY_FAILURE=y
+-CONFIG_ACPI_APEI_EINJ=y
+-CONFIG_ARM64_CRYPTO=y
+-CONFIG_CRYPTO_SHA1_ARM64_CE=y
+-CONFIG_CRYPTO_SHA2_ARM64_CE=y
+-CONFIG_CRYPTO_SHA512_ARM64_CE=m
+-CONFIG_CRYPTO_SHA3_ARM64=m
+-CONFIG_CRYPTO_SM3_ARM64_CE=m
+-CONFIG_CRYPTO_GHASH_ARM64_CE=y
+-CONFIG_CRYPTO_CRCT10DIF_ARM64_CE=m
+-CONFIG_CRYPTO_AES_ARM64_CE_CCM=y
+-CONFIG_CRYPTO_AES_ARM64_CE_BLK=y
+-CONFIG_CRYPTO_CHACHA20_NEON=m
+-CONFIG_CRYPTO_AES_ARM64_BS=m
+ CONFIG_JUMP_LABEL=y
+ CONFIG_MODULES=y
+ CONFIG_MODULE_UNLOAD=y
+ CONFIG_BLK_DEV_BSGLIB=y
+ CONFIG_BLK_DEV_INTEGRITY=y
++# CONFIG_COMPAT_BRK is not set
+ CONFIG_KSM=y
+ CONFIG_MEMORY_FAILURE=y
+ CONFIG_TRANSPARENT_HUGEPAGE=y
+@@ -121,7 +100,6 @@ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_FW_LOADER_USER_HELPER=y
+ CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
+-# CONFIG_ALLOW_DEV_COREDUMP is not set
+ CONFIG_ARM_SCPI_PROTOCOL=y
+ CONFIG_EFI_CAPSULE_LOADER=y
+ CONFIG_MTD=y
+@@ -136,6 +114,8 @@ CONFIG_SRAM=y
+ CONFIG_EEPROM_AT25=m
+ CONFIG_ADI_SRAM_MMAP=y
+ CONFIG_ADI_SRAM_CONTROLLER=y
++CONFIG_SCSI=y
++CONFIG_BLK_DEV_SD=y
+ CONFIG_NETDEVICES=y
+ CONFIG_MACVLAN=m
+ CONFIG_MACVTAP=m
+@@ -206,7 +186,6 @@ CONFIG_IPMI_DEVICE_INTERFACE=m
+ CONFIG_IPMI_SI=m
+ CONFIG_HW_RANDOM=y
+ # CONFIG_HW_RANDOM_ARM_SMCCC_TRNG is not set
+-CONFIG_HW_RANDOM_ADI=y
+ CONFIG_I2C=y
+ CONFIG_I2C_CHARDEV=y
+ CONFIG_I2C_ADI_TWI=y
+@@ -240,12 +219,12 @@ CONFIG_SND_AUDIO_GRAPH_CARD=m
+ # CONFIG_HID is not set
+ # CONFIG_USB_HID is not set
+ CONFIG_USB=y
+-# CONFIG_USB_OTG is not set
+ CONFIG_USB_XHCI_HCD=y
+ CONFIG_USB_EHCI_HCD=y
+ CONFIG_USB_EHCI_HCD_PLATFORM=y
+ CONFIG_USB_OHCI_HCD=y
+ CONFIG_USB_OHCI_HCD_PLATFORM=y
++CONFIG_USB_STORAGE=y
+ CONFIG_USB_MUSB_HDRC=y
+ CONFIG_USB_DWC3=y
+ CONFIG_USB_DWC2=y
+@@ -264,7 +243,6 @@ CONFIG_MMC_SDHCI=y
+ CONFIG_MMC_SDHCI_PLTFM=y
+ CONFIG_MMC_SDHCI_OF_DWCMSHC=y
+ CONFIG_MMC_DW=y
+-CONFIG_MMC_CQHCI=y
+ CONFIG_NEW_LEDS=y
+ CONFIG_LEDS_CLASS=y
+ CONFIG_LEDS_GPIO=y
+@@ -294,23 +272,22 @@ CONFIG_ARM_SMMU_V3=y
+ CONFIG_REMOTEPROC=y
+ CONFIG_ADI_REMOTEPROC=y
+ CONFIG_RPMSG_CHAR=y
++CONFIG_RPMSG_CTRL=y
+ CONFIG_RPMSG_QCOM_GLINK_RPM=y
+ CONFIG_RPMSG_VIRTIO=y
+ CONFIG_PM_DEVFREQ=y
+ CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND=y
+ CONFIG_IIO=y
+-CONFIG_ADI_HADC=y
+-CONFIG_ADI_ADSP_IRQ=y
+-CONFIG_PHY_XGENE=y
+ CONFIG_PHY_QCOM_USB_HS=y
+ CONFIG_HISI_PMU=y
++CONFIG_TEE=y
++CONFIG_OPTEE=y
+ CONFIG_EXT2_FS=y
+ CONFIG_EXT4_FS=y
+ CONFIG_EXT4_FS_POSIX_ACL=y
+ CONFIG_FANOTIFY=y
+ CONFIG_FANOTIFY_ACCESS_PERMISSIONS=y
+ CONFIG_QUOTA=y
+-CONFIG_AUTOFS4_FS=y
+ CONFIG_VFAT_FS=y
+ CONFIG_TMPFS=y
+ CONFIG_TMPFS_POSIX_ACL=y
+@@ -334,36 +311,28 @@ CONFIG_CRYPTO_ECDH=m
+ CONFIG_CRYPTO_CCM=m
+ CONFIG_CRYPTO_GCM=m
+ CONFIG_CRYPTO_ECHAINIV=y
+-CONFIG_CRYPTO_ECB=m
+ CONFIG_CRYPTO_CMAC=m
+ CONFIG_CRYPTO_ANSI_CPRNG=y
+-CONFIG_CRYPTO_DEV_ADI_CRC=y
+-CONFIG_CRYPTO_DEV_ADI_HASH=y
+-CONFIG_CRYPTO_DEV_ADI_SKCIPHER=y
++CONFIG_CRYPTO_CHACHA20_NEON=m
++CONFIG_CRYPTO_GHASH_ARM64_CE=y
++CONFIG_CRYPTO_SHA1_ARM64_CE=y
++CONFIG_CRYPTO_SHA2_ARM64_CE=y
++CONFIG_CRYPTO_SHA512_ARM64_CE=m
++CONFIG_CRYPTO_SHA3_ARM64=m
++CONFIG_CRYPTO_SM3_ARM64_CE=m
++CONFIG_CRYPTO_AES_ARM64_BS=m
++CONFIG_CRYPTO_AES_ARM64_CE_CCM=y
++CONFIG_CRYPTO_CRCT10DIF_ARM64_CE=m
+ CONFIG_ASYMMETRIC_KEY_TYPE=y
+ CONFIG_ASYMMETRIC_PUBLIC_KEY_SUBTYPE=y
+ CONFIG_X509_CERTIFICATE_PARSER=y
+ CONFIG_PKCS7_MESSAGE_PARSER=y
+ CONFIG_SYSTEM_TRUSTED_KEYRING=y
+-CONFIG_CRC_T10DIF=y
+ CONFIG_CRC_ITU_T=y
+ CONFIG_CRC7=y
+ CONFIG_XZ_DEC=y
+ CONFIG_IRQ_POLL=y
+ CONFIG_PRINTK_TIME=y
+ CONFIG_MAGIC_SYSRQ=y
+-CONFIG_DEBUG_MEMORY_INIT=y
+-CONFIG_BLK_DEV_IO_TRACE=y
+ # CONFIG_STRICT_DEVMEM is not set
+ CONFIG_MEMTEST=y
+-CONFIG_BLK_DEV_INTEGRITY_T10=y
+-CONFIG_SCSI_MOD=y
+-CONFIG_SCSI_COMMON=y
+-CONFIG_SCSI=y
+-CONFIG_SCSI_DMA=y
+-CONFIG_SCSI_PROC_FS=y
+-CONFIG_BLK_DEV_SD=y
+-CONFIG_BLK_DEV_BSG=y
+-CONFIG_USB_STORAGE=y
+-CONFIG_SG_POOL=y
+-CONFIG_RPMSG_CTRL=y
+\ No newline at end of file
+-- 
+2.34.1
+
