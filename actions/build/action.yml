@@ -1,0 +1,149 @@
+name: Build ADI Yocto artifacts
+
+inputs:
+  machine:
+    description: "Yocto machine"
+    default: adsp-sc598-som-ezkit
+  image:
+    description: "Yocto image"
+    default: adsp-sc5xx-minimal
+  manifest:
+    description: "Manifest"
+    default: main
+  manifest-repo:
+    description: "Manifest repository"
+    default: ""
+  override-meta-adi:
+    description: "Override sources/meta-adi with the checked-out ref"
+    default: 'false'
+  gh-token:
+    description: "GitHub token with access to all required repositories"
+    default: ${{ github.token }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set github token
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.gh-token }}
+      run: |
+        git config --global credential.helper 'store'
+        echo "https://x-access-token:${GH_TOKEN}@github.com" > ~/.git-credentials
+
+    - name: Setup build workspace
+      shell: bash
+      run: |
+        # Create ephemeral workspace directory for this run
+        WORKSPACE="${GITHUB_WORKSPACE}/yocto-build-${GITHUB_RUN_ID}-${{ inputs.machine }}-${{ inputs.image }}-${{ inputs.manifest }}"
+        mkdir -p "${WORKSPACE}"
+
+        # Use known persistent cache path if mounted
+        [ -d "/cache" ] && YOCTO_CACHE_DIR="/cache/yocto" || YOCTO_CACHE_DIR="$(mktemp -dt yocto.XXX)"
+        YOCTO_DL_DIR="${YOCTO_CACHE_DIR}/downloads"
+        YOCTO_SSTATE_DIR="${YOCTO_CACHE_DIR}/sstate"
+        mkdir -p "${YOCTO_DL_DIR}"
+        mkdir -p "${YOCTO_SSTATE_DIR}"
+
+        # Save workspace path and cache dirs for subsequent steps
+        echo "YOCTO_WORKSPACE=${WORKSPACE}" >> $GITHUB_ENV
+        echo "YOCTO_DL_DIR=${YOCTO_DL_DIR}" >> $GITHUB_ENV
+        echo "YOCTO_SSTATE_DIR=${YOCTO_SSTATE_DIR}" >> $GITHUB_ENV
+
+    - name: Setup repo tool
+      shell: bash
+      run: |
+        cd "${YOCTO_WORKSPACE}"
+        mkdir -p bin
+        curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ./bin/repo
+        chmod a+x ./bin/repo
+
+    - name: Initialize repo manifest
+      shell: bash
+      run: |
+        manifest_repo="${{ inputs.manifest-repo }}"
+        [[ -n "$manifest_repo" ]] || manifest_repo="https://github.com/${{ github.repository_owner }}/lnxdsp-repo-manifest.git"
+        cd "${YOCTO_WORKSPACE}"
+        ./bin/repo init \
+          -u "$manifest_repo" \
+          -m "${{ inputs.manifest }}.xml"
+
+    - name: Override meta-adi revision via local manifest
+      if: ${{ inputs.override-meta-adi == 'true' }}
+      shell: bash
+      run: |
+        cd "${YOCTO_WORKSPACE}"
+        override_rev="${{ github.event.pull_request.head.sha || github.sha }}"
+        mkdir -p .repo/local_manifests
+        cat > .repo/local_manifests/meta-adi-override.xml <<EOF
+        <?xml version="1.0" encoding="UTF-8"?>
+        <manifest>
+          <remote fetch="${{ github.server_url }}/${{ github.repository_owner }}" name="ci"/>
+          <extend-project name="lnxdsp-adi-meta" path="sources/meta-adi" remote="ci" revision="${override_rev}"/>
+        </manifest>
+        EOF
+
+    - name: Sync all sources
+      shell: bash
+      run: |
+        cd "${YOCTO_WORKSPACE}"
+        ./bin/repo sync
+
+    - name: Setup build environment
+      shell: bash
+      run: |
+        cd "${YOCTO_WORKSPACE}"
+        source setup-environment -m ${{ inputs.machine }}
+
+        # Configure for CI with persistent caches in runner's home directory
+        cat >> conf/local.conf <<EOF
+
+        # CI Build Configuration - use persistent caches from runner's home
+        DL_DIR = "${{ env.YOCTO_DL_DIR }}"
+        SSTATE_DIR = "${{ env.YOCTO_SSTATE_DIR }}"
+        EOF
+
+    - name: Build image
+      shell: bash
+      run: |
+        cd "${YOCTO_WORKSPACE}"
+        umask 022
+        source setup-environment -b build
+        bitbake ${{ inputs.image }}
+        bitbake ${{ inputs.image }} -c populate_sdk
+
+    - name: Set artifact name
+      shell: bash
+      run: |
+        ARTIFACT_NAME="images-${{ inputs.machine }}-${{ inputs.image }}"
+        [[ "${{ inputs.manifest }}" == "main" ]] || ARTIFACT_NAME="${ARTIFACT_NAME}-${{ inputs.manifest }}"
+        echo "ARTIFACT_NAME=${ARTIFACT_NAME}" >> $GITHUB_ENV
+
+    - name: Upload Yocto images
+      uses: actions/upload-artifact@v6
+      with:
+        name: ${{ env.ARTIFACT_NAME }}
+        path: ${{ env.YOCTO_WORKSPACE }}/build/tmp/deploy/images/${{ inputs.machine }}
+
+    - name: Locate SDK installer
+      if: ${{ github.event_name == 'release' || github.event_name == 'workflow_dispatch' }}
+      shell: bash
+      run: |
+        SDK_INSTALLER=$(ls "${YOCTO_WORKSPACE}/build/tmp/deploy/sdk/"*.sh | head -n1)
+        echo "SDK_INSTALLER=${SDK_INSTALLER}" >> $GITHUB_ENV
+
+    - name: Upload SDK installer as artifact
+      uses: actions/upload-artifact@v6
+      if: ${{ github.event_name == 'workflow_dispatch' }}
+      with:
+        name: sdk-${{ inputs.machine }}-${{ inputs.image }}
+        path: ${{ env.SDK_INSTALLER }}
+
+    - name: Archive output images directory
+      if: ${{ github.event_name == 'release' }}
+      shell: bash
+      run: |
+        cd "${YOCTO_WORKSPACE}"
+        tar -cJvf images-${{ inputs.machine }}-${{ inputs.image }}-${{ github.event.release.tag_name }}.tar.xz \
+          build/tmp/deploy/images/${{ inputs.machine }}/
+
