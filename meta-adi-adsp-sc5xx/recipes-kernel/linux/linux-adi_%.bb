@@ -16,7 +16,7 @@ SRC_URI:append="\
 "
 
 PV="6.18"
-KERNEL_BRANCH = "adsp-6.18.31-y"
+KERNEL_BRANCH = "sc598-mmc-overlays"
 
 SRCREV="ee6e24765e04ddf030e9b0c72f112ee34f308500"
 KERNEL_VERSION_SANITY_SKIP = "1"
@@ -28,7 +28,6 @@ SRC_URI:append:adsp-sc589-ezkit = " file://feature/cfg/snd_ezkit.scc"
 SRC_URI:append:adsp-sc584-ezkit = " file://feature/cfg/snd_ezkit.scc"
 SRC_URI:append:adsp-sc573-ezlite = " file://feature/cfg/snd_ezkit.scc"
 SRC_URI:append:adsp-sc589-mini = " file://feature/cfg/snd_mini.scc"
-SRC_URI:append:adsp-sc598-som-ezkit = "${@d.getVar('SDCARD_PATCH') if (bb.utils.to_boolean(d.getVar('ADSP_SC598_SDCARD'))) else ''}"
 
 SRC_URI:append:adsp-sc598-som-ezkit = ' file://0001-SC598-fix-stmmac-dma-split-header-crash.patch'
 SRC_URI:append:adsp-sc598-som-ezkit = "${@bb.utils.contains('CMA_PATCH', '1', ' file://enable_cma.cfg', '', d)}"
