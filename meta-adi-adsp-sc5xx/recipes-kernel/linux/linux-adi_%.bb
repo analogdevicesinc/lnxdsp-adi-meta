@@ -35,6 +35,10 @@ SRC_URI:append:adsp-sc598-som-ezkit = "${@bb.utils.contains('CMA_PATCH', '1', ' 
 SRC_URI:append = "${@bb.utils.contains('ADSP_SC5XX_DEBUG', '1', ' file://0001-Yocto-Debug-Build.patch', '', d)}"
 SRC_URI:append = ' file://0001-snd-sc5xx-Matching-implementation-to-legacy.patch'
 
+# SC598: enlarge SPI u-boot partition and move fitImage to 0x1a0000 so the
+# OP-TEE/BL31 security boot image fits (see matching u-boot env change)
+SRC_URI:append = ' file://0001-arm64-dts-adi-sc598-enlarge-u-boot-SPI-partition-for.patch'
+
 do_install:append(){
 	rm -rf ${D}/lib/modules/*-yocto-standard/modules.builtin.modinfo
 }

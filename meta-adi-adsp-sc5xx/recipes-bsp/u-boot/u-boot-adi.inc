@@ -64,6 +64,14 @@ SRC_URI:append = "${@d.getVar('USB_PATCH') if (bb.utils.to_boolean(d.getVar('ADS
 SRC_URI:append = "${@' file://0002-developer-mode-enable.patch' if bb.utils.to_boolean(d.getVar('DEVELOPER_MODE')) else '' }"
 SRC_URI:append = "${@bb.utils.contains('ADSP_SC5XX_DEBUG', '1', '${DEBUG_CFG}', '', d)}"
 
+# SC598: read fitImage from 0x1a0000 so the SPI u-boot slot can hold the
+# OP-TEE/BL31 security boot image (see matching linux DTS partition change)
+SRC_URI:append = " file://0001-env-adi-sc598-read-fitImage-from-0x1a0000-to-match-e.patch"
+
+# Security: RCU is secure-owned (TF-A/OP-TEE); skip the RCU boot-mode read in
+# U-Boot proper so it doesn't stall the bus and hang after the banner
+SRC_URI:append = " file://0001-arm-sc5xx-skip-RCU-boot-mode-read-in-U-Boot-proper.patch"
+
 LICENSE = "GPL-2.0-or-later"
 LIC_FILES_CHKSUM = "file://Licenses/README;md5=2ca5f2c35c8cc335f0a19756634782f1"
 

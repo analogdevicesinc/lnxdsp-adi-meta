@@ -1,0 +1,167 @@
+From 0e041883cea11700bc69f803779b4d973708306a Mon Sep 17 00:00:00 2001
+From: Utsav Agarwal <utsav.agarwal@analog.com>
+Date: Wed, 22 Jul 2026 11:56:02 -0400
+Subject: [PATCH] sc598: Security configuration (device tree)
+
+Disable peripherals owned/restricted by the secure world (TF-A/OP-TEE)
+so the non-secure kernel does not fault (SError) accessing them:
+- SEC (system event controller) and RCU reboot
+- SHARC remoteproc (uses the RCU and accesses L2 directly)
+- TRNG and crypto (pkte)
+
+Enable:
+- OP-TEE firmware node
+- SHARC rpmsg endpoints to talk to cores loaded by the secure world
+- TRU uses the SMC method to request triggers
+
+Notes:
+- No PSCI node is added; this BL31 does not service runtime NS->EL3 PSCI
+  SMCs (PSCI_VERSION faults at boot), so advertising PSCI panics the kernel.
+- The PADS system-config (adi-control@31004600) is left enabled: it is not
+  SPU-secured and the EMAC references it via adi,system-config, so disabling
+  it stalls the ethernet probe and breaks NFS boot.
+
+Rebased onto the current kernel; kernel config deltas are provided as a
+separate config fragment.
+
+Signed-off-by: Utsav Agarwal <utsav.agarwal@analog.com>
+---
+ arch/arm64/boot/dts/adi/sc598-som-ezkit.dts |  7 -------
+ arch/arm64/boot/dts/adi/sc598-som.dtsi      | 18 ++++++++++++------
+ arch/arm64/boot/dts/adi/sc59x-64.dtsi       | 13 +++----------
+ 3 files changed, 15 insertions(+), 23 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
+index 881c36b0043f..453ad9932da7 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
++++ b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
+@@ -293,13 +293,6 @@ route {
+ 	};
+ };
+ 
+-&pkte1 {
+-	status = "okay";
+-	mode = "arm";        /* autonomous ring mode */
+-	/* mode = "tcm"; */  /* target command mode  */
+-	/* mode = "dhm"; */  /* direct host mode     */
+-};
+-
+ &crc0 {
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+index bc5b061a2b8f..33bb87720200 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
++++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+@@ -78,7 +78,7 @@ sharc0: core1-rproc@28240000 {
+ 			adi,l2-da = <0x20000000 0x20200000>;
+ 			adi,rsc-table = <&rsc_tbl0>;
+ 			adi,verify = <1>;
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 
+ 		sharc1: core2-rproc@28a40000 {
+@@ -97,15 +97,14 @@ sharc1: core2-rproc@28a40000 {
+ 			adi,l2-da = <0x20000000 0x20200000>;
+ 			adi,rsc-table = <&rsc_tbl1>;
+ 			adi,verify = <1>;
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 
+ 		sharc0_rpmsg: core0-rpmsg@28240000 {
+-				status = "disabled";
++				status = "okay";
+ 				compatible = "adi,rpmsg-sc598";
+ 				core-id = <1>;
+ 				adi,rcu = <&rcu>;
+-				adi,check-idle;
+ 				adi,rsc-table = <&rsc_tbl0>;
+ 				interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
+ 				adi,tru = <&tru>;
+@@ -115,11 +114,10 @@ sharc0_rpmsg: core0-rpmsg@28240000 {
+ 		};
+ 
+ 		sharc1_rpmsg: core1-rpmsg@28a40000 {
+-				status = "disabled";
++				status = "okay";
+ 				compatible = "adi,rpmsg-sc598";
+ 				core-id = <2>;
+ 				adi,rcu = <&rcu>;
+-				adi,check-idle;
+ 				adi,rsc-table = <&rsc_tbl1>;
+ 				interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
+ 				adi,tru = <&tru>;
+@@ -129,8 +127,16 @@ sharc1_rpmsg: core1-rpmsg@28a40000 {
+ 		};
+ 	};
+ 
++	firmware {
++		optee {
++			compatible = "linaro,optee-tz";
++			method = "smc";
++		};
++	};
++
+ };
+ 
++
+ &tru {
+ 	rpmsg_to_a55: channel@0 {
+ 		adi,tru-master-id = <134>; /* trigger master SOFT3 */
+diff --git a/arch/arm64/boot/dts/adi/sc59x-64.dtsi b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
+index afd4ee210f50..b5a8b36edd9a 100644
+--- a/arch/arm64/boot/dts/adi/sc59x-64.dtsi
++++ b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
+@@ -238,7 +238,6 @@ rcu: rcu@3108c000 {
+ 			adi,sharc-min = <1>;
+ 			adi,sharc-max = <2>;
+ 			adi,core-stop-irqs = <106 107>;
+-			adi,enable-reboot;
+ 			status = "okay";
+ 		};
+ 
+@@ -247,7 +246,7 @@ sec: sec@31089000 {
+ 			reg = <0x31089000 0x1000>;
+ 			adi,rcu = <&rcu>;
+ 			adi,sharc-cores = <2>;
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 
+ 		tru: tru@3108a000 {
+@@ -256,6 +255,7 @@ tru: tru@3108a000 {
+ 			#mbox-cells = <1>;
+ 			adi,max-master-id = <182>;
+ 			adi,max-slave-id = <187>;
++			adi,use-smc;
+ 			status = "okay";
+ 		};
+ 
+@@ -833,13 +833,6 @@ usb0: usb@310c5000 {
+ 			status = "disabled";
+ 		};
+ 
+-		pkte1: pkte@310CD000 {
+-			compatible = "adi,pkte";
+-			reg = <0x310CD000 0x400>;
+-			interrupts = <GIC_SPI 161 IRQ_TYPE_LEVEL_HIGH>;
+-			status = "disabled";
+-		};
+-
+ //		dma0: dma@0 {
+ //			compatible = "adi,dma2";
+ //			reg = <0x31022000 0x7F>;
+@@ -1339,7 +1332,7 @@ trng: rng@310D0000 {
+ 			alarm-thresh  = <0xff>;
+ 			shdn-thresh = <0x04>;
+ 			poll-data = <0>; /* Use IRQ for data */
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 
+ 	};
+-- 
+2.34.1
+

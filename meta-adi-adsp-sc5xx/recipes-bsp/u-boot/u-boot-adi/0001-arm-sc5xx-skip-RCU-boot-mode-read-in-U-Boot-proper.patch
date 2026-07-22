@@ -1,0 +1,43 @@
+From e1ef32d3b94e0e330436a8abb1359708fe00cd5c Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Wed, 22 Jul 2026 10:50:14 -0400
+Subject: [PATCH] arm: sc5xx: skip RCU boot-mode read in U-Boot proper
+
+sc5xx_get_boot_mode() reads RCU0_STAT to report the boot mode. In a
+security configuration the RCU is owned by the secure world (TF-A/OP-TEE
+use it for platform reset and SHARC core control), so a non-secure read
+from U-Boot proper stalls the bus and hangs before print_cpuinfo() emits
+the CPU line. SPL runs before the secure firmware and can still read it.
+
+Gate the RCU read on CONFIG_SPL_BUILD: SPL keeps reporting the real boot
+mode; U-Boot proper skips the read to avoid the hang.
+
+Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
+---
+ arch/arm/mach-sc5xx/soc.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/arch/arm/mach-sc5xx/soc.c b/arch/arm/mach-sc5xx/soc.c
+index 09978a5cf44..347c5bef01a 100644
+--- a/arch/arm/mach-sc5xx/soc.c
++++ b/arch/arm/mach-sc5xx/soc.c
+@@ -91,7 +91,16 @@ const char *sc5xx_get_boot_mode(u32 *bmode)
+ 	};
+ 	u32 local_mode;
+ 
++#ifdef CONFIG_SPL_BUILD
+ 	local_mode = (readl(RCU0_STAT) & BITM_RCU_STAT_BMODE) >> BITP_RCU_STAT_BMODE;
++#else
++	/*
++	 * In U-Boot proper the RCU is owned by secure firmware (TF-A/OP-TEE); a
++	 * non-secure read of RCU0_STAT stalls the bus and hangs boot. SPL already
++	 * reports the boot mode, so skip the RCU read here.
++	 */
++	local_mode = 0;
++#endif
+ 
+ #if CONFIG_ADI_SPL_FORCE_BMODE != 0
+ 	/*
+-- 
+2.34.1
+

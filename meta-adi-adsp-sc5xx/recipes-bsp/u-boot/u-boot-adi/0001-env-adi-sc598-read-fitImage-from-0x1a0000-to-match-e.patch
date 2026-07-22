@@ -1,0 +1,35 @@
+From 87ca034626508504b18419057ff810c504fe961b Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Wed, 22 Jul 2026 08:41:56 -0400
+Subject: [PATCH] env: adi: sc598: read fitImage from 0x1a0000 to match
+ enlarged u-boot slot
+
+On SC59X_64 (SC598) the security boot image (U-Boot + OP-TEE + TF-A BL31)
+is ~1.13 MiB and no longer fits the 0xC0000 (768 KiB) SPI u-boot slot when
+the fitImage sits at 0x100000. Move the fitImage read offset to 0x1a0000
+for CONFIG_SC59X_64 so the u-boot partition can grow to 0x160000, matching
+the documented ADI SPI layout. SC59X (SC594) keeps 0x100000.
+
+Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
+---
+ include/env/adi/adi_boot.env | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/include/env/adi/adi_boot.env b/include/env/adi/adi_boot.env
+index 3c83826cf9a..5de10f635d0 100644
+--- a/include/env/adi/adi_boot.env
++++ b/include/env/adi/adi_boot.env
+@@ -14,7 +14,9 @@ initrd_high=0xffffffffffffffff
+ #else
+ initrd_high=0xffffffff
+ #endif
+-#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
++#if defined(CONFIG_SC59X_64)
++adi_image_offset=0x1a0000
++#elif defined(CONFIG_SC59X)
+ adi_image_offset=0x100000
+ #else
+ adi_image_offset=0xd0000
+-- 
+2.34.1
+

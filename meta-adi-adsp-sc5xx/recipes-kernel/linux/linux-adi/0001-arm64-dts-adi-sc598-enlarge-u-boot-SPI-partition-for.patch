@@ -1,0 +1,105 @@
+From 8fe12a453b8a4cd7f8a655d9cef0faaeaf1adeee Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Wed, 22 Jul 2026 08:41:26 -0400
+Subject: [PATCH] arm64: dts: adi: sc598: enlarge u-boot SPI partition for
+ OP-TEE/BL31 boot image
+
+The SPI/OSPI "u-boot" partition was 0xC0000 (768 KiB) and the fitImage
+started at 0x100000. The security boot image (U-Boot + OP-TEE + TF-A BL31)
+is ~1.13 MiB and does not fit, so flashing u-boot.ldr to /dev/mtd1 fails.
+
+Restore U-Boot's documented SPI layout by growing the u-boot partition to
+0x160000 (1408 KiB) and moving the kernel/fitImage to 0x1a0000, matching
+U-Boot's ADI_IMG_OFFSET / SC5XX_FITIMAGE_OFFSET (0x1a0000). The rootfs
+offset is unchanged.
+
+Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
+---
+ arch/arm64/boot/dts/adi/sc598-htol.dts      | 6 +++---
+ arch/arm64/boot/dts/adi/sc598-som-ezkit.dts | 4 ++--
+ arch/arm64/boot/dts/adi/sc598-som-revD.dtsi | 6 +++---
+ arch/arm64/boot/dts/adi/sc598-som-revE.dtsi | 6 +++---
+ 4 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/adi/sc598-htol.dts b/arch/arm64/boot/dts/adi/sc598-htol.dts
+index b19e551fb8fd..9e3ee73f78af 100644
+--- a/arch/arm64/boot/dts/adi/sc598-htol.dts
++++ b/arch/arm64/boot/dts/adi/sc598-htol.dts
+@@ -120,12 +120,12 @@ qspi_0@0 {
+ 
+ 			qspi_1@40000 {
+ 				label = "u-boot";
+-				reg = <0x00040000 0xC0000>;
++				reg = <0x00040000 0x160000>;
+ 			};
+ 
+-			qspi_2@100000 {
++			qspi_2@1a0000 {
+ 				label = "kernel";
+-				reg = <0x00100000 0x2000000>;
++				reg = <0x001a0000 0x1f60000>;
+ 			};
+ 
+ 			qspi_3@2100000 {
+diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
+index 881c36b0043f..51e59734f13b 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
++++ b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
+@@ -53,12 +53,12 @@ ospi_0: partition@0 {
+ 
+ 			ospi_1: partition@1 {
+ 				label = "u-boot";
+-				reg = <0x40000 0xc0000>;
++				reg = <0x40000 0x160000>;
+ 			};
+ 
+ 			ospi_2: partition@2 {
+ 				label = "kernel";
+-				reg = <0x100000 0xf00000>;
++				reg = <0x1a0000 0xe60000>;
+ 			};
+ 
+ 			ospi_3: partition@3 {
+diff --git a/arch/arm64/boot/dts/adi/sc598-som-revD.dtsi b/arch/arm64/boot/dts/adi/sc598-som-revD.dtsi
+index eeea4cf477bd..9d3b0ca02d50 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som-revD.dtsi
++++ b/arch/arm64/boot/dts/adi/sc598-som-revD.dtsi
+@@ -99,12 +99,12 @@ qspi_0@0 {
+ 
+ 			qspi_1@40000 {
+ 				label = "u-boot";
+-				reg = <0x00040000 0xc0000>;
++				reg = <0x00040000 0x160000>;
+ 			};
+ 
+-			qspi_2@100000 {
++			qspi_2@1a0000 {
+ 				label = "kernel";
+-				reg = <0x00100000 0xf00000>;
++				reg = <0x001a0000 0xe60000>;
+ 			};
+ 
+ 			qspi_3@1000000 {
+diff --git a/arch/arm64/boot/dts/adi/sc598-som-revE.dtsi b/arch/arm64/boot/dts/adi/sc598-som-revE.dtsi
+index cec390435518..9e63acde3db0 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som-revE.dtsi
++++ b/arch/arm64/boot/dts/adi/sc598-som-revE.dtsi
+@@ -98,12 +98,12 @@ qspi_0@0 {
+ 
+ 			qspi_1@40000 {
+ 				label = "u-boot";
+-				reg = <0x00040000 0xC0000>;
++				reg = <0x00040000 0x160000>;
+ 			};
+ 
+-			qspi_2@100000 {
++			qspi_2@1a0000 {
+ 				label = "kernel";
+-				reg = <0x00100000 0x2000000>;
++				reg = <0x001a0000 0x1f60000>;
+ 			};
+ 
+ 			qspi_3@2100000 {
+-- 
+2.34.1
+
