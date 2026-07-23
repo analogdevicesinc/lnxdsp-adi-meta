@@ -21,7 +21,12 @@ jobs:
       fail-fast: false
       matrix:
         machine:
+          - adsp-sc573-ezlite
+          - adsp-sc589-mini
+          - adsp-sc594-som-ezkit
+          - adsp-sc594-som-ezlite
           - adsp-sc598-som-ezkit
+          - adsp-sc598-som-ezlite
         image:
           - adsp-sc5xx-minimal
         manifest:
