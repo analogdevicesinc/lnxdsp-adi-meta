@@ -22,6 +22,7 @@ jobs:
       matrix:
         machine:
           - adsp-sc598-som-ezkit
+          - adsp-sc846-som-ezkit
         image:
           - adsp-sc5xx-minimal
         manifest:
