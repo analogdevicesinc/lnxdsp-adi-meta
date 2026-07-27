@@ -101,6 +101,10 @@ runs:
         # CI Build Configuration - use persistent caches from runner's home
         DL_DIR = "${{ env.YOCTO_DL_DIR }}"
         SSTATE_DIR = "${{ env.YOCTO_SSTATE_DIR }}"
+
+        # Instruct Yocto to generate an SPDX Software Bill of Materials (SBOM) for the image.
+        INHERIT:remove = "create-spdx"
+        INHERIT += "create-spdx-3.0"
         EOF
 
     - name: Build image
@@ -115,7 +119,7 @@ runs:
     - name: Set artifact name
       shell: bash
       run: |
-        ARTIFACT_NAME="images-${{ inputs.machine }}-${{ inputs.image }}"
+        ARTIFACT_NAME="${{ inputs.machine }}-${{ inputs.image }}"
         [[ "${{ inputs.manifest }}" == "main" ]] || ARTIFACT_NAME="${ARTIFACT_NAME}-${{ inputs.manifest }}"
         echo "ARTIFACT_NAME=${ARTIFACT_NAME}" >> $GITHUB_ENV
 
@@ -124,6 +128,15 @@ runs:
       with:
         name: ${{ env.ARTIFACT_NAME }}
         path: ${{ env.YOCTO_WORKSPACE }}/build/tmp/deploy/images/${{ inputs.machine }}
+
+
+    - name: Upload SBOM
+      uses: actions/upload-artifact@v6
+      with:
+        name: ${{ env.ARTIFACT_NAME }}.sbom
+        path: |
+          ${{ env.YOCTO_WORKSPACE }}/build/tmp/deploy/images/${{ inputs.machine }}/${{ inputs.image }}-${{ inputs.machine }}.rootfs.spdx.json
+          ${{ env.YOCTO_WORKSPACE }}/build/tmp/deploy/spdx/
 
     - name: Locate SDK installer
       if: ${{ github.event_name == 'release' || github.event_name == 'workflow_dispatch' }}
