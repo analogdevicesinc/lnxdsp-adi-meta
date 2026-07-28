@@ -36,6 +36,12 @@ on:
       override-meta-adi:
         type: boolean
         default: false
+    secrets:
+      APP_CLIENT_ID:
+        required: false
+      APP_PRIVATE_KEY:
+        required: false
+
 
 permissions:
   contents: read
@@ -44,8 +50,26 @@ jobs:
   build:
     runs-on: ${{ vars.RUNNER != '' && fromJSON(vars.RUNNER) || 'ubuntu-latest' }}
     steps:
+      - uses: actions/create-github-app-token@v3
+        if: ${{ github.repository_owner == 'adi-innersource' }}
+        id: app-token
+        with:
+          app-id: ${{ secrets.APP_CLIENT_ID  }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY  }}
+          owner: ${{ github.repository_owner }}
+          repositories: |
+            linux
+            u-boot
+            lnxdsp-adi-meta
+            lnxdsp-adi-security-meta
+            lnxdsp-repo-manifest
+            lnxdsp-scripts
+            openocd
+
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          token: ${{ steps.app-token.outputs.token || github.token }}
 
       - name: Build
         uses: ./actions/build
@@ -55,6 +79,7 @@ jobs:
           manifest: ${{ inputs.manifest }}
           manifest-repo: ${{ inputs.manifest-repo }}
           override-meta-adi: ${{ inputs.override-meta-adi }}
+          gh-token: ${{ steps.app-token.outputs.token || github.token }}
 
       - name: Upload release archive to release
         uses: svenstaro/upload-release-action@v2
