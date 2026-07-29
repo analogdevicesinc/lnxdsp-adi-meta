@@ -1,0 +1,54 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: ADI Linux <linux@analog.com>
+Date: Mon, 3 Aug 2026 00:00:00 +0000
+Subject: [PATCH] compilers/clike: only run sanity-check binary for real cross
+ builds
+
+meson 1.5.0 keys the compiler sanity check on
+environment.need_exe_wrapper(). For an SDK (nativesdk) build the host
+and build machines share the same architecture, so need_exe_wrapper()
+returns False and meson tries to execute the freshly linked test
+binary. nativesdk binaries are linked against the relocatable SDK
+dynamic loader (SDKPATH), which does not exist at build time, so the
+exec fails with:
+
+  ERROR: Could not invoke sanity test executable ... [Errno 2]
+
+This breaks e.g. nativesdk-qemu, which uses its own configure/meson
+cross file and therefore does not get needs_exe_wrapper=true from
+meson.bbclass.
+
+Restore the upstream behaviour (as in meson >= 1.7): decide whether to
+run the sanity binary based on self.is_cross and the presence of an exe
+wrapper. A cross compiler without an exe wrapper only compiles the
+check and assumes the binary runs.
+
+Upstream-Status: Backport
+Signed-off-by: ADI Linux <linux@analog.com>
+---
+ mesonbuild/compilers/mixins/clike.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/mesonbuild/compilers/mixins/clike.py b/mesonbuild/compilers/mixins/clike.py
+--- a/mesonbuild/compilers/mixins/clike.py
++++ b/mesonbuild/compilers/mixins/clike.py
+@@ -278,7 +278,7 @@ class CLikeCompiler(Compiler):
+         mode = CompileCheckMode.LINK
+         if self.is_cross:
+             binname += '_cross'
+-            if environment.need_exe_wrapper(self.for_machine) and not environment.has_exe_wrapper():
++            if not environment.has_exe_wrapper():
+                 # Linking cross built C/C++ apps is painful. You can't really
+                 # tell if you should use -nostdlib or not and for example
+                 # on OSX the compiler binary is the same but you need
+@@ -308,7 +308,7 @@ class CLikeCompiler(Compiler):
+         if pc.returncode != 0:
+             raise mesonlib.EnvironmentException(f'Compiler {self.name_string()} cannot compile programs.')
+         # Run sanity check
+-        if environment.need_exe_wrapper(self.for_machine):
++        if self.is_cross:
+             if not environment.has_exe_wrapper():
+                 # Can't check if the binaries run so we have to assume they do
+                 return
+-- 
+2.34.1
