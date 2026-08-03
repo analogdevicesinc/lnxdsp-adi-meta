@@ -8,4 +8,4 @@ SRC_URI = " \
 	file://hello_l2_alloc.c \
 "
 
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"

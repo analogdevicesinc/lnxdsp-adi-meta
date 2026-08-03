@@ -8,7 +8,7 @@ SRC_URI += " \
 	file://source/adi-skcipher.sh \
 "
 
-S="${WORKDIR}/source"
+S = "${UNPACKDIR}/source"
 
 DEPENDS += "cryptodev-module cryptodev-linux openssl"
 

@@ -68,6 +68,4 @@ PKG:${PN} = "u-boot"
 PKG:${PN}-dev = "u-boot-dev"
 PKG:${PN}-dbg = "u-boot-dbg"
 
-S = "${WORKDIR}/git"
-
 UBOOT_MKIMAGE_DTCOPTS ?= "-I dts -O dtb -p 2000"
