@@ -101,11 +101,22 @@ runs:
         # CI Build Configuration - use persistent caches from runner's home
         DL_DIR = "${{ env.YOCTO_DL_DIR }}"
         SSTATE_DIR = "${{ env.YOCTO_SSTATE_DIR }}"
+        EOF
 
-        # Instruct Yocto to generate an SPDX Software Bill of Materials (SBOM) for the image.
+        # Instruct Yocto to generate an SPDX Software Bill of Materials (SBOM)
+        # for the image, falling back to the older SPDX class if 3.0 isn't available.
+        if find "${YOCTO_WORKSPACE}/sources" -type f -name 'create-spdx-3.0.bbclass' | grep -q .; then
+          cat >> conf/local.conf <<EOF
+
         INHERIT:remove = "create-spdx"
         INHERIT += "create-spdx-3.0"
         EOF
+        else
+          cat >> conf/local.conf <<EOF
+
+        INHERIT += "create-spdx"
+        EOF
+        fi
 
     - name: Build image
       shell: bash
@@ -135,8 +146,10 @@ runs:
       with:
         name: ${{ env.ARTIFACT_NAME }}.sbom
         path: |
-          ${{ env.YOCTO_WORKSPACE }}/build/tmp/deploy/images/${{ inputs.machine }}/${{ inputs.image }}-${{ inputs.machine }}.rootfs.spdx.json
+          ${{ env.YOCTO_WORKSPACE }}/build/tmp/deploy/images/${{ inputs.machine }}/${{ inputs.image }}-${{ inputs.machine }}.rootfs.spdx*
           ${{ env.YOCTO_WORKSPACE }}/build/tmp/deploy/spdx/
+          !${{ env.YOCTO_WORKSPACE }}/build/tmp/deploy/spdx/**/by-namespace/**
+          !${{ env.YOCTO_WORKSPACE }}/build/tmp/deploy/spdx/**/by-hash/**
 
     - name: Locate SDK installer
       if: ${{ github.event_name == 'release' || github.event_name == 'workflow_dispatch' }}
