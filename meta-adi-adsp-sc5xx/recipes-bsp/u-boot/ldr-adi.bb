@@ -12,7 +12,7 @@ SRCREV= "fa471fb14fd22c559017286e8e19213722adeb97"
 SRC_URI = " \
 ${LDR_GIT_URI};protocol=${LDR_GIT_PROTOCOL};branch=${LDR_GIT_BRANCH}"
 
-S = "${WORKDIR}/git"
+S = "${UNPACKDIR}/git"
 
 BBCLASSEXTEND += "native nativesdk"
 

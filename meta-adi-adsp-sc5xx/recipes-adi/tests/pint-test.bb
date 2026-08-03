@@ -5,10 +5,10 @@ SRC_URI = "file://pint.c"
 
 FILES:${PN} = "/usr/bin/test_pint"
 
-S = "${WORKDIR}/pint_test"
+S = "${UNPACKDIR}"
 
 do_compile() {
-	${CC} ${CFLAGS} ${WORKDIR}/pint.c -c -o ${S}/pint.o
+	${CC} ${CFLAGS} ${S}/pint.c -c -o ${S}/pint.o
 	${CC} ${LDFLAGS} ${S}/pint.o -o ${S}/test_pint
 }
 

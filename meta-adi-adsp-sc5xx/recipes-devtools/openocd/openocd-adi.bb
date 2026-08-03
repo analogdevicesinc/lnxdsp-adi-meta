@@ -14,7 +14,6 @@ SRC_URI = " \
 SRCREV = "ad75bfb79b509634b92646b9e65b958f3ea1d8bf"
 
 PV = "0.12+git"
-S = "${WORKDIR}/git"
 
 inherit pkgconfig autotools-brokensep gettext
 

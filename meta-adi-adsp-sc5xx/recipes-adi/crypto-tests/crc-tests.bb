@@ -7,7 +7,7 @@ SRC_URI += " \
 	file://source/adi-crc.sh \
 "
 
-S="${WORKDIR}/source"
+S = "${UNPACKDIR}/source"
 
 DEPENDS += "cryptodev-linux openssl"
 
