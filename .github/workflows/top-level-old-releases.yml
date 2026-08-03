@@ -4,6 +4,10 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 5 * * 1' # 05:00 UTC every Monday
+  pull_request:
+    paths:
+      - '.github/**'
+      - 'actions/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
