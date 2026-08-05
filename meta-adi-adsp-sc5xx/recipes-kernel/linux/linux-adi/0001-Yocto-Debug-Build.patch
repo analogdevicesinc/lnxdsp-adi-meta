@@ -6,9 +6,9 @@ Subject: [PATCH] Yocto Debug Build
 ---
  arch/arm/boot/dts/adi/sc573-ezlite.dts      | 2 +-
  arch/arm/boot/dts/adi/sc589-mini.dts        | 2 +-
- arch/arm/boot/dts/adi/sc594-som.dtsi        | 4 ++--
- arch/arm64/boot/dts/adi/sc598-som-ezkit.dts | 2 +-
- arch/arm64/boot/dts/adi/sc598-som-revD.dtsi | 2 +-
+ arch/arm/boot/dts/adi/sc594-som.dtsi         | 4 ++--
+ arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi | 2 +-
+ arch/arm64/boot/dts/adi/sc598-som-revD.dtsi  | 2 +-
  arch/arm64/boot/dts/adi/sc598-som-revE.dtsi | 2 +-
  6 files changed, 7 insertions(+), 7 deletions(-)
 
@@ -60,11 +60,11 @@ index 2e5539429d6b..0c07f37070b8 100644
  			};
  
  			ospi_2: partition@3 {
-diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
+diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi
 index a5cd60dac238..b2f18583484a 100644
---- a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
-+++ b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
-@@ -53,7 +53,7 @@ ospi_0: partition@0 {
+--- a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi
++++ b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi
+@@ -54,7 +54,7 @@ ospi_0: partition@0 {
  
  			ospi_1: partition@1 {
  				label = "u-boot";
