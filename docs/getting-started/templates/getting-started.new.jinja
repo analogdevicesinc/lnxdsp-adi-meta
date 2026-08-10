@@ -169,30 +169,30 @@ Programming the board for the first time
 Bootstrapping to Linux
 ------------------------------
 
-The programming sequence uses nfsboot to bootstrap to Linux, and from there program all boot medias available. Before beginning, follow these steps.
+The programming sequence uses nfsboot to bootstrap to Linux, and from there program all available boot media. Before beginning, follow these steps.
 
 Populate the NFS file system with the files for booting:
 
 .. code-block:: shell
 
-   sudo tar -xf tmp/deploy/images/adsp-sc5xx-full={{ machine }}.rootfs.tar.xz -C /romfs
+   sudo tar -xf tmp/deploy/images/{{ machine }}/adsp-sc5xx-full-{{ machine }}.rootfs.tar.xz -C /romfs
 
 .. note::
    The directory for this extraction is `/romfs` if you followed the directions in :doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>`.
-   Also, the adsp-sc5xx-minimal image can also be used, but will not include installed some of the debugging tools that the full image will have
+   The adsp-sc5xx-minimal image can also be used, but will not include some of the debugging tools that the full image will have
    if there are problems.
 
 Copy the programming files into the /usr/firmware directory in the NFS filesystem 
 
 .. code-block:: shell
 
-   sudo cp tmp/deploy/images/programming-images/adsp-sc5xx-minimal/* /romfs/usr/firmware
+   sudo cp tmp/deploy/images/{{ machine }}/programming-images/adsp-sc5xx-minimal/* /romfs/usr/firmware
 
 ------------------------------
 Starting the Python webserver
 ------------------------------
 
-Start the python web server to serve the files
+Start the Python web server to serve the files
 
 .. code-block:: shell
 
@@ -200,7 +200,7 @@ Start the python web server to serve the files
    python3 -m http.server 8000
 
 .. note::
-   The python web server can be run directly from the images/programming-images directory, however it is advised to copy the images to another directory and serve them from that folder,
+   The Python web server can be run directly from the images/{{ machine }}/programming-images directory, however it is advised to copy the images to another directory and serve them from that folder,
    as the images in the tmp/deploy directory are overwritten with each new build
 
 --------------------------------
@@ -239,7 +239,7 @@ In a third console window launch GDB and type ``target extended-remote :3333``. 
 
 .. code-block:: shell
 
-   cd build/tmp/deploy/images/programming-images/adsp-sc5xx-minimal  # or wherever the Python webserver is serving from
+   cd build/tmp/deploy/images/{{ machine }}/programming-images/adsp-sc5xx-minimal  # or wherever the Python webserver is serving from
    {{ sdk_path }}/sysroots/x86_64-adi_glibc_sdk-linux/usr/bin/{{ gdb_prefix }}/{{ gdb_prefix }}-gdb u-boot-spl-{{ machine_short }}.elf
    ...
    (gdb) target extended-remote :3333
@@ -370,6 +370,17 @@ Select y to program the USB, or N to skip programming.
 Booting Linux after programming
 -------------------------------
 
+---------------
+Default Login
+---------------
+
+The default login credentials for the development build of the ADSP Yocto images is shown below. User/passwords can be set or changed in the Yocto
+adsp-sc5xx.bbclass file, and the default credentials should be changed before a production deployment.
+
+.. code-block:: shell
+
+   {{ linux_boot_output | indent(3) }}
+
 {% if has_qspi_boot %}
 
 -----------------------------------
@@ -407,7 +418,6 @@ Next, on the target, from u-boot, run the following commands:
    => run nfsboot
    ......
    ......
-{{linux_boot_output | indent(3, True)}}
 
 {% if has_emmc_boot %}
 
@@ -514,6 +524,7 @@ Now, boot to U-boot and interrupt autoboot to drop to the shell and enter the fo
 
 {% endif %}
 
+{% if has_usb_boot %}
 Booting Linux from USB Mass Storage
 -----------------------------------
 
@@ -601,3 +612,5 @@ Now, boot to U-boot and interrupt autoboot to drop to the shell and enter the fo
    => run usbboot
 
 Now the rootfs is set to be your USB storage device, and the amount of space is the size of the partition created earlier on the device.
+
+{% endif %}
