@@ -124,12 +124,6 @@
 <li><a class="reference internal" href="#nfs-boot">NFS Boot</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#booting-linux-from-usb-mass-storage">Booting Linux from USB Mass Storage</a><ul>
-<li><a class="reference internal" href="#formatting-the-usb-storage-device">Formatting the USB storage device</a></li>
-<li><a class="reference internal" href="#copying-to-the-usb-storage-device">Copying to the USB storage device</a></li>
-<li><a class="reference internal" href="#booting-from-the-usb-storage-device">Booting from the USB storage device</a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
@@ -403,7 +397,7 @@ This will erase the contents of the folders but not the folders themselves.</p>
 <h3>Bootstrapping to Linux<a class="headerlink" href="#bootstrapping-to-linux" title="Link to this heading"></a></h3>
 <p>The programming sequence uses nfsboot to bootstrap to Linux, and from there program all boot medias available. Before beginning, follow these steps.</p>
 <p>Populate the NFS file system with the files for booting:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tar<span class="w"> </span>-xf<span class="w"> </span>tmp/deploy/images/adsp-sc5xx-full<span class="o">=</span>adsp-sc846-som-ezkit.rootfs.tar.xz<span class="w"> </span>-C<span class="w"> </span>/romfs
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tar<span class="w"> </span>-xf<span class="w"> </span>tmp/deploy/images/adsp-sc5xx-full-adsp-sc846-som-ezkit.rootfs.tar.xz<span class="w"> </span>-C<span class="w"> </span>/romfs
 </pre></div>
 </div>
 <div class="admonition note">
@@ -440,7 +434,7 @@ as the images in the tmp/deploy directory are overwritten with each new build</p
 <p>In a separate console launch OpenOCD and connect to the development board.</p>
 <p><strong>Terminal2: OpenOCD</strong></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">sdk_usr</span><span class="o">=</span>/opt/adi-distro-glibc/5.1.0/sysroots/x86_64-adi_glibc_sdk-linux/usr/
-<span class="nv">$sdk_usr</span>/bin/openocd<span class="w"> </span>-f<span class="w"> </span><span class="nv">$sdk_usr</span>/share/openocd/scripts/interface/&lt;ICE&gt;.cfg<span class="w"> </span>-f<span class="w"> </span><span class="nv">$sdk_usr</span>/share/openocd/scripts/target/adspsc84x_core0.cfg
+<span class="nv">$sdk_usr</span>/bin/openocd<span class="w"> </span>-f<span class="w"> </span><span class="nv">$sdk_usr</span>/share/openocd/scripts/interface/&lt;ICE&gt;.cfg<span class="w"> </span>-f<span class="w"> </span><span class="nv">$sdk_usr</span>/share/openocd/scripts/target/adspsc84x.cfg
 </pre></div>
 </div>
 <p>Where <code class="docutils literal notranslate"><span class="pre">&lt;ICE&gt;</span></code> should be replaced with <code class="docutils literal notranslate"><span class="pre">ice1000</span></code> or <code class="docutils literal notranslate"><span class="pre">ice2000</span></code> depending on your hardware.
@@ -559,77 +553,6 @@ login:<span class="w"> </span>root
 Password:<span class="w"> </span>adi
 </pre></div>
 </div>
-</section>
-</section>
-<section id="booting-linux-from-usb-mass-storage">
-<h2>Booting Linux from USB Mass Storage<a class="headerlink" href="#booting-linux-from-usb-mass-storage" title="Link to this heading"></a></h2>
-<section id="formatting-the-usb-storage-device">
-<h3>Formatting the USB storage device<a class="headerlink" href="#formatting-the-usb-storage-device" title="Link to this heading"></a></h3>
-<p>The USB can be programmed by the init script from the instructions mentioned above if plugged into the board. However, the USB can also be formatted by the host PC before
-plugging into the board as well, following the instructions below.</p>
-<p>The first step is to format the USB stick to a format that U-Boot supports.</p>
-<p>To do this, follow the commands below. The example code in this section assumes that the USB device is reported to be <code class="docutils literal notranslate"><span class="pre">/dev/sda</span></code>. Ensure that you change these commands to use your device.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>You can use <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">fdisk</span> <span class="pre">-l</span></code> to list the available devices and partitions, in order to locate the USB device.</p>
-</div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>fdisk<span class="w"> </span>/dev/sda
-
-Welcome<span class="w"> </span>to<span class="w"> </span>fdisk<span class="w"> </span><span class="o">(</span>util-linux<span class="w"> </span><span class="m">2</span>.39.3<span class="o">)</span>.
-Changes<span class="w"> </span>will<span class="w"> </span>remain<span class="w"> </span><span class="k">in</span><span class="w"> </span>memory<span class="w"> </span>only,<span class="w"> </span><span class="k">until</span><span class="w"> </span>you<span class="w"> </span>decide<span class="w"> </span>to<span class="w"> </span>write<span class="w"> </span>them.
-Be<span class="w"> </span>careful<span class="w"> </span>before<span class="w"> </span>using<span class="w"> </span>the<span class="w"> </span>write<span class="w"> </span>command.
-
-
-Command<span class="w"> </span><span class="o">(</span>m<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nb">help</span><span class="o">)</span>:<span class="w"> </span>n
-Partition<span class="w"> </span><span class="nb">type</span>
-<span class="w">   </span>p<span class="w">   </span>primary<span class="w"> </span><span class="o">(</span><span class="m">0</span><span class="w"> </span>primary,<span class="w"> </span><span class="m">0</span><span class="w"> </span>extended,<span class="w"> </span><span class="m">4</span><span class="w"> </span>free<span class="o">)</span>
-<span class="w">   </span>e<span class="w">   </span>extended<span class="w"> </span><span class="o">(</span>container<span class="w"> </span><span class="k">for</span><span class="w"> </span>logical<span class="w"> </span>partitions<span class="o">)</span>
-Select<span class="w"> </span><span class="o">(</span>default<span class="w"> </span>p<span class="o">)</span>:<span class="w"> </span>p
-Partition<span class="w"> </span>number<span class="w"> </span><span class="o">(</span><span class="m">1</span>-4,<span class="w"> </span>default<span class="w"> </span><span class="m">1</span><span class="o">)</span>:<span class="w"> </span><span class="m">1</span>
-First<span class="w"> </span>sector<span class="w"> </span><span class="o">(</span><span class="m">2048</span>-15269887,<span class="w"> </span>default<span class="w"> </span><span class="m">2048</span><span class="o">)</span>:
-Last<span class="w"> </span>sector,<span class="w"> </span>+/-sectors<span class="w"> </span>or<span class="w"> </span>+/-size<span class="o">{</span>K,M,G,T,P<span class="o">}</span><span class="w"> </span><span class="o">(</span><span class="m">2048</span>-15269887,<span class="w"> </span>default<span class="w"> </span><span class="m">15269887</span><span class="o">)</span>:<span class="w"> </span>+32M
-
-Created<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>partition<span class="w"> </span><span class="m">1</span><span class="w"> </span>of<span class="w"> </span><span class="nb">type</span><span class="w"> </span><span class="s1">&#39;Linux&#39;</span><span class="w"> </span>and<span class="w"> </span>of<span class="w"> </span>size<span class="w"> </span><span class="m">32</span><span class="w"> </span>MiB.
-Partition<span class="w"> </span><span class="c1">#1 contains a ext4 signature.</span>
-
-Command<span class="w"> </span><span class="o">(</span>m<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nb">help</span><span class="o">)</span>:<span class="w"> </span>n
-Partition<span class="w"> </span><span class="nb">type</span>
-<span class="w">   </span>p<span class="w">   </span>primary<span class="w"> </span><span class="o">(</span><span class="m">1</span><span class="w"> </span>primary,<span class="w"> </span><span class="m">0</span><span class="w"> </span>extended,<span class="w"> </span><span class="m">3</span><span class="w"> </span>free<span class="o">)</span>
-<span class="w">   </span>e<span class="w">   </span>extended<span class="w"> </span><span class="o">(</span>container<span class="w"> </span><span class="k">for</span><span class="w"> </span>logical<span class="w"> </span>partitions<span class="o">)</span>
-Select<span class="w"> </span><span class="o">(</span>default<span class="w"> </span>p<span class="o">)</span>:<span class="w"> </span>p
-Partition<span class="w"> </span>number<span class="w"> </span><span class="o">(</span><span class="m">2</span>-4,<span class="w"> </span>default<span class="w"> </span><span class="m">2</span><span class="o">)</span>:<span class="w"> </span><span class="m">2</span>
-First<span class="w"> </span>sector<span class="w"> </span><span class="o">(</span><span class="m">67584</span>-15269887,<span class="w"> </span>default<span class="w"> </span><span class="m">67584</span><span class="o">)</span>:
-Last<span class="w"> </span>sector,<span class="w"> </span>+/-sectors<span class="w"> </span>or<span class="w"> </span>+/-size<span class="o">{</span>K,M,G,T,P<span class="o">}</span><span class="w"> </span><span class="o">(</span><span class="m">67584</span>-15269887,<span class="w"> </span>default<span class="w"> </span><span class="m">15269887</span><span class="o">)</span>:
-
-Created<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>partition<span class="w"> </span><span class="m">2</span><span class="w"> </span>of<span class="w"> </span><span class="nb">type</span><span class="w"> </span><span class="s1">&#39;Linux&#39;</span><span class="w"> </span>and<span class="w"> </span>of<span class="w"> </span>size<span class="w"> </span><span class="m">7</span>.2<span class="w"> </span>GiB.
-Partition<span class="w"> </span><span class="c1">#2 contains a ext4 signature.</span>
-
-Command<span class="w"> </span><span class="o">(</span>m<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nb">help</span><span class="o">)</span>:<span class="w"> </span>w
-</pre></div>
-</div>
-</section>
-<section id="copying-to-the-usb-storage-device">
-<h3>Copying to the USB storage device<a class="headerlink" href="#copying-to-the-usb-storage-device" title="Link to this heading"></a></h3>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mke2fs<span class="w"> </span>-F<span class="w"> </span>-t<span class="w"> </span>ext4<span class="w"> </span>-L<span class="w"> </span><span class="s2">&quot;BOOT&quot;</span><span class="w"> </span>/dev/sda1
-mkdir<span class="w"> </span>-p<span class="w"> </span>/tmp/boot_mount
-mount<span class="w"> </span>/dev/sda1<span class="w"> </span>/tmp/boot_mount
-cp<span class="w"> </span>fitImage<span class="w"> </span>/tmp/boot_mount
-sync
-umount<span class="w"> </span>/tmp/boot_mount
-
-dd<span class="w"> </span><span class="k">if</span><span class="o">=</span>rootfs.ext4<span class="w"> </span><span class="nv">of</span><span class="o">=</span>/dev/sda2<span class="w"> </span><span class="nv">bs</span><span class="o">=</span><span class="m">512</span>
-
-sync
-</pre></div>
-</div>
-</section>
-<section id="booting-from-the-usb-storage-device">
-<h3>Booting from the USB storage device<a class="headerlink" href="#booting-from-the-usb-storage-device" title="Link to this heading"></a></h3>
-<p>Now, boot to U-boot and interrupt autoboot to drop to the shell and enter the following command</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>run<span class="w"> </span>usbboot
-</pre></div>
-</div>
-<p>Now the rootfs is set to be your USB storage device, and the amount of space is the size of the partition created earlier on the device.</p>
 </section>
 </section>
 </section>
