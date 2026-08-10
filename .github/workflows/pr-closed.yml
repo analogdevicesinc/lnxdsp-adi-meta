@@ -2,7 +2,7 @@ on:
   pull_request:
     branches:
       - main
-      - dev
+      - 'release/**'
     types: [closed]
 
 jobs:
