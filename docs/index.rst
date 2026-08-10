@@ -18,7 +18,7 @@ various :external+documentation:doc:`use cases <products/adsp/use-cases>`.
 * **Real-time Processing** - Dedicated SHARC+ DSPs for deterministic, low-latency processing
 
 .. note::
-   📌 **Latest Release**: Linux for ADSP-SC5xx **5.0.1** - :doc:`Release Landing Page <Linux-for-ADSP‐SC5xx-5.0.1-Landing-Page>`
+   📌 **Latest Release**: Linux for ADSP-SC5xx **5.1.0** - :doc:`Release Landing Page <Linux-for-ADSP‐SC5xx-5.1.0-Landing-Page>`
 
 Development Boards
 ------------------
@@ -30,18 +30,21 @@ Development Boards
    * - Board
      - Processor Features
      - Quick Start Guide
+   * - **SC846-SOM**
+     - Cortex-A55 + Dual SHARC+ @ 1.2GHz
+     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC846-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)>`
    * - **SC598-SOM**
      - Cortex-A55 + Dual SHARC+ @ 1GHz
-     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)>`
+     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)>`
    * - **SC594-SOM**
      - Cortex-A5 + Single SHARC+ @ 1GHz
-     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)>`
+     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)>`
    * - **SC589-MINI**
      - Cortex-A5 + Dual SHARC+ @ 500MHz
-     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC589‐MINI-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)>`
+     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC589‐MINI-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)>`
    * - **SC573-EZ-KIT**
      - Cortex-A5 + Single SHARC+ @ 500MHz
-     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)>`
+     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)>`
 
 Quick Start
 -----------
@@ -58,12 +61,12 @@ Quick Start
 Latest Release
 --------------
 
-.. admonition:: Version 5.0.1 - Current Stable
+.. admonition:: Version 5.1.0 - Current Stable
    :class: tip
 
-   **Linux 6.12.38 (LTS)** | **Yocto Scarthgap** | **Enhanced RPMsg** | **Secure Boot** | **New Audio Examples**
+   **Linux 6.18.31 (LTS)** | **Yocto Scarthgap** | **Enhanced RPMsg** | **Secure Boot** | **New Audio Examples**
 
-   `Full Release Notes <https://github.com/analogdevicesinc/lnxdsp-adi-meta/releases/tag/5.0.1-rel-1>`_ | :doc:`Older Releases <Older-Releases>`
+   `Full Release Notes <https://github.com/analogdevicesinc/lnxdsp-adi-meta/releases/tag/5.1.0>`_ | :doc:`Older Releases <Older-Releases>`
 
 Quick Links
 -----------
@@ -90,8 +93,7 @@ Documentation
    :hidden:
    :titlesonly:
 
-   Linux for ADSP SC5xx 5.0.1 <Linux-for-ADSP‐SC5xx-5.0.1-Landing-Page>
-    Linux for ADSP SC5xx 5.x.x <Linux-for-ADSP‐SC5xx-5.x.x-Landing-Page>
+   Linux for ADSP SC5xx 5.1.0 <Linux-for-ADSP‐SC5xx-5.1.0-Landing-Page>
    Older Releases <Older-Releases>
    Examples <examples/Examples>
    Development <development/Development>

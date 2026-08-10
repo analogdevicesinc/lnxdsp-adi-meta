@@ -15,6 +15,9 @@ Available Releases
    * - Version
      - Release Notes
      - Documentation
+   * - **5.0.1**
+     - `Release Notes <https://github.com/analogdevicesinc/lnxdsp-adi-meta/releases/tag/5.0.1-rel-1>`__
+     - :doc:`5.0.1 Docs <Linux-for-ADSP‐SC5xx-5.0.1-Landing-Page>`
    * - **5.0.0**
      - `Release Notes <https://github.com/analogdevicesinc/lnxdsp-adi-meta/releases/tag/5.0.0-rel>`__
      - :doc:`5.0.0 Docs <Linux-for-ADSP‐SC5xx-5.0.0-Landing-Page>`
@@ -35,6 +38,7 @@ Available Releases
    :maxdepth: 1
    :hidden:
 
+   Linux-for-ADSP‐SC5xx-5.0.1-Landing-Page
    Linux-for-ADSP‐SC5xx-5.0.0-Landing-Page
    Linux-for-ADSP‐SC5xx-3.1.2-Landing-Page
    Linux-for-ADSP‐SC5xx-3.1.1-Landing-Page
