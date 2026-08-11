@@ -28,8 +28,14 @@ jobs:
           - adsp-sc846-som-ezkit
         image:
           - adsp-sc5xx-minimal
+          - adsp-sc5xx-full
         manifest:
           - main
+        include:
+          - image: adsp-sc5xx-minimal
+            build-sdk: true
+          - image: adsp-sc5xx-full
+            build-sdk: false
 
     uses: ./.github/workflows/build.yml
     secrets:
@@ -41,6 +47,7 @@ jobs:
       machine: ${{ matrix.machine }}
       image: ${{ matrix.image }}
       manifest: ${{ matrix.manifest }}
+      build-sdk: ${{ matrix.build-sdk }}
       override-meta-adi: true
 
   deploy_cloudsmith:
