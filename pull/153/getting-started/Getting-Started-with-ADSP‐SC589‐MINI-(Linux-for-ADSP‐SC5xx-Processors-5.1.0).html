@@ -385,7 +385,7 @@ This will erase the contents of the folders but not the folders themselves.</p>
 <h3>Bootstrapping to Linux<a class="headerlink" href="#bootstrapping-to-linux" title="Link to this heading"></a></h3>
 <p>The programming sequence uses nfsboot to bootstrap to Linux, and from there program all boot medias available. Before beginning, follow these steps.</p>
 <p>Populate the NFS file system with the files for booting:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tar<span class="w"> </span>-xf<span class="w"> </span>tmp/deploy/images/adsp-sc5xx-full-adsp-sc589-mini.rootfs.tar.xz<span class="w"> </span>-C<span class="w"> </span>/romfs
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tar<span class="w"> </span>-xf<span class="w"> </span>tmp/deploy/images/adsp-sc589-mini/adsp-sc5xx-full-adsp-sc589-mini.rootfs.tar.xz<span class="w"> </span>-C<span class="w"> </span>/romfs
 </pre></div>
 </div>
 <div class="admonition note">
@@ -395,7 +395,7 @@ Also, the adsp-sc5xx-minimal image can also be used, but will not include instal
 if there are problems.</p>
 </div>
 <p>Copy the programming files into the /usr/firmware directory in the NFS filesystem</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>cp<span class="w"> </span>tmp/deploy/images/programming-images/adsp-sc5xx-minimal/*<span class="w"> </span>/romfs/usr/firmware
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>cp<span class="w"> </span>tmp/deploy/images/adsp-sc589-mini/programming-images/adsp-sc5xx-minimal/*<span class="w"> </span>/romfs/usr/firmware
 </pre></div>
 </div>
 </section>
@@ -408,7 +408,7 @@ python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class=
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The python web server can be run directly from the images/programming-images directory, however it is advised to copy the images to another directory and serve them from that folder,
+<p>The python web server can be run directly from the images/adsp-sc589-mini/programming-images directory, however it is advised to copy the images to another directory and serve them from that folder,
 as the images in the tmp/deploy directory are overwritten with each new build</p>
 </div>
 </section>
@@ -433,7 +433,7 @@ When successful you should see a message similar to the console output below</p>
 </div>
 <p>In a third console window launch GDB and type <code class="docutils literal notranslate"><span class="pre">target</span> <span class="pre">extended-remote</span> <span class="pre">:3333</span></code>. This will make GDB to connect to the gdbserver on the local host using port 3333. Then, load the U-Boot SPL into RAM by typing <code class="docutils literal notranslate"><span class="pre">load</span></code>. Hit <code class="docutils literal notranslate"><span class="pre">Ctrl+C</span></code> to interrupt thereafter.</p>
 <p><strong>Terminal3: GDB</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>build/tmp/deploy/images/programming-images/adsp-sc5xx-minimal<span class="w">  </span><span class="c1"># or wherever the Python webserver is serving from</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>build/tmp/deploy/images/adsp-sc589-mini/programming-images/adsp-sc5xx-minimal<span class="w">  </span><span class="c1"># or wherever the Python webserver is serving from</span>
 /opt/adi-distro-glibc/5.1.0/sysroots/x86_64-adi_glibc_sdk-linux/usr/bin/arm-adi_glibc-linux-gnueabi/arm-adi_glibc-linux-gnueabi-gdb<span class="w"> </span>u-boot-spl-sc589-mini.elf
 ...
 <span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>target<span class="w"> </span>extended-remote<span class="w"> </span>:3333
