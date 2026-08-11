@@ -325,6 +325,12 @@ The revision number is located on the top side of the SOM board, on the opposite
    :alt: SOM Board Revision
    :width: 600
 
+On the ADSP-SC846 SOM, the revision is printed on the top near the edge of the connector.
+
+.. image:: https://raw.githubusercontent.com/wiki/analogdevicesinc/lnxdsp-adi-meta/images/som_rev_sc846.jpg
+   :alt: ADSP-SC846 SOM Board Revision
+   :width: 600
+
 Carrier Board Revision
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -336,4 +342,10 @@ Revision numbers are on the bottom part of the carrier board.
 
 .. image:: https://raw.githubusercontent.com/wiki/analogdevicesinc/lnxdsp-adi-meta/images/carrier_board_revision.png
    :alt: Carrier Board Revision
+   :width: 600
+
+On the EZ-KIT 2 carrier (``EV-SOMCRR2-EZKIT``), the revision is printed in the corner on the top of the board.
+
+.. image:: https://raw.githubusercontent.com/wiki/analogdevicesinc/lnxdsp-adi-meta/images/ezkit2_rev.jpg
+   :alt: EZ-KIT 2 Carrier Board Revision
    :width: 600
