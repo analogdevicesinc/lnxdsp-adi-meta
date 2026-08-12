@@ -397,7 +397,7 @@ This will erase the contents of the folders but not the folders themselves.</p>
 </div>
 <section id="bootstrapping-to-linux">
 <h3>Bootstrapping to Linux<a class="headerlink" href="#bootstrapping-to-linux" title="Link to this heading"></a></h3>
-<p>The programming sequence uses nfsboot to bootstrap to Linux, and from there program all boot medias available. Before beginning, follow these steps.</p>
+<p>The programming sequence uses nfsboot to bootstrap to Linux, and from there program all available boot media. Before beginning, follow these steps.</p>
 <p>Populate the NFS file system with the files for booting:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tar<span class="w"> </span>-xf<span class="w"> </span>tmp/deploy/images/adsp-sc594-som-ezkit/adsp-sc5xx-full-adsp-sc594-som-ezkit.rootfs.tar.xz<span class="w"> </span>-C<span class="w"> </span>/romfs
 </pre></div>
@@ -405,7 +405,7 @@ This will erase the contents of the folders but not the folders themselves.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The directory for this extraction is <cite>/romfs</cite> if you followed the directions in <a class="reference internal" href="Setting-Up-Your-Host-PC.html"><span class="doc">Setting Up Your Host PC</span></a>.
-Also, the adsp-sc5xx-minimal image can also be used, but will not include installed some of the debugging tools that the full image will have
+The adsp-sc5xx-minimal image can also be used, but will not include some of the debugging tools that the full image will have
 if there are problems.</p>
 </div>
 <p>Copy the programming files into the /usr/firmware directory in the NFS filesystem</p>
@@ -415,14 +415,14 @@ if there are problems.</p>
 </section>
 <section id="starting-the-python-webserver">
 <h3>Starting the Python webserver<a class="headerlink" href="#starting-the-python-webserver" title="Link to this heading"></a></h3>
-<p>Start the python web server to serve the files</p>
+<p>Start the Python web server to serve the files</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>&lt;folder&gt;
 python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8000</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The python web server can be run directly from the images/adsp-sc594-som-ezkit/programming-images directory, however it is advised to copy the images to another directory and serve them from that folder,
+<p>The Python web server can be run directly from the images/adsp-sc594-som-ezkit/programming-images directory, however it is advised to copy the images to another directory and serve them from that folder,
 as the images in the tmp/deploy directory are overwritten with each new build</p>
 </div>
 </section>
