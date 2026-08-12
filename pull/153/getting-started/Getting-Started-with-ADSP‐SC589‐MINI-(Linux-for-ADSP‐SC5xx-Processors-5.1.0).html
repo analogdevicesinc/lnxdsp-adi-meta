@@ -115,7 +115,10 @@
 <li><a class="reference internal" href="#programming-images">Programming Images</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#booting-linux-after-programming">Booting Linux after programming</a></li>
+<li><a class="reference internal" href="#booting-linux-after-programming">Booting Linux after programming</a><ul>
+<li><a class="reference internal" href="#default-login">Default Login</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#network-booting">Network Booting</a><ul>
 <li><a class="reference internal" href="#nfs-boot">NFS Boot</a></li>
 </ul>
@@ -511,6 +514,17 @@ Continue?<span class="w"> </span><span class="o">[</span>y/N<span class="o">]</s
 </section>
 <section id="booting-linux-after-programming">
 <h2>Booting Linux after programming<a class="headerlink" href="#booting-linux-after-programming" title="Link to this heading"></a></h2>
+<section id="default-login">
+<h3>Default Login<a class="headerlink" href="#default-login" title="Link to this heading"></a></h3>
+<p>The default login credentials for the development build of the ADSP Yocto images is shown below. User/passwords can be set or changed in the Yocto
+adsp-sc5xx.bbclass file, and the default credentials should be changed before a production deployment.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Starting<span class="w"> </span>services...
+Analog<span class="w"> </span>Devices<span class="w"> </span>Yocto<span class="w"> </span>Distribution
+login:<span class="w"> </span>root
+Password:<span class="w"> </span>adi
+</pre></div>
+</div>
+</section>
 </section>
 <section id="network-booting">
 <h2>Network Booting<a class="headerlink" href="#network-booting" title="Link to this heading"></a></h2>
@@ -528,10 +542,6 @@ Continue?<span class="w"> </span><span class="o">[</span>y/N<span class="o">]</s
 <span class="o">=</span>&gt;<span class="w"> </span>run<span class="w"> </span>nfsboot
 ......
 ......
-Starting<span class="w"> </span>services...
-Analog<span class="w"> </span>Devices<span class="w"> </span>Yocto<span class="w"> </span>Distribution
-login:<span class="w"> </span>root
-Password:<span class="w"> </span>adi
 </pre></div>
 </div>
 </section>
