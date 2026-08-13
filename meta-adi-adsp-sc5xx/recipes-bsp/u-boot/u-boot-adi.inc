@@ -57,7 +57,7 @@ EXTRA_OEMAKE:append:adsp-sc598-som-ezkit = "${@' DEVICE_TREE=sc598-som-ezkit-sd'
 SRC_URI:append = "${@d.getVar('USB_PATCH') if (bb.utils.to_boolean(d.getVar('ADSP_SC59X_USB'))) else ''}"
 
 SRC_URI:append = "${@' file://0002-developer-mode-enable.patch' if bb.utils.to_boolean(d.getVar('DEVELOPER_MODE')) else '' }"
-SRC_URI:append = "${@bb.utils.contains('ADSP_SC5XX_DEBUG', '1', '${DEBUG_CFG}', '', d)}"
+SRC_URI:append = "${@bb.utils.contains('ADSP_DEBUG', '1', '${DEBUG_CFG}', '', d)}"
 
 LICENSE = "GPL-2.0-or-later"
 LIC_FILES_CHKSUM = "file://Licenses/README;md5=2ca5f2c35c8cc335f0a19756634782f1"
