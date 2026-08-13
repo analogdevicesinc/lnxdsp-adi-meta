@@ -1,20 +1,19 @@
-From 3209f28b8f9e02e896a20ab60103f7de2c588890 Mon Sep 17 00:00:00 2001
+From a36906d1b155f4bacf3e88207bc9ac13d82f5bfc Mon Sep 17 00:00:00 2001
 From: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
 Date: Tue, 20 May 2025 13:53:51 +0100
-Subject: [PATCH] [PATCH 1/2] SC598 Audio configuration for hybrid audio
- support
+Subject: [PATCH] SC598 Audio configuration for hybrid audio support
 
 Signed-off-by: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
 ---
- arch/arm64/boot/dts/adi/sc598-som.dtsi | 23 +++++++++++++-------
- arch/arm64/boot/dts/adi/sc59x-64.dtsi  | 29 +++++++++++++++++++++++++-
- 2 files changed, 43 insertions(+), 9 deletions(-)
+ arch/arm64/boot/dts/adi/sc598-som.dtsi | 23 +++++++++++++--------
+ arch/arm64/boot/dts/adi/sc59x-64.dtsi  | 28 +++++++++++++++++++++++++-
+ 2 files changed, 42 insertions(+), 9 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index b2a65303af28..33f411bd382b 100644
+index 9842686055b8..b0354b9f2148 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-@@ -28,10 +28,10 @@ memory@20040000 {
+@@ -27,10 +27,10 @@ memory@20040000 {
  	};
  
  	reserved-memory {
@@ -29,11 +28,11 @@ index b2a65303af28..33f411bd382b 100644
  
  		vdev0vrings: vdev0vring0@20080000 {
  			reg = <0x20080000 0x4000>;
-@@ -56,12 +56,15 @@ vdev1buffer: vdev0buffer@200A8000 {
- 		};
+@@ -83,12 +83,15 @@ sharc1_rpmsg: core1-rpmsg {
+ 		memory-region = <&vdev1buffer>;
  	};
  
--	sram1_mmap: sram-mmap@0 {
+-	sram1_mmap: sram-mmap {
 -		compatible = "adi,sram-mmap";
 -		memory-region = <&sram1_res>;
 -		status = "okay";
@@ -49,7 +48,7 @@ index b2a65303af28..33f411bd382b 100644
  	scb {
  		sharc0: core1-rproc@28240000 {
  			compatible = "adi,remoteproc";
-@@ -240,6 +243,10 @@ &usb0 {
+@@ -232,6 +235,10 @@ &usb0 {
  	status = "okay";
  };
  
@@ -61,7 +60,7 @@ index b2a65303af28..33f411bd382b 100644
  	uart0_default: uart0_default_pins {
  		pins {
 diff --git a/arch/arm64/boot/dts/adi/sc59x-64.dtsi b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
-index ef5aee84fc12..df9e8997868d 100644
+index 69df9a7098a0..ef7867153d3a 100644
 --- a/arch/arm64/boot/dts/adi/sc59x-64.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
 @@ -76,6 +76,22 @@ gic: interrupt-controller@31200000 {
@@ -87,7 +86,7 @@ index ef5aee84fc12..df9e8997868d 100644
  	timer {
  		compatible = "arm,armv8-timer";
  		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_LOW>, /* Physical Secure */
-@@ -194,6 +210,11 @@ rsc_tbl1: rsc_tbl0@20000400 {
+@@ -194,6 +210,11 @@ rsc_tbl1: rsc-table@20000400 {
  			no-map;
  		};
  
@@ -96,10 +95,10 @@ index ef5aee84fc12..df9e8997868d 100644
 +			no-map;
 +		};
 +
- 		sharc_internal_icc@20005000 {
+ 		sharc-internal-icc@20005000 {
  			reg = <0x20005000 0x20000>; /*128KiB*/
  			no-map;
-@@ -221,11 +242,17 @@ dmc_pmu: dmc-pmu@31070000 {
+@@ -245,11 +266,16 @@ dmc_pmu: dmc-pmu@31070000 {
  		sram-controller@31080000 {
  			compatible = "adi,sram-controller";
  			reg = <0x31080000 0x100>;
@@ -114,7 +113,9 @@ index ef5aee84fc12..df9e8997868d 100644
 +			memory-region = <&sram1>;
 +			status = "disabled";
 +		};
-+
- 		gptimer_counter: gptimer-counters@0 {
- 			compatible = "adi,gptimer-counter";
- 			status = "okay";
+ 
+ 		rcu: rcu@3108c000 {
+ 			compatible = "syscon", "adi,reset-controller";
+-- 
+2.34.1
+

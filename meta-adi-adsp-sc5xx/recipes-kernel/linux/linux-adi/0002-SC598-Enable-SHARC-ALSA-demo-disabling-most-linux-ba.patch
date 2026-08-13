@@ -1,30 +1,29 @@
-From 91d16744ebcccf0449ee0bdb3e9fa44e13c7b698 Mon Sep 17 00:00:00 2001
+From 8c8d08e6ceebeb67a7e40a411f7570551b33d507 Mon Sep 17 00:00:00 2001
 From: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
 Date: Wed, 20 Aug 2025 17:35:38 +0100
-Subject: [PATCH 2/2] SC598 Enable SHARC ALSA demo disabling most linux
+Subject: [PATCH] SC598 Enable SHARC ALSA demo disabling most linux
 
-Signed-off-by: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
 ---
- arch/arm64/boot/dts/adi/sc598-som-ezkit.dts  |  5 +--
- arch/arm64/boot/dts/adi/sc598-som.dtsi       | 12 +++----
+ arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi |  5 +--
+ arch/arm64/boot/dts/adi/sc598-som.dtsi       | 10 +++---
  arch/arm64/boot/dts/adi/sc59x-64.dtsi        |  2 +-
- arch/arm64/configs/sc598-som-ezkit_defconfig |  7 ++--
- drivers/soc/adi/mach-sc5xx/sec.c             | 37 +-------------------
- 5 files changed, 16 insertions(+), 47 deletions(-)
+ arch/arm64/configs/sc598-som-ezkit_defconfig |  2 ++
+ drivers/soc/adi/mach-sc5xx/sec.c             | 38 +-------------------
+ 5 files changed, 12 insertions(+), 45 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
-index 36db04e9a1dc..2b8a730a7f34 100644
---- a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
-+++ b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dts
+diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi
+index f14a1b4902e7..17df2f0259bf 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi
++++ b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi
 @@ -16,6 +16,7 @@ sound {
- 			compatible = "adi,sc5xx-asoc-card";
- 			adi,cpu-dai = <&i2s4>;
- 			adi,codec = <&adau1962>, <&adau1979>;
-+			status = "disabled";
- 		};
+ 		compatible = "adi,sc5xx-asoc-card";
+ 		adi,cpu-dai = <&i2s4>;
+ 		adi,codec = <&adau1962>, <&adau1979>;
++		status = "disabled";
  	};
  };
-@@ -280,11 +281,11 @@ dp83867: ethernet-phy@0 {
+ 
+@@ -266,11 +267,11 @@ dp83867: ethernet-phy@0 {
  &i2s4 {
  	pinctrl-names = "default";
  	pinctrl-0 = <&sru_dai1>;
@@ -39,10 +38,10 @@ index 36db04e9a1dc..2b8a730a7f34 100644
  	sru_dai1: sru_dai1_mux {
  		route {
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index 33f411bd382b..659c51f17312 100644
+index b0354b9f2148..5679e324e28f 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-@@ -22,13 +22,13 @@ memory@90000000 {
+@@ -21,10 +21,10 @@ memory@90000000 {
  		reg = <0x90000000 0x0e000000>;
  	};
  
@@ -56,12 +55,8 @@ index 33f411bd382b..659c51f17312 100644
 +//	};
  
  	reserved-memory {
--		//sram1_res: sram1-reserved@20040000 {
-+//		sram1_res: sram1-reserved@20040000 {
- //			compatible = "adi,sram-access";
- //			reg = <0x20040000 0x40000>;
- //		};
-@@ -217,7 +217,7 @@ &i2c1 {
+ 		//sram1_res: sram1-reserved@20040000 {
+@@ -211,7 +211,7 @@ &spi2 {
  };
  
  &i2c2 {
@@ -71,10 +66,10 @@ index 33f411bd382b..659c51f17312 100644
  	pinctrl-0 = <&i2c2_pins>;
  };
 diff --git a/arch/arm64/boot/dts/adi/sc59x-64.dtsi b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
-index df9e8997868d..2f742ed9198b 100644
+index ef7867153d3a..4fc318b8824d 100644
 --- a/arch/arm64/boot/dts/adi/sc59x-64.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
-@@ -244,7 +244,7 @@ sram-controller@31080000 {
+@@ -268,7 +268,7 @@ sram-controller@31080000 {
  			reg = <0x31080000 0x100>;
  			adi,sram = <&sram0>, <&sram1>;
  			interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
@@ -84,31 +79,20 @@ index df9e8997868d..2f742ed9198b 100644
  
  		sram_mmap: sram-mmap@0 {
 diff --git a/arch/arm64/configs/sc598-som-ezkit_defconfig b/arch/arm64/configs/sc598-som-ezkit_defconfig
-index c86b70b01a5f..6589e0ca2320 100644
+index e4bfe6a1ebaa..42b866e6b172 100644
 --- a/arch/arm64/configs/sc598-som-ezkit_defconfig
 +++ b/arch/arm64/configs/sc598-som-ezkit_defconfig
-@@ -297,7 +297,7 @@ CONFIG_REMOTEPROC=y
- CONFIG_ADI_REMOTEPROC=y
- CONFIG_RPMSG_CHAR=y
+@@ -275,6 +275,8 @@ CONFIG_RPMSG_CHAR=y
+ CONFIG_RPMSG_CTRL=y
  CONFIG_RPMSG_QCOM_GLINK_RPM=y
--CONFIG_RPMSG_VIRTIO=y
+ CONFIG_RPMSG_VIRTIO=y
 +CONFIG_RPMSG_ADI=y
++CONFIG_RPMSG_NS=y
  CONFIG_PM_DEVFREQ=y
  CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND=y
  CONFIG_IIO=y
-@@ -369,4 +369,7 @@ CONFIG_BLK_DEV_SD=y
- CONFIG_BLK_DEV_BSG=y
- CONFIG_USB_STORAGE=y
- CONFIG_SG_POOL=y
--CONFIG_RPMSG_CTRL=y
-\ No newline at end of file
-+CONFIG_RPMSG_CTRL=y
-+CONFIG_RPMSG_VIRTIO=y
-+CONFIG_RPMSG_ADI=y
-+CONFIG_RPMSG_NS=y
-\ No newline at end of file
 diff --git a/drivers/soc/adi/mach-sc5xx/sec.c b/drivers/soc/adi/mach-sc5xx/sec.c
-index 6e86ff51561a..8a5f8c888ffb 100644
+index 6e86ff51561a..3430d9830d27 100644
 --- a/drivers/soc/adi/mach-sc5xx/sec.c
 +++ b/drivers/soc/adi/mach-sc5xx/sec.c
 @@ -34,12 +34,11 @@ struct adi_sec {
@@ -125,7 +109,15 @@ index 6e86ff51561a..8a5f8c888ffb 100644
  }
  
  void sec_raise_irq(struct adi_sec *sec, unsigned int irq)
-@@ -209,40 +208,6 @@ static int adi_sec_probe(struct platform_device *pdev)
+@@ -170,7 +169,6 @@ static int adi_sec_probe(struct platform_device *pdev)
+ 	struct adi_rcu *adi_rcu;
+ 	struct resource *res;
+ 	void __iomem *base;
+-	int cores;
+ 	int ret = 0;
+ 
+ 	adi_sec = devm_kzalloc(dev, sizeof(*adi_sec), GFP_KERNEL);
+@@ -209,40 +207,6 @@ static int adi_sec_probe(struct platform_device *pdev)
  
  	adi_sec->ioaddr = base;
  
@@ -166,3 +158,6 @@ index 6e86ff51561a..8a5f8c888ffb 100644
  	return 0;
  
  free_rcu:
+-- 
+2.34.1
+
