@@ -91,28 +91,28 @@ diff --git a/arch/arm64/boot/dts/adi/sc598-som-revE.dtsi b/arch/arm64/boot/dts/a
 index 46bb19af093e..b0046807c15a 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som-revE.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som-revE.dtsi
-@@ -98,7 +98,7 @@ qspi_0@0 {
+@@ -85,7 +85,7 @@
  
- 			qspi_1@40000 {
+ 			partition@40000 {
  				label = "u-boot";
--				reg = <0x00040000 0xC0000>;
-+				reg = <0x00040000 0xB0000>;
+-				reg = <0x00040000 0xc0000>;
++				reg = <0x00040000 0xb0000>;
  			};
  
- 			qspi_2@100000 {
+ 			partition@100000 {
 diff --git a/arch/arm64/boot/dts/adi/sc846-som.dts b/arch/arm64/boot/dts/adi/sc846-som.dts
 index 1234567890ab..abcdef123456 100644
 --- a/arch/arm64/boot/dts/adi/sc846-som.dts
 +++ b/arch/arm64/boot/dts/adi/sc846-som.dts
-@@ -365,7 +365,7 @@ qspi_0@0 {
+@@ -176,7 +176,7 @@
  
- 			qspi_1@40000 {
+ 			partition@40000 {
  				label = "u-boot proper";
--				reg = <0x00040000 0xC0000>;
-+				reg = <0x00040000 0xB0000>;
+-				reg = <0x00040000 0xc0000>;
++				reg = <0x00040000 0xb0000>;
  			};
  
- 			qspi_2@210000 {
+ 			partition@100000 {
 -- 
 2.34.1
 

@@ -1,6 +1,6 @@
-From 76279086aa6bb9d979e155f7824a2f3958f08ed5 Mon Sep 17 00:00:00 2001
+From 9f8c2edfbec4ae2cfa0eaf26e72cf524962551ba Mon Sep 17 00:00:00 2001
 From: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
-Date: Thu, 9 Feb 2023 10:44:11 -0500
+Date: Thu, 13 Aug 2026 08:38:36 -0400
 Subject: [PATCH] Disable remoteproc
 
 ---
@@ -8,24 +8,27 @@ Subject: [PATCH] Disable remoteproc
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index b2a65303af28..c88ffcad0608 100644
+index 5679e324e28f..4f004b72888c 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-@@ -78,7 +78,7 @@ sharc0: core1-rproc@28240000 {
+@@ -109,7 +109,7 @@ sharc0: core1-rproc@28240000 {
+ 			adi,l2-da = <0x20000000 0x20200000>;
+ 			adi,rsc-table = <&rsc_tbl0>;
  			adi,verify = <1>;
- 			adi,tru = <&tru>;
- 			adi,tru-master-id = <135>; /* trigger master SOFT4 */
 -			status = "okay";
 +			status = "disabled";
  		};
  
  		sharc1: core2-rproc@28a40000 {
-@@ -96,7 +96,7 @@ sharc1: core2-rproc@28a40000 {
+@@ -128,7 +128,7 @@ sharc1: core2-rproc@28a40000 {
+ 			adi,l2-da = <0x20000000 0x20200000>;
+ 			adi,rsc-table = <&rsc_tbl1>;
  			adi,verify = <1>;
- 			adi,tru = <&tru>;
- 			adi,tru-master-id = <136>; /* trigger master SOFT5 */
 -			status = "okay";
 +			status = "disabled";
  		};
  
- 		sharc0_rpmsg: core0-rpmsg@28240000 {
+ 
+-- 
+2.34.1
+
