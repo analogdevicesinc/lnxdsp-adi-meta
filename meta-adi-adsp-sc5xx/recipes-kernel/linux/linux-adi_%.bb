@@ -31,7 +31,7 @@ SRC_URI:append:adsp-sc589-mini = " file://feature/cfg/snd_mini.scc"
 
 SRC_URI:append:adsp-sc598-som-ezkit = ' file://0001-SC598-fix-stmmac-dma-split-header-crash.patch'
 SRC_URI:append:adsp-sc598-som-ezkit = "${@bb.utils.contains('CMA_PATCH', '1', ' file://enable_cma.cfg', '', d)}"
-SRC_URI:append = "${@bb.utils.contains('ADSP_SC5XX_DEBUG', '1', ' file://0001-Yocto-Debug-Build.patch', '', d)}"
+SRC_URI:append = "${@bb.utils.contains('ADSP_DEBUG', '1', ' file://0001-Yocto-Debug-Build.patch', '', d)}"
 SRC_URI:append = ' file://0001-snd-sc5xx-Matching-implementation-to-legacy.patch'
 
 do_install:append(){
