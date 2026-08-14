@@ -14,6 +14,7 @@ SRC_URI:append="\
 	file://feature/cfg/crypto.cfg \
 	file://feature/cfg/tracepoints.cfg \
 "
+SRC_URI:remove:adsp-sc846-som-ezkit = "file://feature/cfg/tracepoints.cfg"
 
 PV="6.18"
 KERNEL_BRANCH = "adsp-6.18.31-y"
