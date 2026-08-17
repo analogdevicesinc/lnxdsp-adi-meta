@@ -14,19 +14,28 @@ Available Releases
 
    * - Version
      - Documentation
+   * - **5.1.0**
+     - :doc:`Secure Boot Guide for 5.1.0 <Secure-Boot-Support-in-release-5.1.0>`
+   * - **5.0.1**
+     - :doc:`Secure Boot Guide for 5.0.1 <Secure-Boot-Support-in-release-5.0.1>`
+   * - **5.0.0**
+     - :doc:`Secure Boot Guide for 5.0.0 <Secure-Boot-Support-in-release-5.0.0>`
    * - **3.1.1**
      - :doc:`Secure Boot Guide for 3.1.1 <Secure-Boot-Support-in-release-3.1.1>`
    * - **3.1.0**
      - :doc:`Secure Boot Guide for 3.1.0 <Secure-Boot-Support-in-release-3.1.0>`
 
 .. note::
-   The 3.1.1 release includes enhanced documentation and improvements to the secure boot implementation. Please refer to each release's documentation for specific details and supported features.
+    Please refer to each release's documentation for specific details and supported features.
 
 .. toctree::
    :maxdepth: 0
    :hidden:
    :titlesonly:
 
+   Secure-Boot-Support-in-release-5.1.0
+   Secure-Boot-Support-in-release-5.0.1
+   Secure-Boot-Support-in-release-5.0.0
    Secure-Boot-Support-in-release-3.1.1
    Secure-Boot-Support-in-release-3.1.0
 
