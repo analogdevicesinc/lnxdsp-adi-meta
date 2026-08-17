@@ -347,9 +347,9 @@ Flash (Unsigned) U-Boot to SPI Flash
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot loader files (```stage1-boot.ldr````, ````stage1-boot-unsigned.ldr````, ````stage2-boot.ldr````, ````stage2-boot-unsigned.ldr```) on TFTP.
-
-**Note:** We are going to use **stage1-boot-unsigned.ldr** and **stage2-boot-unsigned.ldr** to boot the device then burn the secure boot key. This is needed only for the first time secure boot key burning. For the next flash you should use **stage1-boot.ldr** and **stage2-boot.ldr**
+In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot loader files, and on the host PC, set up the HTTP server according to the insturctions in 
+:doc:`Getting Started with ADSP-SC598 5.1.0 (Bootstrapping to Linux section) <../getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)>`. We will use 
+this to program the unsigned LDR files for the first boot, and for programming the signed firmware files later.
 
 ```Terminal1: minicom```
 

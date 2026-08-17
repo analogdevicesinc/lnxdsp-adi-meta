@@ -533,8 +533,9 @@ Hit<span class="w"> </span>any<span class="w"> </span>key<span class="w"> </span
 </section>
 <section id="flash-unsigned-u-boot-to-spi-flash">
 <h3>Flash (Unsigned) U-Boot to SPI Flash<a class="headerlink" href="#flash-unsigned-u-boot-to-spi-flash" title="Link to this heading"></a></h3>
-<p>In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot loader files (<code class="docutils literal notranslate"><span class="pre">`stage1-boot.ldr``</span></code>, <code class="docutils literal notranslate"><span class="pre">``stage1-boot-unsigned.ldr``</span></code>, <code class="docutils literal notranslate"><span class="pre">``stage2-boot.ldr``</span></code>, <code class="docutils literal notranslate"><span class="pre">``stage2-boot-unsigned.ldr`</span></code>) on TFTP.</p>
-<p><strong>Note:</strong> We are going to use <strong>stage1-boot-unsigned.ldr</strong> and <strong>stage2-boot-unsigned.ldr</strong> to boot the device then burn the secure boot key. This is needed only for the first time secure boot key burning. For the next flash you should use <strong>stage1-boot.ldr</strong> and <strong>stage2-boot.ldr</strong></p>
+<p>In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot loader files, and on the host PC, set up the HTTP server according to the insturctions in
+<a class="reference internal" href="../getting-started/Getting-Started-with-ADSP%E2%80%90SC598-%28Linux-for-ADSP%E2%80%90SC5xx-Processors-5.1.0%29.html"><span class="doc">Getting Started with ADSP-SC598 5.1.0 (Bootstrapping to Linux section)</span></a>. We will use
+this to program the unsigned LDR files for the first boot, and for programming the signed firmware files later.</p>
 <p><code class="docutils literal notranslate"><span class="pre">`Terminal1:</span> <span class="pre">minicom`</span></code></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>setenv<span class="w"> </span>serverip<span class="w"> </span>&lt;SERVERIP&gt;
 </pre></div>
