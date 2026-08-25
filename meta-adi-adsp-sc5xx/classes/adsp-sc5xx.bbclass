@@ -71,11 +71,12 @@ fakeroot do_set_init(){
 
 addtask do_set_init after do_rootfs before do_image
 
+ADSP_SC5XX_INIT_SCRIPT := "${THISDIR}/files/init"
+
 fakeroot do_install_init_script(){
     # Create firmware directory in rootfs and install init script
     install -d ${IMAGE_ROOTFS}/usr/firmware
-    # Copy init script directly from the classes files directory
-    install -m 755 ${THISDIR}/files/init ${IMAGE_ROOTFS}/usr/firmware/init
+    install -m 755 ${ADSP_SC5XX_INIT_SCRIPT} ${IMAGE_ROOTFS}/usr/firmware/init
 }
 
 addtask install_init_script after do_set_init before do_image
