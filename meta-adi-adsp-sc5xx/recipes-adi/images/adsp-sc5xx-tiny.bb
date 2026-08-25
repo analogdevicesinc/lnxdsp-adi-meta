@@ -13,7 +13,10 @@ IMAGE_INSTALL = " \
 PASSWD_ROOT = "\$5\$j9T8zDE13LXUGyc6\$utDvGwFWR.kt/AKwwbHnXC14HJBqbcWwvLoDDLMQrc8"
 EXTRA_USERS_PARAMS = "usermod -p '${PASSWD_ROOT}' root;"
 
-IMAGE_FSTYPES = " jffs2"
+IMAGE_FSTYPES = " ubi"
+
+UBI_VOLNAME = "rootfs"
+UBINIZE_ARGS = "-m 1 -p 65536 -s 1"
 
 #We do not need these files in the rootfs -- remove them to reduce the minimal rootfs size
 fakeroot do_rootfs_cleanup(){
@@ -77,9 +80,8 @@ do_create_programming_images(){
         cp ${DEPLOY_DIR_IMAGE}/fitImage ${PROG_DIR}/
     fi
 
-    # Copy rootfs.jffs2, rename to 'rootfs.jffs2'
-    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.jffs2 ]; then
-        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.jffs2 ${PROG_DIR}/rootfs.jffs2
+    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubi ]; then
+        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubi ${PROG_DIR}/rootfs.ubi
     fi
 
     echo "Programming images created in: ${PROG_DIR}"
