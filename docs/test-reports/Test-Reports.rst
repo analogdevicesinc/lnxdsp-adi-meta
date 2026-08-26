@@ -25,11 +25,10 @@ Available Test Reports
 Current Release
 ---------------
 
-**Version 5.0.1**
-
+**Version 5.1.0**
 Latest test report covering SC598-SOM, SC594-SOM, SC589-MINI, and SC573-EZKIT platforms.
 
-:doc:`5.0.1 Test Report → <Test-Report-(5.0.1)>`
+:doc:`5.1.0 Test Report → <Test-Report-(5.1.0)>`
 
 Previous Releases
 -----------------
@@ -130,6 +129,7 @@ Additional Resources
    :maxdepth: 1
    :hidden:
 
+   Test-Report-(5.1.0)
    Test-Report-(5.0.1)
    Test-Report-(5.0.0)
    Test-Report-(3.1.0)
