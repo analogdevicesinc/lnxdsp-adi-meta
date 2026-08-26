@@ -248,6 +248,7 @@ Content on this topic
 </ul>
 </li>
 <li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-7" id="toctree-collapse-7"/><div class="collapse"><a class="reference internal" href="../test-reports/Test-Reports.html">Test Reports</a><label for="toctree-collapse-7"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%285.1.0%29.html">Test Report (5.1.0)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%285.0.1%29.html">Test Report (5.0.1)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%285.0.0%29.html">Test Report (5.0.0)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../test-reports/Test-Report-%283.1.0%29.html">Test Report (3.1.0)</a></li>
@@ -277,8 +278,8 @@ Content on this topic
 <h3>Fetching the Sources<a class="headerlink" href="#fetching-the-sources" title="Link to this heading"></a></h3>
 <p>The source is fully contained in the <a class="icon link reference external" href="https://github.com/analogdevicesinc?q=lnxdsp&amp;type=all&amp;language=&amp;sort=" target="_blank">Analog Devices Linux for ADSP repositories</a>.</p>
 <p>To install the sources:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>~/adsp-sc573-ezkit-yocto-build
-<span class="nb">cd</span><span class="w"> </span>~/adsp-sc573-ezkit-yocto-build
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>~/adsp-sc573-ezlite-yocto-build
+<span class="nb">cd</span><span class="w"> </span>~/adsp-sc573-ezlite-yocto-build
 mkdir<span class="w"> </span>bin
 curl<span class="w"> </span>http://commondatastorage.googleapis.com/git-repo-downloads/repo<span class="w"> </span>&gt;<span class="w"> </span>./bin/repo
 chmod<span class="w"> </span>a+x<span class="w"> </span>./bin/repo
@@ -296,9 +297,9 @@ chmod<span class="w"> </span>a+x<span class="w"> </span>./bin/repo
 </section>
 <section id="preparing-the-buildtool">
 <h2>Preparing the buildtool<a class="headerlink" href="#preparing-the-buildtool" title="Link to this heading"></a></h2>
-<p>Yocto requires the environment to be configured before building is possible. A setup-environment script in the adsp-sc573-ezkit-yocto-build folder contains all the required environment settings for your build target.
+<p>Yocto requires the environment to be configured before building is possible. A setup-environment script in the adsp-sc573-ezlite-yocto-build folder contains all the required environment settings for your build target.
 Source the setup script for your board:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>setup-environment<span class="w"> </span>-m<span class="w"> </span>adsp-sc573-ezkit
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>setup-environment<span class="w"> </span>-m<span class="w"> </span>adsp-sc573-ezlite
 </pre></div>
 </div>
 <p>Sourcing the script will configure your build environment and create a build folder along with a local build configuration file. See the Yocto Manual for further details.</p>
@@ -336,22 +337,22 @@ bitbake<span class="w"> </span>adsp-sc5xx-full
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>tmp/deploy/sdk
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-5.1.0.host.manifest
-adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-5.1.0-host.spdx.tar.zst
-adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-5.1.0.sh
-adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-5.1.0.target.manifest
-adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-5.1.0-target.spdx.tar.zst
-adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-5.1.0.testdata.json
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezlite-toolchain-5.1.0.host.manifest
+adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezlite-toolchain-5.1.0-host.spdx.tar.zst
+adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezlite-toolchain-5.1.0.sh
+adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezlite-toolchain-5.1.0.target.manifest
+adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezlite-toolchain-5.1.0-target.spdx.tar.zst
+adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezlite-toolchain-5.1.0.testdata.json
 </pre></div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-5.1.0.sh</span></code> is a self-extracting archive containing the SDK.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezlite-toolchain-5.1.0.sh</span></code> is a self-extracting archive containing the SDK.</p>
 </section>
 <section id="installing-the-sdk">
 <h2>Installing the SDK<a class="headerlink" href="#installing-the-sdk" title="Link to this heading"></a></h2>
 <p>Invoke the self-extracting archive.
 It will default to installing to <code class="docutils literal notranslate"><span class="pre">/opt/adi-distro-glibc/5.1.0</span></code> but gives you the option to select your own install folder during the installation.
 For the minimal image on ADSP-SC573</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-5.1.0.sh
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>./adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezlite-toolchain-5.1.0.sh
 </pre></div>
 </div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Analog Devices Inc Reference Distro (glibc) SDK installer version 5.1.0
@@ -393,7 +394,7 @@ This will erase the contents of the folders but not the folders themselves.</p>
 <h3>Bootstrapping to Linux<a class="headerlink" href="#bootstrapping-to-linux" title="Link to this heading"></a></h3>
 <p>The programming sequence uses nfsboot to bootstrap to Linux, and from there program all available boot media. Before beginning, follow these steps.</p>
 <p>Populate the NFS file system with the files for booting:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tar<span class="w"> </span>-xf<span class="w"> </span>tmp/deploy/images/adsp-sc573-ezkit/adsp-sc5xx-full-adsp-sc573-ezkit.rootfs.tar.xz<span class="w"> </span>-C<span class="w"> </span>/romfs
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tar<span class="w"> </span>-xf<span class="w"> </span>tmp/deploy/images/adsp-sc573-ezlite/adsp-sc5xx-full-adsp-sc573-ezlite.rootfs.tar.xz<span class="w"> </span>-C<span class="w"> </span>/romfs
 </pre></div>
 </div>
 <div class="admonition note">
@@ -403,7 +404,7 @@ The adsp-sc5xx-minimal image can also be used, but will not include some of the 
 if there are problems.</p>
 </div>
 <p>Copy the programming files into the /usr/firmware directory in the NFS filesystem</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>cp<span class="w"> </span>tmp/deploy/images/adsp-sc573-ezkit/programming-images/adsp-sc5xx-minimal/*<span class="w"> </span>/romfs/usr/firmware
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>cp<span class="w"> </span>tmp/deploy/images/adsp-sc573-ezlite/programming-images/adsp-sc5xx-minimal/*<span class="w"> </span>/romfs/usr/firmware
 </pre></div>
 </div>
 </section>
@@ -416,7 +417,7 @@ python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class=
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The Python web server can be run directly from the images/adsp-sc573-ezkit/programming-images directory, however it is advised to copy the images to another directory and serve them from that folder,
+<p>The Python web server can be run directly from the images/adsp-sc573-ezlite/programming-images directory, however it is advised to copy the images to another directory and serve them from that folder,
 as the images in the tmp/deploy directory are overwritten with each new build</p>
 </div>
 </section>
@@ -441,8 +442,8 @@ When successful you should see a message similar to the console output below</p>
 </div>
 <p>In a third console window launch GDB and type <code class="docutils literal notranslate"><span class="pre">target</span> <span class="pre">extended-remote</span> <span class="pre">:3333</span></code>. This will make GDB to connect to the gdbserver on the local host using port 3333. Then, load the U-Boot SPL into RAM by typing <code class="docutils literal notranslate"><span class="pre">load</span></code>. Hit <code class="docutils literal notranslate"><span class="pre">Ctrl+C</span></code> to interrupt thereafter.</p>
 <p><strong>Terminal3: GDB</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>build/tmp/deploy/images/adsp-sc573-ezkit/programming-images/adsp-sc5xx-minimal<span class="w">  </span><span class="c1"># or wherever the Python webserver is serving from</span>
-/opt/adi-distro-glibc/5.1.0/sysroots/x86_64-adi_glibc_sdk-linux/usr/bin/arm-adi_glibc-linux-gnueabi/arm-adi_glibc-linux-gnueabi-gdb<span class="w"> </span>u-boot-spl-sc573-ezkit.elf
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>build/tmp/deploy/images/adsp-sc573-ezlite/programming-images/adsp-sc5xx-minimal<span class="w">  </span><span class="c1"># or wherever the Python webserver is serving from</span>
+/opt/adi-distro-glibc/5.1.0/sysroots/x86_64-adi_glibc_sdk-linux/usr/bin/arm-adi_glibc-linux-gnueabi/arm-adi_glibc-linux-gnueabi-gdb<span class="w"> </span>u-boot-spl-sc573-ezlite.elf
 ...
 <span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>target<span class="w"> </span>extended-remote<span class="w"> </span>:3333
 Remote<span class="w"> </span>debugging<span class="w"> </span>using<span class="w"> </span>:3333
@@ -464,7 +465,7 @@ SPL<span class="w"> </span>execution<span class="w"> </span>has<span class="w"> 
 </div>
 <p>Now, load U-Boot Proper into RAM.</p>
 <p><strong>Terminal3: GDB</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>load<span class="w"> </span>u-boot-proper-sc573-ezkit.elf
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>load<span class="w"> </span>u-boot-proper-sc573-ezlite.elf
 Loading<span class="w"> </span>sections...<span class="w"> </span>Transfer<span class="w"> </span>rate:<span class="w"> </span><span class="m">28</span><span class="w"> </span>KB/sec
 <span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>c
 Continuing.
@@ -499,7 +500,7 @@ Hit<span class="w"> </span>any<span class="w"> </span>key<span class="w"> </span
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>run<span class="w"> </span>nfsboot
 ...
 ...
-adsp-sc573-ezkit<span class="w"> </span>login:
+adsp-sc573-ezlite<span class="w"> </span>login:
 </pre></div>
 </div>
 <p>After logging in, run the following command:</p>
@@ -538,7 +539,7 @@ Password:<span class="w"> </span>adi
 <h3>NFS Boot<a class="headerlink" href="#nfs-boot" title="Link to this heading"></a></h3>
 <p>In order to boot Linux via NFS, the NFS server should be setup as indicated in <a class="reference external" href="Setting-Up-Your-Host-PC.html#configure-nfs-server">Setting Up Your Host PC: Configure NFS Server</a>.</p>
 <p>The root filesystem should then be copied to <code class="docutils literal notranslate"><span class="pre">/romfs</span></code>.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tar<span class="w"> </span>-xf<span class="w"> </span>tmp/deploy/images/adsp-sc573-ezkit/adsp-sc5xx-full-adsp-sc573-ezkit.rootfs.tar.xz<span class="w"> </span>-C<span class="w"> </span>/romfs
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tar<span class="w"> </span>-xf<span class="w"> </span>tmp/deploy/images/adsp-sc573-ezlite/adsp-sc5xx-full-adsp-sc573-ezlite.rootfs.tar.xz<span class="w"> </span>-C<span class="w"> </span>/romfs
 </pre></div>
 </div>
 <p>Next, on the target, from u-boot, run the following commands:</p>

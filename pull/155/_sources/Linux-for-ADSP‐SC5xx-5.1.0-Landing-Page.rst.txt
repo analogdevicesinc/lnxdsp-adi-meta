@@ -41,6 +41,7 @@ Release Notes
 -------------
 
 Release notes for Linux for ADSP-SC5xx can be found `here <https://github.com/analogdevicesinc/lnxdsp-adi-meta/releases>`_.
+The test report for this page can be found :doc:`here <test-reports/Test-Report-(5.1.0)>`.
 
 Guides
 ------
