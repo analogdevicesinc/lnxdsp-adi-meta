@@ -1,0 +1,43 @@
+From e3e3500fe4946d5e0b1027da12d23ac37a411532 Mon Sep 17 00:00:00 2001
+From: Qasim Ijaz <Qasim.Ijaz@analog.com>
+Date: Wed, 26 Aug 2026 14:30:47 +0100
+Subject: [PATCH] usb: musb: Add delay before initial root port reset
+
+The ADSP-SC589-MINI and ADSP-SC573 can fail to detect certain older
+or slower USB devices in U-Boot. Running "usb start" may fail while
+the USB device is plugged in:
+
+=> usb start
+starting USB...
+USB device descriptor short read (expected 8, got 0)
+Scanning bus musb@310c1000 failed, error -5
+Bus musb@310c1000: No USB Device found
+       scanning usb for storage devices... 0 Storage Device(s) found
+
+The same device is detected and operates correctly after booting Linux.
+
+Add a 500 ms delay in musb_lowlevel_init() before the initial root
+port reset. This gives the USB device additional settling time before
+U-Boot begins the root port reset via _musb_reset_root_port().
+
+Signed-off-by: Qasim Ijaz <Qasim.Ijaz@analog.com>
+---
+ drivers/usb/musb-new/musb_uboot.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/usb/musb-new/musb_uboot.c b/drivers/usb/musb-new/musb_uboot.c
+index 43ab3245e5c..4c27c993189 100644
+--- a/drivers/usb/musb-new/musb_uboot.c
++++ b/drivers/usb/musb-new/musb_uboot.c
+@@ -239,6 +239,8 @@ int musb_lowlevel_init(struct musb_host_data *host)
+ 		return -ENODEV;
+ 	}
+ 
++	mdelay(500);
++
+ 	_musb_reset_root_port(host, NULL);
+ 	host->host->is_active = 1;
+ 	host->hcd.hcd_priv = host->host;
+-- 
+2.43.0
+
