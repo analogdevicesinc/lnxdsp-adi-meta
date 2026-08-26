@@ -6,7 +6,7 @@ machine: adsp-sc589-mini
 machine_short: sc589-mini
 arch: cortexa5t2hf-neon
 gdb_prefix: arm-adi_glibc-linux-gnueabi
-openocd_target: adspsc57x
+openocd_target: adspsc58x
 ethernet_connector: J13
 som_revision: false
 sdk_machine_note: false
