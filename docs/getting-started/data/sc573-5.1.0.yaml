@@ -1,9 +1,9 @@
 version: 5.1.0
-build_dir: adsp-sc573-ezkit-yocto-build
+build_dir: adsp-sc573-ezlite-yocto-build
 sdk_path: /opt/adi-distro-glibc/5.1.0
 board_name: ADSP-SC573
-machine: adsp-sc573-ezkit
-machine_short: sc573-ezkit
+machine: adsp-sc573-ezlite
+machine_short: sc573-ezlite
 arch: cortexa5t2hf-neon
 gdb_prefix: arm-adi_glibc-linux-gnueabi
 openocd_target: adspsc57x
@@ -22,7 +22,7 @@ manifest_file: release-5.1.0.xml
 uboot_version: '2025.10'
 openocd_version: 0.12.0
 file_extension: rootfs.tar.xz
-sdk_installer: adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-5.1.0.sh
+sdk_installer: adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezlite-toolchain-5.1.0.sh
 hardware_connections: |-
   * Board connected to network via ethernet cable using J4 connector.
   * Board connected to host PC using USB micro cable, connected to USB/UART port on the development board
@@ -33,12 +33,12 @@ hardware_connections: |-
   .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/fcf62f04-ebe3-469c-b271-2b5a6096182e
      :width: 400
 sdk_example_files: |-
-  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-5.1.0.host.manifest
-  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-5.1.0-host.spdx.tar.zst
-  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-5.1.0.sh
-  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-5.1.0.target.manifest
-  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-5.1.0-target.spdx.tar.zst
-  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezkit-toolchain-5.1.0.testdata.json
+  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezlite-toolchain-5.1.0.host.manifest
+  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezlite-toolchain-5.1.0-host.spdx.tar.zst
+  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezlite-toolchain-5.1.0.sh
+  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezlite-toolchain-5.1.0.target.manifest
+  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezlite-toolchain-5.1.0-target.spdx.tar.zst
+  adi-distro-glibc-glibc-x86_64-adsp-sc5xx-minimal-cortexa5t2hf-neon-adsp-sc573-ezlite-toolchain-5.1.0.testdata.json
 openocd_output: Open On-Chip Debugger 0.12.0...
 gdb_start_output: 0x000000000000352c in ?? ()
 gdb_load_spl_output: 'Loading sections... Transfer rate: 29 KB/sec'
