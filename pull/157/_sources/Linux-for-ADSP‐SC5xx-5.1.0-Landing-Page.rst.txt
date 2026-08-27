@@ -28,9 +28,9 @@ The following boards are supported on this release.
    * - `ADSP-SC589-MINI <https://www.analog.com/en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/sharc-audio-module.html>`_
      - 1.5 or later
      - :doc:`Getting Started with ADSP-SC589 MINI <getting-started/Getting-Started-with-ADSP‐SC589‐MINI-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)>`
-   * - `ADSP-SC573 EZ-KIT <https://www.analog.com/en/resources/evaluation-hardware-and-software/evaluation-boards-kits/sc573ezkit.html>`_
+   * - `ADSP-SC573 EZLITE <https://www.analog.com/en/resources/evaluation-hardware-and-software/evaluation-boards-kits/sc573ezkit.html>`_
      - 1.5 or later
-     - :doc:`Getting Started with ADSP-SC573 EZ-KIT <getting-started/Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)>`
+     - :doc:`Getting Started with ADSP-SC573 EZLITE <getting-started/Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)>`
 
 Building of the Linux software requires a host PC running a recent flavour Linux.
 Analog Devices uses `64-bit Ubuntu 22.04 LTS <https://discourse.ubuntu.com/t/jammy-jellyfish-release-notes/24668>`_ for its building and testing of Linux for ADSP-SC5xx.

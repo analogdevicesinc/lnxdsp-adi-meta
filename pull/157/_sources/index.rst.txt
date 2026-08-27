@@ -66,7 +66,7 @@ Latest Release
 
    **Linux 6.18.31 (LTS)** | **Yocto Scarthgap** | **Enhanced RPMsg** | **Secure Boot** | **New Audio Examples**
 
-   `Full Release Notes <https://github.com/analogdevicesinc/lnxdsp-adi-meta/releases/tag/5.1.0>`_ | :doc:`Older Releases <Older-Releases>`
+   `Full Release Notes <https://github.com/analogdevicesinc/lnxdsp-adi-meta/releases/tag/5.1.0-rel>`_ | :doc:`Older Releases <Older-Releases>`
 
 Quick Links
 -----------
