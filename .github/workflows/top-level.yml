@@ -38,7 +38,7 @@ jobs:
       APP_CLIENT_ID: ${{ secrets.TOKEN_GENERATOR_APP_ID }}
       APP_PRIVATE_KEY: ${{ secrets.TOKEN_GENERATOR_APP_PRIVATE_KEY }}
     permissions:
-      contents: read
+      contents: write
     with:
       machine: ${{ matrix.machine }}
       image: ${{ matrix.image }}
