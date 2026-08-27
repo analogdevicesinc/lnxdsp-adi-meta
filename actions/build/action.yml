@@ -39,7 +39,7 @@ runs:
         mkdir -p "${WORKSPACE}"
 
         # Use known persistent cache path if mounted
-        [ -d "/cache" ] && YOCTO_CACHE_DIR="/cache/yocto" || YOCTO_CACHE_DIR="$(mktemp -dt yocto.XXX)"
+        [ -d "/cache" ] && YOCTO_CACHE_DIR="/cache/yocto" || YOCTO_CACHE_DIR="${GITHUB_WORKSPACE}/yocto-cache"
         YOCTO_DL_DIR="${YOCTO_CACHE_DIR}/downloads"
         YOCTO_SSTATE_DIR="${YOCTO_CACHE_DIR}/sstate"
         mkdir -p "${YOCTO_DL_DIR}"
@@ -173,3 +173,8 @@ runs:
         tar -cJvf images-${{ inputs.machine }}-${{ inputs.image }}-${{ github.event.release.tag_name }}.tar.xz \
           build/tmp/deploy/images/${{ inputs.machine }}/
 
+    - name: Clean up build
+      if: always()
+      shell: bash
+      run: |
+        [[ -n "${YOCTO_WORKSPACE}" ]] && rm -rf "${YOCTO_WORKSPACE}"
