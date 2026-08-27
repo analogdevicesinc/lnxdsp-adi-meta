@@ -3,7 +3,7 @@ Older Releases
 
 This page provides links to documentation for previous releases of Linux for ADSP-SC5xx Processors.
 
-For the latest release, see :doc:`Linux for ADSP-SC5xx 5.0.1 <Linux-for-ADSP‐SC5xx-5.0.1-Landing-Page>`.
+For the latest release, see :doc:`Linux for ADSP-SC5xx 5.1.0 <Linux-for-ADSP‐SC5xx-5.1.0-Landing-Page>`.
 
 Available Releases
 ------------------
@@ -38,6 +38,7 @@ Available Releases
    :maxdepth: 1
    :hidden:
 
+   Linux-for-ADSP‐SC5xx-5.1.0-Landing-Page
    Linux-for-ADSP‐SC5xx-5.0.1-Landing-Page
    Linux-for-ADSP‐SC5xx-5.0.0-Landing-Page
    Linux-for-ADSP‐SC5xx-3.1.2-Landing-Page
