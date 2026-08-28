@@ -1,2 +1,2 @@
 .. include-template:: templates/getting-started.new.jinja
-   :file: data/sc598-5.x.x.yaml
+   :file: data/sc589-mini-5.1.0.yaml
