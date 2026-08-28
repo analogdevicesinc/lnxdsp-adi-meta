@@ -8,8 +8,6 @@ on:
       - "main"
   release:
     types: [published]
-  schedule:
-    - cron: '0 5 * * 1' # 05:00 UTC every Monday
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
