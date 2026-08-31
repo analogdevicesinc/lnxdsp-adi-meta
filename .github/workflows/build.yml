@@ -15,6 +15,9 @@ on:
       manifest-repo:
         description: "Manifest repository"
         default: ""
+      manifest-branch:
+        description: "Manifest repository branch/ref"
+        default: ""
       override-meta-adi:
         description: "Override sources/meta-adi with the checked-out ref"
         type: boolean
@@ -31,6 +34,9 @@ on:
         type: string
         default: main
       manifest-repo:
+        type: string
+        default: ""
+      manifest-branch:
         type: string
         default: ""
       override-meta-adi:
@@ -78,6 +84,7 @@ jobs:
           image: ${{ inputs.image }}
           manifest: ${{ inputs.manifest }}
           manifest-repo: ${{ inputs.manifest-repo }}
+          manifest-branch: ${{ inputs.manifest-branch }}
           override-meta-adi: ${{ inputs.override-meta-adi }}
           gh-token: ${{ steps.app-token.outputs.token || github.token }}
 

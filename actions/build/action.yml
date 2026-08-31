@@ -13,6 +13,9 @@ inputs:
   manifest-repo:
     description: "Manifest repository"
     default: ""
+  manifest-branch:
+    description: "Manifest repository branch/ref"
+    default: ""
   override-meta-adi:
     description: "Override sources/meta-adi with the checked-out ref"
     default: 'false'
@@ -64,9 +67,13 @@ runs:
         manifest_repo="${{ inputs.manifest-repo }}"
         [[ -n "$manifest_repo" ]] || manifest_repo="https://github.com/${{ github.repository_owner }}/lnxdsp-repo-manifest.git"
         cd "${YOCTO_WORKSPACE}"
-        ./bin/repo init \
-          -u "$manifest_repo" \
+        repo_init_args=(
+          -u "$manifest_repo"
           -m "${{ inputs.manifest }}.xml"
+        )
+        manifest_branch="${{ inputs.manifest-branch }}"
+        [[ -z "$manifest_branch" ]] || repo_init_args+=(-b "$manifest_branch")
+        ./bin/repo init "${repo_init_args[@]}"
 
     - name: Override meta-adi revision via local manifest
       if: ${{ inputs.override-meta-adi == 'true' }}
