@@ -2,6 +2,10 @@ name: Build ADI Yocto artifacts (main)
 
 on:
   workflow_dispatch:
+    inputs:
+      manifest-branch:
+        description: "Manifest repository branch/ref"
+        default: "main"
   pull_request:
   push:
     branches:
@@ -54,6 +58,7 @@ jobs:
       machine: ${{ matrix.machine }}
       image: ${{ matrix.image }}
       manifest: ${{ matrix.manifest }}
+      manifest-branch: ${{ inputs.manifest-branch }}
       build-sdk: ${{ matrix.build-sdk }}
       upload-artifacts: ${{ matrix.upload-artifacts }}
       override-meta-adi: true
