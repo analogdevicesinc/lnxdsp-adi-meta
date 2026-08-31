@@ -1,0 +1,72 @@
+From 6aae3434acbd83deab7898532469df49d36450ea Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Mon, 17 Aug 2026 09:16:15 -0400
+Subject: [PATCH] sc598: Enlarge u-boot flash partition for secure boot
+
+The combined size of U-boot Proper + TF-A/OPTEE in ceratin configurations
+can expand past the normal sc598 partition for U-boot proper. Expanding
+the partition to a safe size to accomodate these configurations.
+
+Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
+---
+ arch/arm64/boot/dts/adi/sc598-som-revD.dtsi | 10 +++++-----
+ arch/arm64/boot/dts/adi/sc598-som-revE.dtsi | 10 +++++-----
+ 2 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/adi/sc598-som-revD.dtsi b/arch/arm64/boot/dts/adi/sc598-som-revD.dtsi
+index c9188dc0259f2..a93965ff00ca2 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som-revD.dtsi
++++ b/arch/arm64/boot/dts/adi/sc598-som-revD.dtsi
+@@ -108,17 +108,17 @@ partition@0 {
+ 
+ 			partition@40000 {
+ 				label = "u-boot";
+-				reg = <0x00040000 0xc0000>;
++				reg = <0x00040000 0x1c0000>;
+ 			};
+ 
+-			partition@100000 {
++			partition@200000 {
+ 				label = "kernel";
+-				reg = <0x00100000 0xf00000>;
++				reg = <0x00200000 0xf00000>;
+ 			};
+ 
+-			partition@1000000 {
++			partition@1100000 {
+ 				label = "rootfs";
+-				reg = <0x01000000 0x3000000>;
++				reg = <0x01100000 0x2f00000>;
+ 			};
+ 		};
+ 	};
+diff --git a/arch/arm64/boot/dts/adi/sc598-som-revE.dtsi b/arch/arm64/boot/dts/adi/sc598-som-revE.dtsi
+index 5d85fe5a4245a..c59773ff3d365 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som-revE.dtsi
++++ b/arch/arm64/boot/dts/adi/sc598-som-revE.dtsi
+@@ -106,17 +106,17 @@ partition@0 {
+ 
+ 			partition@40000 {
+ 				label = "u-boot";
+-				reg = <0x00040000 0xc0000>;
++				reg = <0x00040000 0x1c0000>;
+ 			};
+ 
+-			partition@100000 {
++			partition@200000 {
+ 				label = "kernel";
+-				reg = <0x00100000 0x2000000>;
++				reg = <0x00200000 0x2000000>;
+ 			};
+ 
+-			partition@2100000 {
++			partition@2200000 {
+ 				label = "rootfs";
+-				reg = <0x02100000 0x5f00000>;
++				reg = <0x02200000 0x5e00000>;
+ 			};
+ 		};
+ 	};
+-- 
+2.34.1
+

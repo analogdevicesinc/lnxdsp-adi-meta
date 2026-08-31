@@ -1,0 +1,150 @@
+From a50bd3ce3c987a459c7880af713f29cc5cbfb7f2 Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Mon, 17 Aug 2026 09:07:48 -0400
+Subject: [PATCH] sc598: Security configuration
+
+Disable peripherals restricted by the SPU:
+- SEC
+- RCU reboot
+- remoteproc because it uses the RCU and accesses L2 directly
+- TRNG
+
+Enable:
+- OPTEE support
+- ARM PSCI support to reboot with TFA
+- ADI_RPMSG to communicate after loading SHARCs
+- TRU uses SMC method to request triggers
+
+Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
+---
+ arch/arm64/boot/dts/adi/sc598-som.dtsi       | 17 +++++++++++------
+ arch/arm64/boot/dts/adi/sc59x-64.dtsi        | 11 ++++++++---
+ arch/arm64/configs/sc598-som-ezkit_defconfig |  2 ++
+ 3 files changed, 21 insertions(+), 9 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+index 9842686055b8f..c4ed7eee58635 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
++++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+@@ -56,11 +56,10 @@ vdev1buffer: vdev1buffer@200a8000 {
+ 	};
+ 
+ 	sharc0_rpmsg: core0-rpmsg {
+-		status = "disabled";
++		status = "okay";
+ 		compatible = "adi,rpmsg-sc598";
+ 		core-id = <1>;
+ 		adi,rcu = <&rcu>;
+-		adi,check-idle;
+ 		adi,rsc-table = <&rsc_tbl0>;
+ 		interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
+ 		adi,tru = <&tru>;
+@@ -70,11 +69,10 @@ sharc0_rpmsg: core0-rpmsg {
+ 	};
+ 
+ 	sharc1_rpmsg: core1-rpmsg {
+-		status = "disabled";
++		status = "okay";
+ 		compatible = "adi,rpmsg-sc598";
+ 		core-id = <2>;
+ 		adi,rcu = <&rcu>;
+-		adi,check-idle;
+ 		adi,rsc-table = <&rsc_tbl1>;
+ 		interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
+ 		adi,tru = <&tru>;
+@@ -106,7 +104,7 @@ sharc0: core1-rproc@28240000 {
+ 			adi,l2-da = <0x20000000 0x20200000>;
+ 			adi,rsc-table = <&rsc_tbl0>;
+ 			adi,verify = <1>;
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 
+ 		sharc1: core2-rproc@28a40000 {
+@@ -125,12 +123,19 @@ sharc1: core2-rproc@28a40000 {
+ 			adi,l2-da = <0x20000000 0x20200000>;
+ 			adi,rsc-table = <&rsc_tbl1>;
+ 			adi,verify = <1>;
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 
+ 
+ 	};
+ 
++	firmware {
++		optee {
++			compatible = "linaro,optee-tz";
++			method = "smc";
++		};
++	};
++
+ };
+ 
+ &tru {
+diff --git a/arch/arm64/boot/dts/adi/sc59x-64.dtsi b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
+index 69df9a7098a09..cbe12dc4bd673 100644
+--- a/arch/arm64/boot/dts/adi/sc59x-64.dtsi
++++ b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
+@@ -68,6 +68,11 @@ pmu {
+ 		interrupt-parent = <&gic>;
+ 	};
+ 
++	psci {
++		compatible = "arm,psci-1.0";
++		method = "smc";
++	};
++
+ 	gic: interrupt-controller@31200000 {
+ 		compatible = "arm,gic-v3";
+ 		#interrupt-cells = <3>;
+@@ -258,7 +263,6 @@ rcu: rcu@3108c000 {
+ 			adi,sharc-min = <1>;
+ 			adi,sharc-max = <2>;
+ 			adi,core-stop-irqs = <106 107>;
+-			adi,enable-reboot;
+ 			status = "okay";
+ 		};
+ 
+@@ -267,7 +271,7 @@ sec: sec@31089000 {
+ 			reg = <0x31089000 0x1000>;
+ 			adi,rcu = <&rcu>;
+ 			adi,sharc-cores = <2>;
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 
+ 		tru: mailbox@3108a000 {
+@@ -276,6 +280,7 @@ tru: mailbox@3108a000 {
+ 			#mbox-cells = <1>;
+ 			adi,max-master-id = <182>;
+ 			adi,max-slave-id = <187>;
++			adi,use-smc;
+ 			status = "okay";
+ 		};
+ 
+@@ -1361,7 +1366,7 @@ trng: rng@310d0000 {
+ 			alarm-thresh  = <0xff>;
+ 			shdn-thresh = <0x04>;
+ 			poll-data = <0>; /* Use IRQ for data */
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 
+ 	};
+diff --git a/arch/arm64/configs/sc598-som-ezkit_defconfig b/arch/arm64/configs/sc598-som-ezkit_defconfig
+index e4bfe6a1ebaa7..52a7a066df137 100644
+--- a/arch/arm64/configs/sc598-som-ezkit_defconfig
++++ b/arch/arm64/configs/sc598-som-ezkit_defconfig
+@@ -281,6 +281,8 @@ CONFIG_IIO=y
+ CONFIG_PHY_QCOM_USB_HS=y
+ CONFIG_HISI_PMU=y
+ CONFIG_MUX_GPIO=y
++CONFIG_TEE=y
++CONFIG_OPTEE=y
+ CONFIG_EXT2_FS=y
+ CONFIG_EXT4_FS=y
+ CONFIG_EXT4_FS_POSIX_ACL=y
+-- 
+2.34.1
+
