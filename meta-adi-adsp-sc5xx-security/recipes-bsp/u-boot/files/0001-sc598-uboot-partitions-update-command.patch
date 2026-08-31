@@ -1,0 +1,89 @@
+From 336e11f2a8098268f0ab008ce4d45d8551128977 Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Mon, 17 Aug 2026 09:55:29 -0400
+Subject: [PATCH] sc598: Relocate kernel offset and add update_uboot command
+
+The combined size of U-boot Proper + TF-A/OPTEE in ceratin configurations
+can expand past the normal sc598 partition for U-boot proper. Expanding
+the partition to a safe size to accomodate these configurations.
+---
+ arch/arm/mach-sc5xx/soc.c                     |  9 +++++++++
+ board/adi/sc598-som-ezkit/sc598-som-ezkit.env |  6 ++++++
+ include/env/adi/adi_boot.env                  | 15 ++++++++++++++-
+ 3 files changed, 29 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/mach-sc5xx/soc.c b/arch/arm/mach-sc5xx/soc.c
+index 09978a5cf44..0a69e4f9d09 100644
+--- a/arch/arm/mach-sc5xx/soc.c
++++ b/arch/arm/mach-sc5xx/soc.c
+@@ -91,7 +91,16 @@ const char *sc5xx_get_boot_mode(u32 *bmode)
+ 	};
+ 	u32 local_mode;
+ 
++#ifdef CONFIG_FIT_SIGNATURE
++	/*
++	 * In security builds with signature verification enabled, OP-TEE
++	 * manages RCU resources. Skip RCU register access to prevent boot
++	 * stalling and default to QSPI Master mode.
++	 */
++	local_mode = 1; /* QSPI Master */
++#else
+ 	local_mode = (readl(RCU0_STAT) & BITM_RCU_STAT_BMODE) >> BITP_RCU_STAT_BMODE;
++#endif
+ 
+ #if CONFIG_ADI_SPL_FORCE_BMODE != 0
+ 	/*
+diff --git a/board/adi/sc598-som-ezkit/sc598-som-ezkit.env b/board/adi/sc598-som-ezkit/sc598-som-ezkit.env
+index 4195b93823b..b0e625b231b 100644
+--- a/board/adi/sc598-som-ezkit/sc598-som-ezkit.env
++++ b/board/adi/sc598-som-ezkit/sc598-som-ezkit.env
+@@ -8,6 +8,12 @@ fdt_addr_r=CONFIG_SYS_LOAD_ADDR
+ kernel_addr_r=0x9a200000
+ ramdisk_addr_r=0x9c000000
+ 
++/* SPI flash partition offsets and LDR images used by update_uboot */
++spl_offset=0x0
++uboot_offset=0x40000
++spl_ldr=u-boot-spl-unsigned.ldr
++uboot_ldr=u-boot-unsigned.ldr
++
+ #define USE_NFS
+ #define USE_SPI
+ #define USE_OSPI
+diff --git a/include/env/adi/adi_boot.env b/include/env/adi/adi_boot.env
+index 6b5aae538dd..d423a502761 100644
+--- a/include/env/adi/adi_boot.env
++++ b/include/env/adi/adi_boot.env
+@@ -21,8 +21,10 @@ initrd_high=0xffffffffffffffff
+ #else
+ initrd_high=0xffffffff
+ #endif
+-#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64) || defined(CONFIG_SC846)
++#if defined(CONFIG_SC59X) || defined(CONFIG_SC59X_64)
++adi_image_offset=0x200000
++#elif defined(CONFIG_SC846)
+ adi_image_offset=0x100000
+ #else
+ adi_image_offset=0xd0000
+ #endif
+@@ -58,6 +58,17 @@ spiboot=run spiargs;
+ 	sf probe ${sfdev};
+ 	sf read ${loadaddr} ${adi_image_offset} 0xf00000;
+ 	bootm ${loadaddr}
++
++/* Fetch the unsigned SPL and stage-2 LDRs over the network and program them
++ * into the u-boot-spl and u-boot SPI flash partitions. */
++update_uboot=setenv sfdev CONFIG_SC_BOOT_SPI_BUS:CONFIG_SC_BOOT_SPI_SSEL;
++	sf probe ${sfdev};
++	wget ${loadaddr} ${serverip}:/${spl_ldr};
++	sf erase ${spl_offset} 0x40000;
++	sf write ${loadaddr} ${spl_offset} 0x40000;
++	wget ${loadaddr} ${serverip}:/${uboot_ldr};
++	sf erase ${uboot_offset} 0x1c0000;
++	sf write ${loadaddr} ${uboot_offset} 0x1c0000
+ #endif
+ 
+ #if defined(USE_OSPI)
+-- 
+2.34.1
+
