@@ -19,6 +19,9 @@ on:
         description: "Build the SDK installer for this image"
         type: boolean
         default: true
+      manifest-branch:
+        description: "Manifest repository branch/ref"
+        default: ""
       override-meta-adi:
         description: "Override sources/meta-adi with the checked-out ref"
         type: boolean
@@ -37,9 +40,15 @@ on:
       manifest-repo:
         type: string
         default: ""
+<<<<<<< HEAD
       build-sdk:
         type: boolean
         default: true
+=======
+      manifest-branch:
+        type: string
+        default: ""
+>>>>>>> 6b809b8 (ci: allow selecting manifest branch)
       override-meta-adi:
         type: boolean
         default: false
@@ -85,7 +94,11 @@ jobs:
           image: ${{ inputs.image }}
           manifest: ${{ inputs.manifest }}
           manifest-repo: ${{ inputs.manifest-repo }}
+<<<<<<< HEAD
           build-sdk: ${{ inputs.build-sdk }}
+=======
+          manifest-branch: ${{ inputs.manifest-branch }}
+>>>>>>> 6b809b8 (ci: allow selecting manifest branch)
           override-meta-adi: ${{ inputs.override-meta-adi }}
           gh-token: ${{ steps.app-token.outputs.token || github.token }}
 
