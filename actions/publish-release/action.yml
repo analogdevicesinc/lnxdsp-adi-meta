@@ -1,0 +1,36 @@
+name: Attach release assets
+description: >-
+  Attach the artifacts that were built when the release tag was first pushed
+  (stored as release-assets-* workflow artifacts) to the published release.
+
+inputs:
+  gh-token:
+    description: "Token used to download build artifacts and upload release assets"
+    default: ${{ github.token }}
+  build-workflow:
+    description: "Workflow whose run produced the release-assets-* artifacts"
+    default: top-level.yml
+
+runs:
+  using: composite
+  steps:
+    - name: Download release assets
+      uses: dawidd6/action-download-artifact@v6
+      with:
+        github_token: ${{ inputs.gh-token }}
+        workflow: ${{ inputs.build-workflow }}
+        workflow_conclusion: success
+        commit: ${{ github.sha }}
+        name: release-assets-
+        name_is_regexp: true
+        path: release-assets
+        if_no_artifact_found: fail
+
+    - name: Attach assets to the published release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ inputs.gh-token }}
+        file: release-assets/*/*
+        file_glob: true
+        overwrite: true
+        tag: ${{ github.ref }}

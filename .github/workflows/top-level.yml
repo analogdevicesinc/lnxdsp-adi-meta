@@ -6,8 +6,10 @@ on:
   push:
     branches:
       - "main"
-  release:
-    types: [published]
+    tags:
+      - "*-rel"
+      - "*-rel-*"
+      - "*-rc-*"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
@@ -45,7 +47,7 @@ jobs:
 
   deploy_cloudsmith:
     needs: [build]
-    if: ${{ github.event.pull_request.head.repo.full_name == github.repository || github.event_name == 'push' }}
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository || (github.event_name == 'push' && github.ref_type == 'branch') }}
     uses: analogdevicesinc/linux/.github/workflows/upload-to-cloudsmith.yml@ci
     secrets:
       CLOUDSMITH_SERVICE_SLUG: ${{ secrets.CLOUDSMITH_SERVICE_SLUG }}

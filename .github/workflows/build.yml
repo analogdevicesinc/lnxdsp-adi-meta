@@ -80,19 +80,3 @@ jobs:
           manifest-repo: ${{ inputs.manifest-repo }}
           override-meta-adi: ${{ inputs.override-meta-adi }}
           gh-token: ${{ steps.app-token.outputs.token || github.token }}
-
-      - name: Upload release archive to release
-        uses: svenstaro/upload-release-action@v2
-        if: ${{ github.event_name == 'release' }}
-        with:
-          repo_token: ${{ github.token }}
-          file: ${{ env.YOCTO_WORKSPACE }}/images-${{ inputs.machine }}-${{ inputs.image }}-${{ github.event.release.tag_name }}.tar.xz
-          tag: ${{ github.ref }}
-
-      - name: Upload SDK installer to release
-        uses: svenstaro/upload-release-action@v2
-        if: ${{ github.event_name == 'release' }}
-        with:
-          repo_token: ${{ github.token }}
-          file: ${{ env.SDK_INSTALLER }}
-          tag: ${{ github.ref }}

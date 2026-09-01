@@ -152,7 +152,7 @@ runs:
           !${{ env.YOCTO_WORKSPACE }}/build/tmp/deploy/spdx/**/by-hash/**
 
     - name: Locate SDK installer
-      if: ${{ github.event_name == 'release' || github.event_name == 'workflow_dispatch' }}
+      if: ${{ github.ref_type == 'tag' || github.event_name == 'workflow_dispatch' }}
       shell: bash
       run: |
         SDK_INSTALLER=$(ls "${YOCTO_WORKSPACE}/build/tmp/deploy/sdk/"*.sh | head -n1)
@@ -166,12 +166,29 @@ runs:
         path: ${{ env.SDK_INSTALLER }}
 
     - name: Archive output images directory
-      if: ${{ github.event_name == 'release' }}
+      if: ${{ github.ref_type == 'tag' }}
       shell: bash
       run: |
         cd "${YOCTO_WORKSPACE}"
-        tar -cJvf images-${{ inputs.machine }}-${{ inputs.image }}-${{ github.event.release.tag_name }}.tar.xz \
+        tar -cJvf images-${{ inputs.machine }}-${{ inputs.image }}-${{ github.ref_name }}.tar.xz \
           build/tmp/deploy/images/${{ inputs.machine }}/
+
+    - name: Stage release assets
+      if: ${{ github.ref_type == 'tag' }}
+      shell: bash
+      run: |
+        cd "${YOCTO_WORKSPACE}"
+        mkdir -p release-assets
+        mv "images-${{ inputs.machine }}-${{ inputs.image }}-${{ github.ref_name }}.tar.xz" release-assets/
+        cp "${SDK_INSTALLER}" release-assets/
+
+    - name: Upload release assets as artifact
+      if: ${{ github.ref_type == 'tag' }}
+      uses: actions/upload-artifact@v6
+      with:
+        name: release-assets-${{ inputs.machine }}-${{ inputs.image }}
+        path: ${{ env.YOCTO_WORKSPACE }}/release-assets/*
+        if-no-files-found: error
 
     - name: Clean up build
       if: always()
