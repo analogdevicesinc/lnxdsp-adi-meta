@@ -13,16 +13,11 @@ FILE_SYSTEM_TOOLS = "\
 	e2fsprogs \
 "
 
-TESTING = "\
-    sram-mmap-test \
-"
-
 SOUND = " \
 	alsa-utils \
 	alsa-lib \
 	rpmsg-utils \
 	dbus \
-	play \
 "
 
 UTILS = " \
@@ -39,13 +34,11 @@ UTILS = " \
 IMAGE_INSTALL += " \
     ${UTILS} \
    	${FILE_SYSTEM_TOOLS} \
-   	${TESTING} \
 	${SOUND} \
 	ltp \
 	linuxptp \
 	linux-firmware-rtl8192su \
 	linux-firmware-adau1761 \
-	version \
 	libopus \
 	opus-tools \
 "
