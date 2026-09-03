@@ -27,11 +27,14 @@ jobs:
           - adsp-sc598-som-ezlite
           - adsp-sc846-som-ezkit
         image:
+          - adsp-sc5xx-tiny
           - adsp-sc5xx-minimal
           - adsp-sc5xx-full
         manifest:
           - main
         include:
+          - image: adsp-sc5xx-tiny
+            build-sdk: false
           - image: adsp-sc5xx-minimal
             build-sdk: true
           - image: adsp-sc5xx-full
