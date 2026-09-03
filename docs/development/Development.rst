@@ -8,6 +8,7 @@ This section provides guides and resources for developing applications and custo
 * :doc:`Debugging without ICE Hardware <Debugging-without-ICE-Hardware>`: Load U-Boot using the USB Debug Agent port when an ICE debugger is unavailable
 * :doc:`Linux Kernel Development <Linux-Kernel-Development>`: Compile, modify, and rebuild the Linux kernel for ADSP-SC5xx platforms
 * :doc:`Custom Meta Layer <Custom-Meta-Layer>`: Create a custom Yocto meta layer for building Linux images with specific packages and configurations
+* :doc:`Image Types <Image-Types>`: Compare the available image recipes (full, minimal, tiny, ramdisk) and learn how to create a new image type
 * :doc:`Compiling and Running a Rust Kernel <Compiling-and-running-a-Rust-kernel>`: Run the Linux kernel with Rust support on ADSP-SC598 boards (requires Yocto 5.0+)
 * :doc:`RPMsg <RPMsg>`: RPMsg protocol for heterogeneous inter-processor communication between ARM and SHARC+ cores
 * :doc:`RPMsg-Lite <RPMsg‐Lite>`: RPMsg-Lite for bare metal applications on ARM and SHARC+ cores
@@ -25,6 +26,7 @@ This section provides guides and resources for developing applications and custo
    Linux-Kernel-Development
    Compiling-and-running-a-Rust-kernel
    Custom-Meta-Layer
+   Image-Types
    RPMsg
    RPMsg‐Lite
    Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications

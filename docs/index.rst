@@ -56,7 +56,7 @@ Quick Start
 3. :doc:`Build and customize <development/Development>` - Use Yocto to create your custom image and develop applications
 4. :doc:`Run examples <examples/Examples>` - Try SHARC-ALSA, USB Audio, and more
 
-**Key Topics**: :doc:`Boot Process <development/Boot-Sequence>` | :doc:`RPMsg <development/RPMsg>` | :doc:`Memory Configuration <development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>` | :doc:`Secure Boot <secure-boot/Secure-Boot-Support>`
+**Key Topics**: :doc:`Boot Process <development/Boot-Sequence>` | :doc:`Image Types <development/Image-Types>` | :doc:`RPMsg <development/RPMsg>` | :doc:`Memory Configuration <development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>` | :doc:`Secure Boot <secure-boot/Secure-Boot-Support>`
 
 Latest Release
 --------------
