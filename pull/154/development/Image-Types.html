@@ -4,17 +4,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta content="If a dedicated ICE debugger is not available, it is still possible to load firmware into memory using the USB Debug Agent port available on some carrier boards." name="description" />
+<meta content="The ADI Yocto meta layer ships several image recipes, each tailored to a different use case. This page describes what each image contains, how they differ, and how to create your own image type." name="description" />
 
-    <title>Debugging without ICE Hardware &#8212; ADSP Processors  documentation</title>
+    <title>Image Types &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8e8a900e" />
     <link rel="stylesheet" type="text/css" href="../_static/app.min.css?v=fb8972a4" />
     <script async="async" src="../_static/app.umd.js?v=8c78863f"></script>
     <link rel="icon" href="../_static/icon.svg"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Boot Sequence" href="Boot-Sequence.html" />
-    <link rel="prev" title="Setting Up Your Host PC" href="../getting-started/Setting-Up-Your-Host-PC.html" />
+    <link rel="next" title="RPMsg" href="RPMsg.html" />
+    <link rel="prev" title="Creating a Custom Meta Layer" href="Custom-Meta-Layer.html" />
    
   
   
@@ -95,20 +95,18 @@
         </div>
         <nav>
           <ul>
-<li><a class="reference internal" href="#">Debugging without ICE Hardware</a><ul>
+<li><a class="reference internal" href="#">Image Types</a><ul>
 <li><a class="reference internal" href="#introduction">Introduction</a></li>
-<li><a class="reference internal" href="#limitations">Limitations</a></li>
-<li><a class="reference internal" href="#setup-instructions">Setup Instructions</a><ul>
-<li><a class="reference internal" href="#step-1-configure-board-boot-mode">Step 1: Configure Board Boot Mode</a></li>
-<li><a class="reference internal" href="#step-2-configure-jtag-interface-switches">Step 2: Configure JTAG Interface Switches</a></li>
-<li><a class="reference internal" href="#step-3-connect-usb-debug-agent">Step 3: Connect USB Debug Agent</a></li>
-<li><a class="reference internal" href="#step-4-start-openocd">Step 4: Start OpenOCD</a></li>
-<li><a class="reference internal" href="#step-5-connect-gdb-to-openocd">Step 5: Connect GDB to OpenOCD</a></li>
+<li><a class="reference internal" href="#available-images">Available Images</a><ul>
+<li><a class="reference internal" href="#base-image-adsp-sc5xx">Base Image (<code class="docutils literal notranslate"><span class="pre">adsp-sc5xx</span></code>)</a></li>
+<li><a class="reference internal" href="#full-image">Full Image</a></li>
+<li><a class="reference internal" href="#minimal-image">Minimal Image</a></li>
+<li><a class="reference internal" href="#tiny-image">Tiny Image</a></li>
+<li><a class="reference internal" href="#ramdisk-image">Ramdisk Image</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#loading-firmware">Loading Firmware</a></li>
-<li><a class="reference internal" href="#soft-reset-via-rcu">Soft Reset via RCU</a></li>
-<li><a class="reference internal" href="#references">References</a></li>
+<li><a class="reference internal" href="#building-an-image">Building an Image</a></li>
+<li><a class="reference internal" href="#creating-a-new-image-type">Creating a New Image Type</a></li>
 </ul>
 </li>
 </ul>
@@ -204,13 +202,13 @@ Content on this topic
 </li>
 <li class="toctree-l1 current"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-4" id="toctree-collapse-4" checked=""/><div class="collapse"><a class="reference internal" href="Development.html">Development</a><label for="toctree-collapse-4"><div class="icon"></div></label></div><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../getting-started/Setting-Up-Your-Host-PC.html">Setting Up Your Host PC</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Debugging without ICE Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Debugging-without-ICE-Hardware.html">Debugging without ICE Hardware</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Boot-Sequence.html">Boot Sequence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="U%E2%80%90Boot-Environment.html">U-Boot Environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Linux-Kernel-Development.html">Linux Kernel Development</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Compiling-and-running-a-Rust-kernel.html">Compiling and running a Rust kernel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Custom-Meta-Layer.html">Creating a Custom Meta Layer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Image-Types.html">Image Types</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Image Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="RPMsg.html">RPMsg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="RPMsg%E2%80%90Lite.html">RPMsg-Lite</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications.html">Configuring System Memory When Using Linux and SHARC Applications</a></li>
@@ -252,93 +250,175 @@ Content on this topic
 </div>
           <div class="body" role="main">
             
-  <section id="debugging-without-ice-hardware">
-<h1>Debugging without ICE Hardware<a class="headerlink" href="#debugging-without-ice-hardware" title="Link to this heading"></a></h1>
+  <section id="image-types">
+<h1>Image Types<a class="headerlink" href="#image-types" title="Link to this heading"></a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
-<p>If a dedicated ICE debugger is not available, it is still possible to load firmware into memory using the USB Debug Agent port available on some carrier boards.</p>
+<p>The ADI Yocto meta layer ships several image recipes, each
+tailored to a different use case. This page describes what each
+image contains, how they differ, and how to create your own image type.</p>
+<p>All image recipes live in
+<code class="docutils literal notranslate"><span class="pre">meta-adi-adsp-sc5xx/recipes-adi/images/</span></code> and the shared behaviour is provided by the
+image classes in <code class="docutils literal notranslate"><span class="pre">meta-adi-adsp-sc5xx/classes/</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx.bbclass</span></code> — the common base image (packages, users, filesystem types,
+programming-image generation).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-minimal.bbclass</span></code> — Minimal image that connect the ext4 image to the WIC generation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-ramdisk.bbclass</span></code> — A self-contained initramfs image.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-compatible.bbclass</span></code> — Defines <code class="docutils literal notranslate"><span class="pre">COMPATIBLE_MACHINE</span></code> for all supported
+SoCs (SC57x, SC58x, SC594, SC598, SC846).</p></li>
+</ul>
+</section>
+<section id="available-images">
+<h2>Available Images<a class="headerlink" href="#available-images" title="Link to this heading"></a></h2>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 25.0%" />
+<col style="width: 30.0%" />
+<col style="width: 25.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Image</p></th>
+<th class="head"><p>Recipe</p></th>
+<th class="head"><p>Purpose</p></th>
+<th class="head"><p>Filesystem types</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Full</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-full</span></code></p></td>
+<td><p>Development image with audio, networking and profiling tools</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">tar.xz</span></code>, <code class="docutils literal notranslate"><span class="pre">ext4</span></code>, <code class="docutils literal notranslate"><span class="pre">wic</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Minimal</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-minimal</span></code></p></td>
+<td><p>Slimmed-down production rootfs</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">tar.xz</span></code>, <code class="docutils literal notranslate"><span class="pre">ubi</span></code>, <code class="docutils literal notranslate"><span class="pre">ext4</span></code>, <code class="docutils literal notranslate"><span class="pre">wic</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Tiny</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-tiny</span></code></p></td>
+<td><p>Smallest image for boards with small SPI flashes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ubi</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Ramdisk</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-ramdisk</span></code></p></td>
+<td><p>Initramfs used as the boot ramdisk</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cpio.xz</span></code>, <code class="docutils literal notranslate"><span class="pre">cpio.gz</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="base-image-adsp-sc5xx">
+<h3>Base Image (<code class="docutils literal notranslate"><span class="pre">adsp-sc5xx</span></code>)<a class="headerlink" href="#base-image-adsp-sc5xx" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">adsp-sc5xx</span></code> class is the foundation for the full and minimal images. It provides a
+Linux userspace with a common set of packages:</p>
+<ul class="simple">
+<li><p><strong>Core boot / base</strong>: <code class="docutils literal notranslate"><span class="pre">packagegroup-core-boot</span></code>, <code class="docutils literal notranslate"><span class="pre">packagegroup-base</span></code>,
+<code class="docutils literal notranslate"><span class="pre">busybox-watchdog-init</span></code>, <code class="docutils literal notranslate"><span class="pre">util-linux</span></code>.</p></li>
+<li><p><strong>Connectivity / shell</strong>: <code class="docutils literal notranslate"><span class="pre">openssh</span></code>, <code class="docutils literal notranslate"><span class="pre">iproute2</span></code>, <code class="docutils literal notranslate"><span class="pre">iproute2-tc</span></code>, <code class="docutils literal notranslate"><span class="pre">ncurses</span></code>.</p></li>
+<li><p><strong>Audio + inter-core comms (ICC)</strong>: <code class="docutils literal notranslate"><span class="pre">alsa-utils</span></code>, <code class="docutils literal notranslate"><span class="pre">rpmsg-utils</span></code> and the SHARC audio
+binaries selected by the audio <code class="docutils literal notranslate"><span class="pre">DISTRO_FEATURES</span></code>.</p></li>
+<li><p><strong>Crypto</strong>: <code class="docutils literal notranslate"><span class="pre">openssl</span></code>, <code class="docutils literal notranslate"><span class="pre">cryptodev-linux</span></code>, <code class="docutils literal notranslate"><span class="pre">cryptodev-module</span></code>, <code class="docutils literal notranslate"><span class="pre">crypto-tests</span></code>,
+<code class="docutils literal notranslate"><span class="pre">crc-tests</span></code>.</p></li>
+<li><p><strong>Flash / storage tools</strong>: <code class="docutils literal notranslate"><span class="pre">mtd-utils</span></code>, <code class="docutils literal notranslate"><span class="pre">mtd-utils-ubifs</span></code>, <code class="docutils literal notranslate"><span class="pre">e2fsprogs</span></code>.</p></li>
+<li><p><strong>GPIO / SPI</strong>: <code class="docutils literal notranslate"><span class="pre">libgpiod</span></code>, <code class="docutils literal notranslate"><span class="pre">libgpiod-tools</span></code>, <code class="docutils literal notranslate"><span class="pre">spidev-test</span></code>, <code class="docutils literal notranslate"><span class="pre">spitools</span></code>.</p></li>
+</ul>
+</section>
+<section id="full-image">
+<h3>Full Image<a class="headerlink" href="#full-image" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-full</span></code> inherits the base image and layers on tooling for development and
+benchmarking. In addition to everything in the base image it adds:</p>
+<ul class="simple">
+<li><p><strong>Networking / benchmarking</strong>: <code class="docutils literal notranslate"><span class="pre">iperf3</span></code>, <code class="docutils literal notranslate"><span class="pre">netperf</span></code>, <code class="docutils literal notranslate"><span class="pre">linuxptp</span></code>.</p></li>
+<li><p><strong>Tracing / profiling</strong>: <code class="docutils literal notranslate"><span class="pre">uftrace</span></code>, <code class="docutils literal notranslate"><span class="pre">ltrace</span></code>, <code class="docutils literal notranslate"><span class="pre">strace</span></code>, <code class="docutils literal notranslate"><span class="pre">cpufrequtils</span></code>.</p></li>
+<li><p><strong>Audio / media</strong>: <code class="docutils literal notranslate"><span class="pre">alsa-lib</span></code>, <code class="docutils literal notranslate"><span class="pre">dbus</span></code>, <code class="docutils literal notranslate"><span class="pre">libopus</span></code>, <code class="docutils literal notranslate"><span class="pre">opus-tools</span></code>,
+<code class="docutils literal notranslate"><span class="pre">linux-firmware-adau1761</span></code>.</p></li>
+<li><p><strong>Test suites / misc</strong>: <code class="docutils literal notranslate"><span class="pre">ltp</span></code>, <code class="docutils literal notranslate"><span class="pre">python3</span></code>, <code class="docutils literal notranslate"><span class="pre">linux-firmware-rtl8192su</span></code>.</p></li>
+</ul>
+</section>
+<section id="minimal-image">
+<h3>Minimal Image<a class="headerlink" href="#minimal-image" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-minimal</span></code> inherits the base image and then runs a rootfs cleanup step
+that removes items not needed on a deployed device to reduce the rootfs footprint.
+This image is a good starting point for creating your own production rootfs.</p>
+</section>
+<section id="tiny-image">
+<h3>Tiny Image<a class="headerlink" href="#tiny-image" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-tiny</span></code> is a standalone image built directly from <code class="docutils literal notranslate"><span class="pre">core-image</span></code> for boards with limited SPI flash space.
+It installs minimal packages, produces a single <code class="docutils literal notranslate"><span class="pre">ubi</span></code> filesystem, and aggressively strips the rootfs to keep the file
+system size down. It is the smallest bootable image the layer produces. This image is only intended for small SPI flashes,
+larger boot media should use the minimal or full images.</p>
+</section>
+<section id="ramdisk-image">
+<h3>Ramdisk Image<a class="headerlink" href="#ramdisk-image" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-ramdisk</span></code> builds an initramfs (RAM disk) rather than an on-disk rootfs. It uses
+<code class="docutils literal notranslate"><span class="pre">nopackages</span></code> and installs the selected SHARC audio binaries. The base image references it
+through <code class="docutils literal notranslate"><span class="pre">INITRD_NAME</span></code> so it is used as the boot ramdisk.</p>
+</section>
+</section>
+<section id="building-an-image">
+<h2>Building an Image<a class="headerlink" href="#building-an-image" title="Link to this heading"></a></h2>
+<p>After sourcing the build environment, build any image by name with <code class="docutils literal notranslate"><span class="pre">bitbake</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>setup-environment<span class="w"> </span>-m<span class="w"> </span>adsp-sc598-som-ezkit
+bitbake<span class="w"> </span>adsp-sc5xx-full
+</pre></div>
+</div>
+<p>The resulting rootfs and programming images are written under
+<code class="docutils literal notranslate"><span class="pre">build/tmp/deploy/images/&lt;machine&gt;/</span></code>.</p>
+</section>
+<section id="creating-a-new-image-type">
+<h2>Creating a New Image Type<a class="headerlink" href="#creating-a-new-image-type" title="Link to this heading"></a></h2>
+<p>To add your own image type to the layer, create a new recipe under
+<code class="docutils literal notranslate"><span class="pre">recipes-adi/images/</span></code> and inherit whichever base best matches your needs. The example
+below defines an <code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-myimage</span></code> image that starts from the minimal image and adds
+a couple of extra packages.</p>
+<p>Create <code class="docutils literal notranslate"><span class="pre">meta-adi-adsp-sc5xx/recipes-adi/images/adsp-sc5xx-myimage.bb</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>inherit<span class="w"> </span>adsp-sc5xx-minimal
+
+<span class="nv">SUMMARY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Custom product image for Analog Devices ADSP-SC5xx boards"</span>
+<span class="nv">LICENSE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"MIT"</span>
+
+<span class="nv">IMAGE_INSTALL</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="s2">" \</span>
+<span class="s2">    my-application \</span>
+<span class="s2">    my-application2 \</span>
+<span class="s2">    nano \</span>
+<span class="s2">    i2c-tools \</span>
+<span class="s2">"</span>
+</pre></div>
+</div>
+<p>Choose the base to inherit according to your goal:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">inherit</span> <span class="pre">adsp-sc5xx</span></code> — full-featured base with the complete default package set.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inherit</span> <span class="pre">adsp-sc5xx-minimal</span></code> — the base plus rootfs size reduction.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inherit</span> <span class="pre">adsp-sc5xx-ramdisk</span></code> — a RAM disk / initramfs image.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inherit</span> <span class="pre">core-image</span> <span class="pre">adsp-sc5xx-compatible</span> <span class="pre">adsp-fit-generation</span></code> — Build an image from scratch</p></li>
+</ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Although possible, it is always recommended to use a dedicated ICE-1000/2000 debugger for faster and more flexible debugging.</p>
+<p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-compatible</span></code> provides <code class="docutils literal notranslate"><span class="pre">COMPATIBLE_MACHINE</span></code> for the supported SoCs. If you
+inherit one of the <code class="docutils literal notranslate"><span class="pre">adsp-sc5xx*</span></code> bases you get this automatically; if you build an
+image from <code class="docutils literal notranslate"><span class="pre">core-image</span></code> directly, inherit <code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-compatible</span></code> so the image is
+restricted to ADI machines.</p>
 </div>
-</section>
-<section id="limitations">
-<h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading"></a></h2>
-<p>The following regularly used OpenOCD feature set may not work as intended or have undefined behaviours when using the USB Debug Agent:</p>
+<p>Customise the image with the standard Yocto variables:</p>
 <ul class="simple">
-<li><p>Flashing QSPI</p></li>
-<li><p>Hard reset</p></li>
-<li><p>Loading successive firmware files</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">IMAGE_INSTALL</span></code> — add packages to the rootfs (use <code class="docutils literal notranslate"><span class="pre">+=</span></code> to extend an inherited list).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">IMAGE_FSTYPES</span></code> — select output filesystem types (e.g. <code class="docutils literal notranslate"><span class="pre">ext4</span></code>, <code class="docutils literal notranslate"><span class="pre">ubi</span></code>, <code class="docutils literal notranslate"><span class="pre">wic</span></code>,
+<code class="docutils literal notranslate"><span class="pre">cpio.gz</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">IMAGE_FEATURES</span></code> — enable Yocto image features such as <code class="docutils literal notranslate"><span class="pre">debug-tweaks</span></code> or
+<code class="docutils literal notranslate"><span class="pre">tools-debug</span></code>.</p></li>
 </ul>
-</section>
-<section id="setup-instructions">
-<h2>Setup Instructions<a class="headerlink" href="#setup-instructions" title="Link to this heading"></a></h2>
-<section id="step-1-configure-board-boot-mode">
-<h3>Step 1: Configure Board Boot Mode<a class="headerlink" href="#step-1-configure-board-boot-mode" title="Link to this heading"></a></h3>
-<p>Switch the board to boot mode 0 and press RESET.</p>
-</section>
-<section id="step-2-configure-jtag-interface-switches">
-<h3>Step 2: Configure JTAG Interface Switches<a class="headerlink" href="#step-2-configure-jtag-interface-switches" title="Link to this heading"></a></h3>
-<p>Set all JTAG interface switches to the required configuration:</p>
-<ul class="simple">
-<li><p><strong>SOMCRR-EZKIT</strong>: SW1 (all ON) - <a class="icon link reference external" href="https://www.analog.com/media/en/technical-documentation/user-guides/ev-somcrr-ezkit-manual.pdf" target="_blank">See EV-SOMCRR-EZKIT Manual, Table 3-5</a></p></li>
-<li><p><strong>SOMCRR-EZLITE</strong>: S4 (1-6 ON, 7-8 OFF) - <a class="icon link reference external" href="https://www.analog.com/media/en/technical-documentation/user-guides/ev-somcrr-ezlite_manual.pdf" target="_blank">See EV-SOMCRR-EZLITE Manual, Table 3-3</a></p></li>
-</ul>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This will disable the JTAG interface used by the ICE debugger.</p>
-</div>
-</section>
-<section id="step-3-connect-usb-debug-agent">
-<h3>Step 3: Connect USB Debug Agent<a class="headerlink" href="#step-3-connect-usb-debug-agent" title="Link to this heading"></a></h3>
-<p>Connect the USB Debug Agent on the carrier board to the host PC via USB cable.</p>
-</section>
-<section id="step-4-start-openocd">
-<h3>Step 4: Start OpenOCD<a class="headerlink" href="#step-4-start-openocd" title="Link to this heading"></a></h3>
-<p>Start OpenOCD with the <code class="docutils literal notranslate"><span class="pre">adi-debugagent</span></code> interface:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">$sdk_usr</span>/bin/openocd<span class="w"> </span>-f<span class="w"> </span><span class="nv">$sdk_usr</span>/share/openocd/scripts/interface/adi-dbgagent.cfg<span class="w"> </span>-f<span class="w"> </span><span class="nv">$sdk_usr</span>/share/openocd/scripts/board/ev-sc598-som.cfg<span class="w"> </span>-c<span class="w"> </span>init<span class="w"> </span>-c<span class="w"> </span>reset<span class="w"> </span>-c<span class="w"> </span>halt
-</pre></div>
-</div>
-<p>Where <code class="docutils literal notranslate"><span class="pre">sdk_usr</span></code> is the SDK installation’s <code class="docutils literal notranslate"><span class="pre">usr</span></code> directory, for example:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>/opt/adi-distro-glibc/5.0.1/sysroots/x86_64-adi_glibc_sdk-linux/usr/
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bitbake<span class="w"> </span>adsp-sc5xx-myimage
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Replace the target/board configuration file as required by your hardware.</p>
+<p>If your customisation is product-specific and extends beyond just adding/removing packages, it is recommended to keep the new image recipe in your
+own layer instead of the public ADI reference layer. See <a class="reference internal" href="Custom-Meta-Layer.html"><span class="doc">Creating a Custom Meta Layer</span></a> for how to
+create and register a custom layer.</p>
 </div>
-</section>
-<section id="step-5-connect-gdb-to-openocd">
-<h3>Step 5: Connect GDB to OpenOCD<a class="headerlink" href="#step-5-connect-gdb-to-openocd" title="Link to this heading"></a></h3>
-<p>In a separate terminal, connect GDB to OpenOCD:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">$sdk_usr</span>/bin/aarch64-adi_glibc-linux/aarch64-adi_glibc-linux-gdb<span class="w"> </span>-ex<span class="w"> </span><span class="s2">"tar ext :3333"</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="loading-firmware">
-<h2>Loading Firmware<a class="headerlink" href="#loading-firmware" title="Link to this heading"></a></h2>
-<p>Once connected, load the firmware using GDB:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>load<span class="w"> </span>u-boot-proper-sc598-som-ezkit.elf
-<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>c
-</pre></div>
-</div>
-<p>The firmware will be loaded into memory and execution will begin.</p>
-</section>
-<section id="soft-reset-via-rcu">
-<h2>Soft Reset via RCU<a class="headerlink" href="#soft-reset-via-rcu" title="Link to this heading"></a></h2>
-<p>To perform a soft reset through the Reset Control Unit (RCU):</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span>*0x3108C000<span class="o">=</span>0x1
-</pre></div>
-</div>
-<p>This command triggers a system reset without requiring physical hardware reset.</p>
-</section>
-<section id="references">
-<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p><a class="icon link reference external" href="https://www.analog.com/media/en/technical-documentation/user-guides/ev-somcrr-ezkit-manual.pdf" target="_blank">EV-SOMCRR-EZKIT Manual</a> (Table 3-5: JTAG Switch Configuration)</p></li>
-<li><p><a class="icon link reference external" href="https://www.analog.com/media/en/technical-documentation/user-guides/ev-somcrr-ezlite_manual.pdf" target="_blank">EV-SOMCRR-EZLITE Manual</a> (Table 3-3: JTAG Switch Configuration)</p></li>
-</ul>
 </section>
 </section>
 
@@ -346,8 +426,8 @@ Content on this topic
           </div>
               <div class="related">
                 &nbsp;
-    <a href="../getting-started/Setting-Up-Your-Host-PC.html" title="Previous document (Alt+Shift+LeftArrow)" class="prev">Setting Up Your Host PC</a>
-    <a href="Boot-Sequence.html" title="Next document (Alt+Shift+RightArrow)" class="next">Boot Sequence</a>
+    <a href="Custom-Meta-Layer.html" title="Previous document (Alt+Shift+LeftArrow)" class="prev">Creating a Custom Meta Layer</a>
+    <a href="RPMsg.html" title="Next document (Alt+Shift+RightArrow)" class="next">RPMsg</a>
               </div>
           
         </div>
