@@ -4,9 +4,9 @@ ADSP Yocto
 Welcome to the official Yocto documentation for ADI Digital Signal Processors
 (ADSP).
 
-See :external+documentation:doc:`products/adsp/index` for generic ADSP
+See :external+system-level:doc:`products/adsp/index` for generic ADSP
 documentation including a list of supported SoCs and a description of the
-various :external+documentation:doc:`use cases <products/adsp/use-cases>`.
+various :external+system-level:doc:`use cases <products/adsp/use-cases>`.
 
 **Platform Highlights**
 
