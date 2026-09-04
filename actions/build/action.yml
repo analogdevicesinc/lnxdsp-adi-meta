@@ -13,6 +13,9 @@ inputs:
   manifest-repo:
     description: "Manifest repository"
     default: ""
+  build-sdk:
+    description: "Build the SDK installer for this image"
+    default: 'true'
   override-meta-adi:
     description: "Override sources/meta-adi with the checked-out ref"
     default: 'false'
@@ -125,6 +128,14 @@ runs:
         umask 022
         source setup-environment -b build
         bitbake ${{ inputs.image }}
+
+    - name: Build SDK
+      if: ${{ inputs.build-sdk == 'true' }}
+      shell: bash
+      run: |
+        cd "${YOCTO_WORKSPACE}"
+        umask 022
+        source setup-environment -b build
         bitbake ${{ inputs.image }} -c populate_sdk
 
     - name: Set artifact name
@@ -152,7 +163,7 @@ runs:
           !${{ env.YOCTO_WORKSPACE }}/build/tmp/deploy/spdx/**/by-hash/**
 
     - name: Locate SDK installer
-      if: ${{ github.event_name == 'release' || github.event_name == 'workflow_dispatch' }}
+      if: ${{ inputs.build-sdk == 'true' && (github.event_name == 'release' || github.event_name == 'workflow_dispatch') }}
       shell: bash
       run: |
         SDK_INSTALLER=$(ls "${YOCTO_WORKSPACE}/build/tmp/deploy/sdk/"*.sh | head -n1)
@@ -160,7 +171,7 @@ runs:
 
     - name: Upload SDK installer as artifact
       uses: actions/upload-artifact@v6
-      if: ${{ github.event_name == 'workflow_dispatch' }}
+      if: ${{ inputs.build-sdk == 'true' && github.event_name == 'workflow_dispatch' }}
       with:
         name: sdk-${{ inputs.machine }}-${{ inputs.image }}
         path: ${{ env.SDK_INSTALLER }}

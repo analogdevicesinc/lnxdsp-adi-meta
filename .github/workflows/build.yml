@@ -15,6 +15,10 @@ on:
       manifest-repo:
         description: "Manifest repository"
         default: ""
+      build-sdk:
+        description: "Build the SDK installer for this image"
+        type: boolean
+        default: true
       override-meta-adi:
         description: "Override sources/meta-adi with the checked-out ref"
         type: boolean
@@ -33,6 +37,9 @@ on:
       manifest-repo:
         type: string
         default: ""
+      build-sdk:
+        type: boolean
+        default: true
       override-meta-adi:
         type: boolean
         default: false
@@ -78,6 +85,7 @@ jobs:
           image: ${{ inputs.image }}
           manifest: ${{ inputs.manifest }}
           manifest-repo: ${{ inputs.manifest-repo }}
+          build-sdk: ${{ inputs.build-sdk }}
           override-meta-adi: ${{ inputs.override-meta-adi }}
           gh-token: ${{ steps.app-token.outputs.token || github.token }}
 
@@ -91,7 +99,7 @@ jobs:
 
       - name: Upload SDK installer to release
         uses: svenstaro/upload-release-action@v2
-        if: ${{ github.event_name == 'release' }}
+        if: ${{ github.event_name == 'release' && inputs.build-sdk }}
         with:
           repo_token: ${{ github.token }}
           file: ${{ env.SDK_INSTALLER }}

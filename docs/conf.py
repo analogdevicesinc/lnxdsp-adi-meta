@@ -32,7 +32,7 @@ source_suffix = {
 
 interref_repos = [
     'hdl',
-    'documentation',
+    'system-level',
 ]
 
 intersphinx_mapping = {
