@@ -11,6 +11,9 @@ MACHINE_KERNEL_PR = "r0"
 KERNEL_IMAGETYPE = "zImage"
 KERNEL_COMPRESSION = "none"
 
+# fitImage placed into the ext4 boot partition of the wic (eMMC/SD) image
+IMAGE_BOOT_FILES ?= "fitImage"
+
 PREFERRED_PROVIDER_virtual/kernel = "linux-adi"
 PREFERRED_PROVIDER_virtual/bootloader = "u-boot-adi"
 

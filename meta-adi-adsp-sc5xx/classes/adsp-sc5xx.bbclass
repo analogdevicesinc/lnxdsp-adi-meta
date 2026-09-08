@@ -104,8 +104,22 @@ do_create_programming_images(){
         cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubi ${PROG_DIR}/rootfs.ubi
     fi
 
-    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ext4 ]; then
-        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ext4 ${PROG_DIR}/rootfs.ext4
+    # Assemble the combined SPI flash image with each component at its on-chip
+    # offset. The boot ROM reads the SPL raw from offset 0, so a partition table
+    # (wic) cannot be used here - it would occupy sector 0. Only built when a
+    # UBI rootfs exists.
+    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubi ]; then
+        rm -f ${PROG_DIR}/flash.img
+        # dd seek does not parse 0x hex, so convert the offsets to decimal bytes.
+        dd if=${DEPLOY_DIR_IMAGE}/u-boot-spl.ldr of=${PROG_DIR}/flash.img bs=4M seek=$(printf '%d' ${FLASH_SPL_OFFSET}) oflag=seek_bytes conv=notrunc
+        dd if=${DEPLOY_DIR_IMAGE}/u-boot.ldr of=${PROG_DIR}/flash.img bs=4M seek=$(printf '%d' ${FLASH_UBOOT_OFFSET}) oflag=seek_bytes conv=notrunc
+        dd if=${DEPLOY_DIR_IMAGE}/fitImage of=${PROG_DIR}/flash.img bs=4M seek=$(printf '%d' ${FLASH_KERNEL_OFFSET}) oflag=seek_bytes conv=notrunc
+        dd if=${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubi of=${PROG_DIR}/flash.img bs=4M seek=$(printf '%d' ${FLASH_ROOTFS_OFFSET}) oflag=seek_bytes conv=notrunc
+    fi
+
+    # eMMC/SD/USB disk image delivered compressed as mmc.img.gz
+    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.wic.gz ]; then
+        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.wic.gz ${PROG_DIR}/mmc.img.gz
     fi
 
     echo "Programming images created in: ${PROG_DIR}"
@@ -114,9 +128,17 @@ do_create_programming_images(){
 
 addtask create_programming_images after do_image_complete before do_build
 
+# SPI NOR flash partition offsets used to assemble flash.img (bytes). Defaults
+# match the SC59x/SC846 layout; boards with a different layout override these in
+# their machine conf.
+FLASH_SPL_OFFSET ?= "0x0"
+FLASH_UBOOT_OFFSET ?= "0x40000"
+FLASH_KERNEL_OFFSET ?= "0x100000"
+FLASH_ROOTFS_OFFSET ?= "0x2100000"
+
 do_create_programming_images[depends] += "\
     virtual/bootloader:do_deploy \
     virtual/kernel:do_deploy \
 "
 
-do_create_programming_images[vardeps] += "KERNEL_DEVICETREE IMAGE_BASENAME MACHINE"
+do_create_programming_images[vardeps] += "KERNEL_DEVICETREE IMAGE_BASENAME MACHINE FLASH_SPL_OFFSET FLASH_UBOOT_OFFSET FLASH_KERNEL_OFFSET FLASH_ROOTFS_OFFSET"
