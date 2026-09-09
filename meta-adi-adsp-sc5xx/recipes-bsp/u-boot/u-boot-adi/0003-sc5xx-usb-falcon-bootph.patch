@@ -1,0 +1,61 @@
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Tue, 8 Sep 2026 15:20:00 -0400
+Subject: [PATCH] arm: dts: sc5xx: Keep USB nodes in SPL DT for USB Falcon boot
+
+Tag the USB controllers (and, on SC59x, the nop-phy and USB pin group)
+with bootph-pre-ram so they are retained in the trimmed SPL device tree
+and probed by the SPL on all SC5xx boards. Required for the USB
+mass-storage Falcon (SPL OS boot) path.
+
+Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
+---
+diff --git a/arch/arm/dts/sc57x.dtsi b/arch/arm/dts/sc57x.dtsi
+index b162e61d85a..aa3f1ec241f 100644
+--- a/arch/arm/dts/sc57x.dtsi
++++ b/arch/arm/dts/sc57x.dtsi
+@@ -136,3 +136,7 @@
+ &i2c2 {
+ 	clocks = <&clk ADSP_SC57X_CLK_CGU0_SCLK0>;
+ };
++
++&usb0 {
++	bootph-pre-ram;
++};
+diff --git a/arch/arm/dts/sc58x.dtsi b/arch/arm/dts/sc58x.dtsi
+index e6542bc5bd1..223a0340002 100644
+--- a/arch/arm/dts/sc58x.dtsi
++++ b/arch/arm/dts/sc58x.dtsi
+@@ -181,3 +181,11 @@
+ &i2c2 {
+ 	clocks = <&clk ADSP_SC58X_CLK_CGU0_SCLK0>;
+ };
++
++&usb0 {
++	bootph-pre-ram;
++};
++
++&usb1 {
++	bootph-pre-ram;
++};
+diff --git a/arch/arm/dts/sc59x.dtsi b/arch/arm/dts/sc59x.dtsi
+index 0fde7d5e204..34adad4ad97 100644
+--- a/arch/arm/dts/sc59x.dtsi
++++ b/arch/arm/dts/sc59x.dtsi
+@@ -206,3 +206,15 @@
+ &eth0 {
+ 	reg = <0x31040000 0x1000>;
+ };
++
++&usb0 {
++	bootph-pre-ram;
++};
++
++&usb0_phy {
++	bootph-pre-ram;
++};
++
++&usb0_default {
++	bootph-pre-ram;
++};
+-- 
+2.34.1
