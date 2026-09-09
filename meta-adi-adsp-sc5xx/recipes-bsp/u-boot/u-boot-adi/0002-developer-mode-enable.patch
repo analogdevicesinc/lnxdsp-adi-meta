@@ -1,8 +1,8 @@
 diff --git a/arch/arm/mach-sc5xx/spl.c b/arch/arm/mach-sc5xx/spl.c
-index 68e0310f5af..362263bdb0c 100644
+index 7883be1a74b..cf4ac7b5330 100644
 --- a/arch/arm/mach-sc5xx/spl.c
 +++ b/arch/arm/mach-sc5xx/spl.c
-@@ -21,6 +21,7 @@ static int adi_sf_default_cs = CONFIG_SF_DEFAULT_CS;
+@@ -26,6 +26,7 @@ static int adi_sf_default_cs = CONFIG_SF_DEFAULT_CS;
  static int adi_sf_default_speed = CONFIG_SF_DEFAULT_SPEED;
  
  u32 bmode;
@@ -10,7 +10,7 @@ index 68e0310f5af..362263bdb0c 100644
  
  int spl_start_uboot(void)
  {
-@@ -45,6 +46,18 @@ unsigned int spl_spi_get_default_cs(void)
+@@ -55,6 +56,19 @@ unsigned int spl_spi_get_default_cs(void)
  void board_boot_order(u32 *spl_boot_list)
  {
  	const char *bmodestring = sc5xx_get_boot_mode(&bmode);
@@ -26,25 +26,31 @@ index 68e0310f5af..362263bdb0c 100644
 +		"eMMC"
 +#endif
 +	};
- 
++
  	printf("ADI Boot Mode: 0x%x (%s)\n", bmode, bmodestring);
  
-@@ -54,6 +67,18 @@ void board_boot_order(u32 *spl_boot_list)
- 	 */
- 	spl_boot_list[0] = BOOT_DEVICE_BOOTROM;
+ 	if (bmode != 0 && spl_start_uboot()) {
+@@ -72,6 +86,23 @@ void board_boot_order(u32 *spl_boot_list)
+ 		return;
+ 	}
  
-+	bmode = *((unsigned int *) BMODE_ADDR) - 1;
-+ 	printf("Entering Developer Mode...\n");
-+ 	if ((ARRAY_SIZE(bmodes) <= bmode) || (0 >= bmode)) {
-+ 		printf("Please enter a bootmode at 0x%08x via JTAG:\n",BMODE_ADDR);
-+ 		for (i = 0; i < ARRAY_SIZE(bmodes); i++)
-+ 			printf("[%d]	%s\n", i+1, bmodes[i]);
-+ 		
-+ 		bmode = 0; //allow continuing to load U-boot proper if needed
-+ 	} else {
-+ 		printf("Booting into %s\n", bmodes[bmode], bmode);
-+ 	}
++	/*
++	 * Developer mode: override the hardware boot-mode straps with a value
++	 * written to BMODE_ADDR via JTAG so the next boot device can be chosen
++	 * at run time.
++	 */
++	bmode = *((unsigned int *)BMODE_ADDR) - 1;
++	printf("Entering Developer Mode...\n");
++	if ((ARRAY_SIZE(bmodes) <= bmode) || (0 >= bmode)) {
++		printf("Please enter a bootmode at 0x%08x via JTAG:\n", BMODE_ADDR);
++		for (i = 0; i < ARRAY_SIZE(bmodes); i++)
++			printf("[%d]\t%s\n", i + 1, bmodes[i]);
 +
- 	if (bmode == 0) {
++		bmode = 0; /* allow continuing to load U-Boot proper if needed */
++	} else {
++		printf("Booting into %s\n", bmodes[bmode]);
++	}
++
+ 	switch (bmode) {
+ 	case 0:
  		printf("SPL execution has completed.  Please load U-Boot Proper via JTAG");
- 		while (1)

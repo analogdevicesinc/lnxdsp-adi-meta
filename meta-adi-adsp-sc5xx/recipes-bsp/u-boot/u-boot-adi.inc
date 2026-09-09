@@ -59,6 +59,9 @@ SRC_URI:append = "${@d.getVar('USB_PATCH') if (bb.utils.to_boolean(d.getVar('ADS
 SRC_URI:append = "${@' file://0002-developer-mode-enable.patch' if bb.utils.to_boolean(d.getVar('DEVELOPER_MODE')) else '' }"
 SRC_URI:append = "${@bb.utils.contains('ADSP_DEBUG', '1', '${DEBUG_CFG}', '', d)}"
 
+USB_FALCON_BOOT = "${@' file://usb_falcon_boot.cfg file://0003-sc5xx-usb-falcon-bootph.patch' if bb.utils.to_boolean(d.getVar('ADSP_USB_FALCON')) else ''}"
+SRC_URI:append = "${USB_FALCON_BOOT}"
+
 SRC_URI:append:adsp-sc573-ezlite = " file://0001-usb-musb-add-delay-before-initial-root-port-reset.patch"
 SRC_URI:append:adsp-sc589-mini = " file://0001-usb-musb-add-delay-before-initial-root-port-reset.patch"
 
