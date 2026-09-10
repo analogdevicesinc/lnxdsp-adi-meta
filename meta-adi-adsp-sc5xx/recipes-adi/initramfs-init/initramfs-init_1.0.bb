@@ -5,10 +5,10 @@ SRC_URI = "file://init-ramfs.sh"
 
 RDEPENDS:${PN} += "nfs-utils-mount"
 
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"
 
 do_install() {
-	install -m 0755 ${WORKDIR}/init-ramfs.sh ${D}/init
+	install -m 0755 ${UNPACKDIR}/init-ramfs.sh ${D}/init
 }
 
 inherit allarch
