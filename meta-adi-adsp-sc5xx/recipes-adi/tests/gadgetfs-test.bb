@@ -14,7 +14,7 @@ SRC_URI = " \
 SRC_URI[md5sum] = "49476a74c29f1281c8a4c035aa57a5bd"
 SRC_URI[sha256sum] = "bd8ebcf7ce86f4b022a4e7ba6b1cc16ffc4022bb58c1910fe4ac96c88217e7ec"
 
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"
 B = "${WORKDIR}/build"
 
 do_compile(){
