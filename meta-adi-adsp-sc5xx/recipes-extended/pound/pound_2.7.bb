@@ -17,7 +17,7 @@ SRC_URI = " \
 SRC_URI[md5sum] = "ec8298aa3e4aee3ffbecdc0639d7f14a"
 SRC_URI[sha256sum] = "cdfbf5a7e8dc8fbbe0d6c1e83cd3bd3f2472160aac65684bb01ef661c626a8e4"
 
-S = "${WORKDIR}/Pound-${PV}"
+S = "${UNPACKDIR}/Pound-${PV}"
 
 DEPENDS = "kernel-devsrc virtual/kernel openssl10"
 

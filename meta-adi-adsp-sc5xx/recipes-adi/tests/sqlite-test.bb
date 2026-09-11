@@ -7,7 +7,7 @@ SRC_URI = " \
 
 DEPENDS = "sqlite3"
 
-S = "${WORKDIR}/sqlite_test"
+S = "${UNPACKDIR}/sqlite_test"
 
 do_compile:prepend(){
 	cd ${S}
