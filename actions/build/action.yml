@@ -16,6 +16,9 @@ inputs:
   build-sdk:
     description: "Build the SDK installer for this image"
     default: 'true'
+  upload-artifacts:
+    description: "Store image artifacts and expose them to cloudsmith"
+    default: 'true'
   override-meta-adi:
     description: "Override sources/meta-adi with the checked-out ref"
     default: 'false'
@@ -147,6 +150,7 @@ runs:
 
     - name: Upload Yocto images
       uses: actions/upload-artifact@v6
+      if: ${{ inputs.upload-artifacts == 'true' }}
       with:
         name: ${{ env.ARTIFACT_NAME }}
         path: ${{ env.YOCTO_WORKSPACE }}/build/tmp/deploy/images/${{ inputs.machine }}
@@ -154,6 +158,7 @@ runs:
 
     - name: Upload SBOM
       uses: actions/upload-artifact@v6
+      if: ${{ inputs.upload-artifacts == 'true' }}
       with:
         name: ${{ env.ARTIFACT_NAME }}.sbom
         path: |
@@ -171,7 +176,7 @@ runs:
 
     - name: Upload SDK installer as artifact
       uses: actions/upload-artifact@v6
-      if: ${{ inputs.build-sdk == 'true' && github.event_name == 'workflow_dispatch' }}
+      if: ${{ inputs.build-sdk == 'true' && inputs.upload-artifacts == 'true' && github.event_name == 'workflow_dispatch' }}
       with:
         name: sdk-${{ inputs.machine }}-${{ inputs.image }}
         path: ${{ env.SDK_INSTALLER }}

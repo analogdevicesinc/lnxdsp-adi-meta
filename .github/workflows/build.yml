@@ -19,6 +19,10 @@ on:
         description: "Build the SDK installer for this image"
         type: boolean
         default: true
+      upload-artifacts:
+        description: "Store image artifacts and expose them to cloudsmith"
+        type: boolean
+        default: true
       override-meta-adi:
         description: "Override sources/meta-adi with the checked-out ref"
         type: boolean
@@ -38,6 +42,9 @@ on:
         type: string
         default: ""
       build-sdk:
+        type: boolean
+        default: true
+      upload-artifacts:
         type: boolean
         default: true
       override-meta-adi:
@@ -86,12 +93,13 @@ jobs:
           manifest: ${{ inputs.manifest }}
           manifest-repo: ${{ inputs.manifest-repo }}
           build-sdk: ${{ inputs.build-sdk }}
+          upload-artifacts: ${{ inputs.upload-artifacts }}
           override-meta-adi: ${{ inputs.override-meta-adi }}
           gh-token: ${{ steps.app-token.outputs.token || github.token }}
 
       - name: Upload release archive to release
         uses: svenstaro/upload-release-action@v2
-        if: ${{ github.event_name == 'release' }}
+        if: ${{ github.event_name == 'release' && inputs.upload-artifacts }}
         with:
           repo_token: ${{ github.token }}
           file: ${{ env.YOCTO_WORKSPACE }}/images-${{ inputs.machine }}-${{ inputs.image }}-${{ github.event.release.tag_name }}.tar.xz
@@ -99,7 +107,7 @@ jobs:
 
       - name: Upload SDK installer to release
         uses: svenstaro/upload-release-action@v2
-        if: ${{ github.event_name == 'release' && inputs.build-sdk }}
+        if: ${{ github.event_name == 'release' && inputs.build-sdk && inputs.upload-artifacts }}
         with:
           repo_token: ${{ github.token }}
           file: ${{ env.SDK_INSTALLER }}
