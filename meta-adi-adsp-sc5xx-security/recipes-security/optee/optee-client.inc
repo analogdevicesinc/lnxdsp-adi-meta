@@ -12,8 +12,6 @@ SRC_URI = " \
     file://tee-supplicant.service \
 "
 
-S = "${WORKDIR}/git"
-
 EXTRA_OECMAKE = " \
     -DBUILD_SHARED_LIBS=ON \
 "
