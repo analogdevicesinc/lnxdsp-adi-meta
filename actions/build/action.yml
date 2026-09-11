@@ -19,6 +19,9 @@ inputs:
   manifest-branch:
     description: "Manifest repository branch/ref"
     default: ""
+  upload-artifacts:
+    description: "Store image artifacts and expose them to cloudsmith"
+    default: 'true'
   override-meta-adi:
     description: "Override sources/meta-adi with the checked-out ref"
     default: 'false'
@@ -154,6 +157,7 @@ runs:
 
     - name: Upload Yocto images
       uses: actions/upload-artifact@v6
+      if: ${{ inputs.upload-artifacts == 'true' }}
       with:
         name: ${{ env.ARTIFACT_NAME }}
         path: ${{ env.YOCTO_WORKSPACE }}/build/tmp/deploy/images/${{ inputs.machine }}
@@ -161,6 +165,7 @@ runs:
 
     - name: Upload SBOM
       uses: actions/upload-artifact@v6
+      if: ${{ inputs.upload-artifacts == 'true' }}
       with:
         name: ${{ env.ARTIFACT_NAME }}.sbom
         path: |

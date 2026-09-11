@@ -22,6 +22,10 @@ on:
       manifest-branch:
         description: "Manifest repository branch/ref"
         default: "main"
+      upload-artifacts:
+        description: "Store image artifacts and expose them to cloudsmith"
+        type: boolean
+        default: true
       override-meta-adi:
         description: "Override sources/meta-adi with the checked-out ref"
         type: boolean
@@ -46,6 +50,9 @@ on:
       manifest-branch:
         type: string
         default: "main"
+      upload-artifacts:
+        type: boolean
+        default: true
       override-meta-adi:
         type: boolean
         default: false
@@ -93,6 +100,7 @@ jobs:
           manifest-repo: ${{ inputs.manifest-repo }}
           build-sdk: ${{ inputs.build-sdk }}
           manifest-branch: ${{ inputs.manifest-branch }}
+          upload-artifacts: ${{ inputs.upload-artifacts }}
           override-meta-adi: ${{ inputs.override-meta-adi }}
           gh-token: ${{ steps.app-token.outputs.token || github.token }}
 
