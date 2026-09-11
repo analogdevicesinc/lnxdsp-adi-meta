@@ -31,13 +31,14 @@ jobs:
           - adsp-sc598-som-ezlite
           - adsp-sc846-som-ezkit
         image:
-          - adsp-sc5xx-tiny
           - adsp-sc5xx-minimal
           - adsp-sc5xx-full
         manifest:
           - main
         include:
-          - image: adsp-sc5xx-tiny
+          - machine: adsp-sc573-ezlite
+            image: adsp-sc5xx-tiny
+            manifest: main
             build-sdk: false
             upload-artifacts: true
           - image: adsp-sc5xx-minimal
