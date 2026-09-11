@@ -27,8 +27,6 @@ SRC_URI += " \
 
 KERNEL_EXTRA_ARGS += "LOADADDR=${UBOOT_ENTRYPOINT}"
 
-S = "${WORKDIR}/git"
-
 # Append to the MACHINE_KERNEL_PR so that a new SRCREV will cause a rebuild
 MACHINE_KERNEL_PR:append = "a"
 PR = "${MACHINE_KERNEL_PR}"
