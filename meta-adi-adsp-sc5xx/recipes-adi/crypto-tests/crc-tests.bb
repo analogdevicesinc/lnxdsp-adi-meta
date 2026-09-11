@@ -1,4 +1,4 @@
-LICENSE="CLOSED"
+LICENSE = "CLOSED"
 
 INSANE_SKIP:${PN} += "ldflags"
 
@@ -7,7 +7,7 @@ SRC_URI += " \
 	file://source/adi-crc.sh \
 "
 
-S="${WORKDIR}/source"
+S = "${WORKDIR}/source"
 
 DEPENDS += "cryptodev-linux openssl"
 
