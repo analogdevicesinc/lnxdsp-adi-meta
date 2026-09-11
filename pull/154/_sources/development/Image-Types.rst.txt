@@ -4,18 +4,18 @@ Image Types
 Introduction
 ------------
 
-The ADI Yocto meta layer ships several image recipes, each
-tailored to a different use case. This page describes what each
-image contains, how they differ, and how to create your own image type.
+The ADI Yocto meta layer ships several image recipes, each tailored to a different
+use case. This page describes what each image contains, how they differ, and how to
+create your own image type.
 
 All image recipes live in
 ``meta-adi-adsp-sc5xx/recipes-adi/images/`` and the shared behaviour is provided by the
 image classes in ``meta-adi-adsp-sc5xx/classes/``:
 
-* ``adsp-sc5xx.bbclass`` — the common base image (packages, users, filesystem types,
+* ``adsp-sc5xx.bbclass`` — Common base image (packages, users, filesystem types,
   programming-image generation).
-* ``adsp-sc5xx-minimal.bbclass`` — Minimal image that connect the ext4 image to the WIC generation
-* ``adsp-sc5xx-ramdisk.bbclass`` — A self-contained initramfs image.
+* ``adsp-sc5xx-minimal.bbclass`` — Minimal image that connects the ext4 image to WIC image generation.
+* ``adsp-sc5xx-ramdisk.bbclass`` — Self-contained initramfs image.
 * ``adsp-sc5xx-compatible.bbclass`` — Defines ``COMPATIBLE_MACHINE`` for all supported
   SoCs (SC57x, SC58x, SC594, SC598, SC846).
 
@@ -40,7 +40,7 @@ Available Images
      - ``tar.xz``, ``ubi``, ``ext4``, ``wic``
    * - **Tiny**
      - ``adsp-sc5xx-tiny``
-     - Smallest image for boards with small SPI flashes
+     - Smallest image for boards with small SPI flashes, like the 16MB flash on the sc573
      - ``ubi``
    * - **Ramdisk**
      - ``adsp-sc5xx-ramdisk``
@@ -87,16 +87,17 @@ This image is a good starting point for creating your own production rootfs.
 Tiny Image
 ~~~~~~~~~~
 
-``adsp-sc5xx-tiny`` is a standalone image built directly from ``core-image`` for boards with limited SPI flash space.
-It installs minimal packages, produces a single ``ubi`` filesystem, and aggressively strips the rootfs to keep the file 
-system size down. It is the smallest bootable image the layer produces. This image is only intended for small SPI flashes,
-larger boot media should use the minimal or full images.
+``adsp-sc5xx-tiny`` is a standalone image built directly from ``core-image`` for boards with
+limited SPI flash space. It installs minimal packages, produces a single ``ubi`` filesystem,
+and aggressively strips the rootfs to keep the file system size down. It is the smallest
+bootable image the layer produces. This image is only intended for small SPI flashes; larger
+boot media should use the minimal or full images.
 
 Ramdisk Image
 ~~~~~~~~~~~~~~
 
 ``adsp-sc5xx-ramdisk`` builds an initramfs (RAM disk) rather than an on-disk rootfs. It uses
-``nopackages`` and installs the selected SHARC audio binaries. The base image references it 
+``nopackages`` and installs the selected SHARC audio binaries. The base image references it
 through ``INITRD_NAME`` so it is used as the boot ramdisk.
 
 Building an Image
@@ -122,7 +123,7 @@ a couple of extra packages.
 
 Create ``meta-adi-adsp-sc5xx/recipes-adi/images/adsp-sc5xx-myimage.bb``:
 
-.. code-block:: shell
+.. code-block:: bitbake
 
    inherit adsp-sc5xx-minimal
 
@@ -138,9 +139,9 @@ Create ``meta-adi-adsp-sc5xx/recipes-adi/images/adsp-sc5xx-myimage.bb``:
 
 Choose the base to inherit according to your goal:
 
-* ``inherit adsp-sc5xx`` — full-featured base with the complete default package set.
-* ``inherit adsp-sc5xx-minimal`` — the base plus rootfs size reduction.
-* ``inherit adsp-sc5xx-ramdisk`` — a RAM disk / initramfs image.
+* ``inherit adsp-sc5xx`` — Full-featured base with the complete default package set.
+* ``inherit adsp-sc5xx-minimal`` — The base plus rootfs size reduction.
+* ``inherit adsp-sc5xx-ramdisk`` — A RAM disk / initramfs image.
 * ``inherit core-image adsp-sc5xx-compatible adsp-fit-generation`` — Build an image from scratch
 
 .. note::
@@ -151,10 +152,10 @@ Choose the base to inherit according to your goal:
 
 Customise the image with the standard Yocto variables:
 
-* ``IMAGE_INSTALL`` — add packages to the rootfs (use ``+=`` to extend an inherited list).
-* ``IMAGE_FSTYPES`` — select output filesystem types (e.g. ``ext4``, ``ubi``, ``wic``,
+* ``IMAGE_INSTALL`` — Add packages to the rootfs (use ``+=`` to extend an inherited list).
+* ``IMAGE_FSTYPES`` — Select output filesystem types (e.g. ``ext4``, ``ubi``, ``wic``,
   ``cpio.gz``).
-* ``IMAGE_FEATURES`` — enable Yocto image features such as ``debug-tweaks`` or
+* ``IMAGE_FEATURES`` — Enable Yocto image features such as ``debug-tweaks`` or
   ``tools-debug``.
 
 .. code-block:: shell
@@ -162,6 +163,6 @@ Customise the image with the standard Yocto variables:
    bitbake adsp-sc5xx-myimage
 
 .. note::
-   If your customisation is product-specific and extends beyond just adding/removing packages, it is recommended to keep the new image recipe in your
-   own layer instead of the public ADI reference layer. See :doc:`Custom-Meta-Layer` for how to
-   create and register a custom layer.
+   If your customisation is product-specific and extends beyond just adding/removing packages,
+   it is recommended to keep the new image recipe in your own layer instead of the public ADI
+   reference layer. See :doc:`Custom-Meta-Layer` for how to create and register a custom layer.

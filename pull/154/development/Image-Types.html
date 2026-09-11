@@ -254,17 +254,17 @@ Content on this topic
 <h1>Image Types<a class="headerlink" href="#image-types" title="Link to this heading"></a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
-<p>The ADI Yocto meta layer ships several image recipes, each
-tailored to a different use case. This page describes what each
-image contains, how they differ, and how to create your own image type.</p>
+<p>The ADI Yocto meta layer ships several image recipes, each tailored to a different
+use case. This page describes what each image contains, how they differ, and how to
+create your own image type.</p>
 <p>All image recipes live in
 <code class="docutils literal notranslate"><span class="pre">meta-adi-adsp-sc5xx/recipes-adi/images/</span></code> and the shared behaviour is provided by the
 image classes in <code class="docutils literal notranslate"><span class="pre">meta-adi-adsp-sc5xx/classes/</span></code>:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx.bbclass</span></code> — the common base image (packages, users, filesystem types,
+<li><p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx.bbclass</span></code> — Common base image (packages, users, filesystem types,
 programming-image generation).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-minimal.bbclass</span></code> — Minimal image that connect the ext4 image to the WIC generation</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-ramdisk.bbclass</span></code> — A self-contained initramfs image.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-minimal.bbclass</span></code> — Minimal image that connects the ext4 image to WIC image generation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-ramdisk.bbclass</span></code> — Self-contained initramfs image.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-compatible.bbclass</span></code> — Defines <code class="docutils literal notranslate"><span class="pre">COMPATIBLE_MACHINE</span></code> for all supported
 SoCs (SC57x, SC58x, SC594, SC598, SC846).</p></li>
 </ul>
@@ -299,7 +299,7 @@ SoCs (SC57x, SC58x, SC594, SC598, SC846).</p></li>
 </tr>
 <tr class="row-even"><td><p><strong>Tiny</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-tiny</span></code></p></td>
-<td><p>Smallest image for boards with small SPI flashes</p></td>
+<td><p>Smallest image for boards with small SPI flashes, like the 16MB flash on the sc573</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ubi</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>Ramdisk</strong></p></td>
@@ -346,10 +346,11 @@ This image is a good starting point for creating your own production rootfs.</p>
 </section>
 <section id="tiny-image">
 <h3>Tiny Image<a class="headerlink" href="#tiny-image" title="Link to this heading"></a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-tiny</span></code> is a standalone image built directly from <code class="docutils literal notranslate"><span class="pre">core-image</span></code> for boards with limited SPI flash space.
-It installs minimal packages, produces a single <code class="docutils literal notranslate"><span class="pre">ubi</span></code> filesystem, and aggressively strips the rootfs to keep the file
-system size down. It is the smallest bootable image the layer produces. This image is only intended for small SPI flashes,
-larger boot media should use the minimal or full images.</p>
+<p><code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-tiny</span></code> is a standalone image built directly from <code class="docutils literal notranslate"><span class="pre">core-image</span></code> for boards with
+limited SPI flash space. It installs minimal packages, produces a single <code class="docutils literal notranslate"><span class="pre">ubi</span></code> filesystem,
+and aggressively strips the rootfs to keep the file system size down. It is the smallest
+bootable image the layer produces. This image is only intended for small SPI flashes; larger
+boot media should use the minimal or full images.</p>
 </section>
 <section id="ramdisk-image">
 <h3>Ramdisk Image<a class="headerlink" href="#ramdisk-image" title="Link to this heading"></a></h3>
@@ -375,24 +376,24 @@ bitbake<span class="w"> </span>adsp-sc5xx-full
 below defines an <code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-myimage</span></code> image that starts from the minimal image and adds
 a couple of extra packages.</p>
 <p>Create <code class="docutils literal notranslate"><span class="pre">meta-adi-adsp-sc5xx/recipes-adi/images/adsp-sc5xx-myimage.bb</span></code>:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>inherit<span class="w"> </span>adsp-sc5xx-minimal
+<div class="highlight-bitbake notranslate"><div class="highlight"><pre><span></span><span class="kn">inherit</span><span class="w"> </span><span class="s">adsp-sc5xx-minimal</span>
 
 <span class="nv">SUMMARY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Custom product image for Analog Devices ADSP-SC5xx boards"</span>
 <span class="nv">LICENSE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"MIT"</span>
 
-<span class="nv">IMAGE_INSTALL</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="s2">" \</span>
-<span class="s2">    my-application \</span>
-<span class="s2">    my-application2 \</span>
-<span class="s2">    nano \</span>
-<span class="s2">    i2c-tools \</span>
+<span class="nv">IMAGE_INSTALL</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="s2">" </span><span class="se">\</span>
+<span class="s2">    my-application </span><span class="se">\</span>
+<span class="s2">    my-application2 </span><span class="se">\</span>
+<span class="s2">    nano </span><span class="se">\</span>
+<span class="s2">    i2c-tools </span><span class="se">\</span>
 <span class="s2">"</span>
 </pre></div>
 </div>
 <p>Choose the base to inherit according to your goal:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">inherit</span> <span class="pre">adsp-sc5xx</span></code> — full-featured base with the complete default package set.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">inherit</span> <span class="pre">adsp-sc5xx-minimal</span></code> — the base plus rootfs size reduction.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">inherit</span> <span class="pre">adsp-sc5xx-ramdisk</span></code> — a RAM disk / initramfs image.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inherit</span> <span class="pre">adsp-sc5xx</span></code> — Full-featured base with the complete default package set.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inherit</span> <span class="pre">adsp-sc5xx-minimal</span></code> — The base plus rootfs size reduction.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inherit</span> <span class="pre">adsp-sc5xx-ramdisk</span></code> — A RAM disk / initramfs image.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">inherit</span> <span class="pre">core-image</span> <span class="pre">adsp-sc5xx-compatible</span> <span class="pre">adsp-fit-generation</span></code> — Build an image from scratch</p></li>
 </ul>
 <div class="admonition note">
@@ -404,10 +405,10 @@ restricted to ADI machines.</p>
 </div>
 <p>Customise the image with the standard Yocto variables:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">IMAGE_INSTALL</span></code> — add packages to the rootfs (use <code class="docutils literal notranslate"><span class="pre">+=</span></code> to extend an inherited list).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">IMAGE_FSTYPES</span></code> — select output filesystem types (e.g. <code class="docutils literal notranslate"><span class="pre">ext4</span></code>, <code class="docutils literal notranslate"><span class="pre">ubi</span></code>, <code class="docutils literal notranslate"><span class="pre">wic</span></code>,
+<li><p><code class="docutils literal notranslate"><span class="pre">IMAGE_INSTALL</span></code> — Add packages to the rootfs (use <code class="docutils literal notranslate"><span class="pre">+=</span></code> to extend an inherited list).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">IMAGE_FSTYPES</span></code> — Select output filesystem types (e.g. <code class="docutils literal notranslate"><span class="pre">ext4</span></code>, <code class="docutils literal notranslate"><span class="pre">ubi</span></code>, <code class="docutils literal notranslate"><span class="pre">wic</span></code>,
 <code class="docutils literal notranslate"><span class="pre">cpio.gz</span></code>).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">IMAGE_FEATURES</span></code> — enable Yocto image features such as <code class="docutils literal notranslate"><span class="pre">debug-tweaks</span></code> or
+<li><p><code class="docutils literal notranslate"><span class="pre">IMAGE_FEATURES</span></code> — Enable Yocto image features such as <code class="docutils literal notranslate"><span class="pre">debug-tweaks</span></code> or
 <code class="docutils literal notranslate"><span class="pre">tools-debug</span></code>.</p></li>
 </ul>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bitbake<span class="w"> </span>adsp-sc5xx-myimage
@@ -415,9 +416,9 @@ restricted to ADI machines.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If your customisation is product-specific and extends beyond just adding/removing packages, it is recommended to keep the new image recipe in your
-own layer instead of the public ADI reference layer. See <a class="reference internal" href="Custom-Meta-Layer.html"><span class="doc">Creating a Custom Meta Layer</span></a> for how to
-create and register a custom layer.</p>
+<p>If your customisation is product-specific and extends beyond just adding/removing packages,
+it is recommended to keep the new image recipe in your own layer instead of the public ADI
+reference layer. See <a class="reference internal" href="Custom-Meta-Layer.html"><span class="doc">Creating a Custom Meta Layer</span></a> for how to create and register a custom layer.</p>
 </div>
 </section>
 </section>
