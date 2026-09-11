@@ -43,7 +43,7 @@ EXTRA_OEMAKE = " \
 "
 
 do_configure() {
-	cp ${WORKDIR}/libotp.a ${S}/libotp.a
+	cp ${UNPACKDIR}/libotp.a ${S}/libotp.a
 }
 
 do_compile() {
