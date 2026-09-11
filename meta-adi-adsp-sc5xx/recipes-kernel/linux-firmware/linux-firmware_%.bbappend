@@ -18,14 +18,14 @@ SRC_URI[LICENSE.md.md5sum] = "e2bfd7246b6d241634f71dfdbfef3d41"
 FILEPATH = "/usr/lib/firmware"
 
 do_install:append() {
-        install -m 0644 ${WORKDIR}/LICENSE.adau1761 ${D}${FILEPATH}
-	install -m 0644 ${WORKDIR}/adau1761.bin ${D}${FILEPATH}
-	install -m 0644 ${WORKDIR}/sharc-alsa/LICENSE.md ${D}${FILEPATH}
-	install -m 0644 ${WORKDIR}/sharc-alsa/icap-device-example.ldr ${D}${FILEPATH}
-	install -m 0644 ${WORKDIR}/sharc-alsa/icap-sharc-alsa_Core1.ldr ${D}${FILEPATH}
-	install -m 0644 ${WORKDIR}/sharc-alsa/icap-sharc-alsa_Core2.ldr ${D}${FILEPATH}
+        install -m 0644 ${UNPACKDIR}/LICENSE.adau1761 ${D}${FILEPATH}
+	install -m 0644 ${UNPACKDIR}/adau1761.bin ${D}${FILEPATH}
+	install -m 0644 ${UNPACKDIR}/sharc-alsa/LICENSE.md ${D}${FILEPATH}
+	install -m 0644 ${UNPACKDIR}/sharc-alsa/icap-device-example.ldr ${D}${FILEPATH}
+	install -m 0644 ${UNPACKDIR}/sharc-alsa/icap-sharc-alsa_Core1.ldr ${D}${FILEPATH}
+	install -m 0644 ${UNPACKDIR}/sharc-alsa/icap-sharc-alsa_Core2.ldr ${D}${FILEPATH}
 	install -d ${D}/usr/share/sounds/alsa/	
-	install -m 0644 ${WORKDIR}/sharc-alsa/2Ch_L440_R200_48kHz_16bit_6s.wav ${D}/usr/share/sounds/alsa/
+	install -m 0644 ${UNPACKDIR}/sharc-alsa/2Ch_L440_R200_48kHz_16bit_6s.wav ${D}/usr/share/sounds/alsa/
 }
 
 FILES:${PN} = "${FILEPATH}"
