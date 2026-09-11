@@ -19,7 +19,7 @@ EXTRA_OECMAKE = " \
 do_compile:append() {
     sed -e's,@sbindir@,${sbindir},g' \
         -e's,@sysconfdir@,${sysconfdir},g' \
-        ${WORKDIR}/tee-supplicant.service >${B}/tee-supplicant.service
+        ${UNPACKDIR}/tee-supplicant.service >${B}/tee-supplicant.service
 }
 
 do_install:append() {

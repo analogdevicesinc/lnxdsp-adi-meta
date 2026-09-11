@@ -24,8 +24,8 @@ DEPENDS = "kernel-devsrc virtual/kernel openssl10"
 TARGET_CFLAGS += " -I${STAGING_KERNEL_DIR}/include -DHAVE_SYSLOG_H=1 -DVERSION=${PV} -pthread -DNEED_STACK -DEMBED -D_REENTRANT -D_THREAD_SAFE -DUPER"
 
 do_configure:append(){
-	cp ${WORKDIR}/dh512.h ${B}/dh512.h
-	cp ${WORKDIR}/dh2048.h ${B}/dh2048.h
+	cp ${UNPACKDIR}/dh512.h ${B}/dh512.h
+	cp ${UNPACKDIR}/dh2048.h ${B}/dh2048.h
 }
 
 do_compile(){
@@ -45,10 +45,10 @@ do_install(){
 	install -m 755 ${B}/poundctl ${D}/usr/bin/
 
 	install -d ${D}/etc/pound
-	install -m 755 ${WORKDIR}/mycert.pem ${D}/etc/pound/mycert.pem
+	install -m 755 ${UNPACKDIR}/mycert.pem ${D}/etc/pound/mycert.pem
 
 	install -d ${D}/usr/local/etc
-	install -m 755 ${WORKDIR}/pound.cfg ${D}/usr/local/etc/pound.cfg
+	install -m 755 ${UNPACKDIR}/pound.cfg ${D}/usr/local/etc/pound.cfg
 }
 
 FILES:${PN} += " \
