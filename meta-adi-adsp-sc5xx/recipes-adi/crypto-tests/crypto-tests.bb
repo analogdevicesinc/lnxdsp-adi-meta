@@ -1,4 +1,4 @@
-LICENSE="CLOSED"
+LICENSE = "CLOSED"
 
 INSANE_SKIP:${PN} += "ldflags"
 
@@ -8,7 +8,7 @@ SRC_URI += " \
 	file://source/adi-skcipher.sh \
 "
 
-S="${WORKDIR}/source"
+S = "${WORKDIR}/source"
 
 DEPENDS += "cryptodev-module cryptodev-linux openssl"
 
