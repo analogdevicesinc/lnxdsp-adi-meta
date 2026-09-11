@@ -35,10 +35,13 @@ jobs:
         include:
           - image: adsp-sc5xx-tiny
             build-sdk: false
+            upload-artifacts: true
           - image: adsp-sc5xx-minimal
             build-sdk: true
+            upload-artifacts: true
           - image: adsp-sc5xx-full
-            build-sdk: false
+            build-sdk: true
+            upload-artifacts: false
 
     uses: ./.github/workflows/build.yml
     secrets:
@@ -51,6 +54,7 @@ jobs:
       image: ${{ matrix.image }}
       manifest: ${{ matrix.manifest }}
       build-sdk: ${{ matrix.build-sdk }}
+      upload-artifacts: ${{ matrix.upload-artifacts }}
       override-meta-adi: true
 
   deploy_cloudsmith:
