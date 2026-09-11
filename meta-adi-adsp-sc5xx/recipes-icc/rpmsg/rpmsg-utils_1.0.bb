@@ -7,8 +7,6 @@ SRCREV = "631bbf39884d85fcc1f06fba1b51ac90431f4bf7"
 PV = "0.1+git${SRCPV}"
 SRC_URI = "git://github.com/analogdevicesinc/rpmsg-utils.git;protocol=https;branch=release/yocto-3.1.0"
 
-S = "${WORKDIR}/git"
-
 do_install () {
 	install -d ${D}${bindir}
 	install -m 0755 rpmsg-bind-chardev ${D}${bindir}
