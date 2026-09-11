@@ -4,9 +4,9 @@ ADSP Yocto
 Welcome to the official Yocto documentation for ADI Digital Signal Processors
 (ADSP).
 
-See :external+documentation:doc:`products/adsp/index` for generic ADSP
+See :external+system-level:doc:`products/adsp/index` for generic ADSP
 documentation including a list of supported SoCs and a description of the
-various :external+documentation:doc:`use cases <products/adsp/use-cases>`.
+various :external+system-level:doc:`use cases <products/adsp/use-cases>`.
 
 **Platform Highlights**
 
@@ -56,7 +56,7 @@ Quick Start
 3. :doc:`Build and customize <development/Development>` - Use Yocto to create your custom image and develop applications
 4. :doc:`Run examples <examples/Examples>` - Try SHARC-ALSA, USB Audio, and more
 
-**Key Topics**: :doc:`Boot Process <development/Boot-Sequence>` | :doc:`RPMsg <development/RPMsg>` | :doc:`Memory Configuration <development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>` | :doc:`Secure Boot <secure-boot/Secure-Boot-Support>`
+**Key Topics**: :doc:`Boot Process <development/Boot-Sequence>` | :doc:`Image Types <development/Image-Types>` | :doc:`RPMsg <development/RPMsg>` | :doc:`Memory Configuration <development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>` | :doc:`Secure Boot <secure-boot/Secure-Boot-Support>`
 
 Latest Release
 --------------
