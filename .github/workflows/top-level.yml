@@ -27,18 +27,22 @@ jobs:
           - adsp-sc598-som-ezlite
           - adsp-sc846-som-ezkit
         image:
-          - adsp-sc5xx-tiny
           - adsp-sc5xx-minimal
           - adsp-sc5xx-full
         manifest:
           - main
         include:
-          - image: adsp-sc5xx-tiny
+          - machine: adsp-sc573-ezlite
+            image: adsp-sc5xx-tiny
+            manifest: main
             build-sdk: false
+            upload-artifacts: true
           - image: adsp-sc5xx-minimal
             build-sdk: true
+            upload-artifacts: true
           - image: adsp-sc5xx-full
             build-sdk: false
+            upload-artifacts: false
 
     uses: ./.github/workflows/build.yml
     secrets:
@@ -51,6 +55,7 @@ jobs:
       image: ${{ matrix.image }}
       manifest: ${{ matrix.manifest }}
       build-sdk: ${{ matrix.build-sdk }}
+      upload-artifacts: ${{ matrix.upload-artifacts }}
       override-meta-adi: true
 
   deploy_cloudsmith:
