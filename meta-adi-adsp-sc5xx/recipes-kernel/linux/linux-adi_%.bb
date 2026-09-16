@@ -19,7 +19,7 @@ SRC_URI:remove:adsp-sc846-som-ezkit = "file://feature/cfg/tracepoints.cfg"
 PV="6.18"
 KERNEL_BRANCH = "adsp-6.18.31-y"
 
-SRCREV="ede18c16e60d4a39fd4e621a1a3f024b1b953c0e"
+SRCREV="067afc664698941a903b0b9bbe9496154a22e49e"
 KERNEL_VERSION_SANITY_SKIP = "1"
 LINUX_VERSION="${PV}"
 
