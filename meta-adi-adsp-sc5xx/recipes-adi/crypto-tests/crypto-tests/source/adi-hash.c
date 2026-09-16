@@ -73,7 +73,7 @@ static uint8_t test2_md5_expected_hmac[] = "\x82\x83\x75\x8a\x9e\x09\x94\x0a\x82
 static uint8_t test3_md5_expected_hmac[] = "\x81\x9c\x51\x39\x2b\x6a\xcf\x60\xa5\x29\x48\xa5\x0f\x8a\xac\x77";
 static uint8_t test4_md5_expected_hmac[] = "\xf1\x28\x01\xfd\x16\xb7\x8f\x6d\x36\x25\x23\x5c\x6f\x0e\x8a\x61";
 
-void test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint32_t alg){
+int test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint32_t alg){
 	int i;
 	struct session_op sess;
 #ifdef CIOCGSESSINFO
@@ -81,6 +81,7 @@ void test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint
 #endif
 	struct crypt_op cryp;
 	uint32_t length;
+	int mismatch = 0;
 
 	switch(alg){
 		case CRYPTO_SHA2_256:
@@ -194,6 +195,7 @@ void test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint
 	printf("\n");
 	if (memcmp(result, expected, length)!=0) {
 		printf("TEST: failed\n\n");
+		mismatch = 1;
 	} else {
 		printf("TEST: passed\n\n");
 	}
@@ -204,59 +206,62 @@ void test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint
 		return 1;
 	}
 
+	return mismatch;
 }
 
 
 static int test_crypto(int cfd) {
+	int failed = 0;
+
 	//SHA256 Hashes
-	test_hash(cfd, test1_input, test1_sha256_expected, NULL, CRYPTO_SHA2_256);
-	test_hash(cfd, test2_input, test2_sha256_expected, NULL, CRYPTO_SHA2_256);
-	test_hash(cfd, test3_input, test3_sha256_expected, NULL, CRYPTO_SHA2_256);
-	test_hash(cfd, test4_input, test4_sha256_expected, NULL, CRYPTO_SHA2_256);
+	failed |= test_hash(cfd, test1_input, test1_sha256_expected, NULL, CRYPTO_SHA2_256);
+	failed |= test_hash(cfd, test2_input, test2_sha256_expected, NULL, CRYPTO_SHA2_256);
+	failed |= test_hash(cfd, test3_input, test3_sha256_expected, NULL, CRYPTO_SHA2_256);
+	failed |= test_hash(cfd, test4_input, test4_sha256_expected, NULL, CRYPTO_SHA2_256);
 
 	//SHA256 HMAC Hashes
-	test_hash(cfd, test1_input, test1_sha256_expected_hmac, test1_input_hmac_key, CRYPTO_SHA2_256_HMAC);
-	test_hash(cfd, test2_input, test2_sha256_expected_hmac, test2_input_hmac_key, CRYPTO_SHA2_256_HMAC);
-	test_hash(cfd, test3_input, test3_sha256_expected_hmac, test3_input_hmac_key, CRYPTO_SHA2_256_HMAC);
-	test_hash(cfd, test4_input, test4_sha256_expected_hmac, test4_input_hmac_key, CRYPTO_SHA2_256_HMAC);
+	failed |= test_hash(cfd, test1_input, test1_sha256_expected_hmac, test1_input_hmac_key, CRYPTO_SHA2_256_HMAC);
+	failed |= test_hash(cfd, test2_input, test2_sha256_expected_hmac, test2_input_hmac_key, CRYPTO_SHA2_256_HMAC);
+	failed |= test_hash(cfd, test3_input, test3_sha256_expected_hmac, test3_input_hmac_key, CRYPTO_SHA2_256_HMAC);
+	failed |= test_hash(cfd, test4_input, test4_sha256_expected_hmac, test4_input_hmac_key, CRYPTO_SHA2_256_HMAC);
 
 	//SHA1 Hashes
-	test_hash(cfd, test1_input, test1_sha1_expected, NULL, CRYPTO_SHA1);
-	test_hash(cfd, test2_input, test2_sha1_expected, NULL, CRYPTO_SHA1);
-	test_hash(cfd, test3_input, test3_sha1_expected, NULL, CRYPTO_SHA1);
-	test_hash(cfd, test4_input, test4_sha1_expected, NULL, CRYPTO_SHA1);
+	failed |= test_hash(cfd, test1_input, test1_sha1_expected, NULL, CRYPTO_SHA1);
+	failed |= test_hash(cfd, test2_input, test2_sha1_expected, NULL, CRYPTO_SHA1);
+	failed |= test_hash(cfd, test3_input, test3_sha1_expected, NULL, CRYPTO_SHA1);
+	failed |= test_hash(cfd, test4_input, test4_sha1_expected, NULL, CRYPTO_SHA1);
 
 	//SHA1 HMAC Hashes
-	test_hash(cfd, test1_input, test1_sha1_expected_hmac, test1_input_hmac_key, CRYPTO_SHA1_HMAC);
-	test_hash(cfd, test2_input, test2_sha1_expected_hmac, test2_input_hmac_key, CRYPTO_SHA1_HMAC);
-	test_hash(cfd, test3_input, test3_sha1_expected_hmac, test3_input_hmac_key, CRYPTO_SHA1_HMAC);
-	test_hash(cfd, test4_input, test4_sha1_expected_hmac, test4_input_hmac_key, CRYPTO_SHA1_HMAC);
+	failed |= test_hash(cfd, test1_input, test1_sha1_expected_hmac, test1_input_hmac_key, CRYPTO_SHA1_HMAC);
+	failed |= test_hash(cfd, test2_input, test2_sha1_expected_hmac, test2_input_hmac_key, CRYPTO_SHA1_HMAC);
+	failed |= test_hash(cfd, test3_input, test3_sha1_expected_hmac, test3_input_hmac_key, CRYPTO_SHA1_HMAC);
+	failed |= test_hash(cfd, test4_input, test4_sha1_expected_hmac, test4_input_hmac_key, CRYPTO_SHA1_HMAC);
 
 	//SHA224 Hashes
-	test_hash(cfd, test1_input, test1_sha224_expected, NULL, CRYPTO_SHA2_224);
-	test_hash(cfd, test2_input, test2_sha224_expected, NULL, CRYPTO_SHA2_224);
-	test_hash(cfd, test3_input, test3_sha224_expected, NULL, CRYPTO_SHA2_224);
-	test_hash(cfd, test4_input, test4_sha224_expected, NULL, CRYPTO_SHA2_224);
+	failed |= test_hash(cfd, test1_input, test1_sha224_expected, NULL, CRYPTO_SHA2_224);
+	failed |= test_hash(cfd, test2_input, test2_sha224_expected, NULL, CRYPTO_SHA2_224);
+	failed |= test_hash(cfd, test3_input, test3_sha224_expected, NULL, CRYPTO_SHA2_224);
+	failed |= test_hash(cfd, test4_input, test4_sha224_expected, NULL, CRYPTO_SHA2_224);
 
 	//SHA224 HMAC Hashes
-	test_hash(cfd, test1_input, test1_sha224_expected_hmac, test1_input_hmac_key, CRYPTO_SHA2_224_HMAC);
-	test_hash(cfd, test2_input, test2_sha224_expected_hmac, test2_input_hmac_key, CRYPTO_SHA2_224_HMAC);
-	test_hash(cfd, test3_input, test3_sha224_expected_hmac, test3_input_hmac_key, CRYPTO_SHA2_224_HMAC);
-	test_hash(cfd, test4_input, test4_sha224_expected_hmac, test4_input_hmac_key, CRYPTO_SHA2_224_HMAC);
+	failed |= test_hash(cfd, test1_input, test1_sha224_expected_hmac, test1_input_hmac_key, CRYPTO_SHA2_224_HMAC);
+	failed |= test_hash(cfd, test2_input, test2_sha224_expected_hmac, test2_input_hmac_key, CRYPTO_SHA2_224_HMAC);
+	failed |= test_hash(cfd, test3_input, test3_sha224_expected_hmac, test3_input_hmac_key, CRYPTO_SHA2_224_HMAC);
+	failed |= test_hash(cfd, test4_input, test4_sha224_expected_hmac, test4_input_hmac_key, CRYPTO_SHA2_224_HMAC);
 
 	//SHA1 Hashes
-	test_hash(cfd, test1_input, test1_md5_expected, NULL, CRYPTO_MD5);
-	test_hash(cfd, test2_input, test2_md5_expected, NULL, CRYPTO_MD5);
-	test_hash(cfd, test3_input, test3_md5_expected, NULL, CRYPTO_MD5);
-	test_hash(cfd, test4_input, test4_md5_expected, NULL, CRYPTO_MD5);
+	failed |= test_hash(cfd, test1_input, test1_md5_expected, NULL, CRYPTO_MD5);
+	failed |= test_hash(cfd, test2_input, test2_md5_expected, NULL, CRYPTO_MD5);
+	failed |= test_hash(cfd, test3_input, test3_md5_expected, NULL, CRYPTO_MD5);
+	failed |= test_hash(cfd, test4_input, test4_md5_expected, NULL, CRYPTO_MD5);
 
 	//SHA1 HMAC Hashes
-	test_hash(cfd, test1_input, test1_md5_expected_hmac, test1_input_hmac_key, CRYPTO_MD5_HMAC);
-	test_hash(cfd, test2_input, test2_md5_expected_hmac, test2_input_hmac_key, CRYPTO_MD5_HMAC);
-	test_hash(cfd, test3_input, test3_md5_expected_hmac, test3_input_hmac_key, CRYPTO_MD5_HMAC);
-	test_hash(cfd, test4_input, test4_md5_expected_hmac, test4_input_hmac_key, CRYPTO_MD5_HMAC);
+	failed |= test_hash(cfd, test1_input, test1_md5_expected_hmac, test1_input_hmac_key, CRYPTO_MD5_HMAC);
+	failed |= test_hash(cfd, test2_input, test2_md5_expected_hmac, test2_input_hmac_key, CRYPTO_MD5_HMAC);
+	failed |= test_hash(cfd, test3_input, test3_md5_expected_hmac, test3_input_hmac_key, CRYPTO_MD5_HMAC);
+	failed |= test_hash(cfd, test4_input, test4_md5_expected_hmac, test4_input_hmac_key, CRYPTO_MD5_HMAC);
 
-	return 0;
+	return failed;
 }
 
 int main(int argc, char** argv){

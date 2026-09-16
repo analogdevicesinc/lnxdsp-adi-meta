@@ -44,7 +44,7 @@ static uint8_t test3_crc32_expected[] = "\x34\xa9\x1c\x78";
 static uint8_t test4_crc32_expected[] = "\x23\xb9\xd8\xcb";
 static uint8_t test5_crc32_expected[] = "\x29\x93\x3c\x23";
 
-void test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint32_t alg){
+int test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint32_t alg){
 	int i;
 	struct session_op sess;
 #ifdef CIOCGSESSINFO
@@ -52,6 +52,7 @@ void test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint
 #endif
 	struct crypt_op cryp;
 	uint32_t length;
+	int mismatch = 0;
 
 	switch(alg){
 		case CRYPTO_CRC32_HMAC:
@@ -117,6 +118,7 @@ void test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint
 	printf("\n");
 	if (memcmp(result, expected, length)!=0) {
 		printf("TEST: failed\n\n");
+		mismatch = 1;
 	} else {
 		printf("TEST: passed\n\n");
 	}
@@ -127,17 +129,20 @@ void test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint
 		return 1;
 	}
 
+	return mismatch;
 }
 
 
 static int test_crypto(int cfd) {
-	test_hash(cfd, test1_input, test1_crc32_expected, test1_input_iv, CRYPTO_CRC32_HMAC);
-	test_hash(cfd, test2_input, test2_crc32_expected, test2_input_iv, CRYPTO_CRC32_HMAC);
-	test_hash(cfd, test3_input, test3_crc32_expected, test3_input_iv, CRYPTO_CRC32_HMAC);
-	test_hash(cfd, test4_input, test4_crc32_expected, test4_input_iv, CRYPTO_CRC32_HMAC);
-	test_hash(cfd, test5_input, test5_crc32_expected, test5_input_iv, CRYPTO_CRC32_HMAC);
+	int failed = 0;
 
-	return 0;
+	failed |= test_hash(cfd, test1_input, test1_crc32_expected, test1_input_iv, CRYPTO_CRC32_HMAC);
+	failed |= test_hash(cfd, test2_input, test2_crc32_expected, test2_input_iv, CRYPTO_CRC32_HMAC);
+	failed |= test_hash(cfd, test3_input, test3_crc32_expected, test3_input_iv, CRYPTO_CRC32_HMAC);
+	failed |= test_hash(cfd, test4_input, test4_crc32_expected, test4_input_iv, CRYPTO_CRC32_HMAC);
+	failed |= test_hash(cfd, test5_input, test5_crc32_expected, test5_input_iv, CRYPTO_CRC32_HMAC);
+
+	return failed;
 }
 
 int main(int argc, char** argv){
