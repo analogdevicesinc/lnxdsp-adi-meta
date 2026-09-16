@@ -1,0 +1,201 @@
+From 6ad206190b272f24e62240e4a0a65c5b0d913b30 Mon Sep 17 00:00:00 2001
+From: c <c@e>
+Date: Mon, 14 Sep 2026 12:40:47 -0400
+Subject: [PATCH] adsp_sc598: boot the kernel FIT from SPI as BL33
+
+For secure OS boot the stage-2 image is just OP-TEE + BL31. BL31 reads the
+kernel FIT that the non-secure boot keeps in SPI flash (memory mapped at
+ADSP_SC598_QSPI_BASE + ADI_KERNEL_FIT_SPI_OFFSET), decompresses the gzip kernel
+Image and copies the FDT and ramdisk to their load addresses, then enters the
+kernel directly as BL33 with the device tree in x0. Enabled by defining
+ADI_KERNEL_FIT_SPI_OFFSET.
+---
+ plat/adi/adsp_sc598/platform.mk    |  13 +++
+ plat/adi/adsp_sc598/platform_def.h |   3 +
+ plat/adi/adsp_sc598/sc598_bl31.c   | 123 ++++++++++++++++++++++++++++-
+ 3 files changed, 137 insertions(+), 2 deletions(-)
+
+diff --git a/plat/adi/adsp_sc598/platform.mk b/plat/adi/adsp_sc598/platform.mk
+index 155e558..dae2e8c 100644
+--- a/plat/adi/adsp_sc598/platform.mk
++++ b/plat/adi/adsp_sc598/platform.mk
+@@ -28,6 +28,19 @@ include lib/xlat_tables_v2/xlat_tables.mk
+ # Bootrom -> SPL -> BL31 -> BL32 -> uboot/kernel
+ # All verification done in SPL, use none of the trusted boot support
+ 
++# For secure OS boot BL33 is the kernel read from the SPI kernel FIT at
++# ADI_KERNEL_FIT_SPI_OFFSET. Pull in libfdt (to parse the FIT) and zlib (to
++# decompress the gzip kernel Image).
++ifdef ADI_KERNEL_FIT_SPI_OFFSET
++$(eval $(call add_define,ADI_KERNEL_FIT_SPI_OFFSET))
++include lib/zlib/zlib.mk
++INCLUDES += -Iinclude/lib/libfdt
++BL31_SOURCES += common/fdt_wrappers.c \
++                lib/libfdt/fdt.c \
++                lib/libfdt/fdt_ro.c \
++                ${ZLIB_SOURCES}
++endif
++
+ BL31_SOURCES += common/desc_image_load.c \
+                 drivers/delay_timer/delay_timer.c \
+                 drivers/delay_timer/generic_delay_timer.c \
+diff --git a/plat/adi/adsp_sc598/platform_def.h b/plat/adi/adsp_sc598/platform_def.h
+index f7e9e13..8542dbf 100644
+--- a/plat/adi/adsp_sc598/platform_def.h
++++ b/plat/adi/adsp_sc598/platform_def.h
+@@ -36,6 +36,9 @@
+ #define BL32_BASE			0x9ef00000
+ #define BL33_BASE			0x96000000
+ 
++/* QSPI flash is memory mapped here by the boot ROM/SPL. */
++#define ADSP_SC598_QSPI_BASE		0x60000000
++
+ #define MAX_XLAT_TABLES		8
+ #define MAX_MMAP_REGIONS	16
+ 
+diff --git a/plat/adi/adsp_sc598/sc598_bl31.c b/plat/adi/adsp_sc598/sc598_bl31.c
+index cf169aa..5376ed4 100644
+--- a/plat/adi/adsp_sc598/sc598_bl31.c
++++ b/plat/adi/adsp_sc598/sc598_bl31.c
+@@ -106,6 +106,121 @@ const unsigned char *plat_get_power_domain_tree_desc(void) {
+ 	return power_domain_tree;
+ }
+ 
++#ifdef ADI_KERNEL_FIT_SPI_OFFSET
++#include <stdbool.h>
++#include <string.h>
++#include <libfdt.h>
++#include <common/debug.h>
++#include <common/fdt_wrappers.h>
++#include <tf_gunzip.h>
++
++/* Upper bound on the decompressed kernel Image. */
++#define ADI_KERNEL_MAX_SIZE 0x4000000
++
++/* Scratch workspace for the gzip inflate of the kernel Image. */
++static uint8_t adi_gunzip_work[0x20000] __attribute__((aligned(16)));
++
++static int adi_fit_image_node(const void *fit, const char *name)
++{
++	int images = fdt_path_offset(fit, "/images");
++
++	if (images < 0)
++		return images;
++
++	return fdt_subnode_offset(fit, images, name);
++}
++
++static int adi_fit_load(const void *fit, const char *name, bool decompress,
++			uintptr_t *entry)
++{
++	const void *data;
++	const char *comp;
++	uint32_t load, ent;
++	int node, len, ret;
++
++	node = adi_fit_image_node(fit, name);
++	if (node < 0)
++		return node;
++
++	data = fdt_getprop(fit, node, "data", &len);
++	if (data == NULL)
++		return -1;
++
++	if (fdt_read_uint32(fit, node, "load", &load) < 0)
++		return -1;
++
++	if (fdt_read_uint32(fit, node, "entry", &ent) < 0)
++		ent = load;
++
++	comp = fdt_getprop(fit, node, "compression", NULL);
++
++	if (decompress && comp != NULL && strcmp(comp, "gzip") == 0) {
++		uintptr_t in = (uintptr_t)data;
++		uintptr_t out = (uintptr_t)load;
++
++		ret = gunzip(&in, len, &out, ADI_KERNEL_MAX_SIZE,
++			     (uintptr_t)adi_gunzip_work, sizeof(adi_gunzip_work));
++		if (ret != 0) {
++			ERROR("BL31: gunzip '%s' failed (%d)\n", name, ret);
++			return ret;
++		}
++	} else {
++		memcpy((void *)(uintptr_t)load, data, len);
++	}
++
++	if (entry != NULL)
++		*entry = ent;
++
++	return 0;
++}
++
++/*
++ * Load the kernel FIT that the non-secure boot keeps in SPI flash (memory
++ * mapped at ADSP_SC598_QSPI_BASE + ADI_KERNEL_FIT_SPI_OFFSET) and set BL33 up
++ * to enter the kernel directly with the device tree in x0. The sc598 kernel
++ * Image is gzip compressed inside the FIT, so decompress it on the way in.
++ */
++static void adi_load_kernel_fit(void)
++{
++	const void *fit = (const void *)(ADSP_SC598_QSPI_BASE +
++					 ADI_KERNEL_FIT_SPI_OFFSET);
++	const char *kernel, *fdt, *ramdisk;
++	uintptr_t kentry = 0;
++	uint32_t fdt_load;
++	int confs, conf, fdt_node;
++
++	if (fdt_check_header(fit) != 0) {
++		ERROR("BL31: no valid kernel FIT at %p\n", fit);
++		panic();
++	}
++
++	confs = fdt_path_offset(fit, "/configurations");
++	conf = fdt_subnode_offset(fit, confs,
++				  fdt_getprop(fit, confs, "default", NULL));
++
++	kernel = fdt_getprop(fit, conf, "kernel", NULL);
++	fdt = fdt_getprop(fit, conf, "fdt", NULL);
++	ramdisk = fdt_getprop(fit, conf, "loadables", NULL);
++
++	if (adi_fit_load(fit, kernel, true, &kentry) != 0)
++		panic();
++	if (adi_fit_load(fit, fdt, false, NULL) != 0)
++		panic();
++	if (ramdisk != NULL)
++		(void)adi_fit_load(fit, ramdisk, false, NULL);
++
++	fdt_node = adi_fit_image_node(fit, fdt);
++	if (fdt_read_uint32(fit, fdt_node, "load", &fdt_load) < 0)
++		panic();
++
++	bl33_image_ep_info.pc = kentry;
++	bl33_image_ep_info.args.arg0 = fdt_load;
++
++	INFO("BL31: kernel FIT loaded (entry 0x%lx, dtb 0x%x)\n",
++	     kentry, fdt_load);
++}
++#endif /* ADI_KERNEL_FIT_SPI_OFFSET */
++
+ void bl31_early_platform_setup2(u_register_t arg0, u_register_t arg1,
+ 	u_register_t arg2, u_register_t arg3)
+ {
+@@ -120,10 +235,14 @@ void bl31_early_platform_setup2(u_register_t arg0, u_register_t arg1,
+ 
+ 	console_adi_uart4_register(ADSP_SC598_UART0_BASE, &console);
+ 
+-	// @todo for falcon boot we will need to receive kernel arguments here
+-	bl33_image_ep_info.pc = BL33_BASE;
+ 	bl33_image_ep_info.spsr = SPSR_64(MODE_EL1, MODE_SP_ELX, DISABLE_ALL_EXCEPTIONS);
+ 	SET_SECURITY_STATE(bl33_image_ep_info.h.attr, NON_SECURE);
++#ifdef ADI_KERNEL_FIT_SPI_OFFSET
++	/* Read the kernel FIT from SPI flash and enter it directly as BL33. */
++	adi_load_kernel_fit();
++#else
++	bl33_image_ep_info.pc = BL33_BASE;
++#endif
+ 
+ #ifdef SPD_opteed
+ 	SET_PARAM_HEAD(&bl32_image_ep_info, PARAM_EP, VERSION_1, 0);
+-- 
+2.34.1
+

@@ -7,6 +7,10 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
 SRC_URI:append:adsp-sc598-som-ezkit = "${@bb.utils.contains('DISTRO_FEATURES', 'signedboot', ' file://0001-sc598-uboot-partitions-update-command.patch', '', d)}"
 
+# Secure boot authenticates a signed stage-2 LDR loaded by the boot ROM, so the
+# SPL must hand back to the boot ROM instead of Falcon-booting the OS itself.
+SRC_URI:append:adsp-sc598-som-ezkit = "${@bb.utils.contains('DISTRO_FEATURES', 'signedboot', ' file://spl-secure-stage2.cfg', '', d)}"
+
 # Actual contents of this don't matter, we just need to sign this fit image in order to get uboot
 # to update the dtb with the key that was used for signing, which will be used to sign the kernel
 # fit image later
