@@ -68,6 +68,7 @@ sc5xx_universal_edit() {
     sed -i "s/^MACHINE ??=.*$/MACHINE ??= \"$MACHINE\"/" "conf/local.conf"
     # Change DISTRO ?= to $DISTRO
     sed -i "s/^DISTRO ?=.*$/DISTRO ?= \"$DISTRO\"/" "conf/local.conf"
+    grep -q "^DISTRO ?=" "conf/local.conf" || echo "DISTRO ?= \"$DISTRO\"" >> "conf/local.conf"
     # Change PACKAGE_CLASSES ?= to "package_ipk"
     sed -i 's/^PACKAGE_CLASSES ?=.*$/PACKAGE_CLASSES ?= "package_ipk"/' "conf/local.conf"
     # Uncomment specific lines
