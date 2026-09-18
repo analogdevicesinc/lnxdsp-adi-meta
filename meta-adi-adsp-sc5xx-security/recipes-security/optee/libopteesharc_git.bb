@@ -7,7 +7,6 @@ DEPENDS = "optee-client"
 SRC_URI = "git://github.com/analogdevicesinc/libopteesharc.git;branch=master;protocol=https"
 SRCREV = "c37665e4a16c53c4517ef15e64f9405619bd6879"
 
-S = "${WORKDIR}/git"
 B = "${S}"
 
 include optee.inc

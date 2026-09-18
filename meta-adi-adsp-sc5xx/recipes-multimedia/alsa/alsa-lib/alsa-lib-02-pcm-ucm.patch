@@ -4,63 +4,65 @@ Date: Wed, 3 Apr 2024 13:18:29 +0100
 Subject: [PATCH] ADSP: pcm patch for yocto
 Upstream-Status: Pending
 Signed-off-by: UtsavAgarwalADI <utsav.agarwal@analog.com>
+
+Rebased 11-Sep-2026: the context lines had been space-indented at some
+point while alsa-lib uses tabs, so quilt could not match them and
+do_patch failed on wrynose's alsa-lib 1.2.15.3. Regenerated from the
+1.2.15.3 source; the resulting file is byte-identical to what the old
+patch produced when applied with --ignore-whitespace, so this is a
+whitespace-only correction, not a change in behaviour.
 ---
  src/pcm/pcm_ladspa.c | 21 ++++++++++++---------
  1 file changed, 12 insertions(+), 9 deletions(-)
 
-diff --git a/src/pcm/pcm_ladspa.c b/src/pcm/pcm_ladspa.c
-index 25eac76f..50dd6479 100644
 --- a/src/pcm/pcm_ladspa.c
 +++ b/src/pcm/pcm_ladspa.c
-@@ -513,36 +513,39 @@ static void snd_pcm_ladspa_get_default_cvalue(const LADSPA_Descriptor * desc, un
-                 *val = desc->PortRangeHints[port].LowerBound;
-                 break;
-         case LADSPA_HINT_DEFAULT_LOW:
--                if (LADSPA_IS_HINT_LOGARITHMIC(hdesc)) {
+@@ -513,36 +513,39 @@
+ 		*val = desc->PortRangeHints[port].LowerBound;
+ 		break;
+ 	case LADSPA_HINT_DEFAULT_LOW:
+-		if (LADSPA_IS_HINT_LOGARITHMIC(hdesc)) {
 +#ifndef HAVE_SOFT_FLOAT
 +                if (LADSPA_IS_HINT_LOGARITHMIC(hdesc))
-                         *val = exp(log(desc->PortRangeHints[port].LowerBound)
-                                         * 0.75
-                                         + log(desc->PortRangeHints[port].UpperBound)
-                                         * 0.25);
--                } else {
+ 			*val = exp(log(desc->PortRangeHints[port].LowerBound)
+ 					* 0.75
+ 					+ log(desc->PortRangeHints[port].UpperBound)
+ 					* 0.25);
+-		} else {
 +		else
 +#endif
-                         *val = (desc->PortRangeHints[port].LowerBound * 0.75) +
-                                (desc->PortRangeHints[port].UpperBound * 0.25);
--                }
-                 break;
-         case LADSPA_HINT_DEFAULT_MIDDLE:
--                if (LADSPA_IS_HINT_LOGARITHMIC(hdesc)) {
+ 			*val = (desc->PortRangeHints[port].LowerBound * 0.75) +
+ 			       (desc->PortRangeHints[port].UpperBound * 0.25);
+-		}
+ 		break;
+ 	case LADSPA_HINT_DEFAULT_MIDDLE:
+-		if (LADSPA_IS_HINT_LOGARITHMIC(hdesc)) {
 +#ifndef HAVE_SOFT_FLOAT
 +                if (LADSPA_IS_HINT_LOGARITHMIC(hdesc))
-                         *val = sqrt(desc->PortRangeHints[port].LowerBound *
-                                     desc->PortRangeHints[port].UpperBound);
--                } else {
+ 			*val = sqrt(desc->PortRangeHints[port].LowerBound *
+ 				    desc->PortRangeHints[port].UpperBound);
+-		} else {
 +                else
 +#endif
-                         *val = 0.5 *
-                                (desc->PortRangeHints[port].LowerBound +
-                                 desc->PortRangeHints[port].UpperBound);
--                }
-                 break;
-         case LADSPA_HINT_DEFAULT_HIGH:
--                if (LADSPA_IS_HINT_LOGARITHMIC(hdesc)) {
+ 			*val = 0.5 *
+ 			       (desc->PortRangeHints[port].LowerBound +
+ 				desc->PortRangeHints[port].UpperBound);
+-		}
+ 		break;
+ 	case LADSPA_HINT_DEFAULT_HIGH:
+-		if (LADSPA_IS_HINT_LOGARITHMIC(hdesc)) {
 +#ifndef HAVE_SOFT_FLOAT
 +                if (LADSPA_IS_HINT_LOGARITHMIC(hdesc))
-                         *val = exp(log(desc->PortRangeHints[port].LowerBound)
-                                         * 0.25
-                                         + log(desc->PortRangeHints[port].UpperBound)
-                                         * 0.75);
--                } else {
+ 			*val = exp(log(desc->PortRangeHints[port].LowerBound)
+ 					* 0.25
+ 					+ log(desc->PortRangeHints[port].UpperBound)
+ 					* 0.75);
+-		} else {
 +                else
 +#endif
-                         *val = (desc->PortRangeHints[port].LowerBound * 0.25) +
-                                (desc->PortRangeHints[port].UpperBound * 0.75);
--                }
-                 break;
-         case LADSPA_HINT_DEFAULT_MAXIMUM:
-                 *val = desc->PortRangeHints[port].UpperBound;
--- 
-2.25.1
-
+ 			*val = (desc->PortRangeHints[port].LowerBound * 0.25) +
+ 			       (desc->PortRangeHints[port].UpperBound * 0.75);
+-		}
+ 		break;
+ 	case LADSPA_HINT_DEFAULT_MAXIMUM:
+ 		*val = desc->PortRangeHints[port].UpperBound;

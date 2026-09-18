@@ -5,7 +5,7 @@ SRC_URI = " \
 	svn://svn.code.sf.net/p/adi-openapp/code/trunk/apps;module=version;protocol=http;rev=HEAD \
 "
 
-S = "${WORKDIR}/version"
+S = "${UNPACKDIR}/version"
 
 do_compile:prepend(){
 	cd ${S}

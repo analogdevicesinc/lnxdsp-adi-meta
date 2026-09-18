@@ -15,8 +15,6 @@ SRCREV_tfa = "c5c2fb000fb6b6ae34ed109aba04f81a89385066"
 
 LIC_FILES_CHKSUM += "file://docs/license.rst;md5=b2c740efedc159745b9b31f88ff03dde"
 
-S = "${WORKDIR}/git"
-
 TFA_PLATFORM = "adsp_sc598"
 TFA_BUILD_TARGET = "bl31"
 TFA_SPD = "opteed"

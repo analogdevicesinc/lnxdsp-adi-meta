@@ -23,8 +23,6 @@ SRC_URI = " \
 "
 SRCREV = "01d23f4b821b58711bd352ae1a30990a67d8621f"
 
-S = "${WORKDIR}/git"
-
 OPTEE_PLATFORM ?= "adi"
 OPTEE_FLAVOR ?= "adsp_sc598"
 
@@ -45,7 +43,7 @@ EXTRA_OEMAKE = " \
 "
 
 do_configure() {
-	cp ${WORKDIR}/libotp.a ${S}/libotp.a
+	cp ${UNPACKDIR}/libotp.a ${S}/libotp.a
 }
 
 do_compile() {

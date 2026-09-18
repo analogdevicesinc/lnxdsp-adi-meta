@@ -66,8 +66,8 @@ sc5xx_universal_edit() {
     sed -i '/^# This sets the default machine to/d' "conf/local.conf"
     # Use sed to replace the MACHINE ??= line with the value of the MACHINE environment variable
     sed -i "s/^MACHINE ??=.*$/MACHINE ??= \"$MACHINE\"/" "conf/local.conf"
-    # Change DISTRO ?= to $DISTRO
-    sed -i "s/^DISTRO ?=.*$/DISTRO ?= \"$DISTRO\"/" "conf/local.conf"
+    # Drop any DISTRO the template shipped; it is set unconditionally below
+    sed -i '/^DISTRO ?= /d' "conf/local.conf"
     # Change PACKAGE_CLASSES ?= to "package_ipk"
     sed -i 's/^PACKAGE_CLASSES ?=.*$/PACKAGE_CLASSES ?= "package_ipk"/' "conf/local.conf"
     # Uncomment specific lines
@@ -75,13 +75,28 @@ sc5xx_universal_edit() {
     # Append additional configurations
     cat >> "conf/local.conf" <<EOF
 
+# Set unconditionally: the wrynose oe-core template ships no DISTRO line for a
+# sed to rewrite, and without this the build silently falls back to nodistro,
+# so none of the ADI distro config below applies.
+DISTRO ?= "$DISTRO"
+
 DISTRO_FEATURES:remove = "sysvinit"
 DISTRO_FEATURES:append = "systemd"
-DISTRO_FEATURES_BACKFILL_CONSIDERED = "sysvinit"
+DISTRO_FEATURES_OPTED_OUT = "sysvinit"
 
 VIRTUAL-RUNTIME_init_manager = "systemd"
 VIRTUAL-RUNTIME_initscripts = "systemd-compat-units"
 DISTRO_FEATURES:append = " linux_only_audio "
+
+# TODO: drop once systemd.bbclass guards this append with class-native. Not
+# reported upstream yet. util-linux-native and systemd-systemctl-native depend on
+# each other, and create-spdx-3.0 makes that a fatal task cycle: nothing builds.
+DEPENDS:remove:class-native = "systemd-systemctl-native"
+
+# TODO: drop when meta-oe stops asking for uutils-coreutils-native, or systemd
+# gains a native variant. Nothing here uses uutils, but the unbuildable native
+# variant makes bitbake exit 1 with every task succeeded, which fails CI.
+BBMASK += "meta-oe/recipes-core/uutils-coreutils/"
 
 EOF
 
