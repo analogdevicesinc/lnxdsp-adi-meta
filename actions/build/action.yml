@@ -7,6 +7,9 @@ inputs:
   image:
     description: "Yocto image"
     default: adsp-sc5xx-minimal
+  distro:
+    description: "Yocto distro"
+    default: adi-distro-glibc
   manifest:
     description: "Manifest"
     default: main
@@ -106,7 +109,7 @@ runs:
       shell: bash
       run: |
         cd "${YOCTO_WORKSPACE}"
-        source setup-environment -m ${{ inputs.machine }}
+        source setup-environment -m ${{ inputs.machine }} -d ${{ inputs.distro }}
 
         # Configure for CI with persistent caches in runner's home directory
         cat >> conf/local.conf <<EOF
