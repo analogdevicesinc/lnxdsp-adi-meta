@@ -46,17 +46,6 @@ fakeroot do_rootfs_cleanup(){
 
 addtask rootfs_cleanup after do_rootfs before do_image
 
-#For some reason on poky-tiny, INIT_MANAGER="systemd" does not appear to work
-#For now, let's relink directly to systemd
-fakeroot do_set_init(){
-    if [ "${DISTRO}" = "adi-distro-musl" ]; then
-        rm -rf ${IMAGE_ROOTFS}/sbin/init
-        ln -s /lib/systemd/systemd ${IMAGE_ROOTFS}/sbin/init
-    fi
-}
-
-addtask do_set_init after do_rootfs before do_image
-
 do_create_programming_images(){
     # Create programming-images directory
     PROG_DIR="${DEPLOY_DIR_IMAGE}/programming-images/${IMAGE_BASENAME}"
