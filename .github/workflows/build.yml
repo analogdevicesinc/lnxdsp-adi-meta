@@ -9,6 +9,9 @@ on:
       image:
         description: "Yocto image"
         default: "adsp-sc5xx-minimal"
+      distro:
+        description: "Yocto distro"
+        default: "adi-distro-glibc"
       manifest:
         description: "Manifest"
         default: main
@@ -38,6 +41,9 @@ on:
       image:
         type: string
         default: "adsp-sc5xx-minimal"
+      distro:
+        type: string
+        default: "adi-distro-glibc"
       manifest:
         type: string
         default: main
@@ -96,6 +102,7 @@ jobs:
         with:
           machine: ${{ inputs.machine }}
           image: ${{ inputs.image }}
+          distro: ${{ inputs.distro }}
           manifest: ${{ inputs.manifest }}
           manifest-repo: ${{ inputs.manifest-repo }}
           build-sdk: ${{ inputs.build-sdk }}
