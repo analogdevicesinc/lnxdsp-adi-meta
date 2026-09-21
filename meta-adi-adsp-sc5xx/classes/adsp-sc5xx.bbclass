@@ -57,6 +57,10 @@ TOOLCHAIN_HOST_TASK:append = " nativesdk-ldr-adi"
 
 IMAGE_FSTYPES:append = " tar.xz ubi ext4"
 
+# sc573-ezlite has limited SPI flash; the minimal image is too large for a UBI
+# volume, so UBI is only produced for the tiny image on that machine.
+IMAGE_FSTYPES:remove:adsp-sc573-ezlite = "ubi"
+
 # Keep the freedesktop MIME database out of the rootfs. Nothing here consumes
 # MIME types, but wrynose pulls the database in along two independent weak
 # edges, so both have to be named:
