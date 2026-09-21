@@ -57,6 +57,22 @@ TOOLCHAIN_HOST_TASK:append = " nativesdk-ldr-adi"
 
 IMAGE_FSTYPES:append = " tar.xz ubi ext4"
 
+# Keep the freedesktop MIME database out of the rootfs. Nothing here consumes
+# MIME types, but wrynose pulls the database in along two independent weak
+# edges, so both have to be named:
+#
+#   systemd       RRECOMMENDS systemd-mime       (systemd_259.5.bb, new in wrynose)
+#   glib-2.0      RRECOMMENDS shared-mime-info   (glib.inc)
+#
+# and mime.bbclass then injects a *hard* RDEPENDS on shared-mime-info-data into
+# any package shipping ${datadir}/mime/packages/*.xml, which systemd-mime does.
+# Excluding only one edge leaves the other pulling the data back in; on
+# adsp-sc5xx-minimal the systemd edge alone was worth 12 LEBs, both together 66.
+#
+# glib itself stays, and should: libgpiod RDEPENDS on glib-2.0-utils, so glib is
+# a genuine runtime dependency of this image rather than MIME collateral.
+BAD_RECOMMENDATIONS += "systemd-mime shared-mime-info"
+
 UBI_VOLNAME = "rootfs"
 UBINIZE_ARGS = "-m 1 -p 65536 -s 1"
 
