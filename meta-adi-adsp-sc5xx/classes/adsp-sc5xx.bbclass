@@ -35,7 +35,6 @@ IMAGE_INSTALL = " \
     iproute2 \
     iproute2-tc \
     ncurses \
-    busybox-watchdog-init \
     util-linux \
     rng-tools \
     spidev-test \
