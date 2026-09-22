@@ -3,6 +3,8 @@ From: Utsav Agarwal <utsav.agarwal@analog.com>
 Date: Fri, 8 Aug 2025 10:04:56 +0100
 Subject: [PATCH] sc598-som: Disabling peripherals for faster boot
 
+Upstream-Status: Inappropriate [configuration]
+
 Disabling the following:
 
 - Crypto (CRC and PKTE)

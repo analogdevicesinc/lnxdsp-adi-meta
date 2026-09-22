@@ -3,6 +3,8 @@ From: Caleb Ethridge <caleb.ethridge@analog.com>
 Date: Thu, 30 Apr 2026 12:40:32 -0400
 Subject: [PATCH 1/2] Add USB support for sc594 and sc598
 
+Upstream-Status: Inappropriate [embedded specific]
+
 This patch adds support for retries to allow additional chances
 for slower devices to be detected before reporting failure, and updates
 the nop-phy driver to support the PHY on the sc59x family.

@@ -3,6 +3,8 @@ From: Arturs Artamonovs <arturs.artamonovs@analog.com>
 Date: Mon, 30 Oct 2023 16:37:07 +0000
 Subject: [PATCH] SC598: fix stmmac dma split header crash
 
+Upstream-Status: Pending
+
 Signed-off-by: Arturs Artamonovs <arturs.artamonovs@analog.com>
 ---
  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 4 ++--

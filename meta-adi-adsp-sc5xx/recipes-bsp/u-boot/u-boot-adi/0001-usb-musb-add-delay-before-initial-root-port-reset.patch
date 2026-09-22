@@ -3,6 +3,8 @@ From: Qasim Ijaz <Qasim.Ijaz@analog.com>
 Date: Wed, 26 Aug 2026 14:30:47 +0100
 Subject: [PATCH] usb: musb: Add delay before initial root port reset
 
+Upstream-Status: Pending
+
 The ADSP-SC589-MINI and ADSP-SC573 can fail to detect certain older
 or slower USB devices in U-Boot. Running "usb start" may fail while
 the USB device is plugged in:

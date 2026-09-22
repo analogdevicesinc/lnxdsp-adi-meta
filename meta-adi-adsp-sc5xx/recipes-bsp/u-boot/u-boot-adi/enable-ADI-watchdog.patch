@@ -3,6 +3,8 @@ From: Caleb Ethridge <caleb.ethridge@analog.com>
 Date: Mon, 9 Feb 2026 10:23:58 -0500
 Subject: [PATCH] Enable watchdog patch
 
+Upstream-Status: Inappropriate [embedded specific]
+
 ---
  arch/arm/dts/sc5xx.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

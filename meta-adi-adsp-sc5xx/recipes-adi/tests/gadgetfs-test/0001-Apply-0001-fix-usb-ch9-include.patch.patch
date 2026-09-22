@@ -3,6 +3,8 @@ From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
 Date: Wed, 19 Jun 2019 09:01:04 -0400
 Subject: [PATCH 1/4] Apply 0001-fix-usb-ch9-include.patch
 
+Upstream-Status: Inappropriate [other]
+
 ---
  usb.c       | 2 +-
  usbstring.c | 2 +-

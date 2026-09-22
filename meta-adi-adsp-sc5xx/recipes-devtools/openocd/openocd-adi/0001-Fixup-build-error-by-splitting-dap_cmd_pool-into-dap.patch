@@ -4,6 +4,8 @@ Date: Wed, 22 Mar 2023 09:30:06 -0400
 Subject: [PATCH] Fixup build error by splitting dap_cmd_pool into
  dap_cmd_pool_v5 and dap_cmd_pool_v6
 
+Upstream-Status: Pending
+
 src/.libs/libopenocd.a(adi_v6_jtag.o):(.bss+0x0): multiple definition of `dap_cmd_pool'; src/.libs/libopenocd.a(adi_v5_jtag.o):(.bss+0x0): first defined here
 ---
  src/target/adi_v5_jtag.c | 14 +++++++-------
