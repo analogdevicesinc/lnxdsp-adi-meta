@@ -3,6 +3,8 @@ From: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
 Date: Thu, 13 Aug 2026 08:38:36 -0400
 Subject: [PATCH] Disable remoteproc
 
+Upstream-Status: Inappropriate [configuration]
+
 ---
  arch/arm64/boot/dts/adi/sc598-som.dtsi | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)

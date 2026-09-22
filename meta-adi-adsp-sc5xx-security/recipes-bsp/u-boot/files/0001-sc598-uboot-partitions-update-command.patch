@@ -3,6 +3,8 @@ From: Caleb Ethridge <caleb.ethridge@analog.com>
 Date: Mon, 17 Aug 2026 09:55:29 -0400
 Subject: [PATCH] sc598: Relocate kernel offset and add update_uboot command
 
+Upstream-Status: Inappropriate [embedded specific]
+
 The combined size of U-boot Proper + TF-A/OPTEE in ceratin configurations
 can expand past the normal sc598 partition for U-boot proper. Expanding
 the partition to a safe size to accomodate these configurations.
