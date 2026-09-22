@@ -7,13 +7,16 @@ IMAGE_INSTALL = " \
     packagegroup-core-boot \
     packagegroup-base \
     busybox-watchdog-init \
+    mtd-utils \
+    mtd-utils-ubifs \
+    e2fsprogs \
 "
 
 # printf "%q" $(mkpasswd -m sha256crypt adi)
 PASSWD_ROOT = "\$5\$j9T8zDE13LXUGyc6\$utDvGwFWR.kt/AKwwbHnXC14HJBqbcWwvLoDDLMQrc8"
 EXTRA_USERS_PARAMS = "usermod -p '${PASSWD_ROOT}' root;"
 
-IMAGE_FSTYPES = " ubi"
+IMAGE_FSTYPES = " tar.xz ubi ext4"
 
 UBI_VOLNAME = "rootfs"
 UBINIZE_ARGS = "-m 1 -p 65536 -s 1"
@@ -46,6 +49,16 @@ fakeroot do_rootfs_cleanup(){
 
 addtask rootfs_cleanup after do_rootfs before do_image
 
+ADSP_SC5XX_INIT_SCRIPT := "${THISDIR}/files/init"
+
+fakeroot do_install_init_script(){
+    # Create firmware directory in rootfs and install init script
+    install -d ${IMAGE_ROOTFS}/usr/firmware
+    install -m 755 ${ADSP_SC5XX_INIT_SCRIPT} ${IMAGE_ROOTFS}/usr/firmware/init
+}
+
+addtask install_init_script before do_image
+
 do_create_programming_images(){
     # Create programming-images directory
     PROG_DIR="${DEPLOY_DIR_IMAGE}/programming-images/${IMAGE_BASENAME}"
@@ -71,6 +84,10 @@ do_create_programming_images(){
 
     if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubi ]; then
         cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubi ${PROG_DIR}/rootfs.ubi
+    fi
+
+    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ext4 ]; then
+        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ext4 ${PROG_DIR}/rootfs.ext4
     fi
 
     echo "Programming images created in: ${PROG_DIR}"
