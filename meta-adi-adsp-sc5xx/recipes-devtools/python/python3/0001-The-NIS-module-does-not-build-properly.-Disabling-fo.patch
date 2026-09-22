@@ -4,6 +4,8 @@ Date: Mon, 31 May 2021 08:05:38 -0400
 Subject: [PATCH] The NIS module does not build properly.  Disabling for now. 
  We may want to revisit this later
 
+Upstream-Status: Inappropriate [configuration]
+
 ---
  setup.py | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

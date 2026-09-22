@@ -3,6 +3,8 @@ From: Utsav Agarwal <utsav.agarwal@analog.com>
 Date: Fri, 8 Aug 2025 10:50:00 +0100
 Subject: [PATCH 2/2] fix: sc598-som: rev E falcon print
 
+Upstream-Status: Inappropriate [embedded specific]
+
 Jump back to uboot's init, similar to what gdb does to enable
 print. This is optional and can be omitted if not needed.
 

@@ -3,6 +3,8 @@ From: UtsavAgarwalADI <utsav.agarwal@analog.com>
 Date: Thu, 10 Jul 2025 13:12:11 +0100
 Subject: [PATCH] usb gadget audio: Adding support for USB audio
 
+Upstream-Status: Inappropriate [embedded specific]
+
 Switches USB mode to OTG and configures it for USB gadget
 audio for all supported boards
 

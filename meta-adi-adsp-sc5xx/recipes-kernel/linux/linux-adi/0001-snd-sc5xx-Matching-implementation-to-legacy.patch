@@ -3,6 +3,8 @@ From: UtsavAgarwalADI <utsav.agarwal@analog.com>
 Date: Mon, 4 Aug 2025 12:21:34 +0100
 Subject: [PATCH] snd: sc5xx: Matching implementation to legacy
 
+Upstream-Status: Inappropriate [embedded specific]
+
 The current implementation introduces some extra preprocessor
 statements which rely on new kernel config features that need
 to be defined.

@@ -3,6 +3,8 @@ From: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
 Date: Mon, 14 Jul 2025 14:23:28 +0100
 Subject: [PATCH] sc589-mini: sound/soc: set correct clk rate for board
 
+Upstream-Status: Inappropriate [embedded specific]
+
 Signed-off-by: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
 ---
  arch/arm/boot/dts/adi/sc589-mini.dts |  8 ++++++++
