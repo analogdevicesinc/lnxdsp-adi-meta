@@ -176,7 +176,7 @@ runs:
 
     - name: Upload SDK installer as artifact
       uses: actions/upload-artifact@v6
-      if: ${{ inputs.build-sdk == 'true' && inputs.upload-artifacts == 'true' && github.event_name == 'workflow_dispatch' }}
+      if: ${{ inputs.build-sdk == 'true' && inputs.upload-artifacts == 'true' && (github.event_name == 'release' || github.event_name == 'workflow_dispatch') }}
       with:
         name: sdk-${{ inputs.machine }}-${{ inputs.image }}
         path: ${{ env.SDK_INSTALLER }}
@@ -188,6 +188,13 @@ runs:
         cd "${YOCTO_WORKSPACE}"
         tar -cJvf images-${{ inputs.machine }}-${{ inputs.image }}-${{ github.event.release.tag_name }}.tar.xz \
           build/tmp/deploy/images/${{ inputs.machine }}/
+
+    - name: Upload release archive as artifact
+      uses: actions/upload-artifact@v6
+      if: ${{ github.event_name == 'release' }}
+      with:
+        name: images-${{ inputs.machine }}-${{ inputs.image }}-${{ github.event.release.tag_name }}.tar.xz
+        path: ${{ env.YOCTO_WORKSPACE }}/images-${{ inputs.machine }}-${{ inputs.image }}-${{ github.event.release.tag_name }}.tar.xz
 
     - name: Clean up build
       if: always()
