@@ -7,3 +7,7 @@ do_install_basefilesissue () {
 
 	install -m 644 ${UNPACKDIR}/issue*  ${D}${sysconfdir}
 }
+
+do_install:append () {
+	: > ${D}${sysconfdir}/motd
+}

@@ -77,12 +77,6 @@ sc5xx_universal_edit() {
 
 DISTRO ?= "$DISTRO"
 
-DISTRO_FEATURES:remove = "sysvinit"
-DISTRO_FEATURES:append = "systemd"
-DISTRO_FEATURES_OPTED_OUT = "sysvinit"
-
-VIRTUAL-RUNTIME_init_manager = "systemd"
-VIRTUAL-RUNTIME_initscripts = "systemd-compat-units"
 DISTRO_FEATURES:append = " linux_only_audio "
 
 # TODO: drop once systemd.bbclass guards this append with class-native. Not
