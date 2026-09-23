@@ -97,18 +97,19 @@ jobs:
           override-meta-adi: ${{ inputs.override-meta-adi }}
           gh-token: ${{ steps.app-token.outputs.token || github.token }}
 
-      - name: Upload release archive to release
+      - name: Download release artifacts
+        uses: actions/download-artifact@v6
+        if: ${{ github.event_name == 'release' && inputs.upload-artifacts }}
+        with:
+          pattern: "{images-${{ inputs.machine }}-${{ inputs.image }}-${{ github.event.release.tag_name }}.tar.xz,sdk-${{ inputs.machine }}-${{ inputs.image }}}"
+          path: release
+          merge-multiple: true
+
+      - name: Upload artifacts to release
         uses: svenstaro/upload-release-action@v2
         if: ${{ github.event_name == 'release' && inputs.upload-artifacts }}
         with:
           repo_token: ${{ github.token }}
-          file: ${{ env.YOCTO_WORKSPACE }}/images-${{ inputs.machine }}-${{ inputs.image }}-${{ github.event.release.tag_name }}.tar.xz
-          tag: ${{ github.ref }}
-
-      - name: Upload SDK installer to release
-        uses: svenstaro/upload-release-action@v2
-        if: ${{ github.event_name == 'release' && inputs.build-sdk && inputs.upload-artifacts }}
-        with:
-          repo_token: ${{ github.token }}
-          file: ${{ env.SDK_INSTALLER }}
+          file: release/*
+          file_glob: true
           tag: ${{ github.ref }}
