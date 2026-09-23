@@ -4,19 +4,22 @@ SUMMARY = "Tiny image for Analog Devices ADSP-SC5xx boards with 16MB SPI"
 LICENSE = "MIT"
 
 IMAGE_INSTALL = " \
-    packagegroup-core-boot \
     packagegroup-base \
     busybox-watchdog-init \
+    mtd-utils \
+    mtd-utils-ubifs \
+    rpmsg-echo-example \
 "
 
 # printf "%q" $(mkpasswd -m sha256crypt adi)
 PASSWD_ROOT = "\$5\$j9T8zDE13LXUGyc6\$utDvGwFWR.kt/AKwwbHnXC14HJBqbcWwvLoDDLMQrc8"
 EXTRA_USERS_PARAMS = "usermod -p '${PASSWD_ROOT}' root;"
 
-IMAGE_FSTYPES = " ubi"
+IMAGE_FSTYPES = " tar.xz ubi ext4"
 
 UBI_VOLNAME = "rootfs"
 UBINIZE_ARGS = "-m 1 -p 65536 -s 1"
+MKUBIFS_ARGS:append = " -x zlib"
 
 #We do not need these files in the rootfs -- remove them to reduce the minimal rootfs size
 fakeroot do_rootfs_cleanup(){
@@ -46,16 +49,15 @@ fakeroot do_rootfs_cleanup(){
 
 addtask rootfs_cleanup after do_rootfs before do_image
 
-#For some reason on poky-tiny, INIT_MANAGER="systemd" does not appear to work
-#For now, let's relink directly to systemd
-fakeroot do_set_init(){
-    if [ "${DISTRO}" = "adi-distro-musl" ]; then
-        rm -rf ${IMAGE_ROOTFS}/sbin/init
-        ln -s /lib/systemd/systemd ${IMAGE_ROOTFS}/sbin/init
-    fi
+ADSP_SC5XX_INIT_SCRIPT := "${THISDIR}/files/init"
+
+fakeroot do_install_init_script(){
+    # Create firmware directory in rootfs and install init script
+    install -d ${IMAGE_ROOTFS}/usr/firmware
+    install -m 755 ${ADSP_SC5XX_INIT_SCRIPT} ${IMAGE_ROOTFS}/usr/firmware/init
 }
 
-addtask do_set_init after do_rootfs before do_image
+addtask install_init_script after do_rootfs before do_image
 
 do_create_programming_images(){
     # Create programming-images directory
@@ -82,6 +84,10 @@ do_create_programming_images(){
 
     if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubi ]; then
         cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubi ${PROG_DIR}/rootfs.ubi
+    fi
+
+    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ext4 ]; then
+        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ext4 ${PROG_DIR}/rootfs.ext4
     fi
 
     echo "Programming images created in: ${PROG_DIR}"
