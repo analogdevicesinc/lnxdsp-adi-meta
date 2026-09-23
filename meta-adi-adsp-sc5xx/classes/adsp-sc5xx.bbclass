@@ -80,17 +80,6 @@ BAD_RECOMMENDATIONS += "systemd-mime shared-mime-info"
 UBI_VOLNAME = "rootfs"
 UBINIZE_ARGS = "-m 1 -p 65536 -s 1"
 
-#For some reason on poky-tiny, INIT_MANAGER="systemd" does not appear to work
-#For now, let's relink directly to systemd
-fakeroot do_set_init(){
-    if [ "${DISTRO}" = "adi-distro-musl" ]; then
-        rm -rf ${IMAGE_ROOTFS}/sbin/init
-        ln -s /lib/systemd/systemd ${IMAGE_ROOTFS}/sbin/init
-    fi
-}
-
-addtask do_set_init after do_rootfs before do_image
-
 ADSP_SC5XX_INIT_SCRIPT := "${THISDIR}/files/init"
 
 fakeroot do_install_init_script(){
@@ -99,7 +88,7 @@ fakeroot do_install_init_script(){
     install -m 755 ${ADSP_SC5XX_INIT_SCRIPT} ${IMAGE_ROOTFS}/usr/firmware/init
 }
 
-addtask install_init_script after do_set_init before do_image
+addtask install_init_script after do_rootfs before do_image
 
 do_create_programming_images(){
     # Create programming-images directory

@@ -80,12 +80,9 @@ sc5xx_universal_edit() {
 # so none of the ADI distro config below applies.
 DISTRO ?= "$DISTRO"
 
-DISTRO_FEATURES:remove = "sysvinit"
-DISTRO_FEATURES:append = "systemd"
-DISTRO_FEATURES_OPTED_OUT = "sysvinit"
-
-VIRTUAL-RUNTIME_init_manager = "systemd"
-VIRTUAL-RUNTIME_initscripts = "systemd-compat-units"
+# Init-manager/systemd policy is set by the selected DISTRO (systemd for
+# adi-distro-glibc, BusyBox for the musl/poky-tiny distro), so it is deliberately
+# not forced here.
 DISTRO_FEATURES:append = " linux_only_audio "
 
 # TODO: drop once systemd.bbclass guards this append with class-native. Not
