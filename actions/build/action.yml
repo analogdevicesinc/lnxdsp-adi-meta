@@ -54,13 +54,16 @@ runs:
         [ -d "/cache" ] && YOCTO_CACHE_DIR="/cache/yocto" || YOCTO_CACHE_DIR="${GITHUB_WORKSPACE}/yocto-cache"
         YOCTO_DL_DIR="${YOCTO_CACHE_DIR}/downloads"
         YOCTO_SSTATE_DIR="${YOCTO_CACHE_DIR}/sstate"
+        YOCTO_HASHSERVE_DIR="${YOCTO_CACHE_DIR}/hashserv"
         mkdir -p "${YOCTO_DL_DIR}"
         mkdir -p "${YOCTO_SSTATE_DIR}"
+        mkdir -p "${YOCTO_HASHSERVE_DIR}"
 
         # Save workspace path and cache dirs for subsequent steps
         echo "YOCTO_WORKSPACE=${WORKSPACE}" >> $GITHUB_ENV
         echo "YOCTO_DL_DIR=${YOCTO_DL_DIR}" >> $GITHUB_ENV
         echo "YOCTO_SSTATE_DIR=${YOCTO_SSTATE_DIR}" >> $GITHUB_ENV
+        echo "YOCTO_HASHSERVE_DIR=${YOCTO_HASHSERVE_DIR}" >> $GITHUB_ENV
 
     - name: Setup repo tool
       shell: bash
@@ -117,6 +120,7 @@ runs:
         # CI Build Configuration - use persistent caches from runner's home
         DL_DIR = "${{ env.YOCTO_DL_DIR }}"
         SSTATE_DIR = "${{ env.YOCTO_SSTATE_DIR }}"
+        BB_HASHSERVE_DB_DIR = "${{ env.YOCTO_HASHSERVE_DIR }}"
         EOF
 
         # Instruct Yocto to generate an SPDX Software Bill of Materials (SBOM)
