@@ -1,5 +1,5 @@
 require optee-test.inc
 
-SRCREV = "a286b57f1721af215ace318d5807e63f40186df6"
+SRCREV = "88c93e87a5c172363ee986ded036a25cafcc9d2c"
 
 COMPATIBLE_MACHINE = "(adsp-sc598-som-ezkit)"
