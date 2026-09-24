@@ -2,6 +2,8 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/busybox:"
 
 LICENSE = "CLOSED"
 
+S = "${UNPACKDIR}"
+
 INITSCRIPT_NAME = "watchdog.sh"
 INITSCRIPT_PARAMS = "start 00 1 2 3 4 5 ."
 
