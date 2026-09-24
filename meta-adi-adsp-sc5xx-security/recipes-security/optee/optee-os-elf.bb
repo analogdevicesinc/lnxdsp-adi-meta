@@ -4,6 +4,8 @@ LICENSE = "CLOSED"
 
 DDEPENDS = "optee-os"
 
+S = "${UNPACKDIR}"
+
 SRC_URI = " \
 	file://optee-elf.ld.in \
 "

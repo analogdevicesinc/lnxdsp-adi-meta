@@ -1,6 +1,8 @@
 DESCRIPTION = "Binaries for SHARC Audio demos"
 LICENSE = "CLOSED"
 
+S = "${UNPACKDIR}"
+
 SRC_URI += " \
 	file://icap-sharc-alsa_Core1.ldr \
 	file://icap-sharc-alsa_Core2.ldr \
