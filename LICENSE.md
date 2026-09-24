@@ -5,7 +5,6 @@ The following exceptions apply:
 
 * Patches to the gadgetfs portion of the Linux kernel are licensed under GPLv2
 * Patches to the u-boot repository are developed by Analog Devices but licensed under GPLv2
-* Replacement header files for the pound package are licensed under GPLv1
 * Patches to the Linux kernel are licensed under GPLv2
 * Patches to the alsa library are licensed under GPLv2
 
