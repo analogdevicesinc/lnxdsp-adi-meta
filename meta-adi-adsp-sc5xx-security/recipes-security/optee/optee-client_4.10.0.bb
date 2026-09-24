@@ -1,7 +1,7 @@
 
 include optee-client.inc
 
-SRCREV = "8533e0e6329840ee96cf81b6453f257204227e6c"
+SRCREV = "9f5e90918093c1d1cd264d8149081b64ab7ba672"
 
 inherit pkgconfig
 DEPENDS += "util-linux"
