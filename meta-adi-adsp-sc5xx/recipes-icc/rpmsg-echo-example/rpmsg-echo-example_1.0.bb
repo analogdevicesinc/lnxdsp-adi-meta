@@ -1,6 +1,8 @@
 DESCRIPTION = "RPMsg-List Echo Example program for ADI"
 LICENSE = "CLOSED"
 
+S = "${UNPACKDIR}"
+
 # The echo firmware is built per machine. For the sc846 all we've got is
 # a copy of the sc598 SHARC+ image, which won't run on the SHARC-FX core -
 # it's the wrong ISA and just faults if you load it. So skip the firmware
