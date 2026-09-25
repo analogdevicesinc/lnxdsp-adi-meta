@@ -15,7 +15,7 @@ SRC_URI[LICENSE.adau1761.md5sum] = "dff5777c9526c7f6db0a0571f066e818"
 SRC_URI[LICENSE.md.md5sum] = "e2bfd7246b6d241634f71dfdbfef3d41"
 
 
-FILEPATH = "/usr/lib/firmware"
+FILEPATH = "${nonarch_base_libdir}/firmware"
 
 do_install:append() {
         install -m 0644 ${UNPACKDIR}/LICENSE.adau1761 ${D}${FILEPATH}
