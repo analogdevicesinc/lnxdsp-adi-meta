@@ -3,6 +3,8 @@ From: Caleb Ethridge <caleb.ethridge@analog.com>
 Date: Thu, 9 Apr 2026 10:59:40 -0400
 Subject: [PATCH] Yocto Debug Build
 
+Upstream-Status: Inappropriate [configuration]
+
 ---
  arch/arm/boot/dts/adi/sc573-ezlite.dts      | 2 +-
  arch/arm/boot/dts/adi/sc589-mini.dts        | 2 +-

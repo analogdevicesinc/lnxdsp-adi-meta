@@ -3,6 +3,8 @@ From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
 Date: Wed, 19 Jun 2019 09:01:21 -0400
 Subject: [PATCH 2/4] Apply 0002-rename-include-usb_gadgetfs-to-usb-dir.patch
 
+Upstream-Status: Inappropriate [other]
+
 ---
  usb.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

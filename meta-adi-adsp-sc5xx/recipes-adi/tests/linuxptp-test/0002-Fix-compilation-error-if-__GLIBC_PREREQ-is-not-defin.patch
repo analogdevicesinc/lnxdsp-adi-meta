@@ -3,6 +3,8 @@ From: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
 Date: Tue, 21 Mar 2023 12:38:13 -0400
 Subject: [PATCH] Fix compilation error if __GLIBC_PREREQ is not defined
 
+Upstream-Status: Pending
+
 ---
  testptp.c | 2 ++
  1 file changed, 2 insertions(+)

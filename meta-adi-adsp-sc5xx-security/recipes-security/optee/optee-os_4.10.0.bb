@@ -13,7 +13,7 @@ DEPENDS = "python3-cryptography-native python3-pycryptodome-native python3-pycry
 
 OPTEE_OS_GIT_URI ?= "git://github.com/analogdevicesinc/optee_os.git"
 OPTEE_OS_GIT_PROTOCOL ?= "https"
-OPTEE_OS_GIT_BRANCH ?= "develop/3.1.1"
+OPTEE_OS_GIT_BRANCH ?= "optee_4.10.0"
 OPTEE_OS_CORE_LOG_LEVEL ?= "1"
 OPTEE_OS_ENABLE_TESTS ?= "n"
 
@@ -21,9 +21,7 @@ SRC_URI = " \
 	${OPTEE_OS_GIT_URI};branch=${OPTEE_OS_GIT_BRANCH};protocol=${OPTEE_OS_GIT_PROTOCOL} \
 	file://libotp.a \
 "
-SRCREV = "01d23f4b821b58711bd352ae1a30990a67d8621f"
-
-S = "${WORKDIR}/git"
+SRCREV = "e6a30f41aeadaf794a25b20481ad2656e7429fa7"
 
 OPTEE_PLATFORM ?= "adi"
 OPTEE_FLAVOR ?= "adsp_sc598"
@@ -45,7 +43,7 @@ EXTRA_OEMAKE = " \
 "
 
 do_configure() {
-	cp ${WORKDIR}/libotp.a ${S}/libotp.a
+	cp ${UNPACKDIR}/libotp.a ${S}/libotp.a
 }
 
 do_compile() {
@@ -84,7 +82,9 @@ addtask deploy after do_install before do_build
 FILES:${PN}-dev = "${includedir}/optee/"
 FILES:${PN}-ta = "${nonarch_base_libdir}/optee_armtz/*"
 
-INSANE_SKIP:${PN}-dev = "staticdev"
+# TA devkit ships prebuilt static libs (libutee.a/libutils.a) with debug info
+# that still references TMPDIR; buildpaths QA became fatal in wrynose.
+INSANE_SKIP:${PN}-dev = "staticdev buildpaths"
 
 INHIBIT_PACKAGE_STRIP = "1"
 ALLOW_EMPTY:${PN} = "1"

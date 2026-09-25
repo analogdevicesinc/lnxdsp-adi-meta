@@ -5,5 +5,9 @@ do_install_basefilesissue () {
 		echo ${hostname} > ${D}${sysconfdir}/hostname
 	fi
 
-	install -m 644 ${WORKDIR}/issue*  ${D}${sysconfdir}
+	install -m 644 ${UNPACKDIR}/issue*  ${D}${sysconfdir}
+}
+
+do_install:append () {
+	: > ${D}${sysconfdir}/motd
 }

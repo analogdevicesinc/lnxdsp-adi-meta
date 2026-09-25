@@ -3,6 +3,8 @@ From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
 Date: Wed, 19 Jun 2019 09:01:39 -0400
 Subject: [PATCH 3/4] Apply gadgetfs-test-fix-musb-device-name.patch
 
+Upstream-Status: Inappropriate [other]
+
 ---
  usb.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)

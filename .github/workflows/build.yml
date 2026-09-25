@@ -9,6 +9,9 @@ on:
       image:
         description: "Yocto image"
         default: "adsp-sc5xx-minimal"
+      distro:
+        description: "Yocto distro"
+        default: "adi-distro-glibc"
       manifest:
         description: "Manifest"
         default: main
@@ -23,6 +26,9 @@ on:
         description: "Store image artifacts and expose them to cloudsmith"
         type: boolean
         default: true
+      manifest-branch:
+        description: "Manifest repository branch/ref"
+        default: "main"
       override-meta-adi:
         description: "Override sources/meta-adi with the checked-out ref"
         type: boolean
@@ -35,6 +41,9 @@ on:
       image:
         type: string
         default: "adsp-sc5xx-minimal"
+      distro:
+        type: string
+        default: "adi-distro-glibc"
       manifest:
         type: string
         default: main
@@ -47,6 +56,9 @@ on:
       upload-artifacts:
         type: boolean
         default: true
+      manifest-branch:
+        type: string
+        default: "main"
       override-meta-adi:
         type: boolean
         default: false
@@ -90,10 +102,12 @@ jobs:
         with:
           machine: ${{ inputs.machine }}
           image: ${{ inputs.image }}
+          distro: ${{ inputs.distro }}
           manifest: ${{ inputs.manifest }}
           manifest-repo: ${{ inputs.manifest-repo }}
           build-sdk: ${{ inputs.build-sdk }}
           upload-artifacts: ${{ inputs.upload-artifacts }}
+          manifest-branch: ${{ inputs.manifest-branch }}
           override-meta-adi: ${{ inputs.override-meta-adi }}
           gh-token: ${{ steps.app-token.outputs.token || github.token }}
 
