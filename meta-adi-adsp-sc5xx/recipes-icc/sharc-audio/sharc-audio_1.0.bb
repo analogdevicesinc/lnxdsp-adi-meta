@@ -9,12 +9,12 @@ SRC_URI += " \
 "
 
 do_install() {
-	install -m 0755 -d ${D}/usr/lib/firmware
-	install -m 0755 ${UNPACKDIR}/icap-sharc-alsa_Core1.ldr ${D}/usr/lib/firmware/adi_adsp_core1_fw.ldr
-	install -m 0755 ${UNPACKDIR}/icap-sharc-alsa_Core2.ldr ${D}/usr/lib/firmware/adi_adsp_core2_fw.ldr	
+	install -m 0755 -d ${D}${nonarch_base_libdir}/firmware
+	install -m 0755 ${UNPACKDIR}/icap-sharc-alsa_Core1.ldr ${D}${nonarch_base_libdir}/firmware/adi_adsp_core1_fw.ldr
+	install -m 0755 ${UNPACKDIR}/icap-sharc-alsa_Core2.ldr ${D}${nonarch_base_libdir}/firmware/adi_adsp_core2_fw.ldr	
 }
 
 FILES:${PN} = " \
-	/usr/lib/firmware/adi_adsp_core1_fw.ldr \
-	/usr/lib/firmware/adi_adsp_core2_fw.ldr \
+	${nonarch_base_libdir}/firmware/adi_adsp_core1_fw.ldr \
+	${nonarch_base_libdir}/firmware/adi_adsp_core2_fw.ldr \
 "

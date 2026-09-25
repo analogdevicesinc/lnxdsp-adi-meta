@@ -11,7 +11,10 @@ S = "${UNPACKDIR}"
 ECHO_FW = " file://echo_core1-${MACHINE}.ldr file://echo_core2-${MACHINE}.ldr"
 ECHO_FW:adsp-sc846-som-ezkit = ""
 
-ECHO_FW_FILES = " /usr/lib/firmware/adi_adsp_core1_fw.ldr /usr/lib/firmware/adi_adsp_core2_fw.ldr"
+# Use nonarch_base_libdir so the firmware lands in /lib/firmware (where the
+# kernel loader searches) on non-usrmerge distros like poky-tiny/musl, and in
+# the usrmerged /usr/lib/firmware on glibc.
+ECHO_FW_FILES = " ${nonarch_base_libdir}/firmware/adi_adsp_core1_fw.ldr ${nonarch_base_libdir}/firmware/adi_adsp_core2_fw.ldr"
 ECHO_FW_FILES:adsp-sc846-som-ezkit = ""
 
 SRC_URI += " \
@@ -20,13 +23,13 @@ SRC_URI += " \
 "
 
 do_install() {
-	install -m 0755 -d ${D}/usr/bin
-	install -m 0755 ${UNPACKDIR}/test_rpmsg_echo.sh ${D}/usr/bin
+	install -m 0755 -d ${D}${bindir}
+	install -m 0755 ${UNPACKDIR}/test_rpmsg_echo.sh ${D}${bindir}
 
 	if [ -n "${ECHO_FW}" ]; then
-		install -m 0755 -d ${D}/usr/lib/firmware
-		install -m 0755 ${UNPACKDIR}/echo_core1-${MACHINE}.ldr ${D}/usr/lib/firmware/adi_adsp_core1_fw.ldr
-		install -m 0755 ${UNPACKDIR}/echo_core2-${MACHINE}.ldr ${D}/usr/lib/firmware/adi_adsp_core2_fw.ldr
+		install -m 0755 -d ${D}${nonarch_base_libdir}/firmware
+		install -m 0755 ${UNPACKDIR}/echo_core1-${MACHINE}.ldr ${D}${nonarch_base_libdir}/firmware/adi_adsp_core1_fw.ldr
+		install -m 0755 ${UNPACKDIR}/echo_core2-${MACHINE}.ldr ${D}${nonarch_base_libdir}/firmware/adi_adsp_core2_fw.ldr
 	fi
 }
 
