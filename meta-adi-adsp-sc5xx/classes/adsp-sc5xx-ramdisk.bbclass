@@ -18,8 +18,7 @@ IMAGE_FSTYPES = " cpio.xz cpio.gz"
 
 DEPENDS += "u-boot-tools-native"
 
-#We do not need these files in the rootfs -- remove them to reduce the minimal rootfs size
-fakeroot do_rootfs_cleanup(){
+rootfs_cleanup(){
     rm -rf ${IMAGE_ROOTFS}/usr/lib/opkg
     rm -rf ${IMAGE_ROOTFS}/usr/lib/locale
     rm -rf ${IMAGE_ROOTFS}/sbin/ldconfig
@@ -32,7 +31,7 @@ fakeroot do_rootfs_cleanup(){
     chmod 777 ${IMAGE_ROOTFS}/etc/hostname
 }
 
-addtask rootfs_cleanup after do_rootfs before do_image
+ROOTFS_POSTPROCESS_COMMAND += "rootfs_cleanup;"
 
 # printf "%q" $(mkpasswd -m sha256crypt adi)
 PASSWD_ROOT = "\$5\$j9T8zDE13LXUGyc6\$utDvGwFWR.kt/AKwwbHnXC14HJBqbcWwvLoDDLMQrc8"
