@@ -81,13 +81,13 @@ UBINIZE_ARGS = "-m 1 -p 65536 -s 1"
 
 ADSP_SC5XX_INIT_SCRIPT := "${THISDIR}/files/init"
 
-fakeroot do_install_init_script(){
+install_init_script(){
     # Create firmware directory in rootfs and install init script
     install -d ${IMAGE_ROOTFS}/usr/firmware
     install -m 755 ${ADSP_SC5XX_INIT_SCRIPT} ${IMAGE_ROOTFS}/usr/firmware/init
 }
 
-addtask install_init_script after do_rootfs before do_image
+ROOTFS_POSTPROCESS_COMMAND += "install_init_script"
 
 do_create_programming_images(){
     # Create programming-images directory
