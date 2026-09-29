@@ -92,7 +92,7 @@ jobs:
           - Verify SRC_URI and ensure matching checksums.
           - Validate the presence and accuracy of LIC_FILES_CHKSUM.
           - Confirm that the version of any .bbappend file matches the base recipe it extends.
-          - Check LAYERSERIES_COMPAT settings validating against the version Scarthgap (5.0)
+          - Check LAYERSERIES_COMPAT settings validating against the version Wrynose (6.0)
 
           The LAYERSERIES_COMPAT prevent a build from breaking due to incompatible syntax
           changes between different versions of Yocto.
@@ -161,7 +161,7 @@ jobs:
         shell: bash
         run: |
           git clone https://git.yoctoproject.org/yocto-docs.git \
-            --branch scarthgap --depth 1 -- yocto-docs
+            --branch wrynose --depth 1 -- yocto-docs
 
       - uses: analogdevicesinc/doctools/llm@action
         id: llm
