@@ -11,8 +11,8 @@ SRC_URI += "file://adau1761.bin \
 			file://sharc-alsa/LICENSE.md \
 			"
 
-SRC_URI[LICENSE.adau1761.md5sum] = "dff5777c9526c7f6db0a0571f066e818"
-SRC_URI[LICENSE.md.md5sum] = "e2bfd7246b6d241634f71dfdbfef3d41"
+SRC_URI[LICENSE.adau1761.md5sum] = "e4c73a481bb7e9ad16049e80f22d669e"
+SRC_URI[LICENSE.md.md5sum] = "e4c73a481bb7e9ad16049e80f22d669e"
 
 
 FILEPATH = "${nonarch_base_libdir}/firmware"
