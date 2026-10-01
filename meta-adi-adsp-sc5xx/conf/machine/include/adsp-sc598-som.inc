@@ -16,3 +16,5 @@ PREFERRED_PROVIDER_virtual/bootloader = "u-boot-adi"
 EXTRA_IMAGEDEPENDS += "virtual/bootloader"
 
 MACHINE_FEATURES = "kernel26 serial ethernet usbhost usbgadget mmc alsa"
+
+EMMC_IMAGE_ENABLE = "1"
