@@ -5,7 +5,7 @@ SRC_URI = " \
 	file://source/linkport_test.c \
 "
 
-S = "${WORKDIR}/source"
+S = "${UNPACKDIR}/source"
 
 do_compile(){
 	cd ${S}

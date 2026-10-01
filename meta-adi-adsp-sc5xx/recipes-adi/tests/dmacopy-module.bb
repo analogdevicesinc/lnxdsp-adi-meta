@@ -8,4 +8,4 @@ SRC_URI = " \
 	file://dmacopy_module.c \
 "
 
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"

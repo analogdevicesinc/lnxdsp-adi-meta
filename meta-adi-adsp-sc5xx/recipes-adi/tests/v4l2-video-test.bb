@@ -6,7 +6,7 @@ SRC_URI = " \
        file://0001-Parse-video-image_size-to-kernel-buf.patch \
 "
 
-S = "${WORKDIR}/v4l2_video_test"
+S = "${UNPACKDIR}/v4l2_video_test"
 
 do_compile:prepend(){
 	cd ${S}

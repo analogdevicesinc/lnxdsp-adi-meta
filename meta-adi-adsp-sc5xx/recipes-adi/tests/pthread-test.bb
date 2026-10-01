@@ -5,7 +5,7 @@ SRC_URI = " \
        svn://svn.code.sf.net/p/adi-openapp/code/trunk/tests;module=pthread_test;protocol=http;rev=HEAD \
 "
 
-S = "${WORKDIR}/pthread_test"
+S = "${UNPACKDIR}/pthread_test"
 
 do_compile:prepend(){
 	cd ${S}

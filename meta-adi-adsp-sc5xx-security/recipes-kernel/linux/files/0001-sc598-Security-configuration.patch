@@ -3,6 +3,8 @@ From: Caleb Ethridge <caleb.ethridge@analog.com>
 Date: Mon, 17 Aug 2026 09:07:48 -0400
 Subject: [PATCH] sc598: Security configuration
 
+Upstream-Status: Inappropriate [embedded specific]
+
 Disable peripherals restricted by the SPU:
 - SEC
 - RCU reboot

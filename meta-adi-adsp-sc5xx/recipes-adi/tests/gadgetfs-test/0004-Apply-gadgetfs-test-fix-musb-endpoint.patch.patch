@@ -3,6 +3,8 @@ From: Nathan Barrett Morrison <nathan.morrison@timesys.com>
 Date: Wed, 19 Jun 2019 09:01:52 -0400
 Subject: [PATCH 4/4] Apply gadgetfs-test-fix-musb-endpoint.patch
 
+Upstream-Status: Inappropriate [other]
+
 ---
  usb.c | 18 +++++++++---------
  1 file changed, 9 insertions(+), 9 deletions(-)
