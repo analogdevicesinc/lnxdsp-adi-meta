@@ -1,4 +1,4 @@
-inherit core-image extrausers adsp-sc5xx-compatible adsp-fit-generation
+inherit core-image extrausers adsp-sc5xx-compatible adsp-fit-generation adsp-sc5xx-images
 
 SUMMARY = "Minimal image for Analog Devices ADSP-SC5xx boards"
 LICENSE = "MIT"
@@ -84,6 +84,7 @@ addtask install_init_script after do_set_init before do_image
 do_create_programming_images(){
     # Create programming-images directory
     PROG_DIR="${DEPLOY_DIR_IMAGE}/programming-images/${IMAGE_BASENAME}"
+    rm -rf ${PROG_DIR}
     install -d ${PROG_DIR}
 
     # Copy U-boot ldr images
@@ -104,15 +105,21 @@ do_create_programming_images(){
         cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubi ${PROG_DIR}/rootfs.ubi
     fi
 
-    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ext4 ]; then
-        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ext4 ${PROG_DIR}/rootfs.ext4
+    # Copy the eMMC image if it exists
+    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.emmc.img ]; then
+        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.emmc.img ${PROG_DIR}/emmc.img
+    fi
+
+    # Copy the USB image if it exists
+    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.usb.img ]; then
+        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.usb.img ${PROG_DIR}/usb.img
     fi
 
     echo "Programming images created in: ${PROG_DIR}"
     ls -la ${PROG_DIR}
 }
 
-addtask create_programming_images after do_image_complete before do_build
+addtask create_programming_images after do_image_complete do_create_disk_images before do_build
 
 do_create_programming_images[depends] += "\
     virtual/bootloader:do_deploy \
