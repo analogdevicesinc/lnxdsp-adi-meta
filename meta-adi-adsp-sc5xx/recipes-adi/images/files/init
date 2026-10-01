@@ -92,11 +92,11 @@ esac
 echo
 echo "======== Emmc Installer ========"
 
-# Check if machine supports eMMC programming (only SC598 platforms)
+# Check if machine supports eMMC programming (only SC598 and SC846 platforms)
 MACHINE_MODEL=$(cat /proc/device-tree/model 2>/dev/null | tr -d '\0' || echo "unknown")
 case "$MACHINE_MODEL" in
-  *"SC598"*)
-    echo "Install U-Boot to EMMC"
+  *"SC598"*|*"SC84X"*)
+    echo "Install eMMC image"
     echo
     echo "This will erase and program EMMC."
     printf "Continue? [y/N]: "
@@ -105,33 +105,8 @@ case "$MACHINE_MODEL" in
 
     case "$ans" in
       y|Y)
-        echo "Installing to EMMC..."
-
-        echo "Partitioning eMMC..."
-        # Create DOS MBR partition table with two primary partitions
-        # Partition 1: 32MB for fitImage (should be more than enough)
-        # Partition 2: Remainder for rootfs
-        echo -e 'o\nn\np\n1\n\n+32M\nn\np\n2\n\n\nw' | fdisk /dev/mmcblk0 > /dev/null
-
-        # Wait for partition table to be re-read
-        sleep 2
-        partprobe /dev/mmcblk0 || true > /dev/null
-        sleep 1
-
-        echo "Formatting eMMC partition 1 as ext4..."
-        mke2fs -F -t ext4 -L "BOOT" /dev/mmcblk0p1 > /dev/null
-
-        echo "Writing fitImage to eMMC partition 1..."
-        mkdir -p /tmp/boot_mount > /dev/null
-        mount /dev/mmcblk0p1 /tmp/boot_mount > /dev/null
-        cp /usr/firmware/fitImage /tmp/boot_mount/ > /dev/null
-        sync
-        umount /tmp/boot_mount > /dev/null
-        rmdir /tmp/boot_mount > /dev/null
-
-        echo "Writing rootfs image to eMMC partition 2..."
-        dd if=/usr/firmware/rootfs.ext4 of=/dev/mmcblk0p2 bs=512 > /dev/null
-
+        echo "Writing eMMC image to /dev/mmcblk0..."
+        dd if=/usr/firmware/emmc.img of=/dev/mmcblk0 bs=1M
         sync
         echo "EMMC install complete"
         ;;
@@ -141,7 +116,7 @@ case "$MACHINE_MODEL" in
     esac
     ;;
   *)
-    echo "eMMC programming is only supported on adsp-sc598-som-ezkit and adsp-sc598-som-ezlite machines."
+    echo "eMMC programming is only supported on the SC598 and SC846 platforms."
     echo "Current machine: $MACHINE_MODEL"
     echo "Skipping eMMC installer."
     ;;
@@ -156,35 +131,14 @@ read -r ans
 
 case "$ans" in
   y|Y)
-    echo "Installing to USB..."
-
-    echo "Partitioning USB..."
-    # Create DOS MBR partition table with two primary partitions
-    # Partition 1: 32MB for fitImage (should be more than enough)
-    # Partition 2: Remainder for rootfs
-    echo -e 'o\nn\np\n1\n\n+32M\nn\np\n2\n\n\nw' | fdisk /dev/sda > /dev/null
-
-    # Wait for partition table to be re-read
-    sleep 2
-    partprobe /dev/sda || true > /dev/null
-    sleep 1
-
-    echo "Formatting USB partition 1 as ext4..."
-    mke2fs -F -t ext4 -L "BOOT" /dev/sda1 > /dev/null
-
-    echo "Writing fitImage to USB partition 1..."
-    mkdir -p /tmp/boot_mount > /dev/null
-    mount /dev/sda1 /tmp/boot_mount > /dev/null
-    cp /usr/firmware/fitImage /tmp/boot_mount/ > /dev/null
-    sync
-    umount /tmp/boot_mount > /dev/null
-    rmdir /tmp/boot_mount > /dev/null
-
-    echo "Writing rootfs image to USB partition 2..."
-    dd if=/usr/firmware/rootfs.ext4 of=/dev/sda2 bs=512 > /dev/null
-
-    sync
-    echo "USB install complete"
+    if [ -f /usr/firmware/usb.img ]; then
+      echo "Writing USB image to /dev/sda..."
+      dd if=/usr/firmware/usb.img of=/dev/sda bs=1M
+      sync
+      echo "USB install complete"
+    else
+      echo "No USB image available for this machine; skipping USB install."
+    fi
     ;;
   *)
     echo "Skipping USB install"
