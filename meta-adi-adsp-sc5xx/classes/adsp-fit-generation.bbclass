@@ -32,10 +32,10 @@ emit_its() {
 			load = <${UBOOT_LOADADDRESS}>;
 			entry = <${UBOOT_ENTRYPOINT}>;
 			hash-1 {
-				algo = "sha1";
+				algo = "sha256";
 			};
 			signature-1 {
-				algo = "sha1,rsa2048";
+				algo = "sha256,rsa2048";
 				key-name-hint = "${UBOOT_SIGN_KEYNAME}";
 			};
 		};
@@ -48,10 +48,10 @@ emit_its() {
 			compression = "none";
 			load = <${UBOOT_DTBADDRESS}>;
 			hash-1 {
-				algo = "sha1";
+				algo = "sha256";
 			};
 			signature-1 {
-				algo = "sha1,rsa2048";
+				algo = "sha256,rsa2048";
 				key-name-hint = "${UBOOT_SIGN_KEYNAME}";
 			};
 		};
@@ -66,10 +66,10 @@ emit_its() {
 			load = <${UBOOT_RDADDR}>;
 			entry = <${UBOOT_RDADDR}>;
 			hash-1 {
-					algo = "sha1";
+					algo = "sha256";
 			};
 			signature-1 {
-				algo = "sha1,rsa2048";
+				algo = "sha256,rsa2048";
 				key-name-hint = "${UBOOT_SIGN_KEYNAME}";
 			};
 		};
@@ -84,7 +84,7 @@ emit_its() {
 			fdt = "fdt-2";
 			loadables = "ramdisk-3";
 			signature-1 {
-				algo = "sha1,rsa2048";
+				algo = "sha256,rsa2048";
 				key-name-hint = "${UBOOT_SIGN_KEYNAME}";
 			};
 		};

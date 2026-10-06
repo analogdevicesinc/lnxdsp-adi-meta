@@ -28,7 +28,7 @@ sits_emit() {
 			load = <0x80008000>;
 			entry = <0x80008000>;
 			hash {
-				algo = "sha1";
+				algo = "sha256";
 			};
 		};
 	};
@@ -38,10 +38,10 @@ sits_emit() {
 			description = "dummy";
 			dummy = "dummy-img";
 			hash {
-					algo = "sha1";
+					algo = "sha256";
 			};
 			signature {
-				algo = "sha1,rsa2048";
+				algo = "sha256,rsa2048";
 				key-name-hint = "${UBOOT_SIGN_KEYNAME}";
 				sign-images = "dummy";
 			};
