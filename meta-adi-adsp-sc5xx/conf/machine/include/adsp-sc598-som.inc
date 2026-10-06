@@ -10,6 +10,11 @@ MACHINE_KERNEL_PR = "r0"
 KERNEL_IMAGETYPE = "Image.gz"
 KERNEL_COMPRESSION = "gzip"
 
+IMAGE_BOOT_FILES = "fitImage"
+
+MMC_STAGE1_OFFSET ?= "17"
+MMC_STAGE2_OFFSET ?= "256"
+
 PREFERRED_PROVIDER_virtual/kernel = "linux-adi"
 PREFERRED_PROVIDER_virtual/bootloader = "u-boot-adi"
 

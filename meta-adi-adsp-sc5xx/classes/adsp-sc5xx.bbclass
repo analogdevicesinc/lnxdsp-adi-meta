@@ -118,8 +118,9 @@ do_create_programming_images(){
         dd if=${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubi of=${PROG_DIR}/flash.img bs=4M seek=$(printf '%d' ${FLASH_ROOTFS_OFFSET}) oflag=seek_bytes conv=notrunc
     fi
 
-    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ext4 ]; then
-        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ext4 ${PROG_DIR}/rootfs.ext4
+    # eMMC/SD/USB disk image delivered compressed as mmc.img.gz
+    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.wic.gz ]; then
+        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.wic.gz ${PROG_DIR}/mmc.img.gz
     fi
 
     echo "Programming images created in: ${PROG_DIR}"
