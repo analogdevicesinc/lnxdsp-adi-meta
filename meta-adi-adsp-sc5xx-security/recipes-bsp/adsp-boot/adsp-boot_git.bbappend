@@ -13,4 +13,4 @@ STAGE_2_SRC:append:optee-shim = " optee-shim.elf"
 
 # If we'll be signing the output later, call it unsigned for the signing recipe
 # to be able to find it
-STAGE_2_TARGET_NAME:adsp-sc5xx-signedboot = "u-boot-unsigned.ldr"
+STAGE_2_TARGET_NAME:adsp-sc5xx-signedboot = "u-boot-unsigned"

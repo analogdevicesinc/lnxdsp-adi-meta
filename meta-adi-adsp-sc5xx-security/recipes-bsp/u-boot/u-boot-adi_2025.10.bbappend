@@ -1,7 +1,7 @@
 
 DEPENDS:append:adsp-sc5xx-signedboot = " u-boot-mkimage-native dtc-native"
 
-STAGE_1_TARGET_NAME:adsp-sc5xx-signedboot = "u-boot-spl-unsigned.ldr"
+STAGE_1_TARGET_NAME:adsp-sc5xx-signedboot = "u-boot-spl-unsigned"
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 

@@ -18,7 +18,7 @@ SIGNTOOL_PROC:adsp-sc598-som-ezkit = "ADSP-SC598"
 
 SIGNTOOL_ALGO = "ecdsa256"
 
-UNSIGNED_SRC = "u-boot-spl-unsigned.ldr u-boot-unsigned.ldr"
+UNSIGNED_SRC = "u-boot-spl-unsigned u-boot-unsigned"
 
 do_configure() {
 	if [ -z "${ADI_SIGNTOOL_KEY}" ]; then
@@ -44,12 +44,12 @@ do_compile() {
 
 	${ADI_SIGNTOOL_PATH} -proc ${SIGNTOOL_PROC} sign -type ${ADI_SIGNATURE_TYPE} -algo ${SIGNTOOL_ALGO} \
 		-attribute 0x80000002=${LDR_BCODE} \
-		-infile u-boot-spl-unsigned.ldr -outfile u-boot-spl.ldr \
+		-infile u-boot-spl-unsigned -outfile u-boot-spl \
 		-prikey ${ADI_SIGNTOOL_KEY}
 
 	${ADI_SIGNTOOL_PATH} -proc ${SIGNTOOL_PROC} sign -type ${ADI_SIGNATURE_TYPE} -algo ${SIGNTOOL_ALGO} \
 		-attribute 0x80000002=${LDR_BCODE} \
-		-infile u-boot-unsigned.ldr -outfile u-boot.ldr \
+		-infile u-boot-unsigned -outfile u-boot \
 		-prikey ${ADI_SIGNTOOL_KEY}
 }
 
@@ -60,8 +60,8 @@ do_install() {
 }
 
 do_deploy() {
-	install -m 0755 ${WORKDIR}/u-boot-spl.ldr ${DEPLOYDIR}/
-	install -m 0755 ${WORKDIR}/u-boot.ldr ${DEPLOYDIR}/
+	install -m 0755 ${WORKDIR}/u-boot-spl ${DEPLOYDIR}/
+	install -m 0755 ${WORKDIR}/u-boot ${DEPLOYDIR}/
 }
 
 addtask do_deploy after do_compile before do_build

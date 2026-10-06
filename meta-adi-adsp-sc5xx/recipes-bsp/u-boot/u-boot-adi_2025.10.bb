@@ -6,7 +6,7 @@ SRCREV = "${AUTOREV}"
 
 UBOOT_INITIAL_ENV = ""
 
-STAGE_1_TARGET_NAME = "u-boot-spl.ldr"
+STAGE_1_TARGET_NAME = "u-boot-spl"
 
 FILES:${PN} = " \
     u-boot-proper-${BOARD}.elf \

@@ -84,14 +84,15 @@ addtask install_init_script after do_set_init before do_image
 do_create_programming_images(){
     # Create programming-images directory
     PROG_DIR="${DEPLOY_DIR_IMAGE}/programming-images/${IMAGE_BASENAME}"
+    rm -rf ${PROG_DIR}
     install -d ${PROG_DIR}
 
-    # Copy U-boot ldr images
-    if [ -f ${DEPLOY_DIR_IMAGE}/u-boot-spl.ldr ]; then
-        cp ${DEPLOY_DIR_IMAGE}/u-boot-spl.ldr ${PROG_DIR}/
+    # Copy U-boot images
+    if [ -f ${DEPLOY_DIR_IMAGE}/u-boot-spl ]; then
+        cp ${DEPLOY_DIR_IMAGE}/u-boot-spl ${PROG_DIR}/
     fi
-    if [ -f ${DEPLOY_DIR_IMAGE}/u-boot.ldr ]; then
-        cp ${DEPLOY_DIR_IMAGE}/u-boot.ldr ${PROG_DIR}/
+    if [ -f ${DEPLOY_DIR_IMAGE}/u-boot ]; then
+        cp ${DEPLOY_DIR_IMAGE}/u-boot ${PROG_DIR}/
     fi
 
     # Copy fitImage

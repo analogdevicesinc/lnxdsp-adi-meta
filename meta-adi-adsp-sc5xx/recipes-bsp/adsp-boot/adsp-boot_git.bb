@@ -9,7 +9,7 @@ LDR = "ldr"
 
 # Whatever is LAST in this list will be the jump target from SPL
 STAGE_2_SRC = "u-boot-proper-${BOARD}.elf"
-STAGE_2_TARGET_NAME = "u-boot.ldr"
+STAGE_2_TARGET_NAME = "u-boot"
 
 inherit deploy deploy-dep
 

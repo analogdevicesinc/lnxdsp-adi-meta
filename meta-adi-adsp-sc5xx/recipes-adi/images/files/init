@@ -31,7 +31,7 @@ case "$ans" in
     if [ "$spl_ans" = "y" ] || [ "$spl_ans" = "Y" ]; then
       echo "Installing U-boot SPL..."
       flash_erase /dev/mtd0 0 0
-      flashcp /usr/firmware/u-boot-spl.ldr /dev/mtd0
+      flashcp /usr/firmware/u-boot-spl /dev/mtd0
     fi
 
     # U-Boot (mtd1)
@@ -40,7 +40,7 @@ case "$ans" in
     if [ "$uboot_ans" = "y" ] || [ "$uboot_ans" = "Y" ]; then
       echo "Installing U-boot..."
       flash_erase /dev/mtd1 0 0
-      flashcp /usr/firmware/u-boot.ldr /dev/mtd1
+      flashcp /usr/firmware/u-boot /dev/mtd1
     fi
 
     # Linux kernel (mtd2)
@@ -68,11 +68,11 @@ case "$ans" in
 
     echo "Installing U-boot SPL..."
     flash_erase /dev/mtd0 0 0
-    flashcp /usr/firmware/u-boot-spl.ldr /dev/mtd0
+    flashcp /usr/firmware/u-boot-spl /dev/mtd0
 
     echo "Installing U-boot..."
     flash_erase /dev/mtd1 0 0
-    flashcp /usr/firmware/u-boot.ldr /dev/mtd1
+    flashcp /usr/firmware/u-boot /dev/mtd1
 
     echo "Installing Linux kernel"
     flash_erase /dev/mtd2 0 0
