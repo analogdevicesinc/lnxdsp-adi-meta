@@ -47,10 +47,12 @@ do_compile() {
 		-infile u-boot-spl-unsigned -outfile u-boot-spl \
 		-prikey ${ADI_SIGNTOOL_KEY}
 
-	${ADI_SIGNTOOL_PATH} -proc ${SIGNTOOL_PROC} sign -type ${ADI_SIGNATURE_TYPE} -algo ${SIGNTOOL_ALGO} \
-		-attribute 0x80000002=${LDR_BCODE} \
-		-infile u-boot-unsigned -outfile u-boot \
-		-prikey ${ADI_SIGNTOOL_KEY}
+	if [ -n "${STAGE_2_UNSIGNED}" ]; then
+		${ADI_SIGNTOOL_PATH} -proc ${SIGNTOOL_PROC} sign -type ${ADI_SIGNATURE_TYPE} -algo ${SIGNTOOL_ALGO} \
+			-attribute 0x80000002=${LDR_BCODE} \
+			-infile u-boot-unsigned -outfile u-boot \
+			-prikey ${ADI_SIGNTOOL_KEY}
+	fi
 }
 
 FILES:${PN} = "adsp-signed-boot.dummy"
@@ -60,8 +62,10 @@ do_install() {
 }
 
 do_deploy() {
-	install -m 0755 ${WORKDIR}/u-boot-spl ${DEPLOYDIR}/
-	install -m 0755 ${WORKDIR}/u-boot ${DEPLOYDIR}/
+	install -m 0755 ${WORKDIR}/u-boot-spl ${DEPLOYDIR}/u-boot-spl
+	if [ -n "${STAGE_2_UNSIGNED}" ]; then
+		install -m 0755 ${WORKDIR}/u-boot ${DEPLOYDIR}/u-boot
+	fi
 }
 
 addtask do_deploy after do_compile before do_build

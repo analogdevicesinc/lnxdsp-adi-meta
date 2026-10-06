@@ -6,3 +6,8 @@ DISTROOVERRIDES = "${@bb.utils.contains('DISTRO_FEATURES', 'optee', ':adsp-sc5xx
 DISTROOVERRIDES:append = "${@bb.utils.contains('DISTRO_FEATURES', 'optee-shim', ':optee-shim', '', d)}"
 
 BASH_HAS_SECUREBOOT = "${@bb.utils.contains('DISTRO_FEATURES', 'signedboot', '1', '', d)}"
+
+# TF-A/OP-TEE ride in the signed stage-1 LDR and the SPL loads U-Boot proper as a
+# signed FIT, so there is no stage-2 LDR
+SECURE_BOOT = ""
+SECURE_BOOT:adsp-sc598-som-ezkit = "${@bb.utils.contains('DISTRO_FEATURES', 'signedboot optee', '1', '', d)}"

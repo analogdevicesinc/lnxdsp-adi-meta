@@ -7,24 +7,25 @@ The combined size of U-boot Proper + TF-A/OPTEE in ceratin configurations
 can expand past the normal sc598 partition for U-boot proper. Expanding
 the partition to a safe size to accomodate these configurations.
 ---
- arch/arm/mach-sc5xx/soc.c                     |  9 +++++++++
+ arch/arm/mach-sc5xx/soc.c                     | 10 ++++++++++
  board/adi/sc598-som-ezkit/sc598-som-ezkit.env |  6 ++++++
  include/env/adi/adi_boot.env                  | 15 ++++++++++++++-
- 3 files changed, 29 insertions(+), 1 deletion(-)
+ 3 files changed, 30 insertions(+), 1 deletion(-)
 
 diff --git a/arch/arm/mach-sc5xx/soc.c b/arch/arm/mach-sc5xx/soc.c
 index 09978a5cf44..0a69e4f9d09 100644
 --- a/arch/arm/mach-sc5xx/soc.c
 +++ b/arch/arm/mach-sc5xx/soc.c
-@@ -91,7 +91,16 @@ const char *sc5xx_get_boot_mode(u32 *bmode)
+@@ -91,7 +91,17 @@ const char *sc5xx_get_boot_mode(u32 *bmode)
  	};
  	u32 local_mode;
  
-+#ifdef CONFIG_FIT_SIGNATURE
++#if defined(CONFIG_FIT_SIGNATURE) && !defined(CONFIG_XPL_BUILD)
 +	/*
 +	 * In security builds with signature verification enabled, OP-TEE
 +	 * manages RCU resources. Skip RCU register access to prevent boot
-+	 * stalling and default to QSPI Master mode.
++	 * stalling and default to QSPI Master mode. The SPL runs before
++	 * OP-TEE and needs the real boot mode.
 +	 */
 +	local_mode = 1; /* QSPI Master */
 +#else
@@ -41,11 +42,11 @@ index 4195b93823b..b0e625b231b 100644
  kernel_addr_r=0x9a200000
  ramdisk_addr_r=0x9c000000
  
-+/* SPI flash partition offsets and LDR images used by update_uboot */
++/* SPI flash partition offsets and images used by update_uboot */
 +spl_offset=0x0
-+uboot_offset=0x40000
-+spl_ldr=u-boot-spl-unsigned.ldr
-+uboot_ldr=u-boot-unsigned.ldr
++uboot_offset=0x100000
++spl_ldr=u-boot-spl-unsigned
++uboot_ldr=u-boot
 +
  #define USE_NFS
  #define USE_SPI
@@ -71,16 +72,16 @@ index 6b5aae538dd..d423a502761 100644
  	sf read ${loadaddr} ${adi_image_offset} 0xf00000;
  	bootm ${loadaddr}
 +
-+/* Fetch the unsigned SPL and stage-2 LDRs over the network and program them
-+ * into the u-boot-spl and u-boot SPI flash partitions. */
++/* Fetch the unsigned SPL LDR and the signed U-Boot FIT over the network and
++ * program them into the u-boot-spl and u-boot SPI flash partitions. */
 +update_uboot=setenv sfdev CONFIG_SC_BOOT_SPI_BUS:CONFIG_SC_BOOT_SPI_SSEL;
 +	sf probe ${sfdev};
 +	wget ${loadaddr} ${serverip}:/${spl_ldr};
-+	sf erase ${spl_offset} 0x40000;
-+	sf write ${loadaddr} ${spl_offset} 0x40000;
++	sf erase ${spl_offset} 0x100000;
++	sf write ${loadaddr} ${spl_offset} 0x100000;
 +	wget ${loadaddr} ${serverip}:/${uboot_ldr};
-+	sf erase ${uboot_offset} 0x1c0000;
-+	sf write ${loadaddr} ${uboot_offset} 0x1c0000
++	sf erase ${uboot_offset} 0x100000;
++	sf write ${loadaddr} ${uboot_offset} 0x100000
  #endif
  
  #if defined(USE_OSPI)

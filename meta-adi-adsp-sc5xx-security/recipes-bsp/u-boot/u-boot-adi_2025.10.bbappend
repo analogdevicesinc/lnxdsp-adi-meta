@@ -5,7 +5,86 @@ STAGE_1_TARGET_NAME:adsp-sc5xx-signedboot = "u-boot-spl-unsigned"
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
-SRC_URI:append:adsp-sc598-som-ezkit = "${@bb.utils.contains('DISTRO_FEATURES', 'signedboot', ' file://0001-sc598-uboot-partitions-update-command.patch', '', d)}"
+SRC_URI:append:adsp-sc598-som-ezkit = "${@bb.utils.contains('DISTRO_FEATURES', 'signedboot', ' file://0001-sc598-uboot-partitions-update-command.patch file://0002-arm-mach-sc5xx-Start-TF-A-from-the-SPL-for-secure-boot.patch file://spl-secure-falcon.cfg', '', d)}"
+
+STAGE_1_TFA_ELF_ADDR = "0x20100000"
+
+do_compile[depends] += "${@'trusted-firmware-a:do_deploy optee-os-elf:do_deploy' if d.getVar('SECURE_BOOT') else ''}"
+
+do_compile:append() {
+	if [ -n "${SECURE_BOOT}" ]; then
+		cd ${B}
+		sections=""
+		objs=""
+		for f in tee.elf bl31.elf; do
+			n=$(basename $f .elf)
+			addr=$(${READELF} -lW ${DEPLOY_DIR_IMAGE}/$f | awk '$1 == "LOAD" { print $4; exit }')
+			entry=$(${READELF} -hW ${DEPLOY_DIR_IMAGE}/$f | awk '/Entry point/ { print $4 }')
+			${OBJCOPY} -O binary ${DEPLOY_DIR_IMAGE}/$f $n.bin
+			${OBJCOPY} -I binary -O elf64-littleaarch64 -B aarch64 \
+				--rename-section .data=.$n,alloc,load,contents,code $n.bin $n.o
+			sections="$sections --section-start=.$n=$addr"
+			objs="$objs $n.o"
+		done
+		${LD} -N --no-warn-rwx-segments -e $entry $sections -o tfa.elf $objs
+
+		${OBJCOPY} -I binary -O elf64-littleaarch64 -B aarch64 \
+			--rename-section .data=.tfa_stage,alloc,load,contents tfa.elf tfa-stage.o
+		${LD} -N --no-warn-rwx-segments -e ${STAGE_1_TFA_ELF_ADDR} \
+			--section-start=.tfa_stage=${STAGE_1_TFA_ELF_ADDR} -o tfa-stage.elf tfa-stage.o
+
+		ldr -T $(sed -n 's/^CONFIG_LDR_CPU="\(.*\)"/\1/p' .config) -c spl/u-boot-spl.ldr \
+			--bcode=$(sed -n 's/^CONFIG_SC_BCODE=//p' .config) --use-vmas \
+			tfa-stage.elf spl/u-boot-spl
+
+		# U-Boot proper as a FIT the SPL verifies with the same key as the kernel FIT
+		text_base=$(sed -n 's/^CONFIG_TEXT_BASE=//p' .config)
+		cat > u-boot.its <<EOF
+/dts-v1/;
+
+/ {
+	description = "U-Boot proper";
+	#address-cells = <1>;
+
+	images {
+		uboot {
+			data = /incbin/("u-boot.bin");
+			type = "firmware";
+			os = "u-boot";
+			arch = "arm64";
+			compression = "none";
+			load = <$text_base>;
+			entry = <$text_base>;
+			hash {
+				algo = "sha256";
+			};
+		};
+	};
+
+	configurations {
+		default = "conf-1";
+		conf-1 {
+			description = "U-Boot proper";
+			firmware = "uboot";
+			signature {
+				algo = "sha256,rsa2048";
+				key-name-hint = "${UBOOT_SIGN_KEYNAME}";
+				sign-images = "firmware";
+			};
+		};
+	};
+};
+EOF
+		uboot-mkimage -D "${UBOOT_MKIMAGE_DTCOPTS}" -f u-boot.its \
+			-k ${UBOOT_SIGN_KEYDIR} u-boot.itb
+	fi
+}
+
+do_deploy:append() {
+	if [ -n "${SECURE_BOOT}" ]; then
+		install -m 0644 ${B}/u-boot.itb ${DEPLOYDIR}/u-boot
+	fi
+}
 
 # Actual contents of this don't matter, we just need to sign this fit image in order to get uboot
 # to update the dtb with the key that was used for signing, which will be used to sign the kernel

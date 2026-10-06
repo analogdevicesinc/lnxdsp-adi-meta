@@ -1,0 +1,115 @@
+From d2caaae6b1345bc4706e80bdfa7d8a432b916ddb Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Mon, 5 Oct 2026 13:37:09 -0400
+Subject: [PATCH] arm: mach-sc5xx: Start TF-A from the SPL for secure boot
+
+In a secure boot build TF-A and OP-TEE must run before U-Boot proper or
+Linux. They are carried, as a single ELF staged in L2, inside the stage-1
+LDR so the boot ROM authenticates them together with the SPL.
+
+Instead of returning to the boot ROM to load a stage-2 LDR, the SPL loads
+and verifies U-Boot proper (signed FIT) or, in Falcon mode, the kernel
+FIT itself. It then loads the TF-A/OP-TEE ELF to its DDR addresses and
+enters BL31, passing the entry point and x0 of the loaded image. BL31
+initialises OP-TEE and enters that image as BL33.
+
+On eMMC, U-Boot proper is read from a raw sector outside the partition
+table while the kernel FIT stays in the boot partition, so select the
+raw or filesystem MMC boot mode accordingly.
+
+Select LIB_ELF for the SPL's ELF loader instead of relying on the bootelf
+command enabling it.
+
+Upstream-Status: Pending
+
+Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
+---
+ arch/arm/mach-sc5xx/Kconfig |  1 +
+ arch/arm/mach-sc5xx/spl.c   | 48 +++++++++++++++++++++++++++++++++----
+ 2 files changed, 44 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arm/mach-sc5xx/Kconfig b/arch/arm/mach-sc5xx/Kconfig
+index 79a9749d354..65aef14dc34 100644
+--- a/arch/arm/mach-sc5xx/Kconfig
++++ b/arch/arm/mach-sc5xx/Kconfig
+@@ -47,6 +47,7 @@ config SC59X_64
+ 	select COMMON_CLK_ADI_SC598
+ 	select GICV3
+ 	select GICV3_SUPPORT_GIC600
++	select LIB_ELF
+ 	select MMC_SDHCI_ADMA_FORCE_32BIT
+ 	select NOP_PHY if PHY
+ 	select SC5XX_DMC_INIT
+diff --git a/arch/arm/mach-sc5xx/spl.c b/arch/arm/mach-sc5xx/spl.c
+index 14a18050565..7431874052f 100644
+--- a/arch/arm/mach-sc5xx/spl.c
++++ b/arch/arm/mach-sc5xx/spl.c
+@@ -8,6 +8,8 @@
+ 
+ #include <spl.h>
+ #include <env.h>
++#include <cpu_func.h>
++#include <elf.h>
+ #include <asm/arch/sc5xx.h>
+ #include <asm/arch/spl.h>
+ #include <linux/libfdt.h>
+@@ -58,11 +60,6 @@ void board_boot_order(u32 *spl_boot_list)
+ 	const char *bmodestring = sc5xx_get_boot_mode(&bmode);
+ 	printf("ADI Boot Mode: 0x%x (%s)\n", bmode, bmodestring);
+ 
+-	if (bmode != 0 && spl_start_uboot()) {
+-		spl_boot_list[0] = BOOT_DEVICE_BOOTROM;
+-		return;
+-	}
+-
+ 	/*
+ 	 * USB is not a hardware boot mode on the SC5xx, so when the SPL is
+ 	 * built to Falcon-boot the OS from USB mass storage it is selected at
+@@ -216,3 +213,44 @@ void *board_spl_fit_buffer_addr(ulong fit_size, int sectors, int bl_len)
+ {
+ 	return (void *)CONFIG_SPL_LOAD_FIT_ADDRESS;
+ }
++
++/* L2 address where the stage 1 LDR stages the OP-TEE + BL31 ELF */
++#define SC5XX_STAGE1_TFA_ELF	0x20100000
++
++static struct spl_image_info *adi_bl33;
++
++void spl_perform_fixups(struct spl_image_info *spl_image)
++{
++	adi_bl33 = spl_image;
++}
++
++/* Secure boot: TF-A runs OP-TEE, then enters the loaded U-Boot proper or kernel */
++static void __noreturn adi_start_bl31(void)
++{
++	typedef void __noreturn (*bl31_entry_t)(ulong bl33_entry, ulong bl33_arg);
++	bl31_entry_t bl31_entry;
++
++	if (!valid_elf_image(SC5XX_STAGE1_TFA_ELF))
++		panic("No TF-A/OP-TEE in the stage 1 boot stream\n");
++
++	bl31_entry = (bl31_entry_t)load_elf_image_phdr(SC5XX_STAGE1_TFA_ELF);
++	flush_dcache_all();
++	invalidate_icache_all();
++	bl31_entry(adi_bl33->entry_point, (ulong)adi_bl33->arg);
++}
++
++void board_cleanup_before_linux(void)
++{
++	adi_start_bl31();
++}
++
++void __noreturn jump_to_image(struct spl_image_info *spl_image)
++{
++	adi_start_bl31();
++}
++
++/* U-Boot proper is a raw FIT outside the eMMC partitions; the kernel FIT is in p1 */
++u32 spl_mmc_boot_mode(struct mmc *mmc, const u32 boot_device)
++{
++	return spl_start_uboot() ? MMCSD_MODE_RAW : MMCSD_MODE_FS;
++}
+-- 
+2.34.1
+
