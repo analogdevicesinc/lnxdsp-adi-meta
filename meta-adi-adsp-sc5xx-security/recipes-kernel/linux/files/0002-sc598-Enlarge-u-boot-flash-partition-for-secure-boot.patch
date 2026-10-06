@@ -1,28 +1,36 @@
-From 6aae3434acbd83deab7898532469df49d36450ea Mon Sep 17 00:00:00 2001
+From d4862c214eaa190a677ff5602d3b5911977c1d21 Mon Sep 17 00:00:00 2001
 From: Caleb Ethridge <caleb.ethridge@analog.com>
 Date: Mon, 17 Aug 2026 09:16:15 -0400
 Subject: [PATCH] sc598: Enlarge u-boot flash partition for secure boot
 
-The combined size of U-boot Proper + TF-A/OPTEE in ceratin configurations
-can expand past the normal sc598 partition for U-boot proper. Expanding
-the partition to a safe size to accomodate these configurations.
+The secure boot stage-1 LDR carries OP-TEE and TF-A along with the SPL so
+the boot ROM authenticates them together, which no longer fits the 256 KiB
+u-boot-spl partition. Give the u-boot-spl and u-boot partitions 1 MiB each
+and move the kernel and rootfs to make room.
 
 Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
 ---
- arch/arm64/boot/dts/adi/sc598-som-revD.dtsi | 10 +++++-----
- arch/arm64/boot/dts/adi/sc598-som-revE.dtsi | 10 +++++-----
- 2 files changed, 10 insertions(+), 10 deletions(-)
+ arch/arm64/boot/dts/adi/sc598-som-revD.dtsi | 14 +++++++-------
+ arch/arm64/boot/dts/adi/sc598-som-revE.dtsi | 14 +++++++-------
+ 2 files changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som-revD.dtsi b/arch/arm64/boot/dts/adi/sc598-som-revD.dtsi
-index c9188dc0259f2..a93965ff00ca2 100644
+index 8189095325ff..7dd104da41ec 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som-revD.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som-revD.dtsi
-@@ -108,17 +108,17 @@ partition@0 {
+@@ -81,22 +81,22 @@ partitions {
  
- 			partition@40000 {
+ 			partition@0 {
+ 				label = "u-boot-spl";
+-				reg = <0x00000000 0x40000>;
++				reg = <0x00000000 0x100000>;
+ 			};
+ 
+-			partition@40000 {
++			partition@100000 {
  				label = "u-boot";
 -				reg = <0x00040000 0xc0000>;
-+				reg = <0x00040000 0x1c0000>;
++				reg = <0x00100000 0x100000>;
  			};
  
 -			partition@100000 {
@@ -41,15 +49,22 @@ index c9188dc0259f2..a93965ff00ca2 100644
  		};
  	};
 diff --git a/arch/arm64/boot/dts/adi/sc598-som-revE.dtsi b/arch/arm64/boot/dts/adi/sc598-som-revE.dtsi
-index 5d85fe5a4245a..c59773ff3d365 100644
+index fd87d5cc3c66..c7f938f6cce1 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som-revE.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som-revE.dtsi
-@@ -106,17 +106,17 @@ partition@0 {
+@@ -79,22 +79,22 @@ partitions {
  
- 			partition@40000 {
+ 			partition@0 {
+ 				label = "u-boot-spl";
+-				reg = <0x00000000 0x40000>;
++				reg = <0x00000000 0x100000>;
+ 			};
+ 
+-			partition@40000 {
++			partition@100000 {
  				label = "u-boot";
 -				reg = <0x00040000 0xc0000>;
-+				reg = <0x00040000 0x1c0000>;
++				reg = <0x00100000 0x100000>;
  			};
  
 -			partition@100000 {
