@@ -7,7 +7,9 @@ TFA_GIT_URI ?= "git://github.com/analogdevicesinc/trusted-firmware-a.git"
 TFA_GIT_PROTOCOL ?= "https"
 TFA_GIT_BRANCH ?= "develop/3.1.1"
 
-SRC_URI = "${TFA_GIT_URI};protocol=${TFA_GIT_PROTOCOL};name=tfa;branch=${TFA_GIT_BRANCH}"
+SRC_URI = "${TFA_GIT_URI};protocol=${TFA_GIT_PROTOCOL};name=tfa;branch=${TFA_GIT_BRANCH} \
+           file://0001-plat-adi-sc598-Enter-the-BL33-image-passed-by-the-SPL.patch \
+"
 
 SRCREV_FORMAT = "tfa"
 

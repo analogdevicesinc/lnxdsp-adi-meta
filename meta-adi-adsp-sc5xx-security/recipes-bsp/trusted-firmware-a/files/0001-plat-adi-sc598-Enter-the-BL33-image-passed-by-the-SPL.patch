@@ -1,0 +1,54 @@
+From e705d34889d0e56289826baf9ff8208c5ad2e7b8 Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Mon, 5 Oct 2026 11:55:48 -0400
+Subject: [PATCH] plat: adi: sc598: Enter the BL33 image passed by the SPL
+
+Under secure boot the U-Boot SPL loads and verifies U-Boot proper or, in
+Falcon mode, the kernel FIT, then starts BL31 that the boot ROM
+authenticated as part of the signed stage-1 LDR. The SPL passes the BL33
+entry point in x0 and the value BL33 expects in x0 (the DTB for Linux) in
+x1; enter that image instead of the fixed BL33_BASE. JTAG boot (bmode 0)
+keeps entering U-Boot proper at BL33_BASE so the board can be
+bootstrapped for programming.
+
+Upstream-Status: Pending
+
+Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
+---
+ plat/adi/adsp_sc598/platform_def.h | 2 ++
+ plat/adi/adsp_sc598/sc598_bl31.c   | 6 ++++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/plat/adi/adsp_sc598/platform_def.h b/plat/adi/adsp_sc598/platform_def.h
+index f7e9e1339..bdd48dbc3 100644
+--- a/plat/adi/adsp_sc598/platform_def.h
++++ b/plat/adi/adsp_sc598/platform_def.h
+@@ -52,6 +52,8 @@
+ #define ADSP_SC598_RCU_SIZE 0x1000
+ #define ADI_RCU_REG_CTL			0x00
+ #define ADI_RCU_CTL_SYSRST		BIT(0)
++#define ADI_RCU_REG_STAT		0x04
++#define ADI_RCU_STAT_BMODE_MASK		0xf00
+ #define ADI_RCU_REG_CRCTL		0x08
+ 
+ #define ADSP_SC598_UART0_BASE 0x31003000
+diff --git a/plat/adi/adsp_sc598/sc598_bl31.c b/plat/adi/adsp_sc598/sc598_bl31.c
+index cf169aaf8..d1f006b97 100644
+--- a/plat/adi/adsp_sc598/sc598_bl31.c
++++ b/plat/adi/adsp_sc598/sc598_bl31.c
+@@ -125,6 +125,12 @@ void bl31_early_platform_setup2(u_register_t arg0, u_register_t arg1,
+ 	bl33_image_ep_info.spsr = SPSR_64(MODE_EL1, MODE_SP_ELX, DISABLE_ALL_EXCEPTIONS);
+ 	SET_SECURITY_STATE(bl33_image_ep_info.h.attr, NON_SECURE);
+ 
++	// Started by the SPL with the BL33 entry point and x0; JTAG boot (bmode 0) runs U-Boot proper
++	if (mmio_read_32(ADSP_SC598_RCU_BASE + ADI_RCU_REG_STAT) & ADI_RCU_STAT_BMODE_MASK) {
++		bl33_image_ep_info.pc = arg0;
++		bl33_image_ep_info.args.arg0 = arg1;
++	}
++
+ #ifdef SPD_opteed
+ 	SET_PARAM_HEAD(&bl32_image_ep_info, PARAM_EP, VERSION_1, 0);
+ 	SET_SECURITY_STATE(bl32_image_ep_info.h.attr, SECURE);
+-- 
+2.34.1
+
