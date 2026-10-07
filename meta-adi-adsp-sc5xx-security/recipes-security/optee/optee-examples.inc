@@ -22,7 +22,6 @@ EXTRA_OEMAKE += " \
     OUTPUT_DIR=${B} \
 "
 
-S = "${WORKDIR}/git"
 B = "${WORKDIR}/build"
 
 do_compile() {

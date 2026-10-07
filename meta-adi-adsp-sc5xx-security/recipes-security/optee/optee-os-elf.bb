@@ -4,6 +4,8 @@ LICENSE = "CLOSED"
 
 DDEPENDS = "optee-os"
 
+S = "${UNPACKDIR}"
+
 SRC_URI = " \
 	file://optee-elf.ld.in \
 "
@@ -33,15 +35,15 @@ do_compile() {
 	sed -e "s/LOAD_ADDRESS/${OPTEE_LOAD_ADDRESS}/" \
 		-e "s/REPLACE_OUTPUT_FORMAT/${OUTPUT_FORMAT}/" \
 		-e "s/REPLACE_OUTPUT_ARCH/${OUTPUT_ARCH}/" \
-		${WORKDIR}/optee-elf.ld.in > ${WORKDIR}/optee-elf.ld
+		${UNPACKDIR}/optee-elf.ld.in > ${B}/optee-elf.ld
 
-	${CC} -nostartfiles -nostdlib -static -T ${WORKDIR}/optee-elf.ld ${B}/tee.o -o ${B}/tee.elf -Wl,--nmagic
+	${CC} -nostartfiles -nostdlib -static -T ${B}/optee-elf.ld ${B}/tee.o -o ${B}/tee.elf -Wl,--nmagic
 }
 
 do_compile:append:optee-shim() {
 	${CC} -DOPTEE_START_ADDRESS=${OPTEE_START_ADDRESS} \
-		-nostartfiles -nostdlib -static -T ${WORKDIR}/optee-v7-shim.ld -Wl,--nmagic \
-		${WORKDIR}/optee-v7-shim.S -o ${B}/optee-shim.elf
+		-nostartfiles -nostdlib -static -T ${UNPACKDIR}/optee-v7-shim.ld -Wl,--nmagic \
+		${UNPACKDIR}/optee-v7-shim.S -o ${B}/optee-shim.elf
 }
 
 do_install[noexec] = "1"

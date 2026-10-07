@@ -5,7 +5,7 @@ SRC_URI = " \
        svn://svn.code.sf.net/p/adi-openapp/code/trunk/tests;module=sram_mmap_test;protocol=http;rev=HEAD \
 "
 
-S = "${WORKDIR}/sram_mmap_test"
+S = "${UNPACKDIR}/sram_mmap_test"
 
 do_compile:prepend(){
 	cd ${S}

@@ -8,4 +8,4 @@ SRC_URI = " \
 	file://hello_gptimer.c \
 "
 
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"

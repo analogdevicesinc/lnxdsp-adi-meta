@@ -5,7 +5,7 @@ SRC_URI = " \
 	svn://svn.code.sf.net/p/adi-openapp/code/trunk/tests;module=malloc-perf;protocol=http;rev=HEAD \
 "
 
-S = "${WORKDIR}/malloc-perf"
+S = "${UNPACKDIR}/malloc-perf"
 
 do_compile:prepend(){
 	cd ${S}

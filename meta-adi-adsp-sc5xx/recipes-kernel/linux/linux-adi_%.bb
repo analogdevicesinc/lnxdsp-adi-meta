@@ -1,27 +1,27 @@
-USB_AUDIO="\
+USB_AUDIO = "\
 	${@bb.utils.contains('DISTRO_FEATURES', 'adi_usb_gadget_audio', 'adi_usb_gadget_audio.inc', '', d)} \
 "
 require linux-adi.inc sharc_audio.inc ${USB_AUDIO}
 
-LICENSE="GPL-2.0-only"
-LIC_FILES_CHKSUM="file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
+LICENSE = "GPL-2.0-only"
+LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
 DEPENDS += "u-boot-mkimage-native dtc-native u-boot-adi"
 
 # Include kernel configuration fragments
-SRC_URI:append="\
+SRC_URI:append = "\
 	file://feature/cfg/nfs.cfg \
 	file://feature/cfg/crypto.cfg \
 	file://feature/cfg/tracepoints.cfg \
 "
 SRC_URI:remove:adsp-sc846-som-ezkit = "file://feature/cfg/tracepoints.cfg"
 
-PV="6.18"
+PV = "6.18"
 KERNEL_BRANCH = "adsp-6.18.31-y"
 
-SRCREV="067afc664698941a903b0b9bbe9496154a22e49e"
+SRCREV = "067afc664698941a903b0b9bbe9496154a22e49e"
 KERNEL_VERSION_SANITY_SKIP = "1"
-LINUX_VERSION="${PV}"
+LINUX_VERSION = "${PV}"
 
 
 SRC_URI:append:adsp-sc594-som-ezkit = " file://feature/cfg/snd_ezkit.scc"

@@ -8,7 +8,6 @@ DEPENDS = "optee-client"
 SRC_URI = "git://github.com/analogdevicesinc/libadiotp.git;branch=master;protocol=https"
 SRCREV = "845273c3201813d2d14e2d9903fff9899b718c20"
 
-S = "${WORKDIR}/git"
 B = "${S}"
 
 include optee.inc

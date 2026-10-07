@@ -7,6 +7,9 @@ inputs:
   image:
     description: "Yocto image"
     default: adsp-sc5xx-minimal
+  distro:
+    description: "Yocto distro"
+    default: adi-distro-glibc
   manifest:
     description: "Manifest"
     default: main
@@ -19,6 +22,9 @@ inputs:
   upload-artifacts:
     description: "Store image artifacts and expose them to cloudsmith"
     default: 'true'
+  manifest-branch:
+    description: "Manifest repository branch/ref"
+    default: ""
   override-meta-adi:
     description: "Override sources/meta-adi with the checked-out ref"
     default: 'false'
@@ -48,13 +54,16 @@ runs:
         [ -d "/cache" ] && YOCTO_CACHE_DIR="/cache/yocto" || YOCTO_CACHE_DIR="${GITHUB_WORKSPACE}/yocto-cache"
         YOCTO_DL_DIR="${YOCTO_CACHE_DIR}/downloads"
         YOCTO_SSTATE_DIR="${YOCTO_CACHE_DIR}/sstate"
+        YOCTO_HASHSERVE_DIR="${YOCTO_CACHE_DIR}/hashserv"
         mkdir -p "${YOCTO_DL_DIR}"
         mkdir -p "${YOCTO_SSTATE_DIR}"
+        mkdir -p "${YOCTO_HASHSERVE_DIR}"
 
         # Save workspace path and cache dirs for subsequent steps
         echo "YOCTO_WORKSPACE=${WORKSPACE}" >> $GITHUB_ENV
         echo "YOCTO_DL_DIR=${YOCTO_DL_DIR}" >> $GITHUB_ENV
         echo "YOCTO_SSTATE_DIR=${YOCTO_SSTATE_DIR}" >> $GITHUB_ENV
+        echo "YOCTO_HASHSERVE_DIR=${YOCTO_HASHSERVE_DIR}" >> $GITHUB_ENV
 
     - name: Setup repo tool
       shell: bash
@@ -70,9 +79,13 @@ runs:
         manifest_repo="${{ inputs.manifest-repo }}"
         [[ -n "$manifest_repo" ]] || manifest_repo="https://github.com/${{ github.repository_owner }}/lnxdsp-repo-manifest.git"
         cd "${YOCTO_WORKSPACE}"
-        ./bin/repo init \
-          -u "$manifest_repo" \
+        repo_init_args=(
+          -u "$manifest_repo"
           -m "${{ inputs.manifest }}.xml"
+        )
+        manifest_branch="${{ inputs.manifest-branch }}"
+        [[ -z "$manifest_branch" ]] || repo_init_args+=(-b "$manifest_branch")
+        ./bin/repo init "${repo_init_args[@]}"
 
     - name: Override meta-adi revision via local manifest
       if: ${{ inputs.override-meta-adi == 'true' }}
@@ -99,7 +112,7 @@ runs:
       shell: bash
       run: |
         cd "${YOCTO_WORKSPACE}"
-        source setup-environment -m ${{ inputs.machine }}
+        source setup-environment -m ${{ inputs.machine }} -d ${{ inputs.distro }}
 
         # Configure for CI with persistent caches in runner's home directory
         cat >> conf/local.conf <<EOF
@@ -107,6 +120,7 @@ runs:
         # CI Build Configuration - use persistent caches from runner's home
         DL_DIR = "${{ env.YOCTO_DL_DIR }}"
         SSTATE_DIR = "${{ env.YOCTO_SSTATE_DIR }}"
+        BB_HASHSERVE_DB_DIR = "${{ env.YOCTO_HASHSERVE_DIR }}"
         EOF
 
         # Instruct Yocto to generate an SPDX Software Bill of Materials (SBOM)

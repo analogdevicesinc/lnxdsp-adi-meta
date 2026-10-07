@@ -3,6 +3,8 @@ From: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
 Date: Tue, 20 May 2025 13:53:51 +0100
 Subject: [PATCH] SC598 Audio configuration for hybrid audio support
 
+Upstream-Status: Inappropriate [embedded specific]
+
 Signed-off-by: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
 ---
  arch/arm64/boot/dts/adi/sc598-som.dtsi | 23 +++++++++++++--------
