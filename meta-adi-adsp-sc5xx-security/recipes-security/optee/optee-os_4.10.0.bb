@@ -15,7 +15,7 @@ OPTEE_OS_GIT_URI ?= "git://github.com/analogdevicesinc/optee_os.git"
 OPTEE_OS_GIT_PROTOCOL ?= "https"
 OPTEE_OS_GIT_BRANCH ?= "adi_optee_4.10.0"
 OPTEE_OS_CORE_LOG_LEVEL ?= "1"
-OPTEE_OS_ENABLE_TESTS ?= "n"
+OPTEE_OS_ENABLE_TESTS ?= "${@bb.utils.contains('ADSP_TESTS', '1', 'y', 'n', d)}"
 
 SRC_URI = " \
 	${OPTEE_OS_GIT_URI};branch=${OPTEE_OS_GIT_BRANCH};protocol=${OPTEE_OS_GIT_PROTOCOL} \

@@ -1,0 +1,26 @@
+#!/bin/sh
+
+rc=0
+
+check() {
+    name=$1
+    shift
+    if "$@" >/dev/null 2>&1; then
+        echo "PASS: $name"
+    else
+        echo "FAIL: $name"
+        rc=1
+    fi
+}
+
+check tfa-psci-probed     sh -c 'dmesg | grep -q "psci: PSCIv1"'
+check tfa-smccc           sh -c 'dmesg | grep -q "SMC Calling Convention"'
+check optee-probed        sh -c 'dmesg | grep -q "optee: initialized driver"'
+check optee-dev-tee0      test -c /dev/tee0
+check optee-dev-teepriv0  test -c /dev/teepriv0
+check tee-supplicant      systemctl is-active --quiet tee-supplicant
+check optee-hwrng         grep -q optee-rng /sys/class/misc/hw_random/rng_available
+check optee-hwrng-fips    sh -c 'dd if=/dev/hwrng bs=2500 count=10 2>/dev/null | rngtest -c 8'
+check optee-hello-world   optee_example_hello_world
+
+exit $rc
