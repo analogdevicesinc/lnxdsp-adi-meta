@@ -19,6 +19,8 @@ ICC = " \
 CRYPTO = " \
     openssl \
     openssl-bin \
+    openssl-engines \
+    openssl-ossl-module-legacy \
     cryptodev-linux \
     cryptodev-module \
     crypto-tests \

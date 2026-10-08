@@ -144,6 +144,12 @@ int test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint3
 	}
 
 	printf("Using %s with driver %s\n", siop.hash_info.cra_name, siop.hash_info.cra_driver_name);
+#ifdef ADI_HW_DRIVER
+	if (!strstr(siop.hash_info.cra_driver_name, ADI_HW_DRIVER)) {
+		printf("TEST: failed, not using the %s driver\n\n", ADI_HW_DRIVER);
+		mismatch = 1;
+	}
+#endif
 
 #endif
 

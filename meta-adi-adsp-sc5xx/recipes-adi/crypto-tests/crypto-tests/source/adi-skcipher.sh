@@ -2,6 +2,19 @@
 
 cd /tmp
 
+HW_DRIVER="@ADI_HW_DRIVER@"
+
+# Kernel algorithms behind the CIPHERS below
+if [ -n "${HW_DRIVER}" ]; then
+	for alg in "cbc(aes)" "cbc(des)" "cbc(des3_ede)" "ecb(aes)"; do
+		if awk -v n="${alg}" '$1 == "name" { nm = $3 } $1 == "driver" && nm == n { print $3 }' /proc/crypto | grep -q -F "${HW_DRIVER}"; then
+			echo "${alg} [${HW_DRIVER}] registered: PASS"
+		else
+			echo "${alg} [${HW_DRIVER}] registered: FAIL"
+		fi
+	done
+fi
+
 FILESIZE="1K 4K 8K 128K 512K 1M 4M 8M"
 CIPHERS="aes-256-cbc des-cbc des3 aes-256-ecb"
 

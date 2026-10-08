@@ -1,5 +1,17 @@
 #!/bin/sh
 
+HW_DRIVER="@ADI_HW_DRIVER@"
+
+if [ -n "${HW_DRIVER}" ]; then
+	for alg in sha256 sha224 sha1 md5; do
+		if awk -v n="${alg}" '$1 == "name" { nm = $3 } $1 == "driver" && nm == n { print $3 }' /proc/crypto | grep -q -F "${HW_DRIVER}"; then
+			echo "${alg} [${HW_DRIVER}] registered: PASS"
+		else
+			echo "${alg} [${HW_DRIVER}] registered: FAIL"
+		fi
+	done
+fi
+
 rmmod cryptodev
 
 dd if=/dev/urandom of=/tmp/127bytes bs=127 count=1 > /dev/null 2>&1
