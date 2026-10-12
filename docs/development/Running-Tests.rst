@@ -1,0 +1,614 @@
+Running Tests
+=============
+
+Introduction
+------------
+
+The ``adsp-sc5xx-test`` image adds a set of test suites and tools that run directly on the
+board. This page shows how to build the image and how to run each suite, along with the most
+useful options. See :doc:`Image-Types` for the full package list.
+
+The test image uses the same kernel configuration as the other images, so it can be used to
+check a stock build without any changes.
+
+.. list-table::
+   :widths: 25 30 45
+   :header-rows: 1
+
+   * - Suite
+     - Command
+     - What it covers
+   * - ptest suites
+     - ``ptest-runner``
+     - Upstream regression tests for core packages (see `Included ptest Suites`_)
+   * - rt-tests ptest
+     - ``ptest-runner rt-tests``
+     - ``cyclictest`` scheduling latency under different ``stress-ng`` loads
+   * - LTP
+     - ``kirk``
+     - Linux Test Project kernel and system tests
+   * - stress-ng
+     - ``stress-ng``
+     - CPU, memory, I/O and scheduler stress with result verification
+   * - memtester
+     - ``memtester``
+     - User-space DDR memory test
+   * - fio
+     - ``fio``
+     - Storage throughput, latency and data integrity
+   * - rngtest
+     - ``rngtest``
+     - FIPS 140-2 randomness checks on an entropy source
+   * - OP-TEE xtest (``adi-security`` only)
+     - ``xtest`` / ``ptest-runner optee-test``
+     - OP-TEE client API, trusted applications, secure storage and crypto
+   * - Mbed TLS ptest (``adi-security`` only)
+     - ``ptest-runner mbedtls``
+     - Mbed TLS library test suites
+   * - TEE smoke test (``adi-security`` only)
+     - ``ptest-runner tee-smoke``
+     - Linux-visible checks of the TF-A (BL31) and OP-TEE stack
+
+Building the Test Image
+-----------------------
+
+The test suites are packaged with Yocto's ``ptest`` feature, which is enabled by default in
+the ADI distros. Build the image the same way as any other image:
+
+.. code-block:: shell
+
+   source setup-environment -m adsp-sc598-som-ezkit
+   bitbake adsp-sc5xx-test
+
+To include the OP-TEE, Mbed TLS and TEE smoke tests, build with the ``adi-security`` distro
+(ADSP-SC598 only). See :doc:`../secure-boot/Secure-Boot-Support` for the required signing
+keys:
+
+.. code-block:: shell
+
+   source setup-environment -m adsp-sc598-som-ezkit -d adi-security
+   bitbake adsp-sc5xx-test
+
+Deploy the resulting ``adsp-sc5xx-test`` rootfs in the same way as the full image, for
+example by writing the ``wic`` image to an SD card or eMMC, or by extracting the ``tar.xz``
+to an NFS root.
+
+.. note::
+   Several suites write test data next to the test binaries. Some tests behave differently
+   on an NFS root than on a local ext4 filesystem (for example, file leases are not
+   supported over NFSv3), so run the test image from local storage when comparing results
+   against a reference run.
+
+ptest-runner
+------------
+
+``ptest-runner`` finds every installed ``run-ptest`` script under ``/usr/lib/*/ptest/`` and
+runs it, collecting the ``PASS:``, ``FAIL:`` and ``SKIP:`` lines that each suite prints.
+
+.. code-block:: shell
+
+   # List the installed suites
+   ptest-runner -l
+
+   # Run every installed suite
+   ptest-runner
+
+   # Run only the named suites
+   ptest-runner rt-tests
+
+   # Run everything except one suite
+   ptest-runner -e rt-tests
+
+   # Allow each suite up to 15 minutes without output before it is stopped
+   ptest-runner -t 900 rt-tests
+
+   # Write a JUnit-style XML report for CI
+   ptest-runner -x /tmp/ptest-results.xml
+
+.. list-table::
+   :widths: 25 75
+   :header-rows: 1
+
+   * - Option
+     - Description
+   * - ``-l``
+     - List the available suites and exit.
+   * - ``-d DIRS``
+     - Search the given directories for ``*/ptest/run-ptest`` instead of ``/usr/lib``.
+   * - ``-e NAMES``
+     - Exclude the named suites (space separated).
+   * - ``-t SECONDS``
+     - Stop a suite if it produces no output for this long (default 300).
+   * - ``-x FILE``
+     - Write the results to an XML file (one test case per suite, with its duration).
+
+Each suite's results are wrapped in ``BEGIN:`` / ``END:`` markers with a ``DURATION:`` line.
+The final ``TOTAL: <n> FAIL: <m>`` line counts suites that crashed or timed out, and the XML
+report only records one entry per suite, so check for individual ``FAIL:`` lines to find
+failing test cases:
+
+.. code-block:: shell
+
+   ptest-runner 2>&1 | tee /tmp/ptest.log
+   grep '^FAIL:' /tmp/ptest.log
+
+Included ptest Suites
+~~~~~~~~~~~~~~~~~~~~~
+
+The durations below were measured on the ADSP-SC598 SOM with an NFS root. Running every
+suite takes about two hours, so use ``-t 900`` or higher.
+
+.. list-table::
+   :widths: 20 55 25
+   :header-rows: 1
+
+   * - Suite
+     - What it covers
+     - Duration (ADSP-SC598)
+   * - ``busybox``
+     - BusyBox applets used by the base system
+     - 10 min
+   * - ``libseccomp``
+     - Seccomp syscall filtering, including live filters on the running kernel
+     - 18 min
+   * - ``libusb1``
+     - ``libusb`` API
+     - 2 min
+   * - ``openssh``
+     - ``ssh``, ``sshd``, ``scp``, ``sftp`` and key handling, see `openssh ptest`_
+     - 47 min
+   * - ``rt-tests``
+     - Real-time latency, see `rt-tests ptest`_
+     - 10 min
+   * - ``util-linux``
+     - ``mount``, ``fdisk``, ``lsblk``, ``hexdump``, ``lscpu`` and the other util-linux
+       tools, see `util-linux ptest`_
+     - 25 min
+
+.. note::
+   Three BusyBox ``bunzip2`` / ``bzcat`` tests compress their input with a standalone
+   ``bzip2``. Add ``bzip2`` to ``IMAGE_INSTALL`` if those tests report ``FAIL``.
+
+Other ptest packages can be added to the image with ``IMAGE_INSTALL``, for example
+``IMAGE_INSTALL:append = " xz-ptest"``. The following were also tested on the ADSP-SC598:
+
+.. list-table::
+   :widths: 20 80
+   :header-rows: 1
+
+   * - Suite
+     - Result
+   * - ``acl``, ``dosfstools``, ``ethtool``, ``lzo``, ``xz``, ``zlib``
+     - Pass.
+   * - ``attr``
+     - Needs user extended attributes, which an NFSv3 root does not support. Passes on a
+       local filesystem.
+   * - ``e2fsprogs``
+     - Creates its test filesystems in ``/tmp`` and exhausts the RAM-backed ``tmpfs``.
+   * - ``libgpiod``
+     - Needs the ``gpio-sim`` kernel module (``CONFIG_GPIO_SIM``).
+   * - ``libnl``
+     - Needs network namespaces, dummy links and IPv6 support in the kernel.
+   * - ``openssl``
+     - Runs four tests in parallel and needs more memory than is available to Linux.
+   * - ``procps``
+     - One ``pgrep`` test needs more memory than is available to Linux.
+
+util-linux ptest
+~~~~~~~~~~~~~~~~
+
+The ADI layer appends to ``util-linux-ptest``'s exclude list so that the suite passes on the
+ADI kernel configuration. The excluded tests need kernel options that are not enabled (RTC,
+loop devices, VSOCK sockets, ``SCHED_DEADLINE`` bandwidth) or fail on an NFSv3 root (file
+leases, ``RENAME_EXCHANGE``, deleted-file tracking). The list is held in
+``UTIL_LINUX_PTEST_EXCLUDE`` and can be overridden, for example in ``local.conf``:
+
+.. code-block:: bitbake
+
+   # Run the hwclock tests on a board with an RTC driver enabled
+   UTIL_LINUX_PTEST_EXCLUDE:remove:pn-util-linux = "hwclock/show"
+
+To run selected util-linux components, or an excluded test, call its test script directly:
+
+.. code-block:: shell
+
+   cd /usr/lib/util-linux/ptest
+   ./tests/run.sh --use-system-commands --parsable lsblk fdisk
+
+On boards that reserve DDR for the SHARC cores the full suite runs in about 200 MB of
+memory; avoid running other memory-heavy workloads at the same time.
+
+openssh ptest
+~~~~~~~~~~~~~
+
+Runs the OpenSSH regression tests against a local ``sshd`` started by the suite. The ADI
+layer skips the ``dynamic-forward`` test (SOCKS dynamic port forwarding, ``ssh -D``), which
+fails on the ADSP-SC598. Skipped tests are reported as ``skip test <name>.sh`` in the log
+rather than as ``SKIP:`` lines. The list is held in ``OPENSSH_PTEST_SKIP`` (test names
+without ``.sh``) and can be changed in ``local.conf``:
+
+.. code-block:: bitbake
+
+   # Also skip the static port forwarding test
+   OPENSSH_PTEST_SKIP:append:pn-openssh = " forwarding"
+
+To run selected tests directly, use the regress ``Makefile`` with ``LTESTS``:
+
+.. code-block:: shell
+
+   cd /usr/lib/openssh/ptest/regress
+   export TEST_SSH_SSH=ssh TEST_SHELL=sh SKIP_UNIT=1
+   make BUILDDIR=$PWD/.. .OBJDIR=$PWD .CURDIR=$PWD SUDO="" LTESTS="connect keyscan" t-exec
+
+rt-tests ptest
+~~~~~~~~~~~~~~
+
+Runs ``cyclictest`` six times: with no load and then with ``stress-ng`` CPU, disk, I/O,
+virtual-memory and combined loads. Each run prints the minimum, average and maximum wakeup
+latency in microseconds. A ``PASS`` means the measurement completed; the suite does not
+apply a latency limit, so compare the reported maximum against your own requirement. The
+suite takes about 10 minutes on the ADSP-SC598.
+
+.. code-block:: shell
+
+   ptest-runner -t 900 rt-tests
+
+Example output for one load case:
+
+.. code-block:: text
+
+   #   Test case (6/6): rt_bmark.intlat.full
+   ...
+   # Min: 3 us
+   # Avg: 21.8 us
+   # Max: 415 us
+   rt_bmark.intlat.full [Min/us,Avg/us,Max/us]:
+   3,21.8,415
+   PASS: rt_bmark.intlat.full
+
+To run ``cyclictest`` directly with your own settings:
+
+.. code-block:: shell
+
+   # 10 minutes, SCHED_FIFO priority 95, 1 ms interval, latency histogram up to 400 us
+   cyclictest -m -S -p 95 -i 1000 -D 10m -h 400 -q
+
+.. list-table::
+   :widths: 25 75
+   :header-rows: 1
+
+   * - Option
+     - Description
+   * - ``-m``
+     - Lock memory to avoid page faults during the measurement.
+   * - ``-S``
+     - One measurement thread per CPU, all at the same priority.
+   * - ``-p PRIO``
+     - Real-time priority of the measurement threads.
+   * - ``-i US``
+     - Wakeup interval in microseconds.
+   * - ``-D TIME``
+     - Test duration, for example ``60``, ``10m`` or ``1h``.
+   * - ``-l LOOPS``
+     - Stop after this many wakeups instead of a fixed duration.
+   * - ``-h US``
+     - Print a latency histogram up to ``US`` microseconds at the end of the run.
+   * - ``-q``
+     - Print only the summary when the run ends.
+
+LTP (Linux Test Project)
+------------------------
+
+LTP is installed in ``/opt/ltp`` and is run with ``kirk``. Test suites are listed in
+``/opt/ltp/runtest``.
+
+.. code-block:: shell
+
+   # Available suites
+   ls /opt/ltp/runtest
+
+   # Quick sanity check of the kernel and core utilities
+   kirk --run-suite smoketest
+
+   # Run several suites and write a JSON report (the file must not already exist)
+   kirk --run-suite syscalls mm --json-report /tmp/ltp.json
+
+   # Run only the tests that match a regular expression
+   kirk --run-suite syscalls --run-pattern '^open0[12]$'
+
+   # Skip tests that need a loop device (see below)
+   kirk --run-suite smoketest --skip-tests 'chdir01|stat04|df01_sh'
+
+   # Run a single LTP command
+   kirk --run-command 'mmap01'
+
+.. list-table::
+   :widths: 30 70
+   :header-rows: 1
+
+   * - Option
+     - Description
+   * - ``--run-suite, -f``
+     - One or more suites from ``/opt/ltp/runtest``.
+   * - ``--run-pattern, -p``
+     - Run only the tests whose names match the regular expression.
+   * - ``--skip-tests, -s``
+     - Skip the tests whose names match the regular expression.
+   * - ``--skip-file, -S``
+     - Skip the tests listed (one per line) in a file.
+   * - ``--json-report, -o``
+     - Write the results to a JSON file.
+   * - ``--exec-timeout, -t``
+     - Time limit for a single test (default ``1h``).
+   * - ``--suite-timeout, -T``
+     - Time limit for a whole suite (default ``1h``).
+   * - ``--suite-iterate, -i``
+     - Repeat each suite this many times.
+   * - ``--tmp-dir, -d``
+     - Directory for kirk's own session files and results.
+   * - ``--run-command, -c``
+     - Run a single command instead of a suite.
+
+Kirk prints a summary of passed, failed, broken (``TBROK``) and skipped (``TCONF``) results
+at the end of the run. Large suites such as ``syscalls`` take a long time and include tests
+for kernel features that are not enabled in the ADI kernel configuration; those report
+``TCONF`` and are counted as skipped, not failed.
+
+The ADI kernel configuration does not enable loop devices (``CONFIG_BLK_DEV_LOOP``), so
+tests that need a scratch block device, such as ``chdir01``, ``stat04`` and ``df01_sh`` in
+``smoketest``, report ``TBROK: Failed to acquire device``. Either skip them with
+``--skip-tests`` as shown above, or point ``LTP_DEV`` at a spare partition that can be
+reformatted:
+
+.. code-block:: shell
+
+   # WARNING: the device is reformatted by the tests
+   LTP_DEV=/dev/<spare-partition> kirk --run-suite smoketest
+
+LTP creates its working files under ``TMPDIR`` (``/tmp`` by default, which is a small
+``tmpfs``). Set ``TMPDIR`` to a directory on the root filesystem when running suites that
+need more space:
+
+.. code-block:: shell
+
+   mkdir -p /root/ltp-tmp
+   TMPDIR=/root/ltp-tmp kirk --run-suite fs
+
+stress-ng
+---------
+
+``stress-ng`` loads the CPU, memory and I/O subsystems. With ``--verify`` each stressor
+checks its own results, so a non-zero exit status indicates a failure.
+
+.. code-block:: shell
+
+   # CPU and memory stress for 60 s, verifying results
+   stress-ng --cpu 1 --vm 1 --vm-bytes 64M --verify --timeout 60s --metrics-brief
+
+   # Run every CPU stressor method in turn
+   stress-ng --cpu 1 --cpu-method all --verify --timeout 60s
+
+   # Context-switch and timer stress
+   stress-ng --switch 1 --timer 1 --timeout 60s --metrics-brief
+
+.. list-table::
+   :widths: 30 70
+   :header-rows: 1
+
+   * - Option
+     - Description
+   * - ``--cpu N``
+     - Start ``N`` CPU stressors (``0`` uses one per online CPU).
+   * - ``--vm N`` / ``--vm-bytes SIZE``
+     - Start ``N`` memory stressors, each using ``SIZE`` bytes.
+   * - ``--io N`` / ``--hdd N``
+     - Start ``N`` sync or disk-write stressors.
+   * - ``--switch N`` / ``--timer N``
+     - Start ``N`` context-switch or timer-interrupt stressors.
+   * - ``--verify``
+     - Check stressor results and fail on mismatches.
+   * - ``--timeout T``
+     - Stop after ``T`` (for example ``60s``, ``10m``).
+   * - ``--metrics-brief``
+     - Print a throughput summary for each stressor.
+
+.. note::
+   Keep ``--vm-bytes`` well below the free memory reported by ``free -m``. Memory reserved
+   for the SHARC cores is not available to Linux.
+
+memtester
+---------
+
+``memtester`` allocates and locks a block of memory and runs a series of pattern tests on
+it. The exit status is ``0`` when all patterns pass.
+
+.. code-block:: shell
+
+   # Test 64 MB of memory, one pass
+   memtester 64M 1
+
+   # Test 32 MB of memory, three passes
+   memtester 32M 3
+
+The first argument is the amount of memory to test (``B``, ``K``, ``M`` or ``G`` suffix) and
+the optional second argument is the number of loops. Use ``free -m`` to see how much memory
+is available, and leave headroom for the rest of the system.
+
+fio
+---
+
+``fio`` measures storage performance and can verify data integrity. Point ``--filename`` at
+a file on the storage under test. Each job reports ``err= 0`` and ``fio`` exits with status
+``0`` when all I/O and verification succeed.
+
+.. code-block:: shell
+
+   # Sequential write then read with CRC32C verification
+   fio --name=verify --filename=/root/fio.dat --size=64M --rw=write --bs=128k \
+       --direct=1 --verify=crc32c --do_verify=1
+
+   # 4k random read/write for 60 s
+   fio --name=randrw --filename=/root/fio.dat --size=64M --rw=randrw --bs=4k \
+       --direct=1 --runtime=60 --time_based --group_reporting
+
+   rm /root/fio.dat
+
+.. list-table::
+   :widths: 30 70
+   :header-rows: 1
+
+   * - Option
+     - Description
+   * - ``--filename``
+     - File or block device to test.
+   * - ``--size``
+     - Size of the test file or region.
+   * - ``--rw``
+     - Access pattern: ``read``, ``write``, ``randread``, ``randwrite``, ``randrw``.
+   * - ``--bs``
+     - Block size for each I/O.
+   * - ``--direct=1``
+     - Bypass the page cache.
+   * - ``--verify``
+     - Write a checksum with each block and check it on read back.
+   * - ``--runtime`` / ``--time_based``
+     - Run for a fixed time rather than a fixed amount of data.
+
+.. warning::
+   Passing a block device such as ``/dev/mmcblk0`` to ``--filename`` overwrites its
+   contents. Use a file on a mounted filesystem unless the device is a scratch device.
+
+rngtest
+-------
+
+``rngtest`` runs the FIPS 140-2 statistical tests on data read from standard input. It exits
+with status ``0`` if no blocks fail.
+
+.. code-block:: shell
+
+   # Test 100 blocks (20000 bits each) from the kernel random number generator
+   rngtest -c 100 < /dev/random
+
+   # Test a hardware RNG, if one is registered
+   cat /sys/class/misc/hw_random/rng_current
+   rngtest -c 100 < /dev/hwrng
+
+If ``rng_current`` shows ``none``, no hardware RNG driver is registered and reading
+``/dev/hwrng`` fails with ``No such device``. On the ``adi-security`` distro the OP-TEE RNG
+is registered as ``optee-rng``.
+
+.. list-table::
+   :widths: 30 70
+   :header-rows: 1
+
+   * - Option
+     - Description
+   * - ``-c N``
+     - Stop after ``N`` 20000-bit blocks.
+   * - ``-b N``
+     - Print statistics every ``N`` blocks.
+   * - ``-t N``
+     - Print statistics every ``N`` seconds.
+   * - ``-p``
+     - Pipe mode: pass the blocks that pass the tests through to standard output.
+
+Security Test Suites (``adi-security``)
+---------------------------------------
+
+The following suites are only installed when the image is built with the ``adi-security``
+distro for the ADSP-SC598. They require the ``tee-supplicant`` service, which is started at
+boot:
+
+.. code-block:: shell
+
+   systemctl status tee-supplicant
+
+TEE Smoke Test
+~~~~~~~~~~~~~~
+
+Checks, from Linux, that TF-A and OP-TEE are running and reachable: the PSCI and SMC Calling
+Convention probe messages, the OP-TEE driver and ``/dev/tee*`` devices, the
+``tee-supplicant`` service, the OP-TEE random number generator and the OP-TEE "hello world"
+example.
+
+.. code-block:: shell
+
+   ptest-runner tee-smoke
+
+OP-TEE xtest
+~~~~~~~~~~~~
+
+``xtest`` exercises the OP-TEE client API, the test trusted applications, secure storage and
+the cryptographic services. Clear any secure-storage objects left by a previous run first.
+
+.. code-block:: shell
+
+   xtest --clear-storage
+
+   # Default suites (regression and, if enabled, pkcs11)
+   xtest
+
+   # Run specific suites
+   xtest -t regression
+   xtest -t regression+pkcs11
+   xtest -t benchmark
+
+   # Run or exclude specific tests (substring match on the test ID)
+   xtest -t regression 4001 4003
+   xtest -t regression -x 1033
+
+   # Include optional tests
+   xtest -l 15
+
+   # Performance applets
+   xtest --aes-perf
+   xtest --hash-perf
+   xtest --asym-perf
+
+The same tests can be run through ``ptest-runner``, which converts the output to
+``PASS:`` / ``FAIL:`` lines:
+
+.. code-block:: shell
+
+   ptest-runner -t 1800 optee-test
+
+.. list-table::
+   :widths: 30 70
+   :header-rows: 1
+
+   * - Option
+     - Description
+   * - ``-t SUITE``
+     - ``regression``, ``benchmark`` or ``pkcs11``. Join several with ``+``.
+   * - ``-x ID``
+     - Exclude tests matching ``ID``. May be repeated.
+   * - ``-l LEVEL``
+     - Test level ``0``-``15``. Higher levels add optional tests.
+   * - ``--clear-storage``
+     - Delete persistent objects left by a previous run.
+   * - ``--aes-perf`` / ``--hash-perf`` / ``--asym-perf``
+     - Crypto performance applets (pass ``-h`` for their options).
+
+Mbed TLS ptest
+~~~~~~~~~~~~~~
+
+Runs the Mbed TLS ``test_suite_*`` programs against the installed library.
+
+.. code-block:: shell
+
+   ptest-runner mbedtls
+
+   # Run a single suite directly
+   cd /usr/lib/mbedtls/ptest/tests
+   ./test_suite_aes.ecb -v
+
+Running Tests from a Host
+-------------------------
+
+All of the commands above can be run over SSH, which makes it easy to collect results on
+the host:
+
+.. code-block:: shell
+
+   ssh root@<board-ip> 'ptest-runner -x /tmp/ptest.xml'
+   scp root@<board-ip>:/tmp/ptest.xml .
