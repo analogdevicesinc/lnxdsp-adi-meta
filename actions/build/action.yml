@@ -149,7 +149,7 @@ runs:
         echo "ARTIFACT_NAME=${ARTIFACT_NAME}" >> $GITHUB_ENV
 
     - name: Upload Yocto images
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       if: ${{ inputs.upload-artifacts == 'true' }}
       with:
         name: ${{ env.ARTIFACT_NAME }}
@@ -175,7 +175,7 @@ runs:
         echo "SDK_INSTALLER=${SDK_INSTALLER}" >> $GITHUB_ENV
 
     - name: Upload SDK installer as artifact
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       if: ${{ inputs.build-sdk == 'true' && inputs.upload-artifacts == 'true' && (github.event_name == 'release' || github.event_name == 'workflow_dispatch') }}
       with:
         name: sdk-${{ inputs.machine }}-${{ inputs.image }}
@@ -190,7 +190,7 @@ runs:
           build/tmp/deploy/images/${{ inputs.machine }}/
 
     - name: Upload release archive as artifact
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       if: ${{ github.event_name == 'release' }}
       with:
         name: images-${{ inputs.machine }}-${{ inputs.image }}-${{ github.event.release.tag_name }}.tar.xz
