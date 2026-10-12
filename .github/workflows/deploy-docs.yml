@@ -25,10 +25,10 @@ jobs:
     - name: Set base_path
       id: base-path
       run: |
-        if [[ "${{ github.event_name }}" == "pull_request" || "${{ github.ref_name }}" == "main" ]]; then
+        if [[ "${GITHUB_EVENT_NAME}" == "pull_request" || "${GITHUB_REF_NAME}" == "main" ]]; then
           echo "base_path=." >> "$GITHUB_OUTPUT"
         else
-          echo "base_path=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          echo "base_path=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
         fi
     - uses: analogdevicesinc/doctools/checkout@action
 

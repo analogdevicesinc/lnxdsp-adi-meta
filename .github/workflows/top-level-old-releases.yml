@@ -32,6 +32,7 @@ jobs:
     secrets: inherit
     permissions:
       contents: write
+      id-token: write
     with:
       machine: ${{ matrix.machine }}
       image: ${{ matrix.image }}

@@ -1,4 +1,7 @@
 name: Build ADI Yocto artifacts
+description: >
+  Google repo manifest based build invoked as ./actions/build by the
+  build.yml workflow.
 
 inputs:
   machine:
@@ -28,9 +31,15 @@ inputs:
   override-meta-adi:
     description: "Override sources/meta-adi with the checked-out ref"
     default: 'false'
+  build-config-file:
+    description: "Unused, the build is configured by the repo manifest"
+    default: ""
   gh-token:
     description: "GitHub token with access to all required repositories"
     default: ${{ github.token }}
+  cloudsmith-user:
+    description: "Unused, no sources are fetched from Cloudsmith"
+    default: ""
 
 runs:
   using: 'composite'
@@ -45,9 +54,14 @@ runs:
 
     - name: Setup build workspace
       shell: bash
+      env:
+        MACHINE: ${{ inputs.machine }}
+        IMAGE: ${{ inputs.image }}
+        MANIFEST: ${{ inputs.manifest }}
       run: |
         # Create ephemeral workspace directory for this run
-        WORKSPACE="${GITHUB_WORKSPACE}/yocto-build-${GITHUB_RUN_ID}-${{ inputs.machine }}-${{ inputs.image }}-${{ inputs.manifest }}"
+        BUILD_NAME=$(printf '%s-%s-%s' "${MACHINE}" "${IMAGE}" "${MANIFEST}" | tr -cd '[:alnum:]._-')
+        WORKSPACE="${GITHUB_WORKSPACE}/yocto-build-${GITHUB_RUN_ID}-${BUILD_NAME}"
         mkdir -p "${WORKSPACE}"
 
         # Use known persistent cache path if mounted
@@ -75,29 +89,33 @@ runs:
 
     - name: Initialize repo manifest
       shell: bash
+      env:
+        MANIFEST: ${{ inputs.manifest }}
+        MANIFEST_REPO: ${{ inputs.manifest-repo }}
+        MANIFEST_BRANCH: ${{ inputs.manifest-branch }}
       run: |
-        manifest_repo="${{ inputs.manifest-repo }}"
-        [[ -n "$manifest_repo" ]] || manifest_repo="https://github.com/${{ github.repository_owner }}/lnxdsp-repo-manifest.git"
+        manifest_repo="${MANIFEST_REPO}"
+        [[ -n "$manifest_repo" ]] || manifest_repo="https://github.com/${GITHUB_REPOSITORY_OWNER}/lnxdsp-repo-manifest.git"
         cd "${YOCTO_WORKSPACE}"
         repo_init_args=(
           -u "$manifest_repo"
-          -m "${{ inputs.manifest }}.xml"
+          -m "${MANIFEST}.xml"
         )
-        manifest_branch="${{ inputs.manifest-branch }}"
-        [[ -z "$manifest_branch" ]] || repo_init_args+=(-b "$manifest_branch")
+        [[ -z "${MANIFEST_BRANCH}" ]] || repo_init_args+=(-b "${MANIFEST_BRANCH}")
         ./bin/repo init "${repo_init_args[@]}"
 
     - name: Override meta-adi revision via local manifest
       if: ${{ inputs.override-meta-adi == 'true' }}
       shell: bash
+      env:
+        override_rev: ${{ github.event.pull_request.head.sha || github.sha }}
       run: |
         cd "${YOCTO_WORKSPACE}"
-        override_rev="${{ github.event.pull_request.head.sha || github.sha }}"
         mkdir -p .repo/local_manifests
         cat > .repo/local_manifests/meta-adi-override.xml <<EOF
         <?xml version="1.0" encoding="UTF-8"?>
         <manifest>
-          <remote fetch="${{ github.server_url }}/${{ github.repository_owner }}" name="ci"/>
+          <remote fetch="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY_OWNER}" name="ci"/>
           <extend-project name="lnxdsp-adi-meta" path="sources/meta-adi" remote="ci" revision="${override_rev}"/>
         </manifest>
         EOF
@@ -110,17 +128,20 @@ runs:
 
     - name: Setup build environment
       shell: bash
+      env:
+        MACHINE: ${{ inputs.machine }}
+        DISTRO: ${{ inputs.distro }}
       run: |
         cd "${YOCTO_WORKSPACE}"
-        source setup-environment -m ${{ inputs.machine }} -d ${{ inputs.distro }}
+        source setup-environment -m "${MACHINE}" -d "${DISTRO}"
 
         # Configure for CI with persistent caches in runner's home directory
         cat >> conf/local.conf <<EOF
 
         # CI Build Configuration - use persistent caches from runner's home
-        DL_DIR = "${{ env.YOCTO_DL_DIR }}"
-        SSTATE_DIR = "${{ env.YOCTO_SSTATE_DIR }}"
-        BB_HASHSERVE_DB_DIR = "${{ env.YOCTO_HASHSERVE_DIR }}"
+        DL_DIR = "${YOCTO_DL_DIR}"
+        SSTATE_DIR = "${YOCTO_SSTATE_DIR}"
+        BB_HASHSERVE_DB_DIR = "${YOCTO_HASHSERVE_DIR}"
         EOF
 
         # Instruct Yocto to generate an SPDX Software Bill of Materials (SBOM)
@@ -140,26 +161,35 @@ runs:
 
     - name: Build image
       shell: bash
+      env:
+        IMAGE: ${{ inputs.image }}
       run: |
         cd "${YOCTO_WORKSPACE}"
         umask 022
         source setup-environment -b build
-        bitbake ${{ inputs.image }}
+        bitbake "${IMAGE}"
 
     - name: Build SDK
       if: ${{ inputs.build-sdk == 'true' }}
       shell: bash
+      env:
+        IMAGE: ${{ inputs.image }}
       run: |
         cd "${YOCTO_WORKSPACE}"
         umask 022
         source setup-environment -b build
-        bitbake ${{ inputs.image }} -c populate_sdk
+        bitbake "${IMAGE}" -c populate_sdk
 
     - name: Set artifact name
       shell: bash
+      env:
+        MACHINE: ${{ inputs.machine }}
+        IMAGE: ${{ inputs.image }}
+        MANIFEST: ${{ inputs.manifest }}
       run: |
-        ARTIFACT_NAME="${{ inputs.machine }}-${{ inputs.image }}"
-        [[ "${{ inputs.manifest }}" == "main" ]] || ARTIFACT_NAME="${ARTIFACT_NAME}-${{ inputs.manifest }}"
+        ARTIFACT_NAME="${MACHINE}-${IMAGE}"
+        [[ "${MANIFEST}" == "main" ]] || ARTIFACT_NAME="${ARTIFACT_NAME}-${MANIFEST}"
+        ARTIFACT_NAME=$(printf '%s' "${ARTIFACT_NAME}" | tr -cd '[:alnum:]._-')
         echo "ARTIFACT_NAME=${ARTIFACT_NAME}" >> $GITHUB_ENV
 
     - name: Upload Yocto images
@@ -198,10 +228,14 @@ runs:
     - name: Archive output images directory
       if: ${{ github.event_name == 'release' }}
       shell: bash
+      env:
+        MACHINE: ${{ inputs.machine }}
+        IMAGE: ${{ inputs.image }}
+        RELEASE_TAG: ${{ github.event.release.tag_name }}
       run: |
         cd "${YOCTO_WORKSPACE}"
-        tar -cJvf images-${{ inputs.machine }}-${{ inputs.image }}-${{ github.event.release.tag_name }}.tar.xz \
-          build/tmp/deploy/images/${{ inputs.machine }}/
+        tar -cJvf "images-${MACHINE}-${IMAGE}-${RELEASE_TAG}.tar.xz" \
+          "build/tmp/deploy/images/${MACHINE}/"
 
     - name: Upload release archive as artifact
       uses: actions/upload-artifact@v7
@@ -214,4 +248,5 @@ runs:
       if: always()
       shell: bash
       run: |
+        rm -f ~/.git-credentials
         [[ -n "${YOCTO_WORKSPACE}" ]] && rm -rf "${YOCTO_WORKSPACE}"
