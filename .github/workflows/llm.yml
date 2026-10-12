@@ -53,9 +53,21 @@ on:
         description: "Review strategy"
         type: string
         default: "commit"
+      checkout-path:
+        description: "Path to checkout the repository to review"
+        type: string
+        default: "."
+      app-token-repositories:
+        description: "Comma-separated repositories to scope a GitHub App token to, empty to use github.token"
+        type: string
+        default: ""
     secrets:
       PORTKEY_API_KEY:
         required: true
+      APP_CLIENT_ID:
+        required: false
+      APP_PRIVATE_KEY:
+        required: false
 
 jobs:
   llm:
@@ -71,13 +83,15 @@ jobs:
 
     steps:
       - name: Prepare prompt
+        env:
+          PROMPT: ${{ inputs.prompt }}
+          PROMPT_EXTRA: ${{ inputs.prompt-extra }}
+          STRATEGY: ${{ inputs.strategy }}
         run: |
           prompt_file=$(mktemp --suffix=.md)
           echo "prompt_file=$prompt_file" >> "$GITHUB_ENV"
 
-          cat <<'EOF' > "$prompt_file"
-          ${{ inputs.prompt }}
-          EOF
+          printf '%s\n' "$PROMPT" > "$prompt_file"
 
           grep -q '[^[:space:]]' "$prompt_file" || \
           cat <<'EOF' > "$prompt_file"
@@ -129,7 +143,7 @@ jobs:
 
           EOF
 
-          if [[ "${{ inputs.strategy }}" == "files" ]]; then
+          if [[ "$STRATEGY" == "files" ]]; then
             cat <<'EOF' >> "$prompt_file"
           ## File Review Protocol
 
@@ -142,9 +156,7 @@ jobs:
           EOF
           fi
 
-          cat <<'EOF' >> "$prompt_file"
-          ${{ inputs.prompt-extra }}
-          EOF
+          printf '%s\n' "$PROMPT_EXTRA" >> "$prompt_file"
 
       - name: Prepare tools
         shell: bash
@@ -160,13 +172,27 @@ jobs:
       - name: Get yocto docs
         shell: bash
         run: |
+          rm -rf yocto-docs
           git clone https://git.yoctoproject.org/yocto-docs.git \
             --branch wrynose --depth 1 -- yocto-docs
+
+      - uses: actions/create-github-app-token@v3
+        if: ${{ inputs.app-token-repositories != '' }}
+        id: app-token
+        with:
+          app-id: ${{ secrets.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ inputs.app-token-repositories }}
+          permission-contents: read
+          permission-pull-requests: read
 
       - uses: analogdevicesinc/doctools/llm@action
         id: llm
         with:
           ref: ${{ inputs.ref }}
+          gh-token: ${{ steps.app-token.outputs.token || github.token }}
+          checkout-path: ${{ inputs.checkout-path || '.' }}
           model: ${{ inputs.model }}
           prompt-file: ${{ env.prompt_file }}
           api-key: ${{ secrets.PORTKEY_API_KEY }}
