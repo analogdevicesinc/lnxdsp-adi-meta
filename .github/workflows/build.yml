@@ -98,7 +98,7 @@ jobs:
           gh-token: ${{ steps.app-token.outputs.token || github.token }}
 
       - name: Download release artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         if: ${{ github.event_name == 'release' && inputs.upload-artifacts }}
         with:
           pattern: "{images-${{ inputs.machine }}-${{ inputs.image }}-${{ github.event.release.tag_name }}.tar.xz,sdk-${{ inputs.machine }}-${{ inputs.image }}}"
