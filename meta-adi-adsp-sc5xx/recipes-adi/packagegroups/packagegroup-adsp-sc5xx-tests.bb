@@ -6,10 +6,11 @@ REQUIRED_DISTRO_FEATURES = "ptest"
 
 RDEPENDS:${PN} = " \
     ptest-runner \
-    openssl-ptest \
-    util-linux-ptest \
-    libgpiod-ptest \
+    busybox-ptest \
+    libseccomp-ptest \
+    openssh-ptest \
     rt-tests-ptest \
+    util-linux-ptest \
     ltp \
     stress-ng \
     memtester \
