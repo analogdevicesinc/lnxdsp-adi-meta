@@ -124,9 +124,15 @@ jobs:
           gh-token: ${{ steps.app-token.outputs.token || github.token }}
           cloudsmith-user: ${{ secrets.CLOUDSMITH_USER }}
 
+  release:
+    needs: build
+    if: ${{ github.event_name == 'release' && inputs.upload-artifacts }}
+    runs-on: ${{ vars.RUNNER != '' && fromJSON(vars.RUNNER) || 'ubuntu-latest' }}
+    permissions:
+      contents: write
+    steps:
       - name: Download release artifacts
         uses: actions/download-artifact@v8
-        if: ${{ github.event_name == 'release' && inputs.upload-artifacts }}
         with:
           pattern: "{images-${{ inputs.machine }}-${{ inputs.image }}-${{ github.event.release.tag_name }}.tar.xz,${{ inputs.machine }}-${{ inputs.image }}.sdk}"
           path: release
@@ -134,7 +140,6 @@ jobs:
 
       - name: Upload artifacts to release
         uses: svenstaro/upload-release-action@v2
-        if: ${{ github.event_name == 'release' && inputs.upload-artifacts }}
         with:
           repo_token: ${{ github.token }}
           file: release/*
