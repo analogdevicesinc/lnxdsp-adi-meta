@@ -1,3 +1,5 @@
+inherit adsp-ptest-cleanup
+
 # Tests that need kernel options the ADI configurations don't enable (RTC, loop, VSOCK,
 # SCHED_DEADLINE bandwidth) or that fail on an NFSv3 root (leases, RENAME_EXCHANGE).
 UTIL_LINUX_PTEST_EXCLUDE ?= " \

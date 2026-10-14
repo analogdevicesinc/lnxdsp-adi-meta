@@ -76,8 +76,29 @@ to an NFS root.
 .. note::
    Several suites write test data next to the test binaries. Some tests behave differently
    on an NFS root than on a local ext4 filesystem (for example, file leases are not
-   supported over NFSv3), so run the test image from local storage when comparing results
-   against a reference run.
+   supported over NFSv3), and disk stress over NFS can hang, so run the test image from
+   local storage (SD card or eMMC) when comparing results against a reference run.
+
+Test Data and Cleanup
+~~~~~~~~~~~~~~~~~~~~~
+
+The ``openssh``, ``libseccomp``, ``rt-tests`` and ``util-linux`` suites write logs, keys and
+extracted test data into their ``/usr/lib/<suite>/ptest`` directories. The ADI layer wraps
+each of these suites' ``run-ptest`` so that anything not shipped in the package is deleted
+before and after every run, whether the suite passes, fails or is interrupted. The list of
+shipped files is recorded at build time in ``/usr/lib/<suite>/ptest/.ptest-pristine``.
+
+Space is still needed while a suite runs. ``util-linux`` peaks at about 400 MB, so the test
+image is built with 512 MB of extra free space in its root filesystem. Results printed to
+the ``ptest-runner`` output (including the diffs for failing tests) are not affected by the
+cleanup; redirect the output to a file to keep them.
+
+To add the same cleanup to another ptest package, inherit the class from a ``.bbappend``
+in your layer:
+
+.. code-block:: bitbake
+
+   inherit adsp-ptest-cleanup
 
 ptest-runner
 ------------
@@ -135,7 +156,8 @@ failing test cases:
 Included ptest Suites
 ~~~~~~~~~~~~~~~~~~~~~
 
-The durations below were measured on the ADSP-SC598 SOM with an NFS root. Running every
+The durations below were measured on the ADSP-SC598 SOM with an NFS root (local eMMC is up
+to four times faster for util-linux). Running every
 suite takes about two hours, so use ``-t 900`` or higher.
 
 .. list-table::
