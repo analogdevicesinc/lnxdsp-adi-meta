@@ -16,7 +16,11 @@ on:
         description: "Manifest"
         default: main
       manifest-repo:
-        description: "Manifest repository"
+        description: "Manifest repository for Google repo manifest tool"
+        default: ""
+      build-config-file:
+        description: "Build configuration file used with tools like kas/bitbake-setup"
+        type: string
         default: ""
       build-sdk:
         description: "Build the SDK installer for this image"
@@ -33,6 +37,10 @@ on:
         description: "Override sources/meta-adi with the checked-out ref"
         type: boolean
         default: false
+      app-token-repositories:
+        description: "Comma-separated repositories to scope the GitHub App token to"
+        type: string
+        default: ""
   workflow_call:
     inputs:
       machine:
@@ -50,6 +58,10 @@ on:
       manifest-repo:
         type: string
         default: ""
+      build-config-file:
+        description: "Build configuration file used with tools like kas/bitbake-setup"
+        type: string
+        default: ""
       build-sdk:
         type: boolean
         default: true
@@ -62,19 +74,28 @@ on:
       override-meta-adi:
         type: boolean
         default: false
+      app-token-repositories:
+        description: "Comma-separated repositories to scope the GitHub App token to"
+        type: string
+        default: ""
     secrets:
       APP_CLIENT_ID:
         required: false
       APP_PRIVATE_KEY:
         required: false
+      CLOUDSMITH_USER:
+        required: false
 
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
     runs-on: ${{ vars.RUNNER != '' && fromJSON(vars.RUNNER) || 'ubuntu-latest' }}
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/create-github-app-token@v3
         if: ${{ github.repository_owner == 'adi-innersource' }}
@@ -83,19 +104,13 @@ jobs:
           app-id: ${{ secrets.APP_CLIENT_ID  }}
           private-key: ${{ secrets.APP_PRIVATE_KEY  }}
           owner: ${{ github.repository_owner }}
-          repositories: |
-            linux
-            u-boot
-            lnxdsp-adi-meta
-            lnxdsp-adi-security-meta
-            lnxdsp-repo-manifest
-            lnxdsp-scripts
-            openocd
+          repositories: ${{ inputs.app-token-repositories || 'linux,u-boot,lnxdsp-adi-meta,lnxdsp-adi-security-meta,lnxdsp-repo-manifest,lnxdsp-scripts,openocd' }}
 
       - name: Checkout
         uses: actions/checkout@v7
         with:
           token: ${{ steps.app-token.outputs.token || github.token }}
+          persist-credentials: false
 
       - name: Build
         uses: ./actions/build
@@ -105,15 +120,23 @@ jobs:
           distro: ${{ inputs.distro }}
           manifest: ${{ inputs.manifest }}
           manifest-repo: ${{ inputs.manifest-repo }}
+          build-config-file: ${{ inputs.build-config-file }}
           build-sdk: ${{ inputs.build-sdk }}
           upload-artifacts: ${{ inputs.upload-artifacts }}
           manifest-branch: ${{ inputs.manifest-branch }}
           override-meta-adi: ${{ inputs.override-meta-adi }}
           gh-token: ${{ steps.app-token.outputs.token || github.token }}
+          cloudsmith-user: ${{ secrets.CLOUDSMITH_USER }}
 
+  release:
+    needs: build
+    if: ${{ github.event_name == 'release' && inputs.upload-artifacts }}
+    runs-on: ${{ vars.RUNNER != '' && fromJSON(vars.RUNNER) || 'ubuntu-latest' }}
+    permissions:
+      contents: write
+    steps:
       - name: Download release artifacts
         uses: actions/download-artifact@v8
-        if: ${{ github.event_name == 'release' && inputs.upload-artifacts }}
         with:
           pattern: "{images-${{ inputs.machine }}-${{ inputs.image }}-${{ github.event.release.tag_name }}.tar.xz,sdk-${{ inputs.machine }}-${{ inputs.image }}}"
           path: release
@@ -121,7 +144,6 @@ jobs:
 
       - name: Upload artifacts to release
         uses: svenstaro/upload-release-action@v2
-        if: ${{ github.event_name == 'release' && inputs.upload-artifacts }}
         with:
           repo_token: ${{ github.token }}
           file: release/*

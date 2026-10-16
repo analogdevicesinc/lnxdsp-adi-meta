@@ -57,6 +57,7 @@ jobs:
       APP_PRIVATE_KEY: ${{ secrets.TOKEN_GENERATOR_APP_PRIVATE_KEY }}
     permissions:
       contents: write
+      id-token: write
     with:
       machine: ${{ matrix.machine }}
       image: ${{ matrix.image }}
