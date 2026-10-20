@@ -5,7 +5,6 @@ on:
   pull_request:
     paths:
       - '.github/**'
-      - 'actions/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
@@ -28,8 +27,10 @@ jobs:
           - release-5.0.0
           - release-5.0.1
 
-    uses: ./.github/workflows/build.yml
-    secrets: inherit
+    uses: analogdevicesinc/meta-adi/.github/workflows/build.yml@ci
+    secrets:
+      APP_CLIENT_ID: ${{ secrets.TOKEN_GENERATOR_APP_ID }}
+      APP_PRIVATE_KEY: ${{ secrets.TOKEN_GENERATOR_APP_PRIVATE_KEY }}
     permissions:
       contents: write
       id-token: write
