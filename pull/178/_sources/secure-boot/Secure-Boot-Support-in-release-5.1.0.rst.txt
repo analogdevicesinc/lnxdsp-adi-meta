@@ -4,4 +4,4 @@
    workspace: lnxdsp
    build_dir: build-security
    cces_version: 2.12.1
-   kas_file: kas/releases/release-5.1.0.yml
+   kas_file: kas/adsp-sc5xx.yml
