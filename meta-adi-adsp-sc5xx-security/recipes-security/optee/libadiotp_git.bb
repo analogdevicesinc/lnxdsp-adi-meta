@@ -10,7 +10,7 @@ SRCREV = "845273c3201813d2d14e2d9903fff9899b718c20"
 
 B = "${S}"
 
-include optee.inc
+include optee-adi.inc
 
 do_compile() {
 	kludge_openssl

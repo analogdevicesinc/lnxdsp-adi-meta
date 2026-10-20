@@ -1,4 +1,4 @@
-require optee-test.inc
+require optee-test-adi.inc
 
 SRCREV = "88c93e87a5c172363ee986ded036a25cafcc9d2c"
 
