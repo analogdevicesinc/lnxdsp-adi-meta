@@ -27,18 +27,19 @@ Building U-Boot with Falcon Mode
 Step 1: Configure Build System
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-After following the Getting Started guides and sourcing the setup script:
+After fetching the sources as described in the Getting Started guides, open a kas shell:
 
 .. code-block:: shell
 
-   source setup-environment -m adsp-sc598-som-ezkit
+   . .venv/bin/activate
+   KAS_MACHINE=adsp-sc598-som-ezkit kas shell config/kas/adsp-sc5xx.yml
 
-A build folder and local configuration file will be created at ``$PROJECT_DIR/build/conf/local.conf``.
+The shell starts in the ``build`` directory with BitBake configured.
 
 Step 2: Enable Falcon Mode
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Edit ``conf/local.conf`` and append the following lines:
+Add the following lines to ``conf/auto.conf`` so kas preserves them:
 
 .. code-block:: shell
 
