@@ -1,0 +1,40 @@
+#!/bin/sh
+
+rc=0
+
+check() {
+    name=$1
+    shift
+    if "$@" >/dev/null 2>&1; then
+        echo "PASS: $name"
+    else
+        echo "FAIL: $name"
+        rc=1
+    fi
+}
+
+# A missing boot message only fails if the start of the boot log is still in the
+# kernel ring buffer; otherwise it may have been overwritten.
+check_boot_log() {
+    name=$1
+    if dmesg | grep -q "$2"; then
+        echo "PASS: $name"
+    elif dmesg | grep -q 'Booting Linux on physical CPU'; then
+        echo "FAIL: $name"
+        rc=1
+    else
+        echo "SKIP: $name"
+    fi
+}
+
+check_boot_log tfa-psci-probed "psci: PSCIv1"
+check_boot_log tfa-smccc       "SMC Calling Convention"
+check optee-probed        test -e /sys/bus/platform/drivers/optee/firmware:optee
+check optee-dev-tee0      test -c /dev/tee0
+check optee-dev-teepriv0  test -c /dev/teepriv0
+check tee-supplicant      pidof tee-supplicant
+check optee-hwrng         grep -q optee-rng /sys/class/misc/hw_random/rng_available
+check optee-hwrng-fips    sh -c 'dd if=/dev/hwrng bs=2500 count=10 2>/dev/null | rngtest -c 8'
+check optee-hello-world   optee_example_hello_world
+
+exit $rc
