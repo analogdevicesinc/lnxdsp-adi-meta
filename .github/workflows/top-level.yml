@@ -2,10 +2,6 @@ name: Build ADI Yocto artifacts (main)
 
 on:
   workflow_dispatch:
-    inputs:
-      manifest-branch:
-        description: "Manifest repository branch/ref"
-        default: "main"
   pull_request:
   push:
     branches:
@@ -33,23 +29,18 @@ jobs:
         image:
           - adsp-sc5xx-minimal
           - adsp-sc5xx-full
-        manifest:
-          - main
         include:
           - machine: adsp-sc573-ezlite
             image: adsp-sc5xx-tiny
-            manifest: main
             build-sdk: false
             upload-artifacts: true
-            distro: adi-distro-musl
+            build-config-file: kas/adi-distro-musl.yml
           - image: adsp-sc5xx-minimal
             build-sdk: true
             upload-artifacts: true
-            distro: adi-distro-glibc
           - image: adsp-sc5xx-full
             build-sdk: true
             upload-artifacts: false
-            distro: adi-distro-glibc
 
     uses: analogdevicesinc/meta-adi/.github/workflows/build.yml@ci
     secrets:
@@ -61,12 +52,9 @@ jobs:
     with:
       machine: ${{ matrix.machine }}
       image: ${{ matrix.image }}
-      distro: ${{ matrix.distro }}
-      manifest: ${{ matrix.manifest }}
-      manifest-branch: ${{ inputs.manifest-branch }}
+      build-config-file: ${{ matrix.build-config-file || 'kas/adsp-sc5xx.yml' }}
       build-sdk: ${{ matrix.build-sdk }}
       upload-artifacts: ${{ matrix.upload-artifacts }}
-      override-meta-adi: true
 
   deploy_cloudsmith:
     needs: [build]
