@@ -1,0 +1,70 @@
+# Default build for ADSP-SC5xx/SC8xx reference boards, with this checkout as
+# meta-adi. Replaces the lnxdsp-repo-manifest main.xml and the local.conf edits
+# of tools/setup-environment.
+#
+# Select the board with KAS_MACHINE, and the musl distro with kas/adi-distro-musl.yml, for example:
+#   KAS_MACHINE=adsp-sc573-ezlite kas build kas/adi-distro-musl.yml
+
+header:
+  version: 14
+
+machine: adsp-sc598-som-ezkit
+distro: adi-distro-glibc
+target: adsp-sc5xx-minimal
+
+repos:
+  meta-adi:
+    layers:
+      meta-adi-adsp-sc5xx:
+      meta-adi-adsp-sc5xx-security:
+
+  # yocto wrynose 6.0.3
+  bitbake:
+    url: https://git.openembedded.org/bitbake
+    commit: fae9db3168dbff1b8c76fe9c6726a9687ff97514
+    layers:
+      .: disabled
+
+  oe-core:
+    url: https://git.openembedded.org/openembedded-core
+    commit: ef022bf82d79015802309d14c28b13373ebe53f5
+    layers:
+      meta:
+
+  meta-yocto:
+    url: https://git.yoctoproject.org/meta-yocto
+    commit: 1b132647002eea43a2c7a7f857f63f42dacbc26c
+    layers:
+      meta-poky:
+      meta-yocto-bsp:
+
+  meta-openembedded:
+    url: https://github.com/openembedded/meta-openembedded
+    commit: 14282a02be9c74a1276a7cda7d6c89e054699a11
+    layers:
+      meta-oe:
+      meta-python:
+      meta-networking:
+      meta-multimedia:
+
+  meta-arm:
+    url: https://git.yoctoproject.org/meta-arm
+    commit: 9dab8bdd4991973faa6dfc5b3c607f4c09cc1cdb
+    layers:
+      meta-arm:
+      meta-arm-toolchain:
+
+local_conf_header:
+  adi: |
+    PACKAGE_CLASSES ?= "package_ipk"
+    DISTRO_FEATURES:append = " linux_only_audio "
+    ADI_ELFLOADER_AGREE_SLA:adsp-sc598-som-ezkit = "1"
+    ADI_ELFLOADER_AGREE_SLA:adsp-sc598-som-ezlite = "1"
+  wrynose-workarounds: |
+    # TODO: drop once systemd.bbclass guards this append with class-native.
+    # util-linux-native and systemd-systemctl-native depend on each other, and
+    # create-spdx-3.0 makes that a fatal task cycle.
+    DEPENDS:remove:class-native = "systemd-systemctl-native"
+    # TODO: drop when meta-oe stops asking for uutils-coreutils-native, or
+    # systemd gains a native variant.
+    BBMASK += "meta-oe/recipes-core/uutils-coreutils/"

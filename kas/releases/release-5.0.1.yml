@@ -1,0 +1,57 @@
+# Release 5.0.1, replaces release-5.0.1.xml of lnxdsp-repo-manifest.
+
+header:
+  version: 14
+
+machine: adsp-sc598-som-ezkit
+distro: adi-distro-glibc
+target: adsp-sc5xx-minimal
+
+repos:
+  meta-adi:
+    url: https://github.com/analogdevicesinc/lnxdsp-adi-meta.git
+    commit: 37ddcbcbf37e0386d07123220585692e471f09a8
+    layers:
+      meta-adi-adsp-sc5xx:
+
+  meta-adi-security:
+    url: https://github.com/analogdevicesinc/lnxdsp-adi-security-meta.git
+    commit: c213bdee2599a9e559b1e32940d96430c5acb2e2
+    layers:
+      meta-adi-adsp-sc5xx-security:
+
+  poky:
+    url: https://git.yoctoproject.org/git/poky
+    commit: ec220ae083dba35c279192b2249ad03fe238446e
+    layers:
+      meta:
+      meta-poky:
+      meta-yocto-bsp:
+
+  meta-openembedded:
+    url: https://github.com/openembedded/meta-openembedded
+    commit: b9fb6556a3c8a3e477dce334205b658cb79ad501
+    layers:
+      meta-oe:
+      meta-python:
+      meta-networking:
+      meta-multimedia:
+
+  meta-arm:
+    url: https://git.yoctoproject.org/git/meta-arm
+    commit: 8e0f8af90fefb03f08cd2228cde7a89902a6b37c
+    layers:
+      meta-arm:
+      meta-arm-toolchain:
+
+local_conf_header:
+  adi: |
+    PACKAGE_CLASSES ?= "package_ipk"
+    DISTRO_FEATURES:remove = "sysvinit"
+    DISTRO_FEATURES:append = " systemd"
+    DISTRO_FEATURES_BACKFILL_CONSIDERED = "sysvinit"
+    VIRTUAL-RUNTIME_init_manager = "systemd"
+    VIRTUAL-RUNTIME_initscripts = "systemd-compat-units"
+    DISTRO_FEATURES:append = " linux_only_audio "
+    ADI_ELFLOADER_AGREE_SLA:adsp-sc598-som-ezkit = "1"
+    ADI_ELFLOADER_AGREE_SLA:adsp-sc598-som-ezlite = "1"

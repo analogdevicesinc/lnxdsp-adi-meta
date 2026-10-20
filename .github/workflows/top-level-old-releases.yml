@@ -5,6 +5,7 @@ on:
   pull_request:
     paths:
       - '.github/**'
+      - 'kas/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
@@ -22,7 +23,7 @@ jobs:
           - adsp-sc598-som-ezkit
         image:
           - adsp-sc5xx-minimal
-        manifest:
+        release:
           - release-3.1.2
           - release-5.0.0
           - release-5.0.1
@@ -37,4 +38,5 @@ jobs:
     with:
       machine: ${{ matrix.machine }}
       image: ${{ matrix.image }}
-      manifest: ${{ matrix.manifest }}
+      build-config-file: kas/releases/${{ matrix.release }}.yml
+      upload-artifacts: false

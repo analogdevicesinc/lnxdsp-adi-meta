@@ -1,0 +1,6 @@
+header:
+  version: 14
+  includes:
+    - kas/adsp-sc5xx.yml
+
+distro: adi-distro-musl
