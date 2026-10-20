@@ -57,6 +57,7 @@ Guides
 * :doc:`Getting Started with ADSP-SC594 <getting-started/Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-main)>`
 * :doc:`Getting Started with ADSP-SC589-MINI <getting-started/Getting-Started-with-ADSP‐SC589‐MINI-(Linux-for-ADSP‐SC5xx-Processors-main)>`
 * :doc:`Getting Started with ADSP-SC573 <getting-started/Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-main)>`
+* :doc:`Secure Boot Support <secure-boot/Secure-Boot-Support-in-main>`
 
 .. toctree::
    :hidden:

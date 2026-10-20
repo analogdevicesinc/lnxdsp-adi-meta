@@ -14,6 +14,8 @@ Available Releases
 
    * - Version
      - Documentation
+   * - **main**
+     - :doc:`Secure Boot Guide for the development version (main) <Secure-Boot-Support-in-main>`
    * - **5.1.0**
      - :doc:`Secure Boot Guide for 5.1.0 <Secure-Boot-Support-in-release-5.1.0>`
    * - **5.0.1**
@@ -33,6 +35,7 @@ Available Releases
    :hidden:
    :titlesonly:
 
+   Secure-Boot-Support-in-main
    Secure-Boot-Support-in-release-5.1.0
    Secure-Boot-Support-in-release-5.0.1
    Secure-Boot-Support-in-release-5.0.0
