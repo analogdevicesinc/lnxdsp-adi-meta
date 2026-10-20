@@ -56,3 +56,5 @@ local_conf_header:
     DISTRO_FEATURES:append = " linux_only_audio "
     ADI_ELFLOADER_AGREE_SLA:adsp-sc598-som-ezkit = "1"
     ADI_ELFLOADER_AGREE_SLA:adsp-sc598-som-ezlite = "1"
+  optee-workaround: |
+    BBMASK += "meta-arm/meta-arm/recipes-security/optee/"
