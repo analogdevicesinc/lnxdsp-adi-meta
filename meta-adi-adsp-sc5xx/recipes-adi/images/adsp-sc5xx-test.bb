@@ -7,4 +7,6 @@ inherit features_check
 REQUIRED_DISTRO_FEATURES = "ptest"
 
 IMAGE_INSTALL += "packagegroup-adsp-sc5xx-tests"
+IMAGE_INSTALL += "crc-tests-ptest"
+IMAGE_INSTALL:append:adsp-sc598-som-ezkit = " crypto-tests-ptest"
 IMAGE_ROOTFS_EXTRA_SPACE = "524288"

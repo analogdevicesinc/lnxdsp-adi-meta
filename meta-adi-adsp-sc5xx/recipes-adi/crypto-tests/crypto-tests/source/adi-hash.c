@@ -73,7 +73,7 @@ static uint8_t test2_md5_expected_hmac[] = "\x82\x83\x75\x8a\x9e\x09\x94\x0a\x82
 static uint8_t test3_md5_expected_hmac[] = "\x81\x9c\x51\x39\x2b\x6a\xcf\x60\xa5\x29\x48\xa5\x0f\x8a\xac\x77";
 static uint8_t test4_md5_expected_hmac[] = "\xf1\x28\x01\xfd\x16\xb7\x8f\x6d\x36\x25\x23\x5c\x6f\x0e\x8a\x61";
 
-int test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint32_t alg){
+static int run_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint32_t alg){
 	int i;
 	struct session_op sess;
 #ifdef CIOCGSESSINFO
@@ -144,6 +144,12 @@ int test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint3
 	}
 
 	printf("Using %s with driver %s\n", siop.hash_info.cra_name, siop.hash_info.cra_driver_name);
+#ifdef ADI_HW_DRIVER
+	if (!strstr(siop.hash_info.cra_driver_name, ADI_HW_DRIVER)) {
+		printf("not using the %s driver\n", ADI_HW_DRIVER);
+		mismatch = 1;
+	}
+#endif
 
 #endif
 
@@ -193,12 +199,8 @@ int test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint3
 		printf("%.2x", (uint8_t)expected[i]);
 	}
 	printf("\n");
-	if (memcmp(result, expected, length)!=0) {
-		printf("TEST: failed\n\n");
+	if (memcmp(result, expected, length)!=0)
 		mismatch = 1;
-	} else {
-		printf("TEST: passed\n\n");
-	}
 
 	/* Finish crypto session */
 	if (ioctl(cfd, CIOCFSESSION, &sess.ses)) {
@@ -209,6 +211,31 @@ int test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint3
 	return mismatch;
 }
 
+static int test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint32_t alg){
+	const char *name = "";
+	int ret;
+
+	switch(alg){
+		case CRYPTO_SHA2_256:		name = "SHA256 HASH"; break;
+		case CRYPTO_SHA2_256_HMAC:	name = "SHA256 HMAC"; break;
+		case CRYPTO_SHA2_224:		name = "SHA224 HASH"; break;
+		case CRYPTO_SHA2_224_HMAC:	name = "SHA224 HMAC"; break;
+		case CRYPTO_SHA1:		name = "SHA1 HASH"; break;
+		case CRYPTO_SHA1_HMAC:		name = "SHA1 HMAC"; break;
+		case CRYPTO_MD5:		name = "MD5 HASH"; break;
+		case CRYPTO_MD5_HMAC:		name = "MD5 HMAC"; break;
+	}
+
+	ret = run_hash(cfd, input, expected, key, alg);
+	if (key)
+		printf("%s: %s [cryptodev] (%zu bytes, key %zu bytes)\n\n", ret ? "FAIL" : "PASS",
+		       name, strlen((char *)input), strlen((char *)key));
+	else
+		printf("%s: %s [cryptodev] (%zu bytes)\n\n", ret ? "FAIL" : "PASS",
+		       name, strlen((char *)input));
+
+	return ret;
+}
 
 static int test_crypto(int cfd) {
 	int failed = 0;
@@ -271,12 +298,14 @@ int main(int argc, char** argv){
 	fd = open("/dev/crypto", O_RDWR, 0);
 	if (fd < 0) {
 		perror("open(/dev/crypto)");
+		printf("FAIL: open /dev/crypto\n");
 		return 1;
 	}
 
 	/* Clone file descriptor */
 	if (ioctl(fd, CRIOGET, &cfd)) {
 		perror("ioctl(CRIOGET)");
+		printf("FAIL: clone /dev/crypto descriptor\n");
 		return 1;
 	}
 

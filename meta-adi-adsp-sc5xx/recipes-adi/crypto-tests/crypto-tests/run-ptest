@@ -1,0 +1,6 @@
+#!/bin/sh
+
+rc=0
+sh /crypto/adi-hash.sh || rc=1
+sh /crypto/adi-skcipher.sh || rc=1
+exit ${rc}
