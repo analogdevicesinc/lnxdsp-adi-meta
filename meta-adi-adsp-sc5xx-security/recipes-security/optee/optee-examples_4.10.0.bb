@@ -1,4 +1,4 @@
-require optee-examples.inc
+require optee-examples-adi.inc
 
 SRCREV = "934c7edb74a26e90f68024cf441073528444177f"
 

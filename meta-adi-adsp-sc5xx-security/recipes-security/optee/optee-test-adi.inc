@@ -6,7 +6,7 @@ LICENSE = "BSD-2-Clause & GPL-2.0-only"
 LIC_FILES_CHKSUM = "file://${S}/LICENSE.md;md5=a8fa504109e4cd7ea575bc49ea4be560"
 
 inherit python3native ptest
-require optee.inc
+require optee-adi.inc
 
 DEPENDS = "optee-client optee-os python3-cryptography-native openssl"
 

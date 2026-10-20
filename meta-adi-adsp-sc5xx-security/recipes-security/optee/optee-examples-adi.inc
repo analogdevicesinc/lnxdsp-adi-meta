@@ -9,7 +9,7 @@ DEPENDS = "optee-client optee-os python3-cryptography-native"
 
 inherit python3native
 
-require optee.inc
+require optee-adi.inc
 
 SRC_URI = " \
     git://github.com/linaro-swg/optee_examples.git;branch=master;protocol=https \
