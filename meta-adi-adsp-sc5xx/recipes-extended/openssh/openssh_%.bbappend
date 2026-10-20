@@ -4,6 +4,8 @@ allow_root() {
                -e 's/^#PermitRootLogin.*/PermitRootLogin yes/' ${UNPACKDIR}/sshd_config
 }
 
+inherit adsp-ptest-cleanup
+
 # Regress tests (names without .sh) that fail on ADSP-SC5xx boards
 OPENSSH_PTEST_SKIP ?= "dynamic-forward"
 
