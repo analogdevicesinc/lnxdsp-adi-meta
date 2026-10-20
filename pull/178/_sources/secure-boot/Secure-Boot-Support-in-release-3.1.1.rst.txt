@@ -1,0 +1,8 @@
+.. include-template:: templates/secure-boot-legacy.rst.jinja
+
+   version: 3.1.1
+   workspace: gxp2
+   build_dir: build-security
+   cces_version: 2.12.1
+   kas_file: kas/releases/release-3.1.1.yml
+   initial_release: false

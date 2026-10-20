@@ -1,0 +1,8 @@
+.. include-template:: templates/secure-boot-legacy.rst.jinja
+
+   version: 5.0.0
+   workspace: lnxdsp
+   build_dir: build-security
+   cces_version: 2.12.1
+   kas_file: kas/releases/release-5.0.0.yml
+   initial_release: false

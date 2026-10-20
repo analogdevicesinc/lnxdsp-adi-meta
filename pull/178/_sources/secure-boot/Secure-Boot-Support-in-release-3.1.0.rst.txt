@@ -1,0 +1,8 @@
+.. include-template:: templates/secure-boot-legacy.rst.jinja
+
+   version: 3.1.0
+   workspace: lnxdsp
+   build_dir: adsp-build
+   cces_version: 2.11.1
+   kas_file: kas/releases/release-3.1.0.yml
+   initial_release: true
