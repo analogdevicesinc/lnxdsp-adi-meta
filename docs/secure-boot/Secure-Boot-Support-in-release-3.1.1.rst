@@ -53,14 +53,11 @@ Fetch and install the sources:
 
    mkdir ~/gxp2
    cd ~/gxp2
-   mkdir bin
-   curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ./bin/repo
-   chmod a+x ./bin/repo
-   ./bin/repo init \
-      -u https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git \
-      -b develop/3.1.1-security \
-      -m release-3.1.1.xml
-   ./bin/repo sync
+   python3 -m venv .venv
+   . .venv/bin/activate
+   pip install kas
+   git clone https://github.com/analogdevicesinc/lnxdsp-adi-meta.git config
+   KAS_MACHINE=adsp-sc598-som-ezkit kas checkout config/kas/releases/release-3.1.1.yml
 
 
 Key Generation
@@ -105,10 +102,17 @@ Build Linux image and SDK
 
 .. code-block:: shell
 
-   source setup-environment --machine adsp-sc598-som-ezkit --distro adi-security --builddir build-security
+   cd ~/gxp2
+   . .venv/bin/activate
+   KAS_MACHINE=adsp-sc598-som-ezkit KAS_DISTRO=adi-security \
+      KAS_BUILD_DIR="$PWD/build-security" kas shell config/kas/releases/release-3.1.1.yml
+
+The shell starts in ``build-security`` with BitBake configured. Run the following
+build commands there. kas regenerates ``conf/local.conf``; use ``conf/auto.conf``
+for persistent changes.
 
 
-* Add the following lines into ``conf/local.conf``:
+* Add the following lines into ``conf/auto.conf``:
 
 
 .. code-block:: shell
@@ -1022,7 +1026,7 @@ Mbed-TLS test suite
 
 Mbed-TLS provides a test suite for Yocto's ``ptest``.
 
-Install ptest by adding the following to ``conf/local.conf``:
+Install ptest by adding the following to ``conf/auto.conf``:
 
 
 .. code-block:: text

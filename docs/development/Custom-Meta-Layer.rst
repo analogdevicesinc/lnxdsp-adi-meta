@@ -26,14 +26,15 @@ for any other supported board.
 Creating the Layer
 ------------------
 
-Source the build environment first so the Yocto tools are available:
+Open a kas shell first so the Yocto tools are available:
 
 .. code-block:: shell
 
    cd ~/adsp-sc598-som-ezkit-yocto-build
-   source setup-environment -m adsp-sc598-som-ezkit
+   . .venv/bin/activate
+   KAS_MACHINE=adsp-sc598-som-ezkit kas shell config/kas/releases/release-5.0.1.yml
 
-Sourcing the script changes the working directory to ``build/``. Create the layer in the
+The shell starts in ``build/``. Create the layer in the
 ``sources`` directory alongside the other layers:
 
 .. code-block:: shell
@@ -72,6 +73,27 @@ To confirm it was registered:
    bitbake-layers show-layers
 
 ``meta-custom`` should appear in the list alongside the existing layers.
+
+kas regenerates ``bblayers.conf``. To retain the layer in subsequent sessions,
+exit the kas shell and create ``custom.yml`` in the workspace:
+
+.. code-block:: yaml
+
+   header:
+     version: 14
+     includes:
+       - config/kas/releases/release-5.0.1.yml
+   repos:
+     meta-custom:
+       path: sources/meta-custom
+       layers:
+         .:
+
+Then reopen the shell with this configuration:
+
+.. code-block:: shell
+
+   KAS_MACHINE=adsp-sc598-som-ezkit kas shell custom.yml
 
 A Simple Recipe
 ---------------
@@ -115,7 +137,7 @@ Including the Recipe in the Image
 ----------------------------------
 
 Recipes are not automatically included in an image. The simplest way to add ``hello-adi``
-to a build is to append to ``IMAGE_INSTALL`` in ``build/conf/local.conf``:
+to a build is to append to ``IMAGE_INSTALL`` in ``build/conf/auto.conf``:
 
 .. code-block:: shell
 

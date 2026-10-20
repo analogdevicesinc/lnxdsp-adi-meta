@@ -46,11 +46,13 @@ Build Linux image and SDK
 
 .. code-block:: shell
 
-   ./bin/repo init \
-      -u https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git \
-      -b develop/yocto-3.1.0 \
-      -m develop-yocto-3.1.0.xml
-   ./bin/repo sync -j$(nproc)
+   mkdir -p ~/lnxdsp
+   cd ~/lnxdsp
+   python3 -m venv .venv
+   . .venv/bin/activate
+   pip install kas
+   git clone https://github.com/analogdevicesinc/lnxdsp-adi-meta.git config
+   KAS_MACHINE=adsp-sc598-som-ezkit kas checkout config/kas/releases/release-3.1.0.yml
 
 
 * Preparing the build work directory
@@ -58,10 +60,17 @@ Build Linux image and SDK
 
 .. code-block:: shell
 
-   source setup-environment --machine adsp-sc598-som-ezkit --distro adi-security --builddir adsp-build
+   cd ~/lnxdsp
+   . .venv/bin/activate
+   KAS_MACHINE=adsp-sc598-som-ezkit KAS_DISTRO=adi-security \
+      KAS_BUILD_DIR="$PWD/adsp-build" kas shell config/kas/releases/release-3.1.0.yml
+
+The shell starts in ``adsp-build`` with BitBake configured. Run the following
+build commands there. kas regenerates ``conf/local.conf``; use ``conf/auto.conf``
+for persistent changes.
 
 
-* Add the following lines into ``conf/local.conf``
+* Add the following lines into ``conf/auto.conf``
 
 
 .. code-block:: shell

@@ -15,10 +15,10 @@ To add a package (for example, ``ethtool``) to your target image, first locate t
    :width: 600
    :alt: OpenEmbedded Layer Index search example
 
-Method 1: Using local.conf (Recommended)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Method 1: Using auto.conf (Recommended)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Add the package to your image by appending this line to ``conf/local.conf``:
+Add the package to your image by appending this line to ``conf/auto.conf``:
 
 .. code-block:: shell
 
@@ -49,11 +49,15 @@ Alternatively, add the package directly to your custom recipe file:
 Build the Image
 ~~~~~~~~~~~~~~~
 
-Build your image to include the new package:
+Build your image to include the new package, from the workspace created in the
+Getting Started guide:
 
 .. code-block:: shell
 
-   bitbake adsp-custom-ramdisk
+   KAS_MACHINE=adsp-sc598-som-ezkit kas build config/kas/adsp-sc5xx.yml --target adsp-custom-ramdisk
+
+If the recipe is in your own layer, use the kas configuration that includes it
+instead, see :doc:`Creating a Custom Meta Layer <../development/Custom-Meta-Layer>`.
 
 The package will be deployed into the Linux filesystem during the build process.
 
@@ -129,66 +133,36 @@ Step 1: Download Source Code
 
    mkdir ~/linux-dsp-own-repos
    cd ~/linux-dsp-own-repos
-   mkdir bin
-   curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ./bin/repo
-   chmod a+x ./bin/repo
-   ./bin/repo init \
-      -u https://github.com/analogdevicesinc/lnxdsp-repo-manifest.git \
-      -b main \
-      -m release-5.0.1.xml
+   python3 -m venv .venv
+   . .venv/bin/activate
+   pip install kas
+   git clone https://github.com/analogdevicesinc/lnxdsp-adi-meta.git meta-adi
+   cd meta-adi
+
+If you maintain a fork of ``lnxdsp-adi-meta``, use its URL instead.
+
+Step 2: Configure kas
+~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: shell
+
+   export KAS_MACHINE=adsp-sc598-som-ezkit
+   kas checkout kas/adsp-sc5xx.yml
 
 .. note::
-   Replace ``release-5.0.1.xml`` with your desired release version.
-
-Step 2: Configure Manifest
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Modify the repo manifest to point to your custom repositories for ``lnxdsp-adi-meta`` and ``lnxdsp-scripts``:
-
-.. code-block:: shell
-
-   cd ~/linux-dsp-own-repos/.repo/manifests/
-
-Apply the following modifications to ``lnxdsp-repo-manifest``:
-
-.. code-block:: diff
-
-   diff --git a/default.xml b/default.xml
-   index 244bf04..45abdf8 100644
-   --- a/default.xml
-   +++ b/default.xml
-   @@ -5,12 +5,12 @@
-
-      <remote fetch="https://git.yoctoproject.org/git" name="yocto"/>
-      <remote fetch="https://github.com/openembedded" name="oe"/>
-   -  <remote fetch="https://github.com/analogdevicesinc" name="adigithub"/>
-   +  <remote fetch="$YOUR_REPO_PATH" name="customrepo"/>
-
-      <project remote="yocto" revision="..." name="poky" path="sources/poky"/>
-      <project remote="oe" revision="..." name="meta-openembedded" path="sources/meta-openembedded"/>
-   -  <project remote="adigithub" revision="main" name="lnxdsp-adi-meta" path="sources/meta-adi"/>
-   -  <project remote="adigithub" revision="main" name="lnxdsp-scripts" path="sources">
-   +  <project remote="customrepo" revision="main" name="lnxdsp-adi-meta" path="sources/meta-adi"/>
-   +  <project remote="customrepo" revision="main" name="lnxdsp-scripts" path="sources">
-   	  <linkfile dest="setup-environment" src="setup-environment"/>
-      </project>
-
-Replace ``$YOUR_REPO_PATH`` with your Git server URL (e.g., ``https://github.com/yourorg`` or ``git://your-server.com``).
-
-Sync the repositories:
-
-.. code-block:: shell
-
-   ./bin/repo sync
+   Pinned configurations for selected older releases are available under
+   ``kas/releases/``. These fetch the release's pinned meta-adi revision
+   rather than using your local checkout.
 
 Step 3: Configure Kernel and U-Boot Repositories
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Point U-Boot and Linux kernel recipes to your custom repositories by modifying ``conf/local.conf``:
+Point U-Boot and Linux kernel recipes to your custom repositories by adding
+``build/conf/auto.conf`` (preserved by kas):
 
 .. code-block:: shell
 
-   # Add to conf/local.conf
+   # Add to build/conf/auto.conf
    UBOOT_GIT_URI = "git://$YOUR_REPO_PATH/u-boot.git"
    UBOOT_BRANCH = "main"
    KERNEL_GIT_URI = "git://$YOUR_REPO_PATH/lnxdsp-linux.git"
@@ -203,11 +177,11 @@ Configure your build environment and start building:
 
 .. code-block:: shell
 
-   cd ~/linux-dsp-own-repos/
-   source setup-environment -m adsp-sc598-som-ezkit
+   cd ~/linux-dsp-own-repos/meta-adi
+   . ../.venv/bin/activate
 
    # Build your target
-   bitbake adsp-sc5xx-minimal
+   KAS_MACHINE=adsp-sc598-som-ezkit kas shell kas/adsp-sc5xx.yml -c 'bitbake adsp-sc5xx-minimal'
 
 **Common build targets:**
 
