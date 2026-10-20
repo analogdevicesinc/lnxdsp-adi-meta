@@ -1,127 +1,64 @@
 #!/bin/sh
 
-rmmod cryptodev
+HW_DRIVER="@ADI_HW_DRIVER@"
+DIGESTS="sha256 sha224 sha1 md5"
+SIZES="127bytes 128kbytes 32mbytes"
+rc=0
 
-dd if=/dev/urandom of=/tmp/127bytes bs=127 count=1 > /dev/null 2>&1
-dd if=/dev/urandom of=/tmp/128kbytes bs=128K count=1 > /dev/null 2>&1
-dd if=/dev/urandom of=/tmp/32mbytes bs=128K count=1 > /dev/null 2>&1
+result() {
+	if [ "$2" -eq 0 ]; then
+		echo "PASS: $1"
+	else
+		echo "FAIL: $1"
+		rc=1
+	fi
+}
 
-openssl dgst -sha256  < /tmp/127bytes > /tmp/sw_127bytes_sha256
-openssl dgst -sha224  < /tmp/127bytes > /tmp/sw_127bytes_sha224
-openssl dgst -sha1  < /tmp/127bytes > /tmp/sw_127bytes_sha1
-openssl dgst -md5 < /tmp/127bytes > /tmp/sw_127bytes_md5
+size_label() {
+	case "$1" in
+	127bytes) echo "127 bytes" ;;
+	128kbytes) echo "128 kilobytes" ;;
+	32mbytes) echo "32 megabytes" ;;
+	esac
+}
 
-openssl dgst -sha256  < /tmp/128kbytes > /tmp/sw_128kbytes_sha256
-openssl dgst -sha224  < /tmp/128kbytes > /tmp/sw_128kbytes_sha224
-openssl dgst -sha1  < /tmp/128kbytes > /tmp/sw_128kbytes_sha1
-openssl dgst -md5  < /tmp/128kbytes > /tmp/sw_128kbytes_md5
+WORKDIR=$(mktemp -d) || exit 1
+trap 'rm -rf "${WORKDIR}"' EXIT
+cd "${WORKDIR}" || exit 1
 
-openssl dgst -sha256  < /tmp/32mbytes > /tmp/sw_32mbytes_sha256
-openssl dgst -sha224  < /tmp/32mbytes > /tmp/sw_32mbytes_sha224
-openssl dgst -sha1  < /tmp/32mbytes > /tmp/sw_32mbytes_sha1
-openssl dgst -md5  < /tmp/32mbytes > /tmp/sw_32mbytes_md5
+if [ -n "${HW_DRIVER}" ]; then
+	for alg in ${DIGESTS}; do
+		awk -v n="${alg}" '$1 == "name" { nm = $3 } $1 == "driver" && nm == n { print $3 }' /proc/crypto | grep -q -F "${HW_DRIVER}"
+		result "${alg} [${HW_DRIVER}] registered" $?
+	done
+fi
+
+# Reference digests, computed without cryptodev loaded
+rmmod cryptodev 2>/dev/null
+
+dd if=/dev/urandom of=127bytes bs=127 count=1 > /dev/null 2>&1
+dd if=/dev/urandom of=128kbytes bs=128K count=1 > /dev/null 2>&1
+dd if=/dev/urandom of=32mbytes bs=1M count=32 > /dev/null 2>&1
+
+for size in ${SIZES}; do
+	for alg in ${DIGESTS}; do
+		openssl dgst -${alg} < ${size} > sw_${size}_${alg}
+	done
+done
 
 modprobe cryptodev
 
-openssl dgst -sha256 -engine devcrypto < /tmp/127bytes > /tmp/hw_127bytes_sha256
-openssl dgst -sha224 -engine devcrypto < /tmp/127bytes > /tmp/hw_127bytes_sha224
-openssl dgst -sha1 -engine devcrypto < /tmp/127bytes > /tmp/hw_127bytes_sha1
-openssl dgst -md5 -engine devcrypto< /tmp/127bytes > /tmp/hw_127bytes_md5
+# Software only: the devcrypto engine skips hash drivers without export/import
+for alg in ${DIGESTS}; do
+	for size in ${SIZES}; do
+		openssl dgst -${alg} -engine devcrypto < ${size} > engine_${size}_${alg} 2>/dev/null
+		[ -s sw_${size}_${alg} ] && cmp -s engine_${size}_${alg} sw_${size}_${alg}
+		result "$(echo ${alg} | tr a-z A-Z) [OpenSSL, software] ($(size_label ${size}))" $?
+	done
+done
 
-openssl dgst -sha256 -engine devcrypto < /tmp/128kbytes > /tmp/hw_128kbytes_sha256
-openssl dgst -sha224 -engine devcrypto < /tmp/128kbytes > /tmp/hw_128kbytes_sha224
-openssl dgst -sha1 -engine devcrypto < /tmp/128kbytes > /tmp/hw_128kbytes_sha1
-openssl dgst -md5 -engine devcrypto < /tmp/128kbytes > /tmp/hw_128kbytes_md5
-
-openssl dgst -sha256 -engine devcrypto < /tmp/32mbytes > /tmp/hw_32mbytes_sha256
-openssl dgst -sha224 -engine devcrypto < /tmp/32mbytes > /tmp/hw_32mbytes_sha224
-openssl dgst -sha1 -engine devcrypto < /tmp/32mbytes > /tmp/hw_32mbytes_sha1
-openssl dgst -md5 -engine devcrypto < /tmp/32mbytes > /tmp/hw_32mbytes_md5
-
-cmp /tmp/hw_127bytes_sha256 /tmp/sw_127bytes_sha256
-if [ $? -gt 0 ]; then
-	echo "SHA256 [OpenSSL] (127 bytes): FAIL"
-else
-	echo "SHA256 [OpenSSL] (127 bytes): PASS"
-fi
-
-cmp /tmp/hw_128kbytes_sha256 /tmp/sw_128kbytes_sha256
-if [ $? -gt 0 ]; then
-	echo "SHA256 [OpenSSL] (128 kilobytes): FAIL"
-else
-	echo "SHA256 [OpenSSL] (128 kilobytes): PASS"
-fi
-
-cmp /tmp/hw_32mbytes_sha256 /tmp/sw_32mbytes_sha256
-if [ $? -gt 0 ]; then
-	echo "SHA256 [OpenSSL] (32 megabytes): FAIL"
-else
-	echo "SHA256 [OpenSSL] (32 megabytes): PASS"
-fi
-
-cmp /tmp/hw_127bytes_sha224 /tmp/sw_127bytes_sha224
-if [ $? -gt 0 ]; then
-	echo "SHA224 [OpenSSL] (127 bytes): FAIL"
-else
-	echo "SHA224 [OpenSSL] (127 bytes): PASS"
-fi
-
-cmp /tmp/hw_128kbytes_sha224 /tmp/sw_128kbytes_sha224
-if [ $? -gt 0 ]; then
-	echo "SHA224 [OpenSSL] (128 kilobytes): FAIL"
-else
-	echo "SHA224 [OpenSSL] (128 kilobytes): PASS"
-fi
-
-cmp /tmp/hw_32mbytes_sha224 /tmp/sw_32mbytes_sha224
-if [ $? -gt 0 ]; then
-	echo "SHA224 [OpenSSL] (32 megabytes): FAIL"
-else
-	echo "SHA224 [OpenSSL] (32 megabytes): PASS"
-fi
-
-cmp /tmp/hw_127bytes_sha1 /tmp/sw_127bytes_sha1
-if [ $? -gt 0 ]; then
-	echo "SHA1 [OpenSSL] (127 bytes): FAIL"
-else
-	echo "SHA1 [OpenSSL] (127 bytes): PASS"
-fi
-
-cmp /tmp/hw_128kbytes_sha1 /tmp/sw_128kbytes_sha1
-if [ $? -gt 0 ]; then
-	echo "SHA1 [OpenSSL] (128 kilobytes): FAIL"
-else
-	echo "SHA1 [OpenSSL] (128 kilobytes): PASS"
-fi
-
-cmp /tmp/hw_32mbytes_sha1 /tmp/sw_32mbytes_sha1
-if [ $? -gt 0 ]; then
-	echo "SHA1 [OpenSSL] (32 megabytes): FAIL"
-else
-	echo "SHA1 [OpenSSL] (32 megabytes): PASS"
-fi
-
-cmp /tmp/hw_127bytes_md5 /tmp/sw_127bytes_md5
-if [ $? -gt 0 ]; then
-	echo "MD5 [OpenSSL] (127 bytes): FAIL"
-else
-	echo "MD5 [OpenSSL] (127 bytes): PASS"
-fi
-
-cmp /tmp/hw_128kbytes_md5 /tmp/sw_128kbytes_md5
-if [ $? -gt 0 ]; then
-	echo "MD5 [OpenSSL] (128 kilobytes): FAIL"
-else
-	echo "MD5 [OpenSSL] (128 kilobytes): PASS"
-fi
-
-cmp /tmp/hw_32mbytes_md5 /tmp/sw_32mbytes_md5
-if [ $? -gt 0 ]; then
-	echo "MD5 [OpenSSL] (32 megabytes): FAIL"
-else
-	echo "MD5 [OpenSSL] (32 megabytes): PASS"
-fi
-
-echo "Also running tests using /dev/crypto + ioctls (adi-hash.c program):"
+echo "Running tests using /dev/crypto + ioctls (adi-hash.c program):"
 echo ""
-/crypto/adi-hash
+/crypto/adi-hash || rc=1
+
+exit ${rc}
