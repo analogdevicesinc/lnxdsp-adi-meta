@@ -51,7 +51,7 @@ jobs:
             upload-artifacts: false
             distro: adi-distro-glibc
 
-    uses: ./.github/workflows/build.yml
+    uses: analogdevicesinc/meta-adi/.github/workflows/build.yml@ci
     secrets:
       APP_CLIENT_ID: ${{ secrets.TOKEN_GENERATOR_APP_ID }}
       APP_PRIVATE_KEY: ${{ secrets.TOKEN_GENERATOR_APP_PRIVATE_KEY }}
