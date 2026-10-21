@@ -17,11 +17,29 @@ various :external+system-level:doc:`use cases <products/adsp/use-cases>`.
 * **Connectivity** - Ethernet, USB, SPI, I2C, UART, CAN, and more industry-standard interfaces
 * **Real-time Processing** - Dedicated SHARC+ DSPs for deterministic, low-latency processing
 
-.. note::
-   📌 **Latest Release**: Linux for ADSP-SC5xx **5.1.0** - :doc:`Release Landing Page <Linux-for-ADSP‐SC5xx-5.1.0-Landing-Page>`
+Latest Release
+--------------
+
+.. admonition:: Version 5.1.0 - Current Stable
+   :class: tip
+
+   **Linux 6.18.31 (LTS)** | **Yocto Scarthgap** | **Enhanced RPMsg** | **Secure Boot** | **New Audio Examples**
+
+   :doc:`Release Landing Page <Linux-for-ADSP‐SC5xx-5.1.0-Landing-Page>` | `Full Release Notes <https://github.com/analogdevicesinc/lnxdsp-adi-meta/releases/tag/5.1.0-rel>`_ | :doc:`Older Releases <Older-Releases>`
+
+Development Version (main)
+--------------------------
+
+The ``main`` branch of
+`lnxdsp-adi-meta <https://github.com/analogdevicesinc/lnxdsp-adi-meta>`_ is the
+latest development version of Linux for ADSP-SC5xx, built with
+`kas <https://kas.readthedocs.io>`_. The guides below follow ``main``; for the
+latest tested release, see 5.1.0 above.
+
+:doc:`Development Version Landing Page <Linux-for-ADSP‐SC5xx-main-Landing-Page>` | :doc:`Secure Boot (main) <secure-boot/Secure-Boot-Support-in-main>`
 
 Development Boards
-------------------
+~~~~~~~~~~~~~~~~~~
 
 .. list-table::
    :widths: 30 35 35
@@ -32,19 +50,19 @@ Development Boards
      - Quick Start Guide
    * - **SC846-SOM**
      - Cortex-A55 + Dual SHARC+ @ 1.2GHz
-     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC846-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)>`
+     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC846-(Linux-for-ADSP‐SC5xx-Processors-main)>`
    * - **SC598-SOM**
      - Cortex-A55 + Dual SHARC+ @ 1GHz
-     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)>`
+     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-main)>`
    * - **SC594-SOM**
      - Cortex-A5 + Single SHARC+ @ 1GHz
-     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)>`
+     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-main)>`
    * - **SC589-MINI**
      - Cortex-A5 + Dual SHARC+ @ 500MHz
-     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC589‐MINI-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)>`
+     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC589‐MINI-(Linux-for-ADSP‐SC5xx-Processors-main)>`
    * - **SC573-EZ-KIT**
      - Cortex-A5 + Single SHARC+ @ 500MHz
-     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)>`
+     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-main)>`
 
 Quick Start
 -----------
@@ -57,16 +75,6 @@ Quick Start
 4. :doc:`Run examples <examples/Examples>` - Try SHARC-ALSA, USB Audio, and more
 
 **Key Topics**: :doc:`Boot Process <development/Boot-Sequence>` | :doc:`Image Types <development/Image-Types>` | :doc:`RPMsg <development/RPMsg>` | :doc:`Memory Configuration <development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>` | :doc:`Secure Boot <secure-boot/Secure-Boot-Support>`
-
-Latest Release
---------------
-
-.. admonition:: Version 5.1.0 - Current Stable
-   :class: tip
-
-   **Linux 6.18.31 (LTS)** | **Yocto Scarthgap** | **Enhanced RPMsg** | **Secure Boot** | **New Audio Examples**
-
-   `Full Release Notes <https://github.com/analogdevicesinc/lnxdsp-adi-meta/releases/tag/5.1.0-rel>`_ | :doc:`Older Releases <Older-Releases>`
 
 Quick Links
 -----------
@@ -94,6 +102,7 @@ Documentation
    :titlesonly:
 
    Linux for ADSP SC5xx 5.1.0 <Linux-for-ADSP‐SC5xx-5.1.0-Landing-Page>
+   Linux for ADSP SC5xx main <Linux-for-ADSP‐SC5xx-main-Landing-Page>
    Older Releases <Older-Releases>
    Examples <examples/Examples>
    Development <development/Development>

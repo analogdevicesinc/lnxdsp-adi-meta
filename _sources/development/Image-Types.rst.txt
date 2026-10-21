@@ -103,11 +103,13 @@ through ``INITRD_NAME`` so it is used as the boot ramdisk.
 Building an Image
 -----------------
 
-After sourcing the build environment, build any image by name with ``bitbake``:
+From the workspace created in the Getting Started guide, open a kas shell
+and build any image by name with ``bitbake``:
 
 .. code-block:: shell
 
-   source setup-environment -m adsp-sc598-som-ezkit
+   . .venv/bin/activate
+   KAS_MACHINE=adsp-sc598-som-ezkit kas shell config/kas/adsp-sc5xx.yml
    bitbake adsp-sc5xx-full
 
 The resulting rootfs and programming images are written under

@@ -31,26 +31,16 @@ Go to ``sources/meta/meta-adi/tools`` sources and run
 
 This will clone and patch the relevant repositories required for compiling the kitchen-sink image.
 
-Go back to the yocto directory and create the build directory as usual with setup-environment, then build ``sc5xx-kitchen-sink``
+Return to the workspace and open a kas shell with a configuration that includes
+all the prepared kitchen-sink layers and recipes, then build the image:
 
 .. code-block:: shell
 
-   machine :: yocto » source setup-environment -m adsp-sc598-som-ezkit
-   Your build environment has been configured with:
+   KAS_MACHINE=adsp-sc598-som-ezkit kas shell <kitchen-sink-config.yml>
+   bitbake adsp-sc5xx-kitchen-sink
 
-           MACHINE=adsp-sc598-som-ezkit
-
-   You can now run 'bitbake <target>'
-   Some of common targets are:
-           u-boot-adi
-           linux-adi
-           adsp-sc5xx-ramdisk-emmc-tools
-           adsp-sc5xx-kitchen-sink
-           adsp-sc5xx-minimal
-           adsp-sc5xx-minimal-mmc
-           adsp-sc5xx-full
-           adsp-sc5xx-ramdisk
-           adsp-sc5xx-tiny
+Replace ``<kitchen-sink-config.yml>`` with your configuration. The default
+``kas/adsp-sc5xx.yml`` does not include the kitchen-sink dependencies.
 
 This can now either be booted via NFS/eMMC/SD card boot (spiboot is not available due to image size).
 
