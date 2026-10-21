@@ -15,10 +15,10 @@ To add a package (for example, ``ethtool``) to your target image, first locate t
    :width: 600
    :alt: OpenEmbedded Layer Index search example
 
-Method 1: Using local.conf (Recommended)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Method 1: Using auto.conf (Recommended)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Add the package to your image by appending this line to ``conf/local.conf``:
+Add the package to your image by appending this line to ``conf/auto.conf``:
 
 .. code-block:: shell
 
@@ -49,11 +49,15 @@ Alternatively, add the package directly to your custom recipe file:
 Build the Image
 ~~~~~~~~~~~~~~~
 
-Build your image to include the new package:
+Build your image to include the new package, from the workspace created in the
+Getting Started guide:
 
 .. code-block:: shell
 
-   bitbake adsp-custom-ramdisk
+   KAS_MACHINE=adsp-sc598-som-ezkit kas build config/kas/adsp-sc5xx.yml --target adsp-custom-ramdisk
+
+If the recipe is in your own layer, use the kas configuration that includes it
+instead, see :doc:`Creating a Custom Meta Layer <../development/Custom-Meta-Layer>`.
 
 The package will be deployed into the Linux filesystem during the build process.
 

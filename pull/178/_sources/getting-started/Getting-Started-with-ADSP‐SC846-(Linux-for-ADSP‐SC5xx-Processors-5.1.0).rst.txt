@@ -1,2 +1,2 @@
-.. include-template:: templates/getting-started.new.jinja
+.. include-template:: templates/getting-started-5.rst.jinja
    :file: data/sc846-5.1.0.yaml

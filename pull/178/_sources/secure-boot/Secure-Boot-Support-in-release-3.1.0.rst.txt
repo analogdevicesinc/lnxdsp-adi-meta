@@ -1,8 +1,7 @@
-.. include-template:: templates/secure-boot-legacy.rst.jinja
+.. include-template:: templates/secure-boot-3.rst.jinja
 
    version: 3.1.0
-   workspace: lnxdsp
    build_dir: adsp-build
    cces_version: 2.11.1
-   kas_file: kas/releases/release-3.1.0.yml
-   initial_release: true
+   repo_branch: develop/yocto-3.1.0
+   repo_manifest: develop-yocto-3.1.0.xml

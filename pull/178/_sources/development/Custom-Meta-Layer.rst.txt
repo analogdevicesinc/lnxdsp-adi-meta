@@ -137,7 +137,7 @@ Including the Recipe in the Image
 ----------------------------------
 
 Recipes are not automatically included in an image. The simplest way to add ``hello-adi``
-to a build is to append to ``IMAGE_INSTALL`` in ``build/conf/local.conf``:
+to a build is to append to ``IMAGE_INSTALL`` in ``build/conf/auto.conf``:
 
 .. code-block:: shell
 
