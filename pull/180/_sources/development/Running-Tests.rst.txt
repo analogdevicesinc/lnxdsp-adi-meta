@@ -88,8 +88,12 @@ Test Data and Cleanup
 The ``openssh``, ``libseccomp``, ``rt-tests`` and ``util-linux`` suites write logs, keys and
 extracted test data into their ``/usr/lib/<suite>/ptest`` directories. The ADI layer wraps
 each of these suites' ``run-ptest`` so that anything not shipped in the package is deleted
-before and after every run, whether the suite passes, fails or is interrupted. The list of
-shipped files is recorded at build time in ``/usr/lib/<suite>/ptest/.ptest-pristine``.
+before and after every run, whether the suite passes, fails or is interrupted (for example
+with Ctrl+C). A suite that ``ptest-runner`` stops for a timeout is killed before it can clean
+up, so its files, and anything it left mounted in the ptest directory, are removed at the
+start of the next run instead. The list of shipped files is recorded at build time in
+``/usr/lib/<suite>/ptest/.ptest-pristine``; files in ``.debug`` directories, which belong to
+the ``-dbg`` packages, are never removed.
 
 To add the same cleanup to another ptest package, inherit the class from a ``.bbappend``
 in your layer:
@@ -142,9 +146,10 @@ runs it, collecting the ``PASS:``, ``FAIL:`` and ``SKIP:`` lines that each suite
      - Write the results to an XML file (one test case per suite, with its duration).
 
 Each suite's results are wrapped in ``BEGIN:`` / ``END:`` markers with a ``DURATION:`` line.
-The final ``TOTAL: <n> FAIL: <m>`` line counts suites that crashed or timed out, and the XML
-report only records one entry per suite, so check for individual ``FAIL:`` lines to find
-failing test cases:
+The final ``TOTAL: <n> FAIL: <m>`` line counts suites that exited with a non-zero status,
+were killed by a signal or timed out. A suite can exit with status ``0`` even when some of
+its test cases fail, and the XML report only records one entry per suite, so check for
+individual ``FAIL:`` lines to find failing test cases:
 
 .. code-block:: shell
 
@@ -208,16 +213,18 @@ Other ptest packages can be added to the image with ``IMAGE_INSTALL``, for examp
 util-linux ptest
 ~~~~~~~~~~~~~~~~
 
-The ADI layer appends to ``util-linux-ptest``'s exclude list so that the suite passes on the
-ADI kernel configuration. The list is held in ``UTIL_LINUX_PTEST_EXCLUDE`` and can be overridden,
-for example in ``local.conf``:
+The ADI layer removes from ``util-linux-ptest`` the tests that cannot pass on the ADSP-SC5xx
+boards, mostly because they need kernel options the ADI configurations do not enable, or
+hardware such as an RTC. The list of tests is held in ``UTIL_LINUX_PTEST_EXCLUDE`` and can be
+overridden, for example in ``local.conf``:
 
 .. code-block:: bitbake
 
    # Run the hwclock tests on a board with an RTC driver enabled
    UTIL_LINUX_PTEST_EXCLUDE:remove:pn-util-linux = "hwclock/show"
 
-To run selected util-linux components, or an excluded test, call its test script directly:
+Excluded tests are not installed. To run selected util-linux components, call the test
+script directly:
 
 .. code-block:: shell
 
@@ -323,8 +330,9 @@ through ``cryptodev`` (``/dev/crypto``) and OpenSSL's ``devcrypto`` engine.
   encryption and decryption of 1 KB to 8 MB inputs through the engine match OpenSSL's
   software results (``[OpenSSL]`` results).
 
-``crc-tests`` runs CRC-32 known-answer tests on the ADI CRC hardware through
-``/dev/crypto``.
+``crc-tests`` checks that ``hmac(crc32)`` is registered by the ``adi`` driver in
+``/proc/crypto``, and runs CRC-32 known-answer tests on the ADI CRC hardware through
+``/dev/crypto``, checking that each session is served by the ``adi`` driver.
 
 .. code-block:: shell
 
@@ -345,19 +353,9 @@ Example output:
    PASS: aes-256-cbc [OpenSSL] (encrypt, 1M)
    PASS: CRC32B [cryptodev] (8192 bytes)
 
-The suites need the ADI crypto drivers (``CONFIG_CRYPTO_DEV_ADI_CRC`` and
-``CONFIG_CRYPTO_DEV_ADI_PKTE``), which the ``crypto.cfg`` kernel fragment enables.
-
-.. note::
-   The ADI crypto drivers are on the ``port-adi-crypto-driver`` branch of the ADI Linux
-   kernel and are not yet in the default ``adsp-6.18.31-y`` kernel. With the default kernel
-   the ``cryptodev`` sessions cannot be opened and both suites fail. To run them, build the
-   kernel from that branch, for example in ``local.conf``:
-
-   .. code-block:: bitbake
-
-      KERNEL_BRANCH:pn-linux-adi = "port-adi-crypto-driver"
-      SRCREV:pn-linux-adi = "${AUTOREV}"
+The suites need the ADI crypto drivers. ``CONFIG_CRYPTO_DEV_ADI_CRC`` is enabled by the
+``crypto.cfg`` kernel fragment, and ``CONFIG_CRYPTO_DEV_ADI_PKTE`` by the ``pkte.cfg``
+fragment, which is only applied for the ``adsp-sc598-som-ezkit`` machine.
 
 With the ``adi-security`` distro, OP-TEE makes the packet engine secure-only. The security
 layer disables the PKTE in the Linux device tree and does not install
@@ -594,9 +592,10 @@ TEE Smoke Test
 ~~~~~~~~~~~~~~
 
 Checks, from Linux, that TF-A and OP-TEE are running and reachable: the PSCI and SMC Calling
-Convention probe messages, the OP-TEE driver and ``/dev/tee*`` devices, the
-``tee-supplicant`` service, the OP-TEE random number generator and the OP-TEE "hello world"
-example.
+Convention probe messages, the OP-TEE driver and ``/dev/tee*`` devices, a running
+``tee-supplicant``, the OP-TEE random number generator and the OP-TEE "hello world"
+example. The probe message checks are reported as ``SKIP`` if the start of the boot log
+has already been overwritten in the kernel ring buffer.
 
 .. code-block:: shell
 

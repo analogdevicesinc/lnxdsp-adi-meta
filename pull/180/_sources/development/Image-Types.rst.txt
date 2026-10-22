@@ -62,9 +62,7 @@ Linux userspace with a common set of packages:
 * **Connectivity / shell**: ``openssh``, ``iproute2``, ``iproute2-tc``, ``ncurses``.
 * **Audio + inter-core comms (ICC)**: ``alsa-utils``, ``rpmsg-utils`` and the SHARC audio
   binaries selected by the audio ``DISTRO_FEATURES``.
-* **Crypto**: ``openssl``, ``openssl-bin``, ``openssl-engines``,
-  ``openssl-ossl-module-legacy``, ``cryptodev-linux``, ``cryptodev-module``, ``crypto-tests``,
-  ``crc-tests``.
+* **Crypto**: ``openssl``, ``openssl-bin``, ``cryptodev-linux``, ``cryptodev-module``.
 * **Flash / storage tools**: ``mtd-utils``, ``mtd-utils-ubifs``, ``e2fsprogs``.
 * **GPIO / SPI**: ``libgpiod``, ``libgpiod-tools``, ``spidev-test``, ``spitools``.
 
@@ -104,7 +102,8 @@ When the image is built with the ``adi-security`` distro, the security layer als
 * ``tee-smoke-ptest`` — Linux-visible checks of the TF-A (BL31) and OP-TEE stack.
 
 The test image uses the same kernel configuration as the other images. The ``ptest``
-``DISTRO_FEATURE`` must be enabled, which it is by default for the ADI distros.
+``DISTRO_FEATURE`` must be enabled, which it is by default for the ADI distros; without it
+the image is skipped.
 See :doc:`Running-Tests` for how to run each suite and its options.
 
 

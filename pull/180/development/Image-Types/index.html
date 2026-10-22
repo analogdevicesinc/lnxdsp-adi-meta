@@ -336,9 +336,7 @@ Linux userspace with a common set of packages:</p>
 <li><p><strong>Connectivity / shell</strong>: <code class="docutils literal notranslate"><span class="pre">openssh</span></code>, <code class="docutils literal notranslate"><span class="pre">iproute2</span></code>, <code class="docutils literal notranslate"><span class="pre">iproute2-tc</span></code>, <code class="docutils literal notranslate"><span class="pre">ncurses</span></code>.</p></li>
 <li><p><strong>Audio + inter-core comms (ICC)</strong>: <code class="docutils literal notranslate"><span class="pre">alsa-utils</span></code>, <code class="docutils literal notranslate"><span class="pre">rpmsg-utils</span></code> and the SHARC audio
 binaries selected by the audio <code class="docutils literal notranslate"><span class="pre">DISTRO_FEATURES</span></code>.</p></li>
-<li><p><strong>Crypto</strong>: <code class="docutils literal notranslate"><span class="pre">openssl</span></code>, <code class="docutils literal notranslate"><span class="pre">openssl-bin</span></code>, <code class="docutils literal notranslate"><span class="pre">openssl-engines</span></code>,
-<code class="docutils literal notranslate"><span class="pre">openssl-ossl-module-legacy</span></code>, <code class="docutils literal notranslate"><span class="pre">cryptodev-linux</span></code>, <code class="docutils literal notranslate"><span class="pre">cryptodev-module</span></code>, <code class="docutils literal notranslate"><span class="pre">crypto-tests</span></code>,
-<code class="docutils literal notranslate"><span class="pre">crc-tests</span></code>.</p></li>
+<li><p><strong>Crypto</strong>: <code class="docutils literal notranslate"><span class="pre">openssl</span></code>, <code class="docutils literal notranslate"><span class="pre">openssl-bin</span></code>, <code class="docutils literal notranslate"><span class="pre">cryptodev-linux</span></code>, <code class="docutils literal notranslate"><span class="pre">cryptodev-module</span></code>.</p></li>
 <li><p><strong>Flash / storage tools</strong>: <code class="docutils literal notranslate"><span class="pre">mtd-utils</span></code>, <code class="docutils literal notranslate"><span class="pre">mtd-utils-ubifs</span></code>, <code class="docutils literal notranslate"><span class="pre">e2fsprogs</span></code>.</p></li>
 <li><p><strong>GPIO / SPI</strong>: <code class="docutils literal notranslate"><span class="pre">libgpiod</span></code>, <code class="docutils literal notranslate"><span class="pre">libgpiod-tools</span></code>, <code class="docutils literal notranslate"><span class="pre">spidev-test</span></code>, <code class="docutils literal notranslate"><span class="pre">spitools</span></code>.</p></li>
 </ul>
@@ -376,7 +374,8 @@ and <code class="docutils literal notranslate"><span class="pre">util-linux</spa
 <li><p><code class="docutils literal notranslate"><span class="pre">tee-smoke-ptest</span></code> — Linux-visible checks of the TF-A (BL31) and OP-TEE stack.</p></li>
 </ul>
 <p>The test image uses the same kernel configuration as the other images. The <code class="docutils literal notranslate"><span class="pre">ptest</span></code>
-<code class="docutils literal notranslate"><span class="pre">DISTRO_FEATURE</span></code> must be enabled, which it is by default for the ADI distros.
+<code class="docutils literal notranslate"><span class="pre">DISTRO_FEATURE</span></code> must be enabled, which it is by default for the ADI distros; without it
+the image is skipped.
 See <a class="reference internal" href="../Running-Tests/"><span class="doc">Running Tests</span></a> for how to run each suite and its options.</p>
 </section>
 <section id="minimal-image">

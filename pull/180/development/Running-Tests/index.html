@@ -374,8 +374,12 @@ local storage (SD card or eMMC) when comparing results against a reference run.<
 <p>The <code class="docutils literal notranslate"><span class="pre">openssh</span></code>, <code class="docutils literal notranslate"><span class="pre">libseccomp</span></code>, <code class="docutils literal notranslate"><span class="pre">rt-tests</span></code> and <code class="docutils literal notranslate"><span class="pre">util-linux</span></code> suites write logs, keys and
 extracted test data into their <code class="docutils literal notranslate"><span class="pre">/usr/lib/&lt;suite&gt;/ptest</span></code> directories. The ADI layer wraps
 each of these suites’ <code class="docutils literal notranslate"><span class="pre">run-ptest</span></code> so that anything not shipped in the package is deleted
-before and after every run, whether the suite passes, fails or is interrupted. The list of
-shipped files is recorded at build time in <code class="docutils literal notranslate"><span class="pre">/usr/lib/&lt;suite&gt;/ptest/.ptest-pristine</span></code>.</p>
+before and after every run, whether the suite passes, fails or is interrupted (for example
+with Ctrl+C). A suite that <code class="docutils literal notranslate"><span class="pre">ptest-runner</span></code> stops for a timeout is killed before it can clean
+up, so its files, and anything it left mounted in the ptest directory, are removed at the
+start of the next run instead. The list of shipped files is recorded at build time in
+<code class="docutils literal notranslate"><span class="pre">/usr/lib/&lt;suite&gt;/ptest/.ptest-pristine</span></code>; files in <code class="docutils literal notranslate"><span class="pre">.debug</span></code> directories, which belong to
+the <code class="docutils literal notranslate"><span class="pre">-dbg</span></code> packages, are never removed.</p>
 <p>To add the same cleanup to another ptest package, inherit the class from a <code class="docutils literal notranslate"><span class="pre">.bbappend</span></code>
 in your layer:</p>
 <div class="highlight-bitbake notranslate"><div class="highlight"><pre><span></span><span class="kn">inherit</span><span class="w"> </span><span class="s">adsp-ptest-cleanup</span>
@@ -437,9 +441,10 @@ ptest-runner<span class="w"> </span>-x<span class="w"> </span>/tmp/ptest-results
 </table>
 </div>
 <p>Each suite’s results are wrapped in <code class="docutils literal notranslate"><span class="pre">BEGIN:</span></code> / <code class="docutils literal notranslate"><span class="pre">END:</span></code> markers with a <code class="docutils literal notranslate"><span class="pre">DURATION:</span></code> line.
-The final <code class="docutils literal notranslate"><span class="pre">TOTAL:</span> <span class="pre">&lt;n&gt;</span> <span class="pre">FAIL:</span> <span class="pre">&lt;m&gt;</span></code> line counts suites that crashed or timed out, and the XML
-report only records one entry per suite, so check for individual <code class="docutils literal notranslate"><span class="pre">FAIL:</span></code> lines to find
-failing test cases:</p>
+The final <code class="docutils literal notranslate"><span class="pre">TOTAL:</span> <span class="pre">&lt;n&gt;</span> <span class="pre">FAIL:</span> <span class="pre">&lt;m&gt;</span></code> line counts suites that exited with a non-zero status,
+were killed by a signal or timed out. A suite can exit with status <code class="docutils literal notranslate"><span class="pre">0</span></code> even when some of
+its test cases fail, and the XML report only records one entry per suite, so check for
+individual <code class="docutils literal notranslate"><span class="pre">FAIL:</span></code> lines to find failing test cases:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ptest-runner<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>/tmp/ptest.log
 grep<span class="w"> </span><span class="s1">'^FAIL:'</span><span class="w"> </span>/tmp/ptest.log
 </pre></div>
@@ -530,14 +535,16 @@ local filesystem.</p></td>
 </section>
 <section id="util-linux-ptest">
 <h3>util-linux ptest<a class="headerlink" href="#util-linux-ptest" title="Link to this heading"></a></h3>
-<p>The ADI layer appends to <code class="docutils literal notranslate"><span class="pre">util-linux-ptest</span></code>’s exclude list so that the suite passes on the
-ADI kernel configuration. The list is held in <code class="docutils literal notranslate"><span class="pre">UTIL_LINUX_PTEST_EXCLUDE</span></code> and can be overridden,
-for example in <code class="docutils literal notranslate"><span class="pre">local.conf</span></code>:</p>
+<p>The ADI layer removes from <code class="docutils literal notranslate"><span class="pre">util-linux-ptest</span></code> the tests that cannot pass on the ADSP-SC5xx
+boards, mostly because they need kernel options the ADI configurations do not enable, or
+hardware such as an RTC. The list of tests is held in <code class="docutils literal notranslate"><span class="pre">UTIL_LINUX_PTEST_EXCLUDE</span></code> and can be
+overridden, for example in <code class="docutils literal notranslate"><span class="pre">local.conf</span></code>:</p>
 <div class="highlight-bitbake notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run the hwclock tests on a board with an RTC driver enabled</span>
 <span class="nv">UTIL_LINUX_PTEST_EXCLUDE</span><span class="nd">:remove:pn-util-linux</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"hwclock/show"</span>
 </pre></div>
 </div>
-<p>To run selected util-linux components, or an excluded test, call its test script directly:</p>
+<p>Excluded tests are not installed. To run selected util-linux components, call the test
+script directly:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/usr/lib/util-linux/ptest
 ./tests/run.sh<span class="w"> </span>--use-system-commands<span class="w"> </span>--parsable<span class="w"> </span>lsblk<span class="w"> </span>fdisk
 </pre></div>
@@ -645,8 +652,9 @@ results through <code class="docutils literal notranslate"><span class="pre">/de
 encryption and decryption of 1 KB to 8 MB inputs through the engine match OpenSSL’s
 software results (<code class="docutils literal notranslate"><span class="pre">[OpenSSL]</span></code> results).</p></li>
 </ul>
-<p><code class="docutils literal notranslate"><span class="pre">crc-tests</span></code> runs CRC-32 known-answer tests on the ADI CRC hardware through
-<code class="docutils literal notranslate"><span class="pre">/dev/crypto</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">crc-tests</span></code> checks that <code class="docutils literal notranslate"><span class="pre">hmac(crc32)</span></code> is registered by the <code class="docutils literal notranslate"><span class="pre">adi</span></code> driver in
+<code class="docutils literal notranslate"><span class="pre">/proc/crypto</span></code>, and runs CRC-32 known-answer tests on the ADI CRC hardware through
+<code class="docutils literal notranslate"><span class="pre">/dev/crypto</span></code>, checking that each session is served by the <code class="docutils literal notranslate"><span class="pre">adi</span></code> driver.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ptest-runner<span class="w"> </span>crypto-tests<span class="w"> </span>crc-tests
 
 <span class="c1"># Or run the scripts directly; test data is kept in a temporary directory</span>
@@ -663,19 +671,9 @@ PASS: aes-256-cbc [OpenSSL] (encrypt, 1M)
 PASS: CRC32B [cryptodev] (8192 bytes)
 </pre></div>
 </div>
-<p>The suites need the ADI crypto drivers (<code class="docutils literal notranslate"><span class="pre">CONFIG_CRYPTO_DEV_ADI_CRC</span></code> and
-<code class="docutils literal notranslate"><span class="pre">CONFIG_CRYPTO_DEV_ADI_PKTE</span></code>), which the <code class="docutils literal notranslate"><span class="pre">crypto.cfg</span></code> kernel fragment enables.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The ADI crypto drivers are on the <code class="docutils literal notranslate"><span class="pre">port-adi-crypto-driver</span></code> branch of the ADI Linux
-kernel and are not yet in the default <code class="docutils literal notranslate"><span class="pre">adsp-6.18.31-y</span></code> kernel. With the default kernel
-the <code class="docutils literal notranslate"><span class="pre">cryptodev</span></code> sessions cannot be opened and both suites fail. To run them, build the
-kernel from that branch, for example in <code class="docutils literal notranslate"><span class="pre">local.conf</span></code>:</p>
-<div class="highlight-bitbake notranslate"><div class="highlight"><pre><span></span><span class="nv">KERNEL_BRANCH</span><span class="nd">:pn-linux-adi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"port-adi-crypto-driver"</span>
-<span class="nv">SRCREV</span><span class="nd">:pn-linux-adi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">AUTOREV</span><span class="si">}</span><span class="s2">"</span>
-</pre></div>
-</div>
-</div>
+<p>The suites need the ADI crypto drivers. <code class="docutils literal notranslate"><span class="pre">CONFIG_CRYPTO_DEV_ADI_CRC</span></code> is enabled by the
+<code class="docutils literal notranslate"><span class="pre">crypto.cfg</span></code> kernel fragment, and <code class="docutils literal notranslate"><span class="pre">CONFIG_CRYPTO_DEV_ADI_PKTE</span></code> by the <code class="docutils literal notranslate"><span class="pre">pkte.cfg</span></code>
+fragment, which is only applied for the <code class="docutils literal notranslate"><span class="pre">adsp-sc598-som-ezkit</span></code> machine.</p>
 <p>With the <code class="docutils literal notranslate"><span class="pre">adi-security</span></code> distro, OP-TEE makes the packet engine secure-only. The security
 layer disables the PKTE in the Linux device tree and does not install
 <code class="docutils literal notranslate"><span class="pre">crypto-tests-ptest</span></code>; <code class="docutils literal notranslate"><span class="pre">crc-tests-ptest</span></code> is still installed.</p>
@@ -953,9 +951,10 @@ boot:</p>
 <section id="tee-smoke-test">
 <h3>TEE Smoke Test<a class="headerlink" href="#tee-smoke-test" title="Link to this heading"></a></h3>
 <p>Checks, from Linux, that TF-A and OP-TEE are running and reachable: the PSCI and SMC Calling
-Convention probe messages, the OP-TEE driver and <code class="docutils literal notranslate"><span class="pre">/dev/tee*</span></code> devices, the
-<code class="docutils literal notranslate"><span class="pre">tee-supplicant</span></code> service, the OP-TEE random number generator and the OP-TEE “hello world”
-example.</p>
+Convention probe messages, the OP-TEE driver and <code class="docutils literal notranslate"><span class="pre">/dev/tee*</span></code> devices, a running
+<code class="docutils literal notranslate"><span class="pre">tee-supplicant</span></code>, the OP-TEE random number generator and the OP-TEE “hello world”
+example. The probe message checks are reported as <code class="docutils literal notranslate"><span class="pre">SKIP</span></code> if the start of the boot log
+has already been overwritten in the kernel ring buffer.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ptest-runner<span class="w"> </span>tee-smoke
 </pre></div>
 </div>
