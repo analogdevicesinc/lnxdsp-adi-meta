@@ -62,8 +62,7 @@ Linux userspace with a common set of packages:
 * **Connectivity / shell**: ``openssh``, ``iproute2``, ``iproute2-tc``, ``ncurses``.
 * **Audio + inter-core comms (ICC)**: ``alsa-utils``, ``rpmsg-utils`` and the SHARC audio
   binaries selected by the audio ``DISTRO_FEATURES``.
-* **Crypto**: ``openssl``, ``openssl-bin``, ``cryptodev-linux``, ``cryptodev-module``,
-  ``crypto-tests``, ``crc-tests``.
+* **Crypto**: ``openssl``, ``openssl-bin``, ``cryptodev-linux``, ``cryptodev-module``.
 * **Flash / storage tools**: ``mtd-utils``, ``mtd-utils-ubifs``, ``e2fsprogs``.
 * **GPIO / SPI**: ``libgpiod``, ``libgpiod-tools``, ``spidev-test``, ``spitools``.
 
