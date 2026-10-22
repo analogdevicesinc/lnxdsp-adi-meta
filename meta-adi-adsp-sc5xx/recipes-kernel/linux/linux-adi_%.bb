@@ -16,12 +16,11 @@ SRC_URI:append = "\
 "
 SRC_URI:remove:adsp-sc846-som-ezkit = "file://feature/cfg/tracepoints.cfg"
 
-PV = "6.18"
-KERNEL_BRANCH = "adsp-6.18.31-y"
+LINUX_VERSION = "6.18.31"
+PV = "${LINUX_VERSION}+git"
+KERNEL_BRANCH = "adsp-${LINUX_VERSION}-y"
 
 SRCREV = "067afc664698941a903b0b9bbe9496154a22e49e"
-KERNEL_VERSION_SANITY_SKIP = "1"
-LINUX_VERSION = "${PV}"
 
 
 SRC_URI:append:adsp-sc594-som-ezkit = " file://feature/cfg/snd_ezkit.scc"
