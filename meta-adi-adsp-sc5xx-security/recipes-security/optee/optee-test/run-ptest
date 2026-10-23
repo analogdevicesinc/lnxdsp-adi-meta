@@ -10,7 +10,7 @@ xtest | awk '
     }
 
     # Returns the simple test formatted name
-    function name(n,    ret) {
+    function test_name(n,    ret) {
         ret = n
         gsub(/\./, " ", ret)
         return ret
@@ -42,7 +42,7 @@ xtest | awk '
 
         # Only print the results for the deepest nested subtests
         if(!has_subtests) {
-            print result($2) ": " name(name) " - " description
+            print result($2) ": " test_name(name) " - " description
         }
     }
 
