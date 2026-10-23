@@ -24,7 +24,7 @@ check a stock build without any changes.
    * - rt-tests ptest
      - ``ptest-runner rt-tests``
      - ``cyclictest`` scheduling latency under different ``stress-ng`` loads
-   * - ADI crypto ptests (ADSP-SC598)
+   * - ADI crypto ptests (ADSP-SC598 SOM EZ-KIT)
      - ``ptest-runner crypto-tests crc-tests``
      - ADI hash, cipher and CRC hardware drivers (see `ADI Crypto ptests`_)
    * - stress-ng
@@ -86,11 +86,11 @@ The ``openssh``, ``libseccomp``, ``rt-tests`` and ``util-linux`` suites write lo
 extracted test data into their ``/usr/lib/<suite>/ptest`` directories. The ADI layer wraps
 each of these suites' ``run-ptest`` so that anything not shipped in the package is deleted
 before and after every run, whether the suite passes, fails or is interrupted (for example
-with Ctrl+C). A suite that ``ptest-runner`` stops for a timeout is killed before it can clean
-up, so its files, and anything it left mounted in the ptest directory, are removed at the
-start of the next run instead. The list of shipped files is recorded at build time in
-``/usr/lib/<suite>/ptest/.ptest-pristine``; files in ``.debug`` directories, which belong to
-the ``-dbg`` packages, are never removed.
+by pressing Ctrl+C in ``ptest-runner``). A suite that ``ptest-runner`` stops for a timeout is
+killed with ``SIGKILL`` before it can clean up, so its files, and anything it left mounted in
+the ptest directory, are removed at the start of the next run instead. The list of shipped
+files is recorded at build time in ``/usr/lib/<suite>/ptest/.ptest-pristine``; files in
+``.debug`` directories, which belong to the ``-dbg`` packages, are never removed.
 
 To add the same cleanup to another ptest package, inherit the class from a ``.bbappend``
 in your layer:
@@ -165,9 +165,9 @@ Included ptest Suites
    * - ``busybox``
      - BusyBox applets used by the base system
    * - ``crc-tests``
-     - ADI CRC hardware, see `ADI Crypto ptests`_ (ADSP-SC598 only)
+     - ADI CRC hardware, see `ADI Crypto ptests`_ (ADSP-SC598 SOM EZ-KIT only)
    * - ``crypto-tests``
-     - ADI hash and cipher hardware, see `ADI Crypto ptests`_ (ADSP-SC598 only)
+     - ADI hash and cipher hardware, see `ADI Crypto ptests`_ (ADSP-SC598 SOM EZ-KIT only)
    * - ``libseccomp``
      - Seccomp syscall filtering, including live filters on the running kernel
    * - ``openssh``
@@ -308,7 +308,7 @@ To run ``cyclictest`` directly with your own settings:
 ADI Crypto ptests
 ~~~~~~~~~~~~~~~~~
 
-On the ADSP-SC598 the test image also installs ``crypto-tests-ptest`` and
+On the ADSP-SC598 SOM EZ-KIT the test image also installs ``crypto-tests-ptest`` and
 ``crc-tests-ptest``, which test the ADI security packet engine (PKTE) and CRC hardware
 through ``cryptodev`` (``/dev/crypto``) and OpenSSL's ``devcrypto`` engine.
 
@@ -348,8 +348,7 @@ Example output:
 
 The suites need the ADI crypto drivers. ``CONFIG_CRYPTO_DEV_ADI_CRC`` is enabled by the
 ``crypto.cfg`` kernel fragment, and ``CONFIG_CRYPTO_DEV_ADI_PKTE`` by the ``pkte.cfg``
-fragment, which is only applied for the ``adsp-sc598-som-ezkit`` and
-``adsp-sc598-som-ezlite`` machines.
+fragment, which is only applied for the ``adsp-sc598-som-ezkit`` machine.
 
 With the ``adi-security`` distro, OP-TEE makes the packet engine secure-only. The security
 layer disables the PKTE in the Linux device tree and does not install

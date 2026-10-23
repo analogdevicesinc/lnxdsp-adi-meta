@@ -303,7 +303,7 @@ check a stock build without any changes.</p>
 <td><p><code class="docutils literal notranslate"><span class="pre">ptest-runner</span> <span class="pre">rt-tests</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">cyclictest</span></code> scheduling latency under different <code class="docutils literal notranslate"><span class="pre">stress-ng</span></code> loads</p></td>
 </tr>
-<tr class="row-even"><td><p>ADI crypto ptests (ADSP-SC598)</p></td>
+<tr class="row-even"><td><p>ADI crypto ptests (ADSP-SC598 SOM EZ-KIT)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ptest-runner</span> <span class="pre">crypto-tests</span> <span class="pre">crc-tests</span></code></p></td>
 <td><p>ADI hash, cipher and CRC hardware drivers (see <a class="reference internal" href="#adi-crypto-ptests">ADI Crypto ptests</a>)</p></td>
 </tr>
@@ -370,11 +370,11 @@ local storage (SD card or eMMC) when comparing results against a reference run.<
 extracted test data into their <code class="docutils literal notranslate"><span class="pre">/usr/lib/&lt;suite&gt;/ptest</span></code> directories. The ADI layer wraps
 each of these suites’ <code class="docutils literal notranslate"><span class="pre">run-ptest</span></code> so that anything not shipped in the package is deleted
 before and after every run, whether the suite passes, fails or is interrupted (for example
-with Ctrl+C). A suite that <code class="docutils literal notranslate"><span class="pre">ptest-runner</span></code> stops for a timeout is killed before it can clean
-up, so its files, and anything it left mounted in the ptest directory, are removed at the
-start of the next run instead. The list of shipped files is recorded at build time in
-<code class="docutils literal notranslate"><span class="pre">/usr/lib/&lt;suite&gt;/ptest/.ptest-pristine</span></code>; files in <code class="docutils literal notranslate"><span class="pre">.debug</span></code> directories, which belong to
-the <code class="docutils literal notranslate"><span class="pre">-dbg</span></code> packages, are never removed.</p>
+by pressing Ctrl+C in <code class="docutils literal notranslate"><span class="pre">ptest-runner</span></code>). A suite that <code class="docutils literal notranslate"><span class="pre">ptest-runner</span></code> stops for a timeout is
+killed with <code class="docutils literal notranslate"><span class="pre">SIGKILL</span></code> before it can clean up, so its files, and anything it left mounted in
+the ptest directory, are removed at the start of the next run instead. The list of shipped
+files is recorded at build time in <code class="docutils literal notranslate"><span class="pre">/usr/lib/&lt;suite&gt;/ptest/.ptest-pristine</span></code>; files in
+<code class="docutils literal notranslate"><span class="pre">.debug</span></code> directories, which belong to the <code class="docutils literal notranslate"><span class="pre">-dbg</span></code> packages, are never removed.</p>
 <p>To add the same cleanup to another ptest package, inherit the class from a <code class="docutils literal notranslate"><span class="pre">.bbappend</span></code>
 in your layer:</p>
 <div class="highlight-bitbake notranslate"><div class="highlight"><pre><span></span><span class="kn">inherit</span><span class="w"> </span><span class="s">adsp-ptest-cleanup</span>
@@ -462,10 +462,10 @@ grep<span class="w"> </span><span class="s1">'^FAIL:'</span><span class="w"> </s
 <td><p>BusyBox applets used by the base system</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">crc-tests</span></code></p></td>
-<td><p>ADI CRC hardware, see <a class="reference internal" href="#adi-crypto-ptests">ADI Crypto ptests</a> (ADSP-SC598 only)</p></td>
+<td><p>ADI CRC hardware, see <a class="reference internal" href="#adi-crypto-ptests">ADI Crypto ptests</a> (ADSP-SC598 SOM EZ-KIT only)</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">crypto-tests</span></code></p></td>
-<td><p>ADI hash and cipher hardware, see <a class="reference internal" href="#adi-crypto-ptests">ADI Crypto ptests</a> (ADSP-SC598 only)</p></td>
+<td><p>ADI hash and cipher hardware, see <a class="reference internal" href="#adi-crypto-ptests">ADI Crypto ptests</a> (ADSP-SC598 SOM EZ-KIT only)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">libseccomp</span></code></p></td>
 <td><p>Seccomp syscall filtering, including live filters on the running kernel</p></td>
@@ -628,7 +628,7 @@ cyclictest<span class="w"> </span>-m<span class="w"> </span>-S<span class="w"> <
 </section>
 <section id="adi-crypto-ptests">
 <h3>ADI Crypto ptests<a class="headerlink" href="#adi-crypto-ptests" title="Link to this heading"></a></h3>
-<p>On the ADSP-SC598 the test image also installs <code class="docutils literal notranslate"><span class="pre">crypto-tests-ptest</span></code> and
+<p>On the ADSP-SC598 SOM EZ-KIT the test image also installs <code class="docutils literal notranslate"><span class="pre">crypto-tests-ptest</span></code> and
 <code class="docutils literal notranslate"><span class="pre">crc-tests-ptest</span></code>, which test the ADI security packet engine (PKTE) and CRC hardware
 through <code class="docutils literal notranslate"><span class="pre">cryptodev</span></code> (<code class="docutils literal notranslate"><span class="pre">/dev/crypto</span></code>) and OpenSSL’s <code class="docutils literal notranslate"><span class="pre">devcrypto</span></code> engine.</p>
 <p><code class="docutils literal notranslate"><span class="pre">crypto-tests</span></code> checks that:</p>
@@ -663,8 +663,7 @@ PASS: CRC32B [cryptodev] (8192 bytes)
 </div>
 <p>The suites need the ADI crypto drivers. <code class="docutils literal notranslate"><span class="pre">CONFIG_CRYPTO_DEV_ADI_CRC</span></code> is enabled by the
 <code class="docutils literal notranslate"><span class="pre">crypto.cfg</span></code> kernel fragment, and <code class="docutils literal notranslate"><span class="pre">CONFIG_CRYPTO_DEV_ADI_PKTE</span></code> by the <code class="docutils literal notranslate"><span class="pre">pkte.cfg</span></code>
-fragment, which is only applied for the <code class="docutils literal notranslate"><span class="pre">adsp-sc598-som-ezkit</span></code> and
-<code class="docutils literal notranslate"><span class="pre">adsp-sc598-som-ezlite</span></code> machines.</p>
+fragment, which is only applied for the <code class="docutils literal notranslate"><span class="pre">adsp-sc598-som-ezkit</span></code> machine.</p>
 <p>With the <code class="docutils literal notranslate"><span class="pre">adi-security</span></code> distro, OP-TEE makes the packet engine secure-only. The security
 layer disables the PKTE in the Linux device tree and does not install
 <code class="docutils literal notranslate"><span class="pre">crypto-tests-ptest</span></code>; <code class="docutils literal notranslate"><span class="pre">crc-tests-ptest</span></code> is still installed.</p>
