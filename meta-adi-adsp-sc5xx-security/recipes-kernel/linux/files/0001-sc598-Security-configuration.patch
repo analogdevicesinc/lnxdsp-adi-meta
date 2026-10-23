@@ -1,4 +1,4 @@
-From a50bd3ce3c987a459c7880af713f29cc5cbfb7f2 Mon Sep 17 00:00:00 2001
+From 3850627775775b6a0f3874bec3376ddd207d334d Mon Sep 17 00:00:00 2001
 From: Caleb Ethridge <caleb.ethridge@analog.com>
 Date: Mon, 17 Aug 2026 09:07:48 -0400
 Subject: [PATCH] sc598: Security configuration
@@ -10,6 +10,7 @@ Disable peripherals restricted by the SPU:
 - RCU reboot
 - remoteproc because it uses the RCU and accesses L2 directly
 - TRNG
+- PKTE (security packet engine)
 
 Enable:
 - OPTEE support
@@ -19,13 +20,27 @@ Enable:
 
 Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
 ---
+ arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi |  2 +-
  arch/arm64/boot/dts/adi/sc598-som.dtsi       | 17 +++++++++++------
  arch/arm64/boot/dts/adi/sc59x-64.dtsi        | 11 ++++++++---
  arch/arm64/configs/sc598-som-ezkit_defconfig |  2 ++
- 3 files changed, 21 insertions(+), 9 deletions(-)
+ 4 files changed, 22 insertions(+), 10 deletions(-)
 
+diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi
+index d6ec77a56e93..9a3e3113f514 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi
++++ b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi
+@@ -298,7 +298,7 @@ route {
+ };
+ 
+ &pkte1 {
+-	status = "okay";
++	status = "disabled";
+ 	mode = "arm";        /* autonomous ring mode */
+ 	/* mode = "tcm"; */  /* target command mode  */
+ 	/* mode = "dhm"; */  /* direct host mode     */
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index 9842686055b8f..c4ed7eee58635 100644
+index 9842686055b8..c4ed7eee5863 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
 @@ -56,11 +56,10 @@ vdev1buffer: vdev1buffer@200a8000 {
@@ -85,7 +100,7 @@ index 9842686055b8f..c4ed7eee58635 100644
  
  &tru {
 diff --git a/arch/arm64/boot/dts/adi/sc59x-64.dtsi b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
-index 69df9a7098a09..cbe12dc4bd673 100644
+index 69df9a7098a0..cbe12dc4bd67 100644
 --- a/arch/arm64/boot/dts/adi/sc59x-64.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
 @@ -68,6 +68,11 @@ pmu {
@@ -135,7 +150,7 @@ index 69df9a7098a09..cbe12dc4bd673 100644
  
  	};
 diff --git a/arch/arm64/configs/sc598-som-ezkit_defconfig b/arch/arm64/configs/sc598-som-ezkit_defconfig
-index e4bfe6a1ebaa7..52a7a066df137 100644
+index e4bfe6a1ebaa..52a7a066df13 100644
 --- a/arch/arm64/configs/sc598-som-ezkit_defconfig
 +++ b/arch/arm64/configs/sc598-som-ezkit_defconfig
 @@ -281,6 +281,8 @@ CONFIG_IIO=y

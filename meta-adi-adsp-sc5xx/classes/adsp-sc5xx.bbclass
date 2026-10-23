@@ -21,8 +21,6 @@ CRYPTO = " \
     openssl-bin \
     cryptodev-linux \
     cryptodev-module \
-    crypto-tests \
-    crc-tests \
 "
 
 IMAGE_INSTALL = " \
@@ -75,6 +73,11 @@ IMAGE_FSTYPES:remove:adsp-sc573-ezlite = "ubi"
 # glib itself stays, and should: libgpiod RDEPENDS on glib-2.0-utils, so glib is
 # a genuine runtime dependency of this image rather than MIME collateral.
 BAD_RECOMMENDATIONS += "systemd-mime shared-mime-info"
+
+# libcrypto RRECOMMENDS the OpenSSL legacy provider (DES, MD4, RC4 and others),
+# which adi-distro-shared.conf builds for crypto-tests. Keep it out of the images
+# unless something RDEPENDS on it.
+BAD_RECOMMENDATIONS += "openssl-ossl-module-legacy"
 
 UBI_VOLNAME = "rootfs"
 UBINIZE_ARGS = "-m 1 -p 65536 -s 1"

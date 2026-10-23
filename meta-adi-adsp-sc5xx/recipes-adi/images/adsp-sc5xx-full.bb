@@ -35,7 +35,6 @@ IMAGE_INSTALL += " \
     ${UTILS} \
    	${FILE_SYSTEM_TOOLS} \
 	${SOUND} \
-	ltp \
 	linuxptp \
 	linux-firmware-rtl8192su \
 	linux-firmware-adau1761 \

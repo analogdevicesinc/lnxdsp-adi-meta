@@ -44,7 +44,7 @@ static uint8_t test3_crc32_expected[] = "\x34\xa9\x1c\x78";
 static uint8_t test4_crc32_expected[] = "\x23\xb9\xd8\xcb";
 static uint8_t test5_crc32_expected[] = "\x29\x93\x3c\x23";
 
-int test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint32_t alg){
+static int run_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint32_t alg){
 	int i;
 	struct session_op sess;
 #ifdef CIOCGSESSINFO
@@ -88,6 +88,12 @@ int test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint3
 	}
 
 	printf("Using %s with driver %s\n", siop.hash_info.cra_name, siop.hash_info.cra_driver_name);
+#ifdef ADI_HW_DRIVER
+	if (!strstr(siop.hash_info.cra_driver_name, ADI_HW_DRIVER)) {
+		printf("not using the %s driver\n", ADI_HW_DRIVER);
+		mismatch = 1;
+	}
+#endif
 
 #endif
 
@@ -116,12 +122,8 @@ int test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint3
 		printf("%.2x", (uint8_t)expected[i]);
 	}
 	printf("\n");
-	if (memcmp(result, expected, length)!=0) {
-		printf("TEST: failed\n\n");
+	if (memcmp(result, expected, length)!=0)
 		mismatch = 1;
-	} else {
-		printf("TEST: passed\n\n");
-	}
 
 	/* Finish crypto session */
 	if (ioctl(cfd, CIOCFSESSION, &sess.ses)) {
@@ -132,6 +134,13 @@ int test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint3
 	return mismatch;
 }
 
+static int test_hash(int cfd, uint8_t * input, uint8_t * expected, uint8_t * key, uint32_t alg){
+	int ret = run_hash(cfd, input, expected, key, alg);
+
+	printf("%s: CRC32B [cryptodev] (%zu bytes)\n\n", ret ? "FAIL" : "PASS", strlen((char *)input));
+
+	return ret;
+}
 
 static int test_crypto(int cfd) {
 	int failed = 0;
@@ -152,12 +161,14 @@ int main(int argc, char** argv){
 	fd = open("/dev/crypto", O_RDWR, 0);
 	if (fd < 0) {
 		perror("open(/dev/crypto)");
+		printf("FAIL: open /dev/crypto\n");
 		return 1;
 	}
 
 	/* Clone file descriptor */
 	if (ioctl(fd, CRIOGET, &cfd)) {
 		perror("ioctl(CRIOGET)");
+		printf("FAIL: clone /dev/crypto descriptor\n");
 		return 1;
 	}
 
