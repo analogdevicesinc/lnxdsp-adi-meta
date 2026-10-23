@@ -87,7 +87,8 @@ Test Image
 installs test suites that can be run directly on the board:
 
 * **ptest**: ``ptest-runner`` and the ``busybox``, ``libseccomp``, ``openssh``, ``rt-tests``
-  and ``util-linux`` ptest packages. On the ADSP-SC598 the image also installs the ADI
+  and ``util-linux`` ptest packages, plus ``bzip2`` for the BusyBox ``bunzip2`` / ``bzcat``
+  tests. On the ADSP-SC598 the image also installs the ADI
   ``crypto-tests-ptest`` and ``crc-tests-ptest`` packages.
 * **Stress, memory and storage**: ``stress-ng``, ``memtester``, ``fio``.
 * **Real-time latency**: ``rt-tests`` (``cyclictest``).

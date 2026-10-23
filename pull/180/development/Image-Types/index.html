@@ -359,7 +359,8 @@ benchmarking. In addition to everything in the base image it adds:</p>
 installs test suites that can be run directly on the board:</p>
 <ul class="simple">
 <li><p><strong>ptest</strong>: <code class="docutils literal notranslate"><span class="pre">ptest-runner</span></code> and the <code class="docutils literal notranslate"><span class="pre">busybox</span></code>, <code class="docutils literal notranslate"><span class="pre">libseccomp</span></code>, <code class="docutils literal notranslate"><span class="pre">openssh</span></code>, <code class="docutils literal notranslate"><span class="pre">rt-tests</span></code>
-and <code class="docutils literal notranslate"><span class="pre">util-linux</span></code> ptest packages. On the ADSP-SC598 the image also installs the ADI
+and <code class="docutils literal notranslate"><span class="pre">util-linux</span></code> ptest packages, plus <code class="docutils literal notranslate"><span class="pre">bzip2</span></code> for the BusyBox <code class="docutils literal notranslate"><span class="pre">bunzip2</span></code> / <code class="docutils literal notranslate"><span class="pre">bzcat</span></code>
+tests. On the ADSP-SC598 the image also installs the ADI
 <code class="docutils literal notranslate"><span class="pre">crypto-tests-ptest</span></code> and <code class="docutils literal notranslate"><span class="pre">crc-tests-ptest</span></code> packages.</p></li>
 <li><p><strong>Stress, memory and storage</strong>: <code class="docutils literal notranslate"><span class="pre">stress-ng</span></code>, <code class="docutils literal notranslate"><span class="pre">memtester</span></code>, <code class="docutils literal notranslate"><span class="pre">fio</span></code>.</p></li>
 <li><p><strong>Real-time latency</strong>: <code class="docutils literal notranslate"><span class="pre">rt-tests</span></code> (<code class="docutils literal notranslate"><span class="pre">cyclictest</span></code>).</p></li>

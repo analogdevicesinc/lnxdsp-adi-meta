@@ -178,10 +178,6 @@ Included ptest Suites
      - ``mount``, ``fdisk``, ``lsblk``, ``hexdump``, ``lscpu`` and the other util-linux
        tools, see `util-linux ptest`_
 
-.. note::
-   Three BusyBox ``bunzip2`` / ``bzcat`` tests compress their input with a standalone
-   ``bzip2``. Add ``bzip2`` to ``IMAGE_INSTALL`` if those tests report ``FAIL``.
-
 Other ptest packages can be added to the image with ``IMAGE_INSTALL``, for example
 ``IMAGE_INSTALL:append = " xz-ptest"``. The following were also tested on the ADSP-SC598:
 
@@ -352,7 +348,8 @@ Example output:
 
 The suites need the ADI crypto drivers. ``CONFIG_CRYPTO_DEV_ADI_CRC`` is enabled by the
 ``crypto.cfg`` kernel fragment, and ``CONFIG_CRYPTO_DEV_ADI_PKTE`` by the ``pkte.cfg``
-fragment, which is only applied for the ``adsp-sc598-som-ezkit`` machine.
+fragment, which is only applied for the ``adsp-sc598-som-ezkit`` and
+``adsp-sc598-som-ezlite`` machines.
 
 With the ``adi-security`` distro, OP-TEE makes the packet engine secure-only. The security
 layer disables the PKTE in the Linux device tree and does not install

@@ -483,11 +483,6 @@ tools, see <a class="reference internal" href="#util-linux-ptest">util-linux pte
 </tbody>
 </table>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Three BusyBox <code class="docutils literal notranslate"><span class="pre">bunzip2</span></code> / <code class="docutils literal notranslate"><span class="pre">bzcat</span></code> tests compress their input with a standalone
-<code class="docutils literal notranslate"><span class="pre">bzip2</span></code>. Add <code class="docutils literal notranslate"><span class="pre">bzip2</span></code> to <code class="docutils literal notranslate"><span class="pre">IMAGE_INSTALL</span></code> if those tests report <code class="docutils literal notranslate"><span class="pre">FAIL</span></code>.</p>
-</div>
 <p>Other ptest packages can be added to the image with <code class="docutils literal notranslate"><span class="pre">IMAGE_INSTALL</span></code>, for example
 <code class="docutils literal notranslate"><span class="pre">IMAGE_INSTALL:append</span> <span class="pre">=</span> <span class="pre">&quot;</span> <span class="pre">xz-ptest&quot;</span></code>. The following were also tested on the ADSP-SC598:</p>
 <div class="table-wrapper colwidths-given docutils container">
@@ -668,7 +663,8 @@ PASS: CRC32B [cryptodev] (8192 bytes)
 </div>
 <p>The suites need the ADI crypto drivers. <code class="docutils literal notranslate"><span class="pre">CONFIG_CRYPTO_DEV_ADI_CRC</span></code> is enabled by the
 <code class="docutils literal notranslate"><span class="pre">crypto.cfg</span></code> kernel fragment, and <code class="docutils literal notranslate"><span class="pre">CONFIG_CRYPTO_DEV_ADI_PKTE</span></code> by the <code class="docutils literal notranslate"><span class="pre">pkte.cfg</span></code>
-fragment, which is only applied for the <code class="docutils literal notranslate"><span class="pre">adsp-sc598-som-ezkit</span></code> machine.</p>
+fragment, which is only applied for the <code class="docutils literal notranslate"><span class="pre">adsp-sc598-som-ezkit</span></code> and
+<code class="docutils literal notranslate"><span class="pre">adsp-sc598-som-ezlite</span></code> machines.</p>
 <p>With the <code class="docutils literal notranslate"><span class="pre">adi-security</span></code> distro, OP-TEE makes the packet engine secure-only. The security
 layer disables the PKTE in the Linux device tree and does not install
 <code class="docutils literal notranslate"><span class="pre">crypto-tests-ptest</span></code>; <code class="docutils literal notranslate"><span class="pre">crc-tests-ptest</span></code> is still installed.</p>
