@@ -109,7 +109,6 @@
 <li><a class="reference internal" href="#adi-crypto-ptests">ADI Crypto ptests</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#ltp-linux-test-project">LTP (Linux Test Project)</a></li>
 <li><a class="reference internal" href="#stress-ng">stress-ng</a></li>
 <li><a class="reference internal" href="#memtester">memtester</a></li>
 <li><a class="reference internal" href="#fio">fio</a></li>
@@ -308,35 +307,31 @@ check a stock build without any changes.</p>
 <td><p><code class="docutils literal notranslate"><span class="pre">ptest-runner</span> <span class="pre">crypto-tests</span> <span class="pre">crc-tests</span></code></p></td>
 <td><p>ADI hash, cipher and CRC hardware drivers (see <a class="reference internal" href="#adi-crypto-ptests">ADI Crypto ptests</a>)</p></td>
 </tr>
-<tr class="row-odd"><td><p>LTP</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">kirk</span></code></p></td>
-<td><p>Linux Test Project kernel and system tests</p></td>
-</tr>
-<tr class="row-even"><td><p>stress-ng</p></td>
+<tr class="row-odd"><td><p>stress-ng</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">stress-ng</span></code></p></td>
 <td><p>CPU, memory, I/O and scheduler stress with result verification</p></td>
 </tr>
-<tr class="row-odd"><td><p>memtester</p></td>
+<tr class="row-even"><td><p>memtester</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">memtester</span></code></p></td>
 <td><p>User-space DDR memory test</p></td>
 </tr>
-<tr class="row-even"><td><p>fio</p></td>
+<tr class="row-odd"><td><p>fio</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">fio</span></code></p></td>
 <td><p>Storage throughput, latency and data integrity</p></td>
 </tr>
-<tr class="row-odd"><td><p>rngtest</p></td>
+<tr class="row-even"><td><p>rngtest</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">rngtest</span></code></p></td>
 <td><p>FIPS 140-2 randomness checks on an entropy source</p></td>
 </tr>
-<tr class="row-even"><td><p>OP-TEE xtest (<code class="docutils literal notranslate"><span class="pre">adi-security</span></code> only)</p></td>
+<tr class="row-odd"><td><p>OP-TEE xtest (<code class="docutils literal notranslate"><span class="pre">adi-security</span></code> only)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">xtest</span></code> / <code class="docutils literal notranslate"><span class="pre">ptest-runner</span> <span class="pre">optee-test</span></code></p></td>
 <td><p>OP-TEE client API, trusted applications, secure storage and crypto</p></td>
 </tr>
-<tr class="row-odd"><td><p>Mbed TLS ptest (<code class="docutils literal notranslate"><span class="pre">adi-security</span></code> only)</p></td>
+<tr class="row-even"><td><p>Mbed TLS ptest (<code class="docutils literal notranslate"><span class="pre">adi-security</span></code> only)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ptest-runner</span> <span class="pre">mbedtls</span></code></p></td>
 <td><p>Mbed TLS library test suites</p></td>
 </tr>
-<tr class="row-even"><td><p>TEE smoke test (<code class="docutils literal notranslate"><span class="pre">adi-security</span></code> only)</p></td>
+<tr class="row-odd"><td><p>TEE smoke test (<code class="docutils literal notranslate"><span class="pre">adi-security</span></code> only)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ptest-runner</span> <span class="pre">tee-smoke</span></code></p></td>
 <td><p>Linux-visible checks of the TF-A (BL31) and OP-TEE stack</p></td>
 </tr>
@@ -678,95 +673,6 @@ fragment, which is only applied for the <code class="docutils literal notranslat
 layer disables the PKTE in the Linux device tree and does not install
 <code class="docutils literal notranslate"><span class="pre">crypto-tests-ptest</span></code>; <code class="docutils literal notranslate"><span class="pre">crc-tests-ptest</span></code> is still installed.</p>
 </section>
-</section>
-<section id="ltp-linux-test-project">
-<h2>LTP (Linux Test Project)<a class="headerlink" href="#ltp-linux-test-project" title="Link to this heading"></a></h2>
-<p>LTP is installed in <code class="docutils literal notranslate"><span class="pre">/opt/ltp</span></code> and is run with <code class="docutils literal notranslate"><span class="pre">kirk</span></code>. Test suites are listed in
-<code class="docutils literal notranslate"><span class="pre">/opt/ltp/runtest</span></code>.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Available suites</span>
-ls<span class="w"> </span>/opt/ltp/runtest
-
-<span class="c1"># Quick sanity check of the kernel and core utilities</span>
-kirk<span class="w"> </span>--run-suite<span class="w"> </span>smoketest
-
-<span class="c1"># Run several suites and write a JSON report (the file must not already exist)</span>
-kirk<span class="w"> </span>--run-suite<span class="w"> </span>syscalls<span class="w"> </span>mm<span class="w"> </span>--json-report<span class="w"> </span>/tmp/ltp.json
-
-<span class="c1"># Run only the tests that match a regular expression</span>
-kirk<span class="w"> </span>--run-suite<span class="w"> </span>syscalls<span class="w"> </span>--run-pattern<span class="w"> </span><span class="s1">'^open0[12]$'</span>
-
-<span class="c1"># Skip tests that need a loop device (see below)</span>
-kirk<span class="w"> </span>--run-suite<span class="w"> </span>smoketest<span class="w"> </span>--skip-tests<span class="w"> </span><span class="s1">'chdir01|stat04|df01_sh'</span>
-
-<span class="c1"># Run a single LTP command</span>
-kirk<span class="w"> </span>--run-command<span class="w"> </span><span class="s1">'mmap01'</span>
-</pre></div>
-</div>
-<div class="table-wrapper colwidths-given docutils container">
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 30.0%" />
-<col style="width: 70.0%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Option</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--run-suite,</span> <span class="pre">-f</span></code></p></td>
-<td><p>One or more suites from <code class="docutils literal notranslate"><span class="pre">/opt/ltp/runtest</span></code>.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--run-pattern,</span> <span class="pre">-p</span></code></p></td>
-<td><p>Run only the tests whose names match the regular expression.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--skip-tests,</span> <span class="pre">-s</span></code></p></td>
-<td><p>Skip the tests whose names match the regular expression.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--skip-file,</span> <span class="pre">-S</span></code></p></td>
-<td><p>Skip the tests listed (one per line) in a file.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--json-report,</span> <span class="pre">-o</span></code></p></td>
-<td><p>Write the results to a JSON file.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--exec-timeout,</span> <span class="pre">-t</span></code></p></td>
-<td><p>Time limit for a single test (default <code class="docutils literal notranslate"><span class="pre">1h</span></code>).</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--suite-timeout,</span> <span class="pre">-T</span></code></p></td>
-<td><p>Time limit for a whole suite (default <code class="docutils literal notranslate"><span class="pre">1h</span></code>).</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--suite-iterate,</span> <span class="pre">-i</span></code></p></td>
-<td><p>Repeat each suite this many times.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--tmp-dir,</span> <span class="pre">-d</span></code></p></td>
-<td><p>Directory for kirk’s own session files and results.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--run-command,</span> <span class="pre">-c</span></code></p></td>
-<td><p>Run a single command instead of a suite.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>Kirk prints a summary of passed, failed, broken (<code class="docutils literal notranslate"><span class="pre">TBROK</span></code>) and skipped (<code class="docutils literal notranslate"><span class="pre">TCONF</span></code>) results
-at the end of the run. Large suites such as <code class="docutils literal notranslate"><span class="pre">syscalls</span></code> take a long time and include tests
-for kernel features that are not enabled in the ADI kernel configuration; those report
-<code class="docutils literal notranslate"><span class="pre">TCONF</span></code> and are counted as skipped, not failed.</p>
-<p>The ADI kernel configuration does not enable loop devices (<code class="docutils literal notranslate"><span class="pre">CONFIG_BLK_DEV_LOOP</span></code>), so
-tests that need a scratch block device, such as <code class="docutils literal notranslate"><span class="pre">chdir01</span></code>, <code class="docutils literal notranslate"><span class="pre">stat04</span></code> and <code class="docutils literal notranslate"><span class="pre">df01_sh</span></code> in
-<code class="docutils literal notranslate"><span class="pre">smoketest</span></code>, report <code class="docutils literal notranslate"><span class="pre">TBROK:</span> <span class="pre">Failed</span> <span class="pre">to</span> <span class="pre">acquire</span> <span class="pre">device</span></code>. Either skip them with
-<code class="docutils literal notranslate"><span class="pre">--skip-tests</span></code> as shown above, or point <code class="docutils literal notranslate"><span class="pre">LTP_DEV</span></code> at a spare partition that can be
-reformatted:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># WARNING: the device is reformatted by the tests</span>
-<span class="nv">LTP_DEV</span><span class="o">=</span>/dev/&lt;spare-partition&gt;<span class="w"> </span>kirk<span class="w"> </span>--run-suite<span class="w"> </span>smoketest
-</pre></div>
-</div>
-<p>LTP creates its working files under <code class="docutils literal notranslate"><span class="pre">TMPDIR</span></code> (<code class="docutils literal notranslate"><span class="pre">/tmp</span></code> by default, which is a small
-<code class="docutils literal notranslate"><span class="pre">tmpfs</span></code>). Set <code class="docutils literal notranslate"><span class="pre">TMPDIR</span></code> to a directory on the root filesystem when running suites that
-need more space:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>/root/ltp-tmp
-<span class="nv">TMPDIR</span><span class="o">=</span>/root/ltp-tmp<span class="w"> </span>kirk<span class="w"> </span>--run-suite<span class="w"> </span>fs
-</pre></div>
-</div>
 </section>
 <section id="stress-ng">
 <h2>stress-ng<a class="headerlink" href="#stress-ng" title="Link to this heading"></a></h2>
