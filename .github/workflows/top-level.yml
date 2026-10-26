@@ -29,6 +29,7 @@ jobs:
         image:
           - adsp-sc5xx-minimal
           - adsp-sc5xx-full
+          - adsp-sc5xx-test
         include:
           - machine: adsp-sc573-ezlite
             image: adsp-sc5xx-tiny
@@ -40,6 +41,9 @@ jobs:
             upload-artifacts: true
           - image: adsp-sc5xx-full
             build-sdk: true
+            upload-artifacts: false
+          - image: adsp-sc5xx-test
+            build-sdk: false
             upload-artifacts: false
 
     uses: analogdevicesinc/meta-adi/.github/workflows/build.yml@ci
