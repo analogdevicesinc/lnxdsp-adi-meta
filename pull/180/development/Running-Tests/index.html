@@ -343,27 +343,18 @@ check a stock build without any changes.</p>
 <h2>Building the Test Image<a class="headerlink" href="#building-the-test-image" title="Link to this heading"></a></h2>
 <p>The test suites are packaged with Yocto’s <code class="docutils literal notranslate"><span class="pre">ptest</span></code> feature, which is enabled by default in
 the ADI distros. Build the image the same way as any other image:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>setup-environment<span class="w"> </span>-m<span class="w"> </span>adsp-sc598-som-ezkit
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">KAS_MACHINE</span><span class="o">=</span>adsp-sc598-som-ezkit<span class="w"> </span>kas<span class="w"> </span>shell<span class="w"> </span>config/kas/adsp-sc5xx.yml
 bitbake<span class="w"> </span>adsp-sc5xx-test
 </pre></div>
 </div>
 <p>To include the OP-TEE, Mbed TLS and TEE smoke tests, build with the <code class="docutils literal notranslate"><span class="pre">adi-security</span></code> distro
 (ADSP-SC598 only). See <a class="reference internal" href="../../secure-boot/Secure-Boot-Support/"><span class="doc">Secure Boot Support</span></a> for the required signing
 keys:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>setup-environment<span class="w"> </span>-m<span class="w"> </span>adsp-sc598-som-ezkit<span class="w"> </span>-d<span class="w"> </span>adi-security
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">KAS_MACHINE</span><span class="o">=</span>adsp-sc598-som-ezkit<span class="w"> </span><span class="nv">KAS_DISTRO</span><span class="o">=</span>adi-security<span class="w"> </span>kas<span class="w"> </span>shell<span class="w"> </span>config/kas/adsp-sc5xx.yml
 bitbake<span class="w"> </span>adsp-sc5xx-test
 </pre></div>
 </div>
-<p>Deploy the resulting <code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-test</span></code> rootfs in the same way as the full image, for
-example by writing the <code class="docutils literal notranslate"><span class="pre">wic</span></code> image to an SD card or eMMC, or by extracting the <code class="docutils literal notranslate"><span class="pre">tar.xz</span></code>
-to an NFS root.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Several suites write test data next to the test binaries. Some tests behave differently
-on an NFS root than on a local ext4 filesystem (for example, file leases are not
-supported over NFSv3), and disk stress over NFS can hang, so run the test image from
-local storage (SD card or eMMC) when comparing results against a reference run.</p>
-</div>
+<p>Deploy the resulting <code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-test</span></code> rootfs in the same way as the full image.</p>
 <section id="test-data-and-cleanup">
 <h3>Test Data and Cleanup<a class="headerlink" href="#test-data-and-cleanup" title="Link to this heading"></a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">openssh</span></code>, <code class="docutils literal notranslate"><span class="pre">libseccomp</span></code>, <code class="docutils literal notranslate"><span class="pre">rt-tests</span></code> and <code class="docutils literal notranslate"><span class="pre">util-linux</span></code> suites write logs, keys and
@@ -484,44 +475,7 @@ tools, see <a class="reference internal" href="#util-linux-ptest">util-linux pte
 </table>
 </div>
 <p>Other ptest packages can be added to the image with <code class="docutils literal notranslate"><span class="pre">IMAGE_INSTALL</span></code>, for example
-<code class="docutils literal notranslate"><span class="pre">IMAGE_INSTALL:append</span> <span class="pre">=</span> <span class="pre">&quot;</span> <span class="pre">xz-ptest&quot;</span></code>. The following were also tested on the ADSP-SC598:</p>
-<div class="table-wrapper colwidths-given docutils container">
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 20.0%" />
-<col style="width: 80.0%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Suite</p></th>
-<th class="head"><p>Result</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">acl</span></code>, <code class="docutils literal notranslate"><span class="pre">dosfstools</span></code>, <code class="docutils literal notranslate"><span class="pre">ethtool</span></code>, <code class="docutils literal notranslate"><span class="pre">lzo</span></code>, <code class="docutils literal notranslate"><span class="pre">xz</span></code>, <code class="docutils literal notranslate"><span class="pre">zlib</span></code></p></td>
-<td><p>Pass.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">attr</span></code></p></td>
-<td><p>Needs user extended attributes, which an NFSv3 root does not support. Passes on a
-local filesystem.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">e2fsprogs</span></code></p></td>
-<td><p>Creates its test filesystems in <code class="docutils literal notranslate"><span class="pre">/tmp</span></code> and exhausts the RAM-backed <code class="docutils literal notranslate"><span class="pre">tmpfs</span></code>.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">libgpiod</span></code></p></td>
-<td><p>Needs the <code class="docutils literal notranslate"><span class="pre">gpio-sim</span></code> kernel module (<code class="docutils literal notranslate"><span class="pre">CONFIG_GPIO_SIM</span></code>).</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">libnl</span></code></p></td>
-<td><p>Needs network namespaces, dummy links and IPv6 support in the kernel.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">openssl</span></code></p></td>
-<td><p>Runs four tests in parallel and needs more memory than is available to Linux.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">procps</span></code></p></td>
-<td><p>One <code class="docutils literal notranslate"><span class="pre">pgrep</span></code> test needs more memory than is available to Linux.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
+<code class="docutils literal notranslate"><span class="pre">IMAGE_INSTALL:append</span> <span class="pre">=</span> <span class="pre">&quot;</span> <span class="pre">xz-ptest&quot;</span></code>.</p>
 </section>
 <section id="util-linux-ptest">
 <h3>util-linux ptest<a class="headerlink" href="#util-linux-ptest" title="Link to this heading"></a></h3>

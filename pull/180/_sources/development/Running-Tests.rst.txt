@@ -57,7 +57,7 @@ the ADI distros. Build the image the same way as any other image:
 
 .. code-block:: shell
 
-   source setup-environment -m adsp-sc598-som-ezkit
+   KAS_MACHINE=adsp-sc598-som-ezkit kas shell config/kas/adsp-sc5xx.yml
    bitbake adsp-sc5xx-test
 
 To include the OP-TEE, Mbed TLS and TEE smoke tests, build with the ``adi-security`` distro
@@ -66,18 +66,10 @@ keys:
 
 .. code-block:: shell
 
-   source setup-environment -m adsp-sc598-som-ezkit -d adi-security
+   KAS_MACHINE=adsp-sc598-som-ezkit KAS_DISTRO=adi-security kas shell config/kas/adsp-sc5xx.yml
    bitbake adsp-sc5xx-test
 
-Deploy the resulting ``adsp-sc5xx-test`` rootfs in the same way as the full image, for
-example by writing the ``wic`` image to an SD card or eMMC, or by extracting the ``tar.xz``
-to an NFS root.
-
-.. note::
-   Several suites write test data next to the test binaries. Some tests behave differently
-   on an NFS root than on a local ext4 filesystem (for example, file leases are not
-   supported over NFSv3), and disk stress over NFS can hang, so run the test image from
-   local storage (SD card or eMMC) when comparing results against a reference run.
+Deploy the resulting ``adsp-sc5xx-test`` rootfs in the same way as the full image.
 
 Test Data and Cleanup
 ~~~~~~~~~~~~~~~~~~~~~
@@ -179,29 +171,7 @@ Included ptest Suites
        tools, see `util-linux ptest`_
 
 Other ptest packages can be added to the image with ``IMAGE_INSTALL``, for example
-``IMAGE_INSTALL:append = " xz-ptest"``. The following were also tested on the ADSP-SC598:
-
-.. list-table::
-   :widths: 20 80
-   :header-rows: 1
-
-   * - Suite
-     - Result
-   * - ``acl``, ``dosfstools``, ``ethtool``, ``lzo``, ``xz``, ``zlib``
-     - Pass.
-   * - ``attr``
-     - Needs user extended attributes, which an NFSv3 root does not support. Passes on a
-       local filesystem.
-   * - ``e2fsprogs``
-     - Creates its test filesystems in ``/tmp`` and exhausts the RAM-backed ``tmpfs``.
-   * - ``libgpiod``
-     - Needs the ``gpio-sim`` kernel module (``CONFIG_GPIO_SIM``).
-   * - ``libnl``
-     - Needs network namespaces, dummy links and IPv6 support in the kernel.
-   * - ``openssl``
-     - Runs four tests in parallel and needs more memory than is available to Linux.
-   * - ``procps``
-     - One ``pgrep`` test needs more memory than is available to Linux.
+``IMAGE_INSTALL:append = " xz-ptest"``.
 
 util-linux ptest
 ~~~~~~~~~~~~~~~~
