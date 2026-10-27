@@ -8,7 +8,7 @@
 
     <title>Running Tests &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8e8a900e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=b1d7a81a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=a3ee7af8" />
     <script async="async" src="../../_static/app.umd.js?v=048c1170"></script>
     <link rel="icon" href="../../_static/icon.svg"/>
     <link rel="index" title="Index" href="../../genindex/" />
@@ -303,35 +303,39 @@ check a stock build without any changes.</p>
 <td><p><code class="docutils literal notranslate"><span class="pre">ptest-runner</span> <span class="pre">rt-tests</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">cyclictest</span></code> scheduling latency under different <code class="docutils literal notranslate"><span class="pre">stress-ng</span></code> loads</p></td>
 </tr>
-<tr class="row-even"><td><p>ADI crypto ptests (ADSP-SC598 SOM EZ-KIT)</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">ptest-runner</span> <span class="pre">crypto-tests</span> <span class="pre">crc-tests</span></code></p></td>
-<td><p>ADI hash, cipher and CRC hardware drivers (see <a class="reference internal" href="#adi-crypto-ptests">ADI Crypto ptests</a>)</p></td>
+<tr class="row-even"><td><p>ADI CRC ptest</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ptest-runner</span> <span class="pre">crc-tests</span></code></p></td>
+<td><p>ADI CRC hardware driver (see <a class="reference internal" href="#adi-crypto-ptests">ADI Crypto ptests</a>)</p></td>
 </tr>
-<tr class="row-odd"><td><p>stress-ng</p></td>
+<tr class="row-odd"><td><p>ADI crypto ptest (ADSP-SC598 SOM EZ-KIT)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ptest-runner</span> <span class="pre">crypto-tests</span></code></p></td>
+<td><p>ADI hash and cipher hardware drivers (see <a class="reference internal" href="#adi-crypto-ptests">ADI Crypto ptests</a>)</p></td>
+</tr>
+<tr class="row-even"><td><p>stress-ng</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">stress-ng</span></code></p></td>
 <td><p>CPU, memory, I/O and scheduler stress with result verification</p></td>
 </tr>
-<tr class="row-even"><td><p>memtester</p></td>
+<tr class="row-odd"><td><p>memtester</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">memtester</span></code></p></td>
 <td><p>User-space DDR memory test</p></td>
 </tr>
-<tr class="row-odd"><td><p>fio</p></td>
+<tr class="row-even"><td><p>fio</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">fio</span></code></p></td>
 <td><p>Storage throughput, latency and data integrity</p></td>
 </tr>
-<tr class="row-even"><td><p>rngtest</p></td>
+<tr class="row-odd"><td><p>rngtest</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">rngtest</span></code></p></td>
 <td><p>FIPS 140-2 randomness checks on an entropy source</p></td>
 </tr>
-<tr class="row-odd"><td><p>OP-TEE xtest (<code class="docutils literal notranslate"><span class="pre">adi-security</span></code> only)</p></td>
+<tr class="row-even"><td><p>OP-TEE xtest (<code class="docutils literal notranslate"><span class="pre">adi-security</span></code> only)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">xtest</span></code> / <code class="docutils literal notranslate"><span class="pre">ptest-runner</span> <span class="pre">optee-test</span></code></p></td>
 <td><p>OP-TEE client API, trusted applications, secure storage and crypto</p></td>
 </tr>
-<tr class="row-even"><td><p>Mbed TLS ptest (<code class="docutils literal notranslate"><span class="pre">adi-security</span></code> only)</p></td>
+<tr class="row-odd"><td><p>Mbed TLS ptest (<code class="docutils literal notranslate"><span class="pre">adi-security</span></code> only)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ptest-runner</span> <span class="pre">mbedtls</span></code></p></td>
 <td><p>Mbed TLS library test suites</p></td>
 </tr>
-<tr class="row-odd"><td><p>TEE smoke test (<code class="docutils literal notranslate"><span class="pre">adi-security</span></code> only)</p></td>
+<tr class="row-even"><td><p>TEE smoke test (<code class="docutils literal notranslate"><span class="pre">adi-security</span></code> only)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ptest-runner</span> <span class="pre">tee-smoke</span></code></p></td>
 <td><p>Linux-visible checks of the TF-A (BL31) and OP-TEE stack</p></td>
 </tr>
@@ -453,7 +457,7 @@ grep<span class="w"> </span><span class="s1">'^FAIL:'</span><span class="w"> </s
 <td><p>BusyBox applets used by the base system</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">crc-tests</span></code></p></td>
-<td><p>ADI CRC hardware, see <a class="reference internal" href="#adi-crypto-ptests">ADI Crypto ptests</a> (ADSP-SC598 SOM EZ-KIT only)</p></td>
+<td><p>ADI CRC hardware, see <a class="reference internal" href="#adi-crypto-ptests">ADI Crypto ptests</a></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">crypto-tests</span></code></p></td>
 <td><p>ADI hash and cipher hardware, see <a class="reference internal" href="#adi-crypto-ptests">ADI Crypto ptests</a> (ADSP-SC598 SOM EZ-KIT only)</p></td>
@@ -582,9 +586,10 @@ cyclictest<span class="w"> </span>-m<span class="w"> </span>-S<span class="w"> <
 </section>
 <section id="adi-crypto-ptests">
 <h3>ADI Crypto ptests<a class="headerlink" href="#adi-crypto-ptests" title="Link to this heading"></a></h3>
-<p>On the ADSP-SC598 SOM EZ-KIT the test image also installs <code class="docutils literal notranslate"><span class="pre">crypto-tests-ptest</span></code> and
-<code class="docutils literal notranslate"><span class="pre">crc-tests-ptest</span></code>, which test the ADI security packet engine (PKTE) and CRC hardware
-through <code class="docutils literal notranslate"><span class="pre">cryptodev</span></code> (<code class="docutils literal notranslate"><span class="pre">/dev/crypto</span></code>) and OpenSSL’s <code class="docutils literal notranslate"><span class="pre">devcrypto</span></code> engine.</p>
+<p>The test image installs <code class="docutils literal notranslate"><span class="pre">crc-tests-ptest</span></code> on every board, and on the ADSP-SC598 SOM
+EZ-KIT it also installs <code class="docutils literal notranslate"><span class="pre">crypto-tests-ptest</span></code>. They test the ADI CRC hardware and the ADI
+security packet engine (PKTE) through <code class="docutils literal notranslate"><span class="pre">cryptodev</span></code> (<code class="docutils literal notranslate"><span class="pre">/dev/crypto</span></code>) and OpenSSL’s
+<code class="docutils literal notranslate"><span class="pre">devcrypto</span></code> engine.</p>
 <p><code class="docutils literal notranslate"><span class="pre">crypto-tests</span></code> checks that:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">sha256</span></code>, <code class="docutils literal notranslate"><span class="pre">sha224</span></code>, <code class="docutils literal notranslate"><span class="pre">sha1</span></code>, <code class="docutils literal notranslate"><span class="pre">md5</span></code>, <code class="docutils literal notranslate"><span class="pre">cbc(aes)</span></code>, <code class="docutils literal notranslate"><span class="pre">cbc(des)</span></code>, <code class="docutils literal notranslate"><span class="pre">cbc(des3_ede)</span></code>

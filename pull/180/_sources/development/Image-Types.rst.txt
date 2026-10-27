@@ -77,7 +77,7 @@ benchmarking. In addition to everything in the base image it adds:
 * **Tracing / profiling**: ``uftrace``, ``ltrace``, ``strace``, ``cpufrequtils``.
 * **Audio / media**: ``alsa-lib``, ``dbus``, ``libopus``, ``opus-tools``,
   ``linux-firmware-adau1761``.
-* **Misc**: ``python3``, ``linux-firmware-rtl8192su``.
+* **Test suites / misc**: ``ltp``, ``python3``, ``linux-firmware-rtl8192su``.
 
 
 Test Image
@@ -88,8 +88,8 @@ installs test suites that can be run directly on the board:
 
 * **ptest**: ``ptest-runner`` and the ``busybox``, ``libseccomp``, ``openssh``, ``rt-tests``
   and ``util-linux`` ptest packages, plus ``bzip2`` for the BusyBox ``bunzip2`` / ``bzcat``
-  tests. On the ADSP-SC598 the image also installs the ADI
-  ``crypto-tests-ptest`` and ``crc-tests-ptest`` packages.
+  tests, and the ADI ``crc-tests-ptest`` package. On the ADSP-SC598 SOM EZ-KIT the image
+  also installs the ADI ``crypto-tests-ptest`` package.
 * **Stress, memory and storage**: ``stress-ng``, ``memtester``, ``fio``.
 * **Real-time latency**: ``rt-tests`` (``cyclictest``).
 * **Entropy**: ``rng-tools`` (``rngtest``).

@@ -24,9 +24,12 @@ check a stock build without any changes.
    * - rt-tests ptest
      - ``ptest-runner rt-tests``
      - ``cyclictest`` scheduling latency under different ``stress-ng`` loads
-   * - ADI crypto ptests (ADSP-SC598 SOM EZ-KIT)
-     - ``ptest-runner crypto-tests crc-tests``
-     - ADI hash, cipher and CRC hardware drivers (see `ADI Crypto ptests`_)
+   * - ADI CRC ptest
+     - ``ptest-runner crc-tests``
+     - ADI CRC hardware driver (see `ADI Crypto ptests`_)
+   * - ADI crypto ptest (ADSP-SC598 SOM EZ-KIT)
+     - ``ptest-runner crypto-tests``
+     - ADI hash and cipher hardware drivers (see `ADI Crypto ptests`_)
    * - stress-ng
      - ``stress-ng``
      - CPU, memory, I/O and scheduler stress with result verification
@@ -157,7 +160,7 @@ Included ptest Suites
    * - ``busybox``
      - BusyBox applets used by the base system
    * - ``crc-tests``
-     - ADI CRC hardware, see `ADI Crypto ptests`_ (ADSP-SC598 SOM EZ-KIT only)
+     - ADI CRC hardware, see `ADI Crypto ptests`_
    * - ``crypto-tests``
      - ADI hash and cipher hardware, see `ADI Crypto ptests`_ (ADSP-SC598 SOM EZ-KIT only)
    * - ``libseccomp``
@@ -278,9 +281,10 @@ To run ``cyclictest`` directly with your own settings:
 ADI Crypto ptests
 ~~~~~~~~~~~~~~~~~
 
-On the ADSP-SC598 SOM EZ-KIT the test image also installs ``crypto-tests-ptest`` and
-``crc-tests-ptest``, which test the ADI security packet engine (PKTE) and CRC hardware
-through ``cryptodev`` (``/dev/crypto``) and OpenSSL's ``devcrypto`` engine.
+The test image installs ``crc-tests-ptest`` on every board, and on the ADSP-SC598 SOM
+EZ-KIT it also installs ``crypto-tests-ptest``. They test the ADI CRC hardware and the ADI
+security packet engine (PKTE) through ``cryptodev`` (``/dev/crypto``) and OpenSSL's
+``devcrypto`` engine.
 
 ``crypto-tests`` checks that:
 
