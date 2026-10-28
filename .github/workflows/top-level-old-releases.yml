@@ -40,3 +40,4 @@ jobs:
       image: ${{ matrix.image }}
       build-config-file: kas/releases/${{ matrix.release }}.yml
       upload-artifacts: false
+      runner: '["self-hosted", "v1"]'
