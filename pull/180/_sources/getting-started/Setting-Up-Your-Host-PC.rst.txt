@@ -13,7 +13,7 @@ In order to build and deploy Linux to your ADSP-SC5xx development board you will
 .. code-block:: shell
 
    sudo apt-get update
-   sudo apt-get install -y gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat libsdl1.2-dev xterm u-boot-tools openssl curl tftpd-hpa python3 zstd liblz4-tool
+   sudo apt-get install -y gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat libsdl1.2-dev xterm u-boot-tools openssl curl tftpd-hpa python3 zstd libcrypt-dev
 
 Configure Minicom
 -----------------
