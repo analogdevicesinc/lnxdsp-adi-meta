@@ -1,9 +1,7 @@
 Setting Up Your Host PC
 =======================
 
-The build system is currently supported on host PCs running Ubuntu 22.04 (LTS)
-(see `Containerfile#L1
-<https://github.com/analogdevicesinc/lnxdsp-adi-meta/blob/main/ci/Containerfile#L1>`_).
+The build system is currently supported on host PCs running Ubuntu 22.04 (LTS).
 
 Installing Required Packages
 ----------------------------
@@ -248,13 +246,6 @@ The output should show that the server is ``active (running)``.
 .. code-block:: shell
 
    sudo journalctl -u isc-dhcp-server
-
-.. note::
-
-   ``isc-dhcp-server`` also installs an IPv6 service called
-   ``isc-dhcp-server6``. This service fails to start because no IPv6
-   interfaces are configured. You can ignore this failure, or disable the
-   service with ``sudo systemctl disable --now isc-dhcp-server6``.
 
 In U-Boot, run ``dhcp`` to get an address from the server. 
 
