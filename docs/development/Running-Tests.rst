@@ -30,6 +30,16 @@ check a stock build without any changes.
    * - ADI crypto ptest (ADSP-SC598 SOM EZ-KIT)
      - ``ptest-runner crypto-tests``
      - ADI hash and cipher hardware drivers (see `ADI Crypto ptests`_)
+   * - ADI board sanity ptest
+     - ``ptest-runner adsp-sanity-tests``
+     - gptimers, RPMsg to the SHARC cores, I2C, ALSA, Ethernet and PTP (see
+       `ADI Board Sanity ptest`_)
+   * - ADI driver ptests
+     - ``ptest-runner adsp-dmacopy-test adsp-gptimer-test adsp-sram-mmap-test``
+     - Memory DMA, gptimers and SRAM mapping (see `ADI Driver ptests`_)
+   * - ADI SRAM allocation ptest (not ADSP-SC598 or ADSP-SC846)
+     - ``ptest-runner adsp-l2-alloc-test``
+     - Allocating from the on-chip SRAM pools (see `ADI Driver ptests`_)
    * - stress-ng
      - ``stress-ng``
      - CPU, memory, I/O and scheduler stress with result verification
@@ -157,6 +167,18 @@ Included ptest Suites
 
    * - Suite
      - What it covers
+   * - ``adsp-dmacopy-test``
+     - Memory DMA copies between SDRAM and SRAM, see `ADI Driver ptests`_
+   * - ``adsp-gptimer-test``
+     - A spare gptimer counts at the gptimer clock rate, see `ADI Driver ptests`_
+   * - ``adsp-l2-alloc-test``
+     - Allocating from the on-chip SRAM pools (not ADSP-SC598 or ADSP-SC846), see
+       `ADI Driver ptests`_
+   * - ``adsp-sanity-tests``
+     - Board-level checks of the gptimers, RPMsg, I2C, ALSA, Ethernet and PTP, see
+       `ADI Board Sanity ptest`_
+   * - ``adsp-sram-mmap-test``
+     - Mapping on-chip SRAM into user space, see `ADI Driver ptests`_
    * - ``busybox``
      - BusyBox applets used by the base system
    * - ``crc-tests``
@@ -327,6 +349,126 @@ fragment, which is only applied for the ``adsp-sc598-som-ezkit`` machine.
 With the ``adi-security`` distro, OP-TEE makes the packet engine secure-only. The security
 layer disables the PKTE in the Linux device tree and does not install
 ``crypto-tests-ptest``; ``crc-tests-ptest`` is still installed.
+
+ADI Board Sanity ptest
+~~~~~~~~~~~~~~~~~~~~~~
+
+``adsp-sanity-tests`` runs the board-level checks from ``lnxdsp-sanity-checks.sh`` in
+``lnxdsp-scripts``. A check is reported as ``SKIP`` when the board does not have the
+hardware or it is not set up, for example the RPMsg checks on the ADSP-SC846, which has no
+echo firmware, or the link and ping checks when no Ethernet cable is connected.
+
+.. list-table::
+   :widths: 35 65
+   :header-rows: 1
+
+   * - Test
+     - What it checks
+   * - ``gptimer-counter-running``
+     - The gptimer used as the clocksource is counting, read through its counter device in
+       ``/sys/bus/counter``.
+   * - ``rpmsg-echo``, ``rpmsg-echo-cap``
+     - Binds an RPMsg character device to the first ``sharc-echo`` and ``sharc-echo-cap``
+       channels with ``rpmsg-bind-chardev``, sends ``hello`` and checks that the replies
+       start with ``hello`` and ``HELLO``.
+   * - ``i2c-buses-present``, ``i2c-<n>``
+     - At least one I2C bus is registered, and ``i2cdetect -y`` can scan each bus. Bus 0 is
+       not scanned on the ADSP-SC598 boards.
+   * - ``alsa-card-registered``, ``alsa-playback-device``
+     - When the device tree has an ``adi,sc5xx-asoc-card`` sound node, a sound card is
+       registered and ``aplay -l`` lists a playback device.
+   * - ``alsa-playback``, ``alsa-capture``
+     - Plays 5 seconds of silence on the first playback device and records 5 seconds from
+       the first capture device, at 48 kHz. Each must finish without an underrun or
+       overrun and take 5 seconds to within 5%, which checks that the audio DMA and the
+       codec sample clock run at the right rate. The capture must be the expected size.
+       Nothing is audible, and the capture check is skipped when there is no capture
+       device.
+   * - ``eth-present``, ``eth-link``, ``eth-ping-gateway``
+     - An Ethernet interface exists, has a link, and can ping the default gateway.
+   * - ``eth-ping-iperf-server``, ``eth-iperf3``
+     - Pings ``ADI_PTEST_IPERF_SERVER`` and runs a 15 second ``iperf3`` test against it.
+       Skipped when the variable is not set.
+   * - ``ptp<n>-capabilities``, ``ptp<n>-running``
+     - ``testptp`` can read the capabilities of each PTP hardware clock, and the clock
+       advances by about one second in one second.
+
+The RPMsg checks need the RPMsg echo example firmware (``rpmsg-echo-example``), which is
+installed with the default ``linux_only_audio`` distro feature. With the
+``adi_sharc_alsa_audio`` or ``adi_hybrid_audio`` features the SHARC cores run the audio
+firmware instead, and the RPMsg checks are skipped.
+
+.. code-block:: shell
+
+   ptest-runner adsp-sanity-tests
+
+   # Also ping an iperf3 server and test throughput to it (run "iperf3 -s" on the server)
+   ADI_PTEST_IPERF_SERVER=192.168.1.10 ptest-runner adsp-sanity-tests
+
+Example output:
+
+.. code-block:: text
+
+   gptimer0 count: 1855734042, then 2015734157 one second later
+   PASS: gptimer-counter-running
+   virtio0.sharc-echo.-1.288: sent 'hello', received 'hello => echo from Core1'
+   PASS: rpmsg-echo
+   SKIP: i2c-0 (not probed on this board)
+   PASS: i2c-1
+   alsa-playback: played 5 seconds of audio in 5.18 seconds
+   PASS: alsa-playback
+   SKIP: eth-iperf3 (ADI_PTEST_IPERF_SERVER is not set)
+
+ADI Driver ptests
+~~~~~~~~~~~~~~~~~
+
+These suites test ADI drivers and peripherals:
+
+``adsp-dmacopy-test``
+   Loads the ``dmacopy_module`` kernel module, which requests a memory DMA (MDMA) channel
+   through the dmaengine API and copies 4 byte to 64 KB buffers SDRAM to SDRAM, SDRAM to
+   SRAM and back, and SRAM to SRAM. Each copy is run 32-bit, 16-bit and 8-bit aligned, and
+   the data and the canaries around each buffer are checked. The SRAM buffers come from the
+   ``adi,sram-mmap`` reserved region (ADSP-SC598, ADSP-SC846) or the SRAM pool (ARMv7
+   boards), and the SRAM copies are skipped if neither is found.
+
+``adsp-gptimer-test``
+   Loads the ``hello_gptimer`` kernel module, which runs gptimer 5 in continuous PWM mode
+   for 100 ms, measured with the kernel clock, and checks that it counted within 2% of the
+   gptimer clock rate. The timer's previous configuration is restored afterwards. Load the
+   module by hand with ``modprobe hello_gptimer timer_id=<n>`` to test another timer; the
+   module refuses to use the clocksource and clockevent timers. On the ADSP-SC598 and
+   ADSP-SC846 the kernel clock is the Arm generic timer, so this also checks the gptimer
+   clock rate. On the ARMv7 boards the kernel clock is gptimer 0, which runs from the same
+   clock, so it only checks that the two timers agree.
+
+``adsp-l2-alloc-test``
+   Loads the ``hello_l2_alloc`` kernel module, which allocates blocks of 32 bytes to 64 KB
+   from each on-chip SRAM pool created by the ``mmio-sram`` driver. It checks that each
+   block is inside the SRAM, aligned and does not overlap the others, that two patterns
+   written to the blocks read back, and that the pool is back to its original size after
+   the blocks are freed. The ADSP-SC598 and ADSP-SC846 have no SRAM pools (their SRAM is
+   reserved memory used by ``sram_mmap``), so the test image does not install the suite on
+   those boards.
+
+``adsp-sram-mmap-test``
+   Maps a page of on-chip SRAM through each ``/dev/sram_mmap*`` device and checks that two
+   patterns written to it read back correctly.
+
+The kernel modules run their tests when they are loaded and fail to load if a test fails;
+``run-ptest`` prints the kernel log from the test. To run a test by hand:
+
+.. code-block:: shell
+
+   ptest-runner adsp-dmacopy-test adsp-gptimer-test adsp-sram-mmap-test
+
+   # Not on the ADSP-SC598 or ADSP-SC846
+   ptest-runner adsp-l2-alloc-test
+
+   modprobe dmacopy_module && rmmod dmacopy_module
+   dmesg | tail -n 40
+
+   sram_mmap /dev/sram_mmap0
 
 stress-ng
 ---------
