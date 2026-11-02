@@ -1,0 +1,41 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Mon, 2 Nov 2026 09:28:49 -0500
+Subject: [PATCH] SC598: Load the SHARC ALSA firmware for the SHARC ALSA demo
+
+In SHARC ALSA mode both SHARC cores run the ICAP SHARC ALSA firmware.
+Point firmware-name at the names the sharc-audio package installs it
+under in the adi/ vendor subdirectory.
+
+Upstream-Status: Inappropriate [embedded specific]
+
+Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
+---
+ arch/arm64/boot/dts/adi/sc598-som.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+index 7c4af08eadaa..fad447feeb1a 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
++++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+@@ -87,7 +87,7 @@ sharc@0 {
+ 				      <0x0 0x20000000 0x00200000>;
+ 				reg-names = "l1", "l2";
+ 				core-id = <1>;
+-				firmware-name = "adi/icap_device_example_core1.ldr";
++				firmware-name = "adi/icap_sharc_alsa_core1.ldr";
+ 				interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
+ 				adi,svect = <&rcu 0x30>;
+ 				resets = <&rcu 1 0>, <&rcu 1 1>;
+@@ -104,7 +104,7 @@ sharc@1 {
+ 				      <0x1 0x20000000 0x00200000>;
+ 				reg-names = "l1", "l2";
+ 				core-id = <2>;
+-				firmware-name = "adi/rpmsg_echo_sharc_core2.ldr";
++				firmware-name = "adi/icap_sharc_alsa_core2.ldr";
+ 				interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
+ 				adi,svect = <&rcu 0x34>;
+ 				resets = <&rcu 2 0>, <&rcu 2 1>;
+-- 
+2.34.1
+

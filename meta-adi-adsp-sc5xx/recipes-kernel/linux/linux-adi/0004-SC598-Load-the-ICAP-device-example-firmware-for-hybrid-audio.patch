@@ -1,0 +1,33 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Mon, 2 Nov 2026 09:28:43 -0500
+Subject: [PATCH] SC598: Load the ICAP device example firmware for hybrid audio
+
+The remoteproc firmware names now live under the adi/ vendor
+subdirectory and default to the RPMsg echo example. In hybrid audio
+mode SHARC core 1 runs the ICAP device example instead, so point
+firmware-name at the name the hybrid-audio package installs it under.
+
+Upstream-Status: Inappropriate [embedded specific]
+
+Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
+---
+ arch/arm64/boot/dts/adi/sc598-som.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+index 6727b9caa8e7..a9e4880b0be6 100644
+--- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
++++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
+@@ -87,7 +87,7 @@ sharc@0 {
+ 				      <0x0 0x20000000 0x00200000>;
+ 				reg-names = "l1", "l2";
+ 				core-id = <1>;
+-				firmware-name = "adi/rpmsg_echo_sharc_core1.ldr";
++				firmware-name = "adi/icap_device_example_core1.ldr";
+ 				interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
+ 				adi,svect = <&rcu 0x30>;
+ 				resets = <&rcu 1 0>, <&rcu 1 1>;
+-- 
+2.34.1
+
