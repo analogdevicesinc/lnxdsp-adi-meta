@@ -1,0 +1,289 @@
+#!/bin/sh
+# SPDX-License-Identifier: MIT
+# Copyright 2026 Analog Devices Inc.
+#
+# Board-level sanity checks, based on lnxdsp-sanity-checks.sh in lnxdsp-scripts.
+#
+# Set ADI_PTEST_IPERF_SERVER to the address of an iperf3 server to also test
+# Ethernet throughput.
+
+I2C_SKIP_BUSES="@ADI_I2C_SKIP_BUSES@"
+DT=/sys/firmware/devicetree/base
+
+rc=0
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+
+# Length of the audio played and recorded by the ALSA checks
+AUDIO_SECONDS=5
+
+pass() { echo "PASS: $1"; }
+fail() { echo "FAIL: $1"; rc=1; }
+skip() { echo "SKIP: $1 ($2)"; }
+
+# result NAME: PASS or FAIL depending on the status of the previous command
+result() {
+	if [ $? -eq 0 ]; then
+		pass "$1"
+	else
+		fail "$1"
+	fi
+}
+
+# dt_enabled NODE: true if the device tree node and all of its parents are enabled
+dt_enabled() {
+	local n=$1
+
+	while [ "$n" != "$DT" ] && [ "$n" != / ]; do
+		if [ -e "$n/status" ]; then
+			case "$(tr -d '\0' <"$n/status")" in
+			okay|ok) ;;
+			*) return 1 ;;
+			esac
+		fi
+		n=$(dirname "$n")
+	done
+}
+
+# uptime_s: print the time since boot in seconds
+uptime_s() {
+	cut -d ' ' -f 1 /proc/uptime
+}
+
+# The clocksource gptimer must be counting
+test_gptimer_counter() {
+	counter=
+	for c in /sys/bus/counter/devices/counter*; do
+		if [ "$(cat "$c/count0/name" 2>/dev/null)" = gptimer_counter0 ]; then
+			counter=$c
+			break
+		fi
+	done
+	if [ -z "$counter" ]; then
+		skip gptimer-counter "no gptimer counter device"
+		return
+	fi
+
+	cs=$(find "$DT" -name adi,is-clocksource 2>/dev/null | head -n 1)
+	if [ -z "$cs" ]; then
+		skip gptimer-counter-running "no gptimer is the clocksource"
+		return
+	fi
+	cs=$(dirname "$cs")
+	id=${cs##*@}
+
+	first=$(cat "$counter/count$id/count")
+	sleep 1
+	second=$(cat "$counter/count$id/count")
+	echo "gptimer$id count: $first, then $second one second later"
+	[ -n "$first" ] && [ "$first" != "$second" ]
+	result gptimer-counter-running
+}
+
+# rpmsg_echo NAME CHANNEL LOCAL_ADDR EXPECTED: send "hello" to the first
+# CHANNEL endpoint on the SHARC cores and check that the reply starts with
+# EXPECTED
+rpmsg_echo() {
+	name=$1
+	channel=$2
+	addr=$3
+	expected=$4
+
+	dev=$(ls -d /sys/bus/rpmsg/devices/*."$channel".-1.* 2>/dev/null | head -n 1)
+	if [ -z "$dev" ]; then
+		skip "$name" "no $channel channel, is the echo firmware running?"
+		return
+	fi
+	dev=${dev##*/}
+	prefix=${dev%.*}.
+	ep=${dev##*.}
+
+	if [ -e "/sys/bus/rpmsg/devices/$dev/driver" ]; then
+		rpmsg-bind-chardev -u -p "$prefix" -n 1 -e "$ep" >/dev/null 2>&1
+	fi
+	rpmsg-bind-chardev -p "$prefix" -n 1 -e "$ep" -s "$addr" >/dev/null 2>&1
+
+	node=
+	for i in 1 2 3 4 5 6 7 8 9 10; do
+		for n in /sys/class/rpmsg/rpmsg[0-9]*; do
+			case "$(readlink -f "$n")" in
+			*/"$dev"/*)
+				node=/dev/${n##*/}
+				;;
+			esac
+		done
+		[ -n "$node" ] && [ -c "$node" ] && break
+		node=
+		sleep 0.5
+	done
+
+	if [ -z "$node" ]; then
+		echo "no rpmsg character device was created for $dev"
+		fail "$name"
+	else
+		reply=$(printf hello | timeout 10 rpmsg-xmit -n 5 "$node")
+		echo "$dev: sent 'hello', received '$reply'"
+		case "$reply" in
+		"$expected"*) pass "$name" ;;
+		*) fail "$name" ;;
+		esac
+	fi
+
+	rpmsg-bind-chardev -u -p "$prefix" -n 1 -e "$ep" >/dev/null 2>&1
+}
+
+test_rpmsg() {
+	rpmsg_echo rpmsg-echo sharc-echo 100 hello
+	rpmsg_echo rpmsg-echo-cap sharc-echo-cap 101 HELLO
+}
+
+test_i2c() {
+	found=0
+	for bus in /dev/i2c-*; do
+		[ -c "$bus" ] || continue
+		found=1
+		n=${bus#/dev/i2c-}
+		case " $I2C_SKIP_BUSES " in
+		*" $n "*)
+			skip "i2c-$n" "not probed on this board"
+			continue
+			;;
+		esac
+		i2cdetect -y "$n"
+		result "i2c-$n"
+	done
+	[ "$found" -eq 1 ]
+	result i2c-buses-present
+}
+
+test_alsa() {
+	expected=0
+	for c in $(find "$DT" -name compatible 2>/dev/null | xargs grep -l adi,sc5xx-asoc-card 2>/dev/null); do
+		dt_enabled "$(dirname "$c")" && expected=1
+	done
+	if [ "$expected" -eq 0 ]; then
+		skip alsa "no sound card in the device tree"
+		return
+	fi
+
+	cat /proc/asound/cards
+	grep -q '^ *[0-9]' /proc/asound/cards 2>/dev/null
+	result alsa-card-registered
+
+	aplay -l
+	playback=$(aplay -l 2>/dev/null | sed -n 's/^card \([0-9]*\):.*, device \([0-9]*\):.*/\1,\2/p' | head -n 1)
+	[ -n "$playback" ]
+	result alsa-playback-device
+
+	capture=$(arecord -l 2>/dev/null | sed -n 's/^card \([0-9]*\):.*, device \([0-9]*\):.*/\1,\2/p' | head -n 1)
+
+	if [ -n "$playback" ]; then
+		start=$(uptime_s)
+		head -c $((AUDIO_SECONDS * 48000 * 4)) /dev/zero |
+			aplay -q -D "plughw:$playback" -t raw -f S16_LE -c 2 -r 48000 2>"$tmp/aplay.err"
+		status=$?
+		audio_check alsa-playback "$status" "$start" "$tmp/aplay.err" "played"
+	fi
+
+	if [ -z "$capture" ]; then
+		skip alsa-capture "no capture device"
+		return
+	fi
+	start=$(uptime_s)
+	arecord -q -D "plughw:$capture" -t raw -f S16_LE -c 2 -r 48000 -d "$AUDIO_SECONDS" \
+		"$tmp/capture.raw" 2>"$tmp/arecord.err"
+	status=$?
+	bytes=$(wc -c <"$tmp/capture.raw" 2>/dev/null || echo 0)
+	if [ "$bytes" -ne $((AUDIO_SECONDS * 48000 * 4)) ]; then
+		echo "captured $bytes bytes, expected $((AUDIO_SECONDS * 48000 * 4))"
+		status=1
+	fi
+	audio_check alsa-capture "$status" "$start" "$tmp/arecord.err" "recorded"
+	rm -f "$tmp/capture.raw"
+}
+
+# audio_check NAME STATUS START ERRFILE VERB: pass if aplay or arecord succeeded
+# without an xrun, and the audio took AUDIO_SECONDS to within 5%, allowing
+# 0.3 seconds to start and drain the stream
+audio_check() {
+	elapsed=$(awk -v a="$3" -v b="$(uptime_s)" 'BEGIN { printf "%.2f", b - a }')
+	cat "$4"
+	echo "$1: $5 $AUDIO_SECONDS seconds of audio in $elapsed seconds"
+	[ "$2" -eq 0 ] && ! grep -q -E 'underrun|overrun' "$4" &&
+		awk -v t="$elapsed" -v d="$AUDIO_SECONDS" 'BEGIN { exit !(t >= d * 0.95 && t <= d * 1.05 + 0.3) }'
+	result "$1"
+}
+
+# ptp_time DEVICE: print the PTP clock time in seconds
+ptp_time() {
+	testptp -d "$1" -g | sed -n 's/^clock time: \([0-9]*\)\.\([0-9]*\) .*/\1.\2/p'
+}
+
+test_network() {
+	ifaces=
+	for n in /sys/class/net/*; do
+		[ -e "$n/device" ] && [ "$(cat "$n/type")" = 1 ] && ifaces="$ifaces ${n##*/}"
+	done
+	echo "Ethernet interfaces:$ifaces"
+	[ -n "$ifaces" ]
+	result eth-present
+
+	link=
+	for i in $ifaces; do
+		[ "$(cat "/sys/class/net/$i/carrier" 2>/dev/null)" = 1 ] && link="$link $i"
+	done
+	if [ -z "$link" ]; then
+		skip eth-link "no Ethernet interface has a link"
+	else
+		echo "Link up on:$link"
+		pass eth-link
+
+		gateway=$(ip route | awk '$1 == "default" { print $3; exit }')
+		if [ -n "$gateway" ]; then
+			ping -c 5 "$gateway"
+			result eth-ping-gateway
+		else
+			skip eth-ping-gateway "no default route"
+		fi
+
+		if [ -n "$ADI_PTEST_IPERF_SERVER" ]; then
+			ping -c 5 "$ADI_PTEST_IPERF_SERVER"
+			result eth-ping-iperf-server
+			iperf3 -c "$ADI_PTEST_IPERF_SERVER" -t 15
+			result eth-iperf3
+		else
+			skip eth-iperf3 "ADI_PTEST_IPERF_SERVER is not set"
+		fi
+	fi
+
+	found=0
+	for ptp in /dev/ptp[0-9]*; do
+		[ -c "$ptp" ] || continue
+		found=1
+		name=${ptp#/dev/}
+
+		testptp -d "$ptp" -c | grep -q '^capabilities:'
+		result "$name-capabilities"
+
+		first=$(ptp_time "$ptp")
+		sleep 1
+		second=$(ptp_time "$ptp")
+		echo "$name time: $first, then $second one second later"
+		if [ -z "$first" ] || [ -z "$second" ]; then
+			echo "could not read the time from \"testptp -d $ptp -g\", which printed:"
+			testptp -d "$ptp" -g 2>&1
+		fi
+		[ -n "$first" ] && [ -n "$second" ] &&
+			awk -v a="$first" -v b="$second" 'BEGIN { d = b - a; exit !(d > 0.5 && d < 1.5) }'
+		result "$name-running"
+	done
+	[ "$found" -eq 1 ] || skip ptp "no PTP clock, is an Ethernet interface up?"
+}
+
+test_gptimer_counter
+test_rpmsg
+test_i2c
+test_alsa
+test_network
+
+exit $rc

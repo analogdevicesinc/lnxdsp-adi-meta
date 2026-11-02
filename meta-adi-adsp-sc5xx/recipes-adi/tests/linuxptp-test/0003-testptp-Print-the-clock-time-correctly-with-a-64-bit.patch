@@ -1,0 +1,31 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Tue, 3 Nov 2026 14:56:44 -0500
+Subject: [PATCH] testptp: Print the clock time correctly with a 64-bit time_t
+
+On 32-bit targets built with a 64-bit time_t, such as ARMv7 with
+_TIME_BITS=64, printing tv_sec with %ld misaligns the printf
+arguments, so "testptp -g" printed garbage and could crash in ctime().
+Print tv_sec as a long long, as the other times in testptp are.
+
+Upstream-Status: Pending
+Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
+---
+ testptp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/testptp.c b/testptp.c
+index 08daebb..bea2553 100644
+--- a/testptp.c
++++ b/testptp.c
+@@ -316,8 +316,8 @@ int main(int argc, char *argv[])
+ 		if (clock_gettime(clkid, &ts)) {
+ 			perror("clock_gettime");
+ 		} else {
+-			printf("clock time: %ld.%09ld or %s",
+-			       ts.tv_sec, ts.tv_nsec, ctime(&ts.tv_sec));
++			printf("clock time: %lld.%09ld or %s",
++			       (long long)ts.tv_sec, ts.tv_nsec, ctime(&ts.tv_sec));
+ 		}
+ 	}
+ 

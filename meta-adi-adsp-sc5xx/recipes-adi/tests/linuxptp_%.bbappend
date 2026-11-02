@@ -6,6 +6,7 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/linuxptp-test:"
 SRC_URI += " \
 	file://0001-Add-linuxptp-adi-patch-for-testptp.patch \
 	file://0002-Fix-compilation-error-if-__GLIBC_PREREQ-is-not-defin.patch \
+	file://0003-testptp-Print-the-clock-time-correctly-with-a-64-bit.patch \
 "
 
 do_compile:append() {
