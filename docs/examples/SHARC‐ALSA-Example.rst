@@ -36,21 +36,22 @@ Programming the SHARC
 Using Linux (remoteproc)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-An example SHARC image is present in the ``/lib/firmware`` directory on the target. The SHARC can be programmed with this image using the Linux shell. The SHARCs are running already when Linux has booted, so you can stop them, reload the example image or your own one, and start them again
+An example SHARC image is present in the ``/lib/firmware/adi`` directory on the target. The SHARC can be programmed with this image using the Linux shell. The SHARCs are running already when Linux has booted, so you can stop them, reload the example image or your own one, and start them again
 
 .. code-block:: shell
 
-   $ cd /lib/firmware
+   $ ls /lib/firmware/adi
+   icap_sharc_alsa_core1.ldr  icap_sharc_alsa_core2.ldr
 
    $ echo stop > /sys/class/remoteproc/remoteproc0/state
    ADI Reset Control Unit 3108b000.rcu: Timeout waiting for remote core 1 to IDLE!
    remoteproc remoteproc0: stopped remote processor core1-rproc
 
-   $ echo icap-sharc-alsa_Core1.ldr  > /sys/class/remoteproc/remoteproc0/firmware
+   $ echo adi/icap_sharc_alsa_core1.ldr > /sys/class/remoteproc/remoteproc0/firmware
 
    $ echo start > /sys/class/remoteproc/remoteproc0/state
    remoteproc remoteproc0: powering up core1-rproc
-   remoteproc remoteproc0: Booting fw image adi_adsp_core1_fw.ldr, size 132860
+   remoteproc remoteproc0: Booting fw image adi/icap_sharc_alsa_core1.ldr, size 132860
    adi_remoteproc 28240000.core1-rproc: Core1 rpmsg init timeout, probably not supported.
    virtio_rpmsg_bus virtio0: rpmsg host is online
     remoteproc0#vdev0buffer: registered virtio0 (type 7)

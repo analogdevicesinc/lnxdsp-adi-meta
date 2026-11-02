@@ -126,7 +126,7 @@ Linux
 Overview
 ^^^^^^^^
 
-After the system has booted the kernel and mounted the initramfs, the remoteproc driver is initialised. It first probes the cores, before loading default firmware (located in ``/lib/firmware``, both in the initramfs and in the normal root filesystem), normally ``adi_adsp_core<n>_fw.ldr``.
+After the system has booted the kernel and mounted the initramfs, the remoteproc driver is initialised. It first probes the cores, before loading the default firmware named by the ``firmware-name`` property of each remoteproc device tree node. The default firmware is located in the ``adi`` vendor subdirectory of ``/lib/firmware``, both in the initramfs and in the normal root filesystem, and is normally ``adi/rpmsg_echo_sharc_core<n>.ldr``.
 
 The rpmsg interface is then brought online to enable communication with the cores, creating a communication channel for each core.
 
@@ -144,4 +144,4 @@ In More Detail
     - If this succeeds, ``<device name> is available`` is printed.
     - Finally, `rproc_boot <https://github.com/analogdevicesinc/lnxdsp-linux/blob/c4403f406eff867723e10acf414afdfe8132102f/drivers/remoteproc/remoteproc_core.c#L1994>`_ is triggered, and the core is powered up.
 
-After ``rproc_boot``, firmware loading begins. ``adi_adsp_core<core n>_fw.ldr`` is loaded from the initramfs by `request_firmware <https://github.com/analogdevicesinc/lnxdsp-linux/blob/c4403f406eff867723e10acf414afdfe8132102f/drivers/base/firmware_loader/main.c#L888>`_ (from Linux's generic firmware loader driver), then `rproc_start <https://github.com/analogdevicesinc/lnxdsp-linux/blob/c4403f406eff867723e10acf414afdfe8132102f/drivers/remoteproc/remoteproc_core.c#L1376>`_ is called, passing the loaded firmware. The firmware is then loaded onto the core over DMA, using `ldr_load <https://github.com/analogdevicesinc/lnxdsp-linux/blob/c4403f406eff867723e10acf414afdfe8132102f/drivers/remoteproc/adi_remoteproc.c#L242>`_, as well as the resource table (which was loaded during probing). Finally, the core is reset and started, and begins running the default firmware.
+After ``rproc_boot``, firmware loading begins. ``adi/rpmsg_echo_sharc_core<core n>.ldr`` is loaded from the initramfs by `request_firmware <https://github.com/analogdevicesinc/lnxdsp-linux/blob/c4403f406eff867723e10acf414afdfe8132102f/drivers/base/firmware_loader/main.c#L888>`_ (from Linux's generic firmware loader driver), then `rproc_start <https://github.com/analogdevicesinc/lnxdsp-linux/blob/c4403f406eff867723e10acf414afdfe8132102f/drivers/remoteproc/remoteproc_core.c#L1376>`_ is called, passing the loaded firmware. The firmware is then loaded onto the core over DMA, using `ldr_load <https://github.com/analogdevicesinc/lnxdsp-linux/blob/c4403f406eff867723e10acf414afdfe8132102f/drivers/remoteproc/adi_remoteproc.c#L242>`_, as well as the resource table (which was loaded during probing). Finally, the core is reset and started, and begins running the default firmware.

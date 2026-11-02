@@ -119,11 +119,11 @@ RPMsg with yocto
    [    2.175711] remoteproc remoteproc0: core1-rproc is available
    [    2.182065] adi_remoteproc 28a40000.core2-rproc: Resource table set, enable rpmsg
    [    2.189794] remoteproc remoteproc0: powering up core1-rproc
-   [    2.195336] remoteproc remoteproc0: Booting fw image adi_adsp_core1_fw.ldr, size 32228
+   [    2.195336] remoteproc remoteproc0: Booting fw image adi/rpmsg_echo_sharc_core1.ldr, size 32228
    [    2.203461] adi_remoteproc 28a40000.core2-rproc: Load verification enabled
    [    2.212513] remoteproc remoteproc1: core2-rproc is available
    [    2.220244] remoteproc remoteproc1: powering up core2-rproc
-   [    2.228828] remoteproc remoteproc1: Booting fw image adi_adsp_core2_fw.ldr, size 3222
+   [    2.228828] remoteproc remoteproc1: Booting fw image adi/rpmsg_echo_sharc_core2.ldr, size 3222
 
 .. note::
 

@@ -1,9 +1,11 @@
 HYBRID_AUDIO_PATCH = " \
 	file://0001-SC598-Audio-configuration-for-hybrid-audio-support.patch \
+	file://0004-SC598-Load-the-ICAP-device-example-firmware-for-hybrid-audio.patch \
 "
 SHARC_ALSA_PATCH = " \
 	${HYBRID_AUDIO_PATCH} \
 	file://0002-SC598-Enable-SHARC-ALSA-demo-disabling-most-linux-ba.patch \
+	file://0005-SC598-Load-the-SHARC-ALSA-firmware-for-the-SHARC-ALSA-demo.patch \
 "
 
 SHARC_ALSA_PATCH_UBOOT = " \

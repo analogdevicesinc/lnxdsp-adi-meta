@@ -11,7 +11,7 @@ S = "${UNPACKDIR}"
 ECHO_FW = " file://echo_core1-${MACHINE}.ldr file://echo_core2-${MACHINE}.ldr"
 ECHO_FW:adsp-sc846-som-ezkit = ""
 
-ECHO_FW_FILES = " ${nonarch_base_libdir}/firmware/adi_adsp_core1_fw.ldr ${nonarch_base_libdir}/firmware/adi_adsp_core2_fw.ldr"
+ECHO_FW_FILES = " ${nonarch_base_libdir}/firmware/adi/rpmsg_echo_sharc_core1.ldr ${nonarch_base_libdir}/firmware/adi/rpmsg_echo_sharc_core2.ldr"
 ECHO_FW_FILES:adsp-sc846-som-ezkit = ""
 
 SRC_URI += " \
@@ -24,9 +24,9 @@ do_install() {
 	install -m 0755 ${UNPACKDIR}/test_rpmsg_echo.sh ${D}${bindir}
 
 	if [ -n "${ECHO_FW}" ]; then
-		install -m 0755 -d ${D}${nonarch_base_libdir}/firmware
-		install -m 0755 ${UNPACKDIR}/echo_core1-${MACHINE}.ldr ${D}${nonarch_base_libdir}/firmware/adi_adsp_core1_fw.ldr
-		install -m 0755 ${UNPACKDIR}/echo_core2-${MACHINE}.ldr ${D}${nonarch_base_libdir}/firmware/adi_adsp_core2_fw.ldr
+		install -m 0755 -d ${D}${nonarch_base_libdir}/firmware/adi
+		install -m 0755 ${UNPACKDIR}/echo_core1-${MACHINE}.ldr ${D}${nonarch_base_libdir}/firmware/adi/rpmsg_echo_sharc_core1.ldr
+		install -m 0755 ${UNPACKDIR}/echo_core2-${MACHINE}.ldr ${D}${nonarch_base_libdir}/firmware/adi/rpmsg_echo_sharc_core2.ldr
 	fi
 }
 

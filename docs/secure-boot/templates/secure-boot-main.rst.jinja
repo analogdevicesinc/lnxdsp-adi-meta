@@ -625,13 +625,13 @@ Signing the SHARC firmware
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-First, copy the firmware files from ``/lib/firmware`` on the target system, to the host. Then, the following commands can be used to sign the firmware. Finally, transfer the signed files back to the target and place in ``/lib/firmware`` next to the original firmware.
+First, copy the firmware files from ``/lib/firmware/adi`` on the target system, to the host. Then, the following commands can be used to sign the firmware. Finally, transfer the signed files back to the target and place in ``/lib/firmware/adi`` next to the original firmware.
 
 
 .. code-block:: shell
 
-   /opt/analog/cces/{{ cces_version }}/adi_signtool -proc ADSP-SC598 sign -type BLp -algo ecdsa256 -infile adi_adsp_core1_fw.ldr -outfile adi_adsp_core1_fw_signed.ldr -prikey /opt/adi-testkeys/testkey.der
-   /opt/analog/cces/{{ cces_version }}/adi_signtool -proc ADSP-SC598 sign -type BLp -algo ecdsa256 -infile adi_adsp_core2_fw.ldr -outfile adi_adsp_core2_fw_signed.ldr -prikey /opt/adi-testkeys/testkey.der
+   /opt/analog/cces/{{ cces_version }}/adi_signtool -proc ADSP-SC598 sign -type BLp -algo ecdsa256 -infile rpmsg_echo_sharc_core1.ldr -outfile rpmsg_echo_sharc_core1_signed.ldr -prikey /opt/adi-testkeys/testkey.der
+   /opt/analog/cces/{{ cces_version }}/adi_signtool -proc ADSP-SC598 sign -type BLp -algo ecdsa256 -infile rpmsg_echo_sharc_core2.ldr -outfile rpmsg_echo_sharc_core2_signed.ldr -prikey /opt/adi-testkeys/testkey.der
 
 
 Using the Signed Firmware
@@ -651,8 +651,8 @@ The following commands can then be used to load the signed firmware images.
    rmmod adi_rpmsg
 
    # Load the firmware
-   sharc-cli -l /lib/firmware/adi_adsp_core1_fw_signed.ldr 0
-   sharc-cli -l /lib/firmware/adi_adsp_core2_fw_signed.ldr 1
+   sharc-cli -l /lib/firmware/adi/rpmsg_echo_sharc_core1_signed.ldr 0
+   sharc-cli -l /lib/firmware/adi/rpmsg_echo_sharc_core2_signed.ldr 1
 
    # Re-start the SHARC cores
    sharc-cli -g 0

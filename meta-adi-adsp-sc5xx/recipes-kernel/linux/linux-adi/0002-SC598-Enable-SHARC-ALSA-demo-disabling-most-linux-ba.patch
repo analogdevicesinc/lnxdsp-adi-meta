@@ -1,10 +1,9 @@
-From 8c8d08e6ceebeb67a7e40a411f7570551b33d507 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
 Date: Wed, 20 Aug 2025 17:35:38 +0100
 Subject: [PATCH] SC598 Enable SHARC ALSA demo disabling most linux
 
 Upstream-Status: Inappropriate [configuration]
-
 ---
  arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi |  5 +--
  arch/arm64/boot/dts/adi/sc598-som.dtsi       | 10 +++---
@@ -14,7 +13,7 @@ Upstream-Status: Inappropriate [configuration]
  5 files changed, 12 insertions(+), 45 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi
-index f14a1b4902e7..17df2f0259bf 100644
+index 355b2cd6ec81..28659a50d141 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi
 @@ -16,6 +16,7 @@ sound {
@@ -25,7 +24,7 @@ index f14a1b4902e7..17df2f0259bf 100644
  	};
  };
  
-@@ -266,11 +267,11 @@ dp83867: ethernet-phy@0 {
+@@ -271,11 +272,11 @@ dp83867: ethernet-phy@0 {
  &i2s4 {
  	pinctrl-names = "default";
  	pinctrl-0 = <&sru_dai1>;
@@ -40,7 +39,7 @@ index f14a1b4902e7..17df2f0259bf 100644
  	sru_dai1: sru_dai1_mux {
  		route {
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index b0354b9f2148..5679e324e28f 100644
+index a9e4880b0be6..7c4af08eadaa 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
 @@ -21,10 +21,10 @@ memory@90000000 {
@@ -58,7 +57,7 @@ index b0354b9f2148..5679e324e28f 100644
  
  	reserved-memory {
  		//sram1_res: sram1-reserved@20040000 {
-@@ -211,7 +211,7 @@ &spi2 {
+@@ -195,7 +195,7 @@ &spi2 {
  };
  
  &i2c2 {
@@ -68,7 +67,7 @@ index b0354b9f2148..5679e324e28f 100644
  	pinctrl-0 = <&i2c2_pins>;
  };
 diff --git a/arch/arm64/boot/dts/adi/sc59x-64.dtsi b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
-index ef7867153d3a..4fc318b8824d 100644
+index 337b3a711748..c1043dc1340b 100644
 --- a/arch/arm64/boot/dts/adi/sc59x-64.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
 @@ -268,7 +268,7 @@ sram-controller@31080000 {
@@ -94,7 +93,7 @@ index e4bfe6a1ebaa..42b866e6b172 100644
  CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND=y
  CONFIG_IIO=y
 diff --git a/drivers/soc/adi/mach-sc5xx/sec.c b/drivers/soc/adi/mach-sc5xx/sec.c
-index 6e86ff51561a..3430d9830d27 100644
+index f392f1e22cc8..22a2d1578358 100644
 --- a/drivers/soc/adi/mach-sc5xx/sec.c
 +++ b/drivers/soc/adi/mach-sc5xx/sec.c
 @@ -34,12 +34,11 @@ struct adi_sec {
@@ -111,7 +110,7 @@ index 6e86ff51561a..3430d9830d27 100644
  }
  
  void sec_raise_irq(struct adi_sec *sec, unsigned int irq)
-@@ -170,7 +169,6 @@ static int adi_sec_probe(struct platform_device *pdev)
+@@ -136,7 +135,6 @@ static int adi_sec_probe(struct platform_device *pdev)
  	struct adi_rcu *adi_rcu;
  	struct resource *res;
  	void __iomem *base;
@@ -119,7 +118,7 @@ index 6e86ff51561a..3430d9830d27 100644
  	int ret = 0;
  
  	adi_sec = devm_kzalloc(dev, sizeof(*adi_sec), GFP_KERNEL);
-@@ -209,40 +207,6 @@ static int adi_sec_probe(struct platform_device *pdev)
+@@ -175,40 +173,6 @@ static int adi_sec_probe(struct platform_device *pdev)
  
  	adi_sec->ioaddr = base;
  
