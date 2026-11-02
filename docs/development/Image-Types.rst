@@ -88,8 +88,11 @@ installs test suites that can be run directly on the board:
 
 * **ptest**: ``ptest-runner`` and the ``busybox``, ``libseccomp``, ``openssh``, ``rt-tests``
   and ``util-linux`` ptest packages, plus ``bzip2`` for the BusyBox ``bunzip2`` / ``bzcat``
-  tests, and the ADI ``crc-tests-ptest`` package. On the ADSP-SC598 SOM EZ-KIT the image
-  also installs the ADI ``crypto-tests-ptest`` package.
+  tests. The ADI ptest packages ``adsp-dmacopy-test-ptest``, ``adsp-gptimer-test-ptest``,
+  ``adsp-sanity-tests-ptest``, ``adsp-sram-mmap-test-ptest`` and ``crc-tests-ptest`` are
+  installed on every board, and ``adsp-l2-alloc-test-ptest`` on every board except the
+  ADSP-SC598 and ADSP-SC846. On the ADSP-SC598 SOM EZ-KIT the image also installs the ADI
+  ``crypto-tests-ptest`` package.
 * **Stress, memory and storage**: ``stress-ng``, ``memtester``, ``fio``.
 * **Real-time latency**: ``rt-tests`` (``cyclictest``).
 * **Entropy**: ``rng-tools`` (``rngtest``).
