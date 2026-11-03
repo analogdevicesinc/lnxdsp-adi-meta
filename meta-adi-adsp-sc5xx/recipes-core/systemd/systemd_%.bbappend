@@ -2,6 +2,9 @@ FILESEXTRAPATHS:append := "${THISDIR}/${PN}:"
 
 SRC_URI:append = " file://90-override.conf file://watchdog.conf file://console.conf"
 
+# OSC 3008 context sequences show up as garbage on serial consoles (minicom, screen, etc.)
+PACKAGECONFIG:remove = "osc-context"
+
 do_install:append() {
 	install -d ${D}/usr/lib/sysctl.d
 	install -m 0644 ${UNPACKDIR}/90-override.conf ${D}/usr/lib/sysctl.d
