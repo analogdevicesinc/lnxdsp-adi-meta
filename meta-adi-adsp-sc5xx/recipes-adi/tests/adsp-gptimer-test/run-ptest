@@ -1,0 +1,29 @@
+#!/bin/sh
+# SPDX-License-Identifier: GPL-2.0-only
+# Copyright 2026 Analog Devices Inc.
+#
+# Runs a spare gptimer for 100 ms and checks that it counted at the gptimer clock rate.
+# The module runs the test when it is loaded, and fails to load if the test fails.
+
+# Timestamp of the last kernel message before the test
+last=$(dmesg | tail -n 1 | sed -n 's/^\[ *\([0-9.]*\)\].*/\1/p')
+
+rmmod hello_gptimer 2>/dev/null
+modprobe hello_gptimer
+status=$?
+rmmod hello_gptimer 2>/dev/null
+
+dmesg | awk -v last="${last:-0}" '{
+	t = $0
+	sub(/^\[ */, "", t)
+	sub(/\].*/, "", t)
+	if (t + 0 > last + 0)
+		print
+}'
+
+if [ "$status" -eq 0 ]; then
+	echo "PASS: hello_gptimer"
+else
+	echo "FAIL: hello_gptimer"
+	exit 1
+fi
