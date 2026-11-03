@@ -1,4 +1,4 @@
-
+# SPDX-License-Identifier: GPL-2.0-only
 obj-m := hello_gptimer.o
 
 SRC := $(shell pwd)
