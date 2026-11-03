@@ -1,0 +1,30 @@
+#!/bin/sh
+# SPDX-License-Identifier: GPL-2.0-only
+# Copyright 2026 Analog Devices Inc.
+#
+# Copies 32-bit, 16-bit and 8-bit aligned buffers between SDRAM and on-chip
+# SRAM with a memory DMA channel and checks the data.
+# The module runs the test when it is loaded, and fails to load if the test fails.
+
+# Timestamp of the last kernel message before the test
+last=$(dmesg | tail -n 1 | sed -n 's/^\[ *\([0-9.]*\)\].*/\1/p')
+
+rmmod dmacopy_module 2>/dev/null
+modprobe dmacopy_module
+status=$?
+rmmod dmacopy_module 2>/dev/null
+
+dmesg | awk -v last="${last:-0}" '{
+	t = $0
+	sub(/^\[ */, "", t)
+	sub(/\].*/, "", t)
+	if (t + 0 > last + 0)
+		print
+}'
+
+if [ "$status" -eq 0 ]; then
+	echo "PASS: dmacopy_module"
+else
+	echo "FAIL: dmacopy_module"
+	exit 1
+fi
