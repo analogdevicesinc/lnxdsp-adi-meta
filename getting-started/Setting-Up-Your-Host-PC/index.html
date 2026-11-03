@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta content="The build system is currently supported on host PCs running Ubuntu 22.04 (LTS) (see Containerfile#L1)." name="description" />
+<meta content="The build system is currently supported on host PCs running Ubuntu 22.04 (LTS)." name="description" />
 
     <title>Setting Up Your Host PC &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8e8a900e" />
@@ -100,6 +100,8 @@
 <li><a class="reference internal" href="#configure-minicom">Configure Minicom</a></li>
 <li><a class="reference internal" href="#configure-tftp-service">Configure TFTP Service</a></li>
 <li><a class="reference internal" href="#configure-nfs-server">Configure NFS Server</a></li>
+<li><a class="reference internal" href="#configure-dhcp-server">Configure DHCP Server</a></li>
+<li><a class="reference internal" href="#configure-the-firewall">Configure the Firewall</a></li>
 <li><a class="reference internal" href="#configuring-usb-permissions-for-ice-debugger">Configuring USB permissions for ICE debugger</a></li>
 </ul>
 </li>
@@ -256,8 +258,7 @@ Content on this topic
             
   <section id="setting-up-your-host-pc">
 <h1>Setting Up Your Host PC<a class="headerlink" href="#setting-up-your-host-pc" title="Link to this heading"></a></h1>
-<p>The build system is currently supported on host PCs running Ubuntu 22.04 (LTS)
-(see <a class="icon link reference external" href="https://github.com/analogdevicesinc/lnxdsp-adi-meta/blob/main/ci/Containerfile#L1" target="_blank">Containerfile#L1</a>).</p>
+<p>The build system is currently supported on host PCs running Ubuntu 22.04 (LTS).</p>
 <section id="installing-required-packages">
 <h2>Installing Required Packages<a class="headerlink" href="#installing-required-packages" title="Link to this heading"></a></h2>
 <p>In order to build and deploy Linux to your ADSP-SC5xx development board you will need to install the following packages on your host PC.</p>
@@ -366,6 +367,202 @@ Sep 06 14:38:31 $YOUR_HOSTNAME systemd[1]: Finished NFS server and services.
 </pre></div>
 </div>
 <p>If it’s reported as inactive, wait a few moments and check the status again.</p>
+</section>
+<section id="configure-dhcp-server">
+<h2>Configure DHCP Server<a class="headerlink" href="#configure-dhcp-server" title="Link to this heading"></a></h2>
+<p>A DHCP server on the host lets the development board get an IP address
+automatically, instead of you setting <code class="docutils literal notranslate"><span class="pre">ipaddr</span></code> and <code class="docutils literal notranslate"><span class="pre">serverip</span></code> by hand in
+U-Boot after every reset.</p>
+<p>The steps below use the following example configuration:</p>
+<div class="table-wrapper docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Setting</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Host interface to the board</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">enxa0cec8e24382</span></code> (USB Ethernet)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Host IP address</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">192.168.1.30/24</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Board subnet</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">192.168.1.0/24</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>DHCP address pool</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">192.168.1.150</span></code> – <code class="docutils literal notranslate"><span class="pre">192.168.1.200</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>TFTP server (next-server)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">192.168.1.30</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>First, find the name of the interface that connects to the board:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ip<span class="w"> </span>-br<span class="w"> </span>link
+</pre></div>
+</div>
+<p>Give that interface a static IP address. Create a netplan file for it:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/netplan/02-board-net.yaml
+</pre></div>
+</div>
+<p>Add the following content. Replace <code class="docutils literal notranslate"><span class="pre">enxa0cec8e24382</span></code> with your interface
+name:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">network</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">  </span><span class="nt">renderer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NetworkManager</span>
+<span class="w">  </span><span class="nt">ethernets</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">enxa0cec8e24382</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">addresses</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">192.168.1.30/24</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">dhcp4</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">no</span>
+</pre></div>
+</div>
+<p>Apply the configuration:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>/etc/netplan/02-board-net.yaml
+sudo<span class="w"> </span>netplan<span class="w"> </span>apply
+</pre></div>
+</div>
+<p>Next, install the DHCP server:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>isc-dhcp-server
+</pre></div>
+</div>
+<p>Configure the server to listen only on the interface connected to the board:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/default/isc-dhcp-server
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>#Replace the existing file with the following
+INTERFACESv4="enxa0cec8e24382"
+INTERFACESv6=""
+#End of File
+</pre></div>
+</div>
+<p>Configure the subnet and address pool:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/dhcp/dhcpd.conf
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>#Replace the existing file with the following
+default-lease-time 600;
+max-lease-time 7200;
+ddns-update-style none;
+authoritative;
+
+subnet 192.168.1.0 netmask 255.255.255.0 {
+    range 192.168.1.150 192.168.1.200;
+    option routers 192.168.1.30;
+    option broadcast-address 192.168.1.255;
+    next-server 192.168.1.30;
+}
+#End of File
+</pre></div>
+</div>
+<p>Enable and restart the DHCP server:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>isc-dhcp-server
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>isc-dhcp-server
+</pre></div>
+</div>
+<p>To check that the DHCP server is running, execute:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>status<span class="w"> </span>isc-dhcp-server
+</pre></div>
+</div>
+<p>The output should show that the server is <code class="docutils literal notranslate"><span class="pre">active</span> <span class="pre">(running)</span></code>.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>journalctl<span class="w"> </span>-u<span class="w"> </span>isc-dhcp-server
+</pre></div>
+</div>
+<p>In U-Boot, run <code class="docutils literal notranslate"><span class="pre">dhcp</span></code> to get an address from the server.</p>
+</section>
+<section id="configure-the-firewall">
+<h2>Configure the Firewall<a class="headerlink" href="#configure-the-firewall" title="Link to this heading"></a></h2>
+<p>If the host PC runs a firewall, such as <code class="docutils literal notranslate"><span class="pre">ufw</span></code>, it must allow incoming
+connections from the board to the services configured above. The
+following table lists the ports that each boot type needs on the host:</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 25.0%" />
+<col style="width: 45.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Boot type</p></th>
+<th class="head"><p>Host ports</p></th>
+<th class="head"><p>Used for</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nfsboot</span></code> (also used to program the boot media)</p></td>
+<td><p>67/udp</p></td>
+<td><p>DHCP. Only needed if you use <code class="docutils literal notranslate"><span class="pre">dhcp</span></code> in U-Boot.</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>8000/tcp</p></td>
+<td><p>Python web server. U-Boot downloads the <code class="docutils literal notranslate"><span class="pre">fitImage</span></code> with <code class="docutils literal notranslate"><span class="pre">wget</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>111/tcp</p></td>
+<td><p>rpcbind. The kernel uses it to look up the NFS ports.</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>2049/tcp</p></td>
+<td><p>NFS server (<code class="docutils literal notranslate"><span class="pre">nfsd</span></code>).</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>20048/tcp</p></td>
+<td><p>NFS mount daemon (<code class="docutils literal notranslate"><span class="pre">rpc.mountd</span></code>). Requires a fixed port, see below.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ramboot</span></code></p></td>
+<td><p>67/udp, 8000/tcp</p></td>
+<td><p>DHCP (optional) and the Python web server, as for <code class="docutils literal notranslate"><span class="pre">nfsboot</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The simplest setup trusts all traffic that arrives on the network interface
+connected to the board. This covers every boot type. Replace
+<code class="docutils literal notranslate"><span class="pre">enxa0cec8e24382</span></code> with your interface name:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">67</span><span class="w"> </span>proto<span class="w"> </span>udp
+sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>from<span class="w"> </span><span class="m">192</span>.168.1.0/24
+</pre></div>
+</div>
+<p>The DHCP rule is separate because a board that doesn’t have an address yet
+sends its DHCP request from <code class="docutils literal notranslate"><span class="pre">0.0.0.0</span></code>.</p>
+<p>To open only the ports listed in the table, first give <code class="docutils literal notranslate"><span class="pre">rpc.mountd</span></code> a
+fixed port. Otherwise it picks a random port each time it starts. Edit the
+NFS configuration:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/nfs.conf
+</pre></div>
+</div>
+<p>In the <code class="docutils literal notranslate"><span class="pre">[mountd]</span></code> section, set:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[mountd]
+port=20048
+</pre></div>
+</div>
+<p>Restart the NFS server and check that <code class="docutils literal notranslate"><span class="pre">mountd</span></code> now uses port 20048:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>nfs-kernel-server
+rpcinfo<span class="w"> </span>-p<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>mountd
+</pre></div>
+</div>
+<p>Then add a rule for each port:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">67</span><span class="w"> </span>proto<span class="w"> </span>udp
+sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>from<span class="w"> </span><span class="m">192</span>.168.1.0/24<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">69</span><span class="w"> </span>proto<span class="w"> </span>udp
+sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>from<span class="w"> </span><span class="m">192</span>.168.1.0/24<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">111</span><span class="w"> </span>proto<span class="w"> </span>tcp
+sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>from<span class="w"> </span><span class="m">192</span>.168.1.0/24<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">2049</span><span class="w"> </span>proto<span class="w"> </span>tcp
+sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>from<span class="w"> </span><span class="m">192</span>.168.1.0/24<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">8000</span><span class="w"> </span>proto<span class="w"> </span>tcp
+sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>from<span class="w"> </span><span class="m">192</span>.168.1.0/24<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">20048</span><span class="w"> </span>proto<span class="w"> </span>tcp
+</pre></div>
+</div>
+<p>Check the active rules:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>ufw<span class="w"> </span>status<span class="w"> </span>verbose
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the board connects to the host over your office or corporate LAN, not a
+dedicated interface, leave out <code class="docutils literal notranslate"><span class="pre">in</span> <span class="pre">on</span> <span class="pre">enxa0cec8e24382</span></code>. Replace
+<code class="docutils literal notranslate"><span class="pre">192.168.1.0/24</span></code> with the board’s subnet, or with the board’s IP
+address.</p>
+</div>
 </section>
 <section id="configuring-usb-permissions-for-ice-debugger">
 <h2>Configuring USB permissions for ICE debugger<a class="headerlink" href="#configuring-usb-permissions-for-ice-debugger" title="Link to this heading"></a></h2>
