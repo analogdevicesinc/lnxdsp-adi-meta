@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-2.0-only
 obj-m := hello_l2_alloc.o
 
 SRC := $(shell pwd)
