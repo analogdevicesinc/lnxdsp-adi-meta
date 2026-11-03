@@ -1,0 +1,25 @@
+#!/bin/sh
+# SPDX-License-Identifier: GPL-2.0-only
+# Copyright 2026 Analog Devices Inc.
+#
+# Maps a page of on-chip SRAM through each sram_mmap device and checks that
+# data written to it reads back correctly
+
+rc=0
+found=0
+
+for dev in /dev/sram_mmap*; do
+	[ -c "$dev" ] || continue
+	found=1
+	name="sram-mmap-${dev#/dev/}"
+	if sram_mmap "$dev"; then
+		echo "PASS: $name"
+	else
+		echo "FAIL: $name"
+		rc=1
+	fi
+done
+
+[ "$found" -eq 1 ] || echo "SKIP: sram-mmap (no /dev/sram_mmap* device)"
+
+exit $rc
