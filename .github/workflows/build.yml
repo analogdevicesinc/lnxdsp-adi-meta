@@ -3,6 +3,10 @@ name: Build ADI Yocto artifacts
 on:
   workflow_dispatch:
     inputs:
+      runner:
+        description: 'Runner (defaults to vars.RUNNER)'
+        type: string
+        default: ""
       machine:
         description: "Yocto machine"
         default: "adsp-sc598-som-ezkit"
@@ -21,6 +25,9 @@ on:
         default: false
   workflow_call:
     inputs:
+      runner:
+        type: string
+        default: ""
       machine:
         type: string
         default: "adsp-sc598-som-ezkit"
@@ -48,7 +55,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ${{ vars.RUNNER != '' && fromJSON(vars.RUNNER) || 'ubuntu-latest' }}
+    runs-on: ${{ inputs.runner != '' && fromJSON(inputs.runner) || vars.RUNNER != '' && fromJSON(vars.RUNNER) || 'ubuntu-latest' }}
     steps:
       - uses: actions/create-github-app-token@v3
         if: ${{ github.repository_owner == 'adi-innersource' }}

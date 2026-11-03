@@ -44,6 +44,7 @@ jobs:
       image: ${{ matrix.image }}
       manifest: ${{ matrix.manifest }}
       override-meta-adi: true
+      runner: '["self-hosted", "v1"]'
 
   deploy_cloudsmith:
     needs: [build]

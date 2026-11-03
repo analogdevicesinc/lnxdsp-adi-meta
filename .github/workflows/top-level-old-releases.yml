@@ -38,3 +38,4 @@ jobs:
       machine: ${{ matrix.machine }}
       image: ${{ matrix.image }}
       manifest: ${{ matrix.manifest }}
+      runner: '["self-hosted", "v1"]'
