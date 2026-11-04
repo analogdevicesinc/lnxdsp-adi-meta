@@ -52,7 +52,7 @@ the example image or your own one, and start them again
 
 .. shell::
 
-   ~/lib/firmware
+   /lib/firmware
    $echo stop > /sys/class/remoteproc/remoteproc0/state
     ADI Reset Control Unit 3108b000.rcu: Timeout waiting for remote core 1 to IDLE!
     remoteproc remoteproc0: stopped remote processor core1-rproc

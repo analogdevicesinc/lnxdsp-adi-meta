@@ -1,18 +1,12 @@
-Linux for ADSP-SC5xx Processors
-================================
+ADSP Yocto
+==========
 
-Welcome to the official Linux documentation for :adi:`Analog Devices <>`
-ADSP-SC5xx processors.
+Welcome to the official Yocto documentation for ADI Digital Signal Processors
+(ADSP).
 
-ADSP-SC5xx System-on-Chips (SoCs) combine ARM Cortex-A55/A5 application
-processors with SHARC+ DSP cores, delivering a unique heterogeneous computing
-platform. These processors excel at real-time audio processing, industrial
-control, and automotive applications by seamlessly blending Linux's rich
-ecosystem on the ARM core with deterministic, high-performance signal
-processing on the SHARC+ DSPs. The architecture enables developers to partition
-their applications optimally - running high-level application code, networking,
-and user interfaces on Linux while offloading compute-intensive, real-time
-algorithms to the dedicated DSPs.
+See :external+system-level:doc:`products/adsp/index` for generic ADSP
+documentation including a list of supported SoCs and a description of the
+various :external+system-level:doc:`use cases <products/adsp/use-cases>`.
 
 **Platform Highlights**
 
@@ -23,12 +17,30 @@ algorithms to the dedicated DSPs.
 * **Connectivity** - Ethernet, USB, SPI, I2C, UART, CAN, and more industry-standard interfaces
 * **Real-time Processing** - Dedicated SHARC+ DSPs for deterministic, low-latency processing
 
-.. note::
-   📌 **Latest Release**: Linux for ADSP-SC5xx **5.0.1** - :doc:`Release Landing
-   Page <Linux-for-ADSP‐SC5xx-5.0.1-Landing-Page>`
+Latest Release
+--------------
+
+.. admonition:: Version 5.1.0 - Current Stable
+   :class: tip
+
+   **Linux 6.18.31 (LTS)** | **Yocto Scarthgap** | **Enhanced RPMsg** |
+   **Secure Boot** | **New Audio Examples**
+
+   :doc:`Release Landing Page <Linux-for-ADSP‐SC5xx-5.1.0-Landing-Page>` | `Full Release Notes <https://github.com/analogdevicesinc/lnxdsp-adi-meta/releases/tag/5.1.0-rel>`_ | :doc:`Older Releases <Older-Releases>`
+
+Development Version (main)
+--------------------------
+
+The ``main`` branch of
+`lnxdsp-adi-meta <https://github.com/analogdevicesinc/lnxdsp-adi-meta>`_ is the
+latest development version of Linux for ADSP-SC5xx, built with
+`kas <https://kas.readthedocs.io>`_. The guides below follow ``main``; for the
+latest tested release, see 5.1.0 above.
+
+:doc:`Development Version Landing Page <Linux-for-ADSP‐SC5xx-main-Landing-Page>` | :doc:`Secure Boot (main) <secure-boot/Secure-Boot-Support-in-main>`
 
 Development Boards
-------------------
+~~~~~~~~~~~~~~~~~~
 
 .. list-table::
    :widths: 30 35 35
@@ -37,18 +49,21 @@ Development Boards
    * - Board
      - Processor Features
      - Quick Start Guide
+   * - **SC846-SOM**
+     - Cortex-A55 + Dual SHARC+ @ 1.2GHz
+     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC846-(Linux-for-ADSP‐SC5xx-Processors-main)>`
    * - **SC598-SOM**
      - Cortex-A55 + Dual SHARC+ @ 1GHz
-     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)>`
+     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-main)>`
    * - **SC594-SOM**
      - Cortex-A5 + Single SHARC+ @ 1GHz
-     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)>`
+     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-main)>`
    * - **SC589-MINI**
      - Cortex-A5 + Dual SHARC+ @ 500MHz
-     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC589‐MINI-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)>`
+     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC589‐MINI-(Linux-for-ADSP‐SC5xx-Processors-main)>`
    * - **SC573-EZ-KIT**
      - Cortex-A5 + Single SHARC+ @ 500MHz
-     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)>`
+     - :doc:`Getting Started → <getting-started/Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-main)>`
 
 Quick Start
 -----------
@@ -60,19 +75,11 @@ Quick Start
 3. :doc:`Build and customize <development/Development>` - Use Yocto to create your custom image and develop applications
 4. :doc:`Run examples <examples/Examples>` - Try SHARC-ALSA, USB Audio, and more
 
-**Key Topics**: :doc:`Boot Process <development/Boot-Sequence>` | :doc:`RPMsg <development/RPMsg>` | :doc:`Memory Configuration <development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>`
-| :doc:`Secure Boot <secure-boot/Secure-Boot-Support>`
-
-Latest Release
---------------
-
-.. admonition:: Version 5.0.1 - Current Stable
-   :class: tip
-
-   **Linux 6.12.38 (LTS)** | **Yocto Scarthgap** | **Enhanced RPMsg** |
-   **Secure Boot** | **New Audio Examples**
-
-   `Full Release Notes <https://github.com/analogdevicesinc/lnxdsp-adi-meta/releases/tag/5.0.1-rel-1>`_ | :doc:`Older Releases <Older-Releases>`
+**Key Topics**: :doc:`Boot Process <development/Boot-Sequence>` | :doc:`Image
+Types <development/Image-Types>` | :doc:`RPMsg <development/RPMsg>` |
+:doc:`Memory Configuration
+<development/Configuring-System-Memory-When-Using-Linux-and-SHARC-Applications>` |
+:doc:`Secure Boot <secure-boot/Secure-Boot-Support>`
 
 Quick Links
 -----------
@@ -101,7 +108,8 @@ Documentation
    :hidden:
    :titlesonly:
 
-   Linux for ADSP SC5xx 5.0.1 <Linux-for-ADSP‐SC5xx-5.0.1-Landing-Page>
+   Linux for ADSP SC5xx 5.1.0 <Linux-for-ADSP‐SC5xx-5.1.0-Landing-Page>
+   Linux for ADSP SC5xx main <Linux-for-ADSP‐SC5xx-main-Landing-Page>
    Older Releases <Older-Releases>
    Examples <examples/Examples>
    Development <development/Development>

@@ -41,7 +41,7 @@ Load Core 1 firmware for benchmarking:
 
 .. shell::
 
-   ~/lib/firmware
+   /lib/firmware
    $echo stop > /sys/class/remoteproc/remoteproc0/state
    $echo rpmsg_echo_example_Core1.ldr > /sys/class/remoteproc/remoteproc0/firmware
    $echo start > /sys/class/remoteproc/remoteproc0/state
