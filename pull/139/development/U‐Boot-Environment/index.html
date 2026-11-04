@@ -371,13 +371,14 @@ using:</p>
 <h2>The Default Environment<a class="headerlink" href="#the-default-environment" title="Link to this heading"></a></h2>
 <p>As previously described, when U-Boot is unable to load a valid
 environment from the persistent storage, it will load the default
-environment. This is defined by a number of configuration options,
-within the <code class="docutils literal notranslate"><span class="pre">include/configs</span></code> directory in U-Boot’s source.</p>
-<p>Some common values are defined under <code class="docutils literal notranslate"><span class="pre">CFG_EXTRA_ENV_SETTINGS</span></code> in
-<a class="icon link reference external" href="https://github.com/analogdevicesinc/u-boot/blob/main/include/configs/sc_adi_common.h#L201" target="_blank">sc_adi_common.h</a>,
-with board specific options being defined with <code class="docutils literal notranslate"><span class="pre">ADI_ENV_SETTINGS</span></code> in
-the relevant board file - for example, for SC598, in
-<a class="icon link reference external" href="https://github.com/analogdevicesinc/u-boot/blob/main/include/configs/sc598-som.h#L141" target="_blank">sc598-som.h</a>.</p>
+environment. This is defined by plain-text environment files in U-Boot’s
+source.</p>
+<p>Values common to all ADSP boards, such as the boot commands, are defined in
+<a class="icon git reference external" href="https://github.com/analogdevicesinc/u-boot/tree/adi-u-boot-2025.10.y/include/env/adi/adi_boot.env" target="_blank">adi_boot.env</a>.
+Each board has its own environment file under <code class="docutils literal notranslate"><span class="pre">board/adi/</span></code> that sets the
+board specific options, selects the supported boot methods and includes
+<code class="docutils literal notranslate"><span class="pre">adi_boot.env</span></code> - for example, for SC598, in
+<a class="icon git reference external" href="https://github.com/analogdevicesinc/u-boot/tree/adi-u-boot-2025.10.y/board/adi/sc598-som-ezkit/sc598-som-ezkit.env" target="_blank">sc598-som-ezkit.env</a>.</p>
 <p>The default environment can also be manually loaded using the
 <code class="docutils literal notranslate"><span class="pre">env</span> <span class="pre">default</span></code> command, described in the <a class="reference external" href="#env-command">env command</a>
 section.</p>

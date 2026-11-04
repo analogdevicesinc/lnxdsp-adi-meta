@@ -169,20 +169,20 @@ example usage, see the "Using Linux (remoteproc)" section in the
 In More Detail
 ^^^^^^^^^^^^^^
 
-- Initial bring-up occurs within the probe function of the ADI remoteproc driver - :git-linux:`c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/adi_remoteproc.c#L809 <adi_remoteproc_probe>`. This makes a number of calls to the core Linux remoteproc driver:
+- Initial bring-up occurs within the probe function of the ADI remoteproc driver - :git-linux:`adi_remoteproc_probe <067afc664698941a903b0b9bbe9496154a22e49e:drivers/remoteproc/adi_remoteproc.c#L801>`. This makes a number of calls to the core Linux remoteproc driver:
 
-  - :git-linux:`c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/remoteproc_core.c#L2515 <rproc_alloc>` to allocate a remoteproc handle
-  - :git-linux:`c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/remoteproc_core.c#L2341 <rproc_add>` to register the device, which also calls :git-linux:`c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/remoteproc_core.c#L2284 <rproc_validate>` to ensure the device can be started by the driver.
+  - :git-linux:`rproc_alloc <067afc664698941a903b0b9bbe9496154a22e49e:drivers/remoteproc/remoteproc_core.c#L2464>` to allocate a remoteproc handle
+  - :git-linux:`rproc_add <067afc664698941a903b0b9bbe9496154a22e49e:drivers/remoteproc/remoteproc_core.c#L2290>` to register the device, which also calls :git-linux:`rproc_validate <067afc664698941a903b0b9bbe9496154a22e49e:drivers/remoteproc/remoteproc_core.c#L2233>` to ensure the device can be started by the driver.
 
     - e.g. if the device is offline and has no start function, ``rproc_validate`` will fail.
     - If this succeeds, ``<device name> is available`` is printed.
-    - Finally, :git-linux:`c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/remoteproc_core.c#L1994 <rproc_boot>` is triggered, and the core is powered up.
+    - Finally, :git-linux:`rproc_boot <067afc664698941a903b0b9bbe9496154a22e49e:drivers/remoteproc/remoteproc_core.c#L1909>` is triggered, and the core is powered up.
 
 After ``rproc_boot``, firmware loading begins. ``adi_adsp_core<core n>_fw.ldr``
 is loaded from the initramfs by
-:git-linux:`c4403f406eff867723e10acf414afdfe8132102f:drivers/base/firmware_loader/main.c#L888 <request_firmware>` (from Linux's generic firmware loader driver), then
-:git-linux:`c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/remoteproc_core.c#L1376 <rproc_start>` is called, passing the loaded firmware. The firmware is then
+:git-linux:`request_firmware <067afc664698941a903b0b9bbe9496154a22e49e:drivers/base/firmware_loader/main.c#L949>` (from Linux's generic firmware loader driver), then
+:git-linux:`rproc_start <067afc664698941a903b0b9bbe9496154a22e49e:drivers/remoteproc/remoteproc_core.c#L1267>` is called, passing the loaded firmware. The firmware is then
 loaded onto the core over DMA, using
-:git-linux:`c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/adi_remoteproc.c#L242 <ldr_load>`, as well as the resource table (which was loaded during probing).
+:git-linux:`ldr_load <067afc664698941a903b0b9bbe9496154a22e49e:drivers/remoteproc/adi_remoteproc.c#L235>`, as well as the resource table (which was loaded during probing).
 Finally, the core is reset and started, and begins running the default
 firmware.

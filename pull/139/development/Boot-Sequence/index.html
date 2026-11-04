@@ -438,14 +438,14 @@ example usage, see the “Using Linux (remoteproc)” section in the
 <section id="in-more-detail">
 <h4>In More Detail<a class="headerlink" href="#in-more-detail" title="Link to this heading"></a></h4>
 <ul class="simple">
-<li><p>Initial bring-up occurs within the probe function of the ADI remoteproc driver - <a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/ci/adi_remoteproc_probe" target="_blank">c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/adi_remoteproc.c#L809</a>. This makes a number of calls to the core Linux remoteproc driver:</p>
+<li><p>Initial bring-up occurs within the probe function of the ADI remoteproc driver - <a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/067afc664698941a903b0b9bbe9496154a22e49e/drivers/remoteproc/adi_remoteproc.c#L801" target="_blank">adi_remoteproc_probe</a>. This makes a number of calls to the core Linux remoteproc driver:</p>
 <ul>
-<li><p><a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/ci/rproc_alloc" target="_blank">c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/remoteproc_core.c#L2515</a> to allocate a remoteproc handle</p></li>
-<li><p><a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/ci/rproc_add" target="_blank">c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/remoteproc_core.c#L2341</a> to register the device, which also calls <a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/ci/rproc_validate" target="_blank">c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/remoteproc_core.c#L2284</a> to ensure the device can be started by the driver.</p>
+<li><p><a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/067afc664698941a903b0b9bbe9496154a22e49e/drivers/remoteproc/remoteproc_core.c#L2464" target="_blank">rproc_alloc</a> to allocate a remoteproc handle</p></li>
+<li><p><a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/067afc664698941a903b0b9bbe9496154a22e49e/drivers/remoteproc/remoteproc_core.c#L2290" target="_blank">rproc_add</a> to register the device, which also calls <a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/067afc664698941a903b0b9bbe9496154a22e49e/drivers/remoteproc/remoteproc_core.c#L2233" target="_blank">rproc_validate</a> to ensure the device can be started by the driver.</p>
 <ul>
 <li><p>e.g. if the device is offline and has no start function, <code class="docutils literal notranslate"><span class="pre">rproc_validate</span></code> will fail.</p></li>
 <li><p>If this succeeds, <code class="docutils literal notranslate"><span class="pre">&lt;device</span> <span class="pre">name&gt;</span> <span class="pre">is</span> <span class="pre">available</span></code> is printed.</p></li>
-<li><p>Finally, <a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/ci/rproc_boot" target="_blank">c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/remoteproc_core.c#L1994</a> is triggered, and the core is powered up.</p></li>
+<li><p>Finally, <a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/067afc664698941a903b0b9bbe9496154a22e49e/drivers/remoteproc/remoteproc_core.c#L1909" target="_blank">rproc_boot</a> is triggered, and the core is powered up.</p></li>
 </ul>
 </li>
 </ul>
@@ -453,10 +453,10 @@ example usage, see the “Using Linux (remoteproc)” section in the
 </ul>
 <p>After <code class="docutils literal notranslate"><span class="pre">rproc_boot</span></code>, firmware loading begins. <code class="docutils literal notranslate"><span class="pre">adi_adsp_core&lt;core</span> <span class="pre">n&gt;_fw.ldr</span></code>
 is loaded from the initramfs by
-<a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/ci/request_firmware" target="_blank">c4403f406eff867723e10acf414afdfe8132102f:drivers/base/firmware_loader/main.c#L888</a> (from Linux’s generic firmware loader driver), then
-<a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/ci/rproc_start" target="_blank">c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/remoteproc_core.c#L1376</a> is called, passing the loaded firmware. The firmware is then
+<a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/067afc664698941a903b0b9bbe9496154a22e49e/drivers/base/firmware_loader/main.c#L949" target="_blank">request_firmware</a> (from Linux’s generic firmware loader driver), then
+<a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/067afc664698941a903b0b9bbe9496154a22e49e/drivers/remoteproc/remoteproc_core.c#L1267" target="_blank">rproc_start</a> is called, passing the loaded firmware. The firmware is then
 loaded onto the core over DMA, using
-<a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/ci/ldr_load" target="_blank">c4403f406eff867723e10acf414afdfe8132102f:drivers/remoteproc/adi_remoteproc.c#L242</a>, as well as the resource table (which was loaded during probing).
+<a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/067afc664698941a903b0b9bbe9496154a22e49e/drivers/remoteproc/adi_remoteproc.c#L235" target="_blank">ldr_load</a>, as well as the resource table (which was loaded during probing).
 Finally, the core is reset and started, and begins running the default
 firmware.</p>
 </section>
