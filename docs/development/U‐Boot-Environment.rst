@@ -112,14 +112,15 @@ The Default Environment
 
 As previously described, when U-Boot is unable to load a valid
 environment from the persistent storage, it will load the default
-environment. This is defined by a number of configuration options,
-within the ``include/configs`` directory in U-Boot’s source.
+environment. This is defined by plain-text environment files in U-Boot’s
+source.
 
-Some common values are defined under ``CFG_EXTRA_ENV_SETTINGS`` in
-`sc_adi_common.h <https://github.com/analogdevicesinc/u-boot/blob/main/include/configs/sc_adi_common.h#L201>`__,
-with board specific options being defined with ``ADI_ENV_SETTINGS`` in
-the relevant board file - for example, for SC598, in
-`sc598-som.h <https://github.com/analogdevicesinc/u-boot/blob/main/include/configs/sc598-som.h#L141>`__.
+Values common to all ADSP boards, such as the boot commands, are defined in
+:git-u-boot:`adi_boot.env <adi-u-boot-2025.10.y:include/env/adi/adi_boot.env>`.
+Each board has its own environment file under ``board/adi/`` that sets the
+board specific options, selects the supported boot methods and includes
+``adi_boot.env`` - for example, for SC598, in
+:git-u-boot:`sc598-som-ezkit.env <adi-u-boot-2025.10.y:board/adi/sc598-som-ezkit/sc598-som-ezkit.env>`.
 
 The default environment can also be manually loaded using the
 ``env default`` command, described in the `env command <#env-command>`__
