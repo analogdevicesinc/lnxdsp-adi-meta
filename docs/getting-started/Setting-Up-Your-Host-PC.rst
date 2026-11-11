@@ -14,7 +14,21 @@ will need to install the following packages on your host PC.
    $sudo apt-get update
    $sudo apt-get install -y gawk wget git-core diffstat unzip texinfo \
    $   gcc-multilib build-essential chrpath socat libsdl1.2-dev xterm \
-   $   u-boot-tools openssl curl tftpd-hpa python3 zstd libcrypt-dev
+   $   u-boot-tools openssl curl tftpd-hpa python3 zstd libcrypt-dev \
+   $   cpio file lz4
+
+Configure Git
+-------------
+
+The build uses ``git`` to fetch sources and apply patches, and ``git`` refuses
+to create commits without an identity. If you skip this step the build fails
+with ``Author identity unknown`` / ``*** Please tell me who you are``. Set
+any name and email (they are only used locally):
+
+.. shell::
+
+   $ git config --global user.name "Your Name"
+   $ git config --global user.email "you@example.com"
 
 Configure Minicom
 -----------------
