@@ -6,12 +6,18 @@ on:
       - 'release/**'
     paths:
       - 'docs/**'
+      - '.github/scripts/check-pinned-refs.sh'
+      - 'meta-adi-adsp-sc5xx/recipes-kernel/linux/linux-adi*'
+      - 'meta-adi-adsp-sc5xx/recipes-bsp/u-boot/u-boot-adi*'
   pull_request:
     branches:
       - main
       - 'release/**'
     paths:
       - 'docs/**'
+      - '.github/scripts/check-pinned-refs.sh'
+      - 'meta-adi-adsp-sc5xx/recipes-kernel/linux/linux-adi*'
+      - 'meta-adi-adsp-sc5xx/recipes-bsp/u-boot/u-boot-adi*'
 
 jobs:
   build-doc:
@@ -31,6 +37,9 @@ jobs:
           echo "base_path=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
         fi
     - uses: analogdevicesinc/doctools/checkout@action
+
+    - name: Check pinned kernel and U-Boot references
+      run: .github/scripts/check-pinned-refs.sh
 
     - name: Install pip packages
       run: |
