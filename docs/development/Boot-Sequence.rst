@@ -10,7 +10,7 @@ Overview
 --------
 
 The Boot ROM is responsible for initial start up - when the board powers on,
-the cores are brought online, and the Arm core will begin executing from the
+the cores are brought online, and the ARM core will begin executing from the
 Boot ROM.
 
 The Boot ROM will then boot the system according to the Boot Mode - set by a
@@ -113,7 +113,7 @@ There are two main ways the SHARC cores can be brought online, both of which use
 U-Boot
 ~~~~~~
 
-U-Boot does not perform any intialisation during boot - instead, the ``rproc``
+U-Boot does not perform any initialisation during boot - instead, the ``rproc``
 command is used after booting into the U-Boot shell. When the ``rproc init``
 command is run, U-Boot will probe any available SHARC cores and initialise
 them. They can then be brought online by loading firmware with ``rproc load
