@@ -4,9 +4,16 @@ RPMsg-Lite
 Introduction
 ------------
 
-This guide helps you implement RPMsg-Lite for bare-metal applications on ADSP-SC5xx processors. RPMsg-Lite is a lightweight implementation of the RPMsg protocol designed specifically for bare-metal and RTOS environments where the full Linux RPMsg stack is not available.
+This guide helps you implement RPMsg-Lite for bare-metal applications on
+ADSP-SC5xx processors. RPMsg-Lite is a lightweight implementation of the RPMsg
+protocol designed specifically for bare-metal and RTOS environments where the
+full Linux RPMsg stack is not available.
 
-While Linux on the ARM core includes native RPMsg support through kernel drivers, your SHARC+ DSP cores and bare-metal ARM applications need a different approach. RPMsg-Lite provides this solution—a minimal, efficient implementation that enables inter-processor communication without requiring a full operating system.
+While Linux on the ARM core includes native RPMsg support through kernel
+drivers, your SHARC+ DSP cores and bare-metal ARM applications need a different
+approach. RPMsg-Lite provides this solution—a minimal, efficient implementation
+that enables inter-processor communication without requiring a full operating
+system.
 
 **What you'll learn:**
 
@@ -30,12 +37,18 @@ While Linux on the ARM core includes native RPMsg support through kernel drivers
 Overview
 --------
 
-RPMsg-Lite enables message transfer between cores on ADSP devices. An implementation is available for ARM when running Linux, and for bare-metal applications, a port of RPMsg-Lite is available for ARM and SHARC+ cores. It allows for transmitting a message to a specific endpoint on a different core via a dedicated transport link. Multiple endpoints can be registered against a single link.
+RPMsg-Lite enables message transfer between cores on ADSP devices. An
+implementation is available for ARM when running Linux, and for bare-metal
+applications, a port of RPMsg-Lite is available for ARM and SHARC+ cores. It
+allows for transmitting a message to a specific endpoint on a different core
+via a dedicated transport link. Multiple endpoints can be registered against a
+single link.
 
 Resources used
 ~~~~~~~~~~~~~~
 
-In order to allow for message transmission between cores on ADSP-SC5xx devices, RPMsg-Lite makes use of the following resources:
+In order to allow for message transmission between cores on ADSP-SC5xx devices,
+RPMsg-Lite makes use of the following resources:
 
 * Shared memory for storing message buffers and vring buffers containing message descriptors
 * Interrupt on each core to indicate that a message has arrived
@@ -43,7 +56,8 @@ In order to allow for message transmission between cores on ADSP-SC5xx devices, 
 
 .. note::
 
-   These resources should not be used for other purposes when using RPMsg-Lite in your application.
+   These resources should not be used for other purposes when using RPMsg-Lite
+   in your application.
 
 The interrupts used are:
 
@@ -61,9 +75,18 @@ The TRU triggers allocated are:
    TRGM_SOFT4          /* Signal SHARC0 */
    TRGM_SOFT5          /* Signal SHARC1 */
 
-The shared memory used is allocated by a single core and typically by the main core in an RPMsg-Lite context. In order for the remotes to know the physical addresses for the vring buffers in shared memory, this information has to be passed from the main to the remote before the framework can be used. This is achieved by the main populating a resource table at a known address. The examples on this pages utilise memory located at ``___MCAPI_common_start``. If using a different location for this make sure that the memory area used is not cached.
+The shared memory used is allocated by a single core and typically by the main
+core in an RPMsg-Lite context. In order for the remotes to know the physical
+addresses for the vring buffers in shared memory, this information has to be
+passed from the main to the remote before the framework can be used. This is
+achieved by the main populating a resource table at a known address. The
+examples on this pages utilise memory located at ``___MCAPI_common_start``. If
+using a different location for this make sure that the memory area used is not
+cached.
 
-For the sake of compatibility, the resource table used in the examples has an identical structure to the one created by ``remoteproc`` in Linux, which looks as follows:
+For the sake of compatibility, the resource table used in the examples has an
+identical structure to the one created by ``remoteproc`` in Linux, which looks
+as follows:
 
 .. code-block:: c
 
@@ -92,7 +115,14 @@ Using RPMsg-Lite on SC5xx
 Allocate memory for vring buffers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The memory allocation for for the vring buffers should be done on a single core and the location of those buffers shared with the other cores via a resource table. To ensure that the cores pick up the data from the shared memory, it is necessary to mark the memory as  not cached on all cores using the buffers. Allocating memory and ensuring it is not cached is done differently on ARM and SHARC. If using RPMsg-Lite on the ARM it is recommended that the memory is allocated on the ARM as the SHARCs allow for simple run-time changes to caching via a set of registers.
+The memory allocation for for the vring buffers should be done on a single core
+and the location of those buffers shared with the other cores via a resource
+table. To ensure that the cores pick up the data from the shared memory, it is
+necessary to mark the memory as  not cached on all cores using the buffers.
+Allocating memory and ensuring it is not cached is done differently on ARM and
+SHARC. If using RPMsg-Lite on the ARM it is recommended that the memory is
+allocated on the ARM as the SHARCs allow for simple run-time changes to caching
+via a set of registers.
 
 Create an array for the vring buffers on the heap.
 
@@ -103,11 +133,14 @@ Create an array for the vring buffers on the heap.
 Disable cache on ARM
 ^^^^^^^^^^^^^^^^^^^^
 
-Disabling cache on the ARM for the vring buffers requires changes to the linker files. For example, to allocate 4MB of L3 memory as not cached memory on an SC594:
+Disabling cache on the ARM for the vring buffers requires changes to the linker
+files. For example, to allocate 4MB of L3 memory as not cached memory on an
+SC594:
 
 1. Modify ``apt.c``
 
-   Add a definition for an uncached block of memory and adjust the block of memory from which it is taken from. Change:
+   Add a definition for an uncached block of memory and adjust the block of
+   memory from which it is taken from. Change:
 
    .. code-block:: c
 
@@ -122,7 +155,9 @@ Disabling cache on the ARM for the vring buffers requires changes to the linker 
 
 2. Modify ``app.ld``
 
-   Add a definition for a non-cached block of memory and adjust the block of memory from which it is taken from, matching the changes made to ``apt.c``. Change:
+   Add a definition for a non-cached block of memory and adjust the block of
+   memory from which it is taken from, matching the changes made to ``apt.c``.
+   Change:
 
    .. code-block:: text
 
@@ -147,7 +182,9 @@ Disabling cache on the ARM for the vring buffers requires changes to the linker 
         *(.l3_data_uncached)
       } >MEM_L3_UNCACHED = 0
 
-   To store the vring buffers previously declared in the non-cached memory block, use ``__attribute__`` to specify the memory section it should be mapped to.
+   To store the vring buffers previously declared in the non-cached memory
+   block, use ``__attribute__`` to specify the memory section it should be
+   mapped to.
 
    .. code-block:: c
 
@@ -157,7 +194,9 @@ Disabling cache on the ARM for the vring buffers requires changes to the linker 
 Disable cache on SHARC
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The SHARCs have a number of range registers allowing for sections of memory to be marked as non-cached. We make use of these to mark the descriptor buffer range and the message buffer range as not cached like in the following example
+The SHARCs have a number of range registers allowing for sections of memory to
+be marked as non-cached. We make use of these to mark the descriptor buffer
+range and the message buffer range as not cached like in the following example
 
 .. code-block:: c
 
@@ -167,12 +206,16 @@ The SHARCs have a number of range registers allowing for sections of memory to b
    					adi_cache_rr6,
    					adi_cache_noncacheable_range);
 
-If the SHARC is acting as an RPMsg-Lite remote the ranges to mark as non-cached are retrieved from the resource table.
+If the SHARC is acting as an RPMsg-Lite remote the ranges to mark as non-cached
+are retrieved from the resource table.
 
 Create Resource Table
 ~~~~~~~~~~~~~~~~~~~~~
 
-On the core on which the memory for the vring buffers was declared, create the resource table used to provide information on the shared memory resources used for RPMsg-lite and instruct the linker to store it at a fixed location in L2 memory, which is by default marked as non-cached.
+On the core on which the memory for the vring buffers was declared, create the
+resource table used to provide information on the shared memory resources used
+for RPMsg-lite and instruct the linker to store it at a fixed location in L2
+memory, which is by default marked as non-cached.
 
 .. code-block:: c
 
@@ -233,7 +276,8 @@ Adding an rpmsg-lite instance
 
 .. note::
 
-   Currently the rpmsg-lite port for ADSP devices only supports static context instances.
+   Currently the rpmsg-lite port for ADSP devices only supports static context
+   instances.
 
 1. Create a header file named "``rpmsg_config.h``" and define ``RL_USE_STATIC_API``. RPMsg-Lite will attempt to include this header file during build.
 
@@ -247,7 +291,8 @@ Adding an rpmsg-lite instance
 
       struct rpmsg_lite_instance rpmsg_SHARC_channel;
 
-   The instance makes use of a Link ID to determine which core the instance should connect to.
+   The instance makes use of a Link ID to determine which core the instance
+   should connect to.
 
    .. code-block:: c
 
@@ -270,7 +315,9 @@ Adding an rpmsg-lite instance
               RL_SHM_VDEV,
               &rpmsg_SHARC_channel);
 
-   Populate the resource table with the addresses of the vrings created by rpmsg_lite_master_init and signal the remote core that the resource table has been initialised
+   Populate the resource table with the addresses of the vrings created by
+   rpmsg_lite_master_init and signal the remote core that the resource table
+   has been initialised
 
    .. code-block:: c
 
