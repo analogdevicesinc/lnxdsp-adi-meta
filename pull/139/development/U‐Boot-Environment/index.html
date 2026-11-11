@@ -271,7 +271,7 @@ environment.</p>
 </section>
 <section id="about-the-environment">
 <h2>About the Environment<a class="headerlink" href="#about-the-environment" title="Link to this heading"></a></h2>
-<p>The U-Boot envionrment is a text-based key-value store within U-Boot,
+<p>The U-Boot environment is a text-based key-value store within U-Boot,
 used to store information such as board-specific commands, run-time
 configuration options, network information and settings, filesystem
 settings and more.</p>
@@ -301,7 +301,7 @@ The basic commands are:</p>
 <code class="docutils literal notranslate"><span class="pre">value</span></code>, or deletes <code class="docutils literal notranslate"><span class="pre">name</span></code> if <code class="docutils literal notranslate"><span class="pre">value</span></code> is not present.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">env</span> <span class="pre">print</span> <span class="pre">[name]</span></code> (alias <code class="docutils literal notranslate"><span class="pre">printenv</span></code>) - print value <code class="docutils literal notranslate"><span class="pre">name</span></code>, or
 the whole environment if <code class="docutils literal notranslate"><span class="pre">name</span></code> is not present.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">env</span> <span class="pre">default</span> <span class="pre">(-a</span> <span class="pre">|</span> <span class="pre">name</span> <span class="pre">...)</span></code> - set one of more values specified by
+<li><p><code class="docutils literal notranslate"><span class="pre">env</span> <span class="pre">default</span> <span class="pre">(-a</span> <span class="pre">|</span> <span class="pre">name</span> <span class="pre">...)</span></code> - set one or more values specified by
 <code class="docutils literal notranslate"><span class="pre">name</span></code> to their default values, or reset the entire environment if
 <code class="docutils literal notranslate"><span class="pre">-a</span></code> specified.</p>
 <p><em>Note: only modifies the in-memory copy - also run</em> <code class="docutils literal notranslate"><span class="pre">saveenv</span></code> <em>to

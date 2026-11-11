@@ -339,10 +339,9 @@ distribution, with the addition of CCES for signing tools.</p>
 </section>
 <section id="build-system-setup">
 <h2>Build System Setup<a class="headerlink" href="#build-system-setup" title="Link to this heading"></a></h2>
-<p><em>These steps can be skipped if you have previously followed one of the Getting
-Started guides, such as :doc:`Getting Started with ADSP‐SC598 (Linux for
-ADSP‐SC5xx Processors 5.0.0)
-&lt;../getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-5.0.0)&gt;`</em>.</p>
+<p>These steps can be skipped if you have previously followed one of the Getting
+Started guides, such as <a class="reference internal" href="../../getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-5.0.0)/"><span class="doc">Getting Started with ADSP‐SC598 (Linux for
+ADSP‐SC5xx Processors 5.0.0)</span></a>.</p>
 <p>Fetch and install the sources:</p>
 <div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
@@ -601,7 +600,7 @@ executing <code class="docutils literal notranslate"><span class="pre">rm</span>
 </div>
 <div class="clear-left"></div></div></div><p>The console output from U-Boot and later on Linux will appear on the USB serial
 port configured in minicom earlier so open up minicom.</p>
-<p><code class="docutils literal notranslate"><span class="pre">`Terminal1:</span> <span class="pre">minicom`</span></code></p>
+<p><strong>Terminal1: minicom</strong></p>
 <div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
@@ -609,7 +608,7 @@ port configured in minicom earlier so open up minicom.</p>
 </pre></div>
 </div>
 <div class="clear-left"></div></div></div><p>In a separate console launch OpenOCD and connect to the development board.</p>
-<p><code class="docutils literal notranslate"><span class="pre">`Terminal2:</span> <span class="pre">OpenOCD`</span></code></p>
+<p><strong>Terminal2: OpenOCD</strong></p>
 <div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
@@ -622,10 +621,10 @@ port configured in minicom earlier so open up minicom.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">$sdk_usr</span>/bin/openocd<span class="w"> </span>-f<span class="w"> </span><span class="nv">$sdk_usr</span>/share/openocd/scripts/interface/&lt;ICE&gt;.cfg<span class="w"> </span>-f<span class="w"> </span><span class="nv">$sdk_usr</span>/share/openocd/scripts/target/adspsc59x_a55.cfg
 </pre></div>
 </div>
-<div class="clear-left"></div></div></div><p>Where <code class="docutils literal notranslate"><span class="pre">`&lt;ICE&gt;``</span></code> should be replaced with <code class="docutils literal notranslate"><span class="pre">``ice1000``</span></code> or <code class="docutils literal notranslate"><span class="pre">``ice2000`</span></code>
+<div class="clear-left"></div></div></div><p>Where <code class="docutils literal notranslate"><span class="pre">&lt;ICE&gt;</span></code> should be replaced with <code class="docutils literal notranslate"><span class="pre">ice1000</span></code> or <code class="docutils literal notranslate"><span class="pre">ice2000</span></code>
 depending on your hardware. When successful you should see a message similar to
 the console output below</p>
-<p><code class="docutils literal notranslate"><span class="pre">`Terminal2:</span> <span class="pre">OpenOCD`</span></code></p>
+<p><strong>Terminal2: OpenOCD</strong></p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Open On-Chip Debugger (PKGVERSION)  OpenOCD 0.10.0-gf73da81ab (2024-01-31-15:39)
 Licensed under GNU GPL v2
 Report bugs to &lt;processor.tools.support@analog.com&gt;
@@ -645,11 +644,11 @@ Info : starting gdb server for adspsc59x.cpu on 3333
 Info : Listening on port 3333 for gdb connections
 </pre></div>
 </div>
-<p>In a third console window launch GDB and type <code class="docutils literal notranslate"><span class="pre">`target</span> <span class="pre">extended-remote</span>
-<span class="pre">:3333``</span></code>. This will make GDB to connect to the gdbserver on the local host
-using port 3333. Then, load the U-Boot SPL into RAM by typing <code class="docutils literal notranslate"><span class="pre">``load``</span></code>. Hit
-<code class="docutils literal notranslate"><span class="pre">``Ctrl+C`</span></code> to interrupt thereafter.</p>
-<p><code class="docutils literal notranslate"><span class="pre">`Terminal3:</span> <span class="pre">GDB`</span></code></p>
+<p>In a third console window launch GDB and type <code class="docutils literal notranslate"><span class="pre">target</span> <span class="pre">extended-remote</span>
+<span class="pre">:3333</span></code>. This will make GDB to connect to the gdbserver on the local host
+using port 3333. Then, load the U-Boot SPL into RAM by typing <code class="docutils literal notranslate"><span class="pre">load</span></code>. Hit
+<code class="docutils literal notranslate"><span class="pre">Ctrl+C</span></code> to interrupt thereafter.</p>
+<p><strong>Terminal3: GDB</strong></p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd /tftpboot</span>
 <span class="go">/opt/adi-security/5.0.0/sysroots/x86_64-adi_glibc_sdk-linux/usr/bin/aarch64-adi_glibc-linux/aarch64-adi_glibc-linux-gdb u-boot-spl-sc598-som-ezkit.elf</span>
 <span class="go">...</span>
@@ -669,14 +668,14 @@ using port 3333. Then, load the U-Boot SPL into RAM by typing <code class="docut
 </div>
 <p>You will see a message on Terminal 1 running minicom, informing you that you
 can now load U-Boot Proper</p>
-<p><code class="docutils literal notranslate"><span class="pre">`Terminal1:</span> <span class="pre">minicom`</span></code></p>
+<p><strong>Terminal1: minicom</strong></p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>U-Boot SPL 2023.04 (Sep 21 2023 - 13:39:40 +0000)
 ADI Boot Mode: 0x0 (JTAG/BOOTROM)
 SPL execution has completed.  Please load U-Boot Proper via JTAG
 </pre></div>
 </div>
 <p>Now, press Ctrl-C to halt SPL, and load U-Boot Proper into RAM.</p>
-<p><code class="docutils literal notranslate"><span class="pre">`Terminal3:</span> <span class="pre">GDB`</span></code></p>
+<p><strong>Terminal3: GDB</strong></p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">^C</span>
 <span class="go">Program received signal SIGINT, Interrupt.</span>
 <span class="go">...</span>
@@ -702,7 +701,7 @@ SPL execution has completed.  Please load U-Boot Proper via JTAG
 <p>At this point U-Boot will now be running in RAM on your target board. You
 should see U-Boot booting in the minicom console (Terminal 1). Press a key to
 interrupt the boot process before the countdown terminates:</p>
-<p><code class="docutils literal notranslate"><span class="pre">`Terminal1:</span> <span class="pre">minicom`</span></code></p>
+<p><strong>Terminal1: minicom</strong></p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">U-Boot 2023.04 (Dec 11 2023 - 16:04:11 +0000)</span>
 
 <span class="go">CPU:   ADSP ADSP-SC598-0.0 (spi slave boot)</span>
@@ -724,13 +723,13 @@ interrupt the boot process before the countdown terminates:</p>
 <section id="flash-unsigned-u-boot-to-spi-flash">
 <h3>Flash (Unsigned) U-Boot to SPI Flash<a class="headerlink" href="#flash-unsigned-u-boot-to-spi-flash" title="Link to this heading"></a></h3>
 <p>In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot
-loader files (<code class="docutils literal notranslate"><span class="pre">`stage1-boot.ldr``</span></code>, <code class="docutils literal notranslate"><span class="pre">``stage1-boot-unsigned.ldr``</span></code>,
-<code class="docutils literal notranslate"><span class="pre">``stage2-boot.ldr``</span></code>, <code class="docutils literal notranslate"><span class="pre">``stage2-boot-unsigned.ldr`</span></code>) on TFTP.</p>
+loader files (<code class="docutils literal notranslate"><span class="pre">stage1-boot.ldr</span></code>, <code class="docutils literal notranslate"><span class="pre">stage1-boot-unsigned.ldr</span></code>,
+<code class="docutils literal notranslate"><span class="pre">stage2-boot.ldr</span></code>, <code class="docutils literal notranslate"><span class="pre">stage2-boot-unsigned.ldr</span></code>) on TFTP.</p>
 <p><strong>Note:</strong> We are going to use <strong>stage1-boot-unsigned.ldr</strong> and
 <strong>stage2-boot-unsigned.ldr</strong> to boot the device then burn the secure boot key.
 This is needed only for the first time secure boot key burning. For the next
 flash you should use <strong>stage1-boot.ldr</strong> and <strong>stage2-boot.ldr</strong></p>
-<p><code class="docutils literal notranslate"><span class="pre">`Terminal1:</span> <span class="pre">minicom`</span></code></p>
+<p><strong>Terminal1: minicom</strong></p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">=&gt; setenv tftpserverip &lt;SERVERIP&gt;</span>
 </pre></div>
 </div>
@@ -747,7 +746,7 @@ command from the shell or console.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">=&gt; set ipaddr &lt;ADDR&gt;</span>
 </pre></div>
 </div>
-<p>Where <code class="docutils literal notranslate"><span class="pre">`&lt;ADDR&gt;`</span></code> is the IP address you want to assign.</p>
+<p>Where <code class="docutils literal notranslate"><span class="pre">&lt;ADDR&gt;</span></code> is the IP address you want to assign.</p>
 <p>Next, run the U-Boot update command to copy the U-Boot loader files from the
 host PC to the target board, and write it into flash:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">=&gt; sf probe 2:1</span>
@@ -855,21 +854,21 @@ file) into RAM and then write them to Flash. Copy the required files from
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">=&gt; run update_spi</span>
 </pre></div>
 </div>
-<dl class="simple">
-<dt>&lt;details closed&gt;</dt><dd><p>&lt;summary&gt;If your network does NOT support DHCP&lt;/summary&gt;</p>
-</dd>
-</dl>
-<p>In the U-Boot console configure the board IP address and remove “run
-init*ethernet;” from the “start*update_spi” command.</p>
+<div><div class="collapsible docutils">
+<input class="collapsible_input" id="6ddeaf3ad668b01174d0bdf46c79e9f1370400eb" name="6ddeaf3ad668b01174d0bdf46c79e9f1370400eb" type="checkbox"></input><label for="6ddeaf3ad668b01174d0bdf46c79e9f1370400eb"><p>If your network does NOT support DHCP</p>
+<div class="icon"></div></label><div class="collapsible_content docutils">
+<p>In the U-Boot console configure the board IP address and remove <code class="docutils literal notranslate"><span class="pre">run</span>
+<span class="pre">init_ethernet;</span></code> from the <code class="docutils literal notranslate"><span class="pre">start_update_spi</span></code> command.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">=&gt; setenv ipaddr &lt;IPADDR&gt;</span>
 <span class="go">=&gt; edit start_update_spi</span>
 <span class="go">=&gt; edit: &lt;remove "run init_ethernet;" from here&gt; sf probe ${sfdev}; sf erase 0 ${sfsize}; run update_spi_uboot; run update_spi_fit; run update_spi_rfs; sleep 3; saveenv</span>
 </pre></div>
 </div>
-<p>After editing <code class="docutils literal notranslate"><span class="pre">`start*update*spi``</span></code>, proceed to running as <code class="docutils literal notranslate"><span class="pre">``update_spi`</span></code>,
-as above.
-&lt;/details&gt;</p>
-<p>You should see output similar to the following.</p>
+<p>After editing <code class="docutils literal notranslate"><span class="pre">start_update_spi</span></code>, proceed to running as <code class="docutils literal notranslate"><span class="pre">update_spi</span></code>,
+as above.</p>
+</div>
+</div>
+</div><p>You should see output similar to the following.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">=&gt; run update_spi</span>
 <span class="go">PHY 0x00: OUI = 0x80028, Model = 0x23, Rev = 0x01, 100baseT, FDX</span>
 <span class="go">Speed: 1000, full duplex</span>
@@ -1201,7 +1200,7 @@ adsp-sc598-som-ezkit login:
 <h3>Program the key into the OTP flash memory<a class="headerlink" href="#program-the-key-into-the-otp-flash-memory" title="Link to this heading"></a></h3>
 <p><strong>Note:</strong> This is a one-time, irreversible operation - the OTP (One-Time
 Programmable) Flash cannot be erased or rewritten.</p>
-<p><code class="docutils literal notranslate"><span class="pre">`Terminal1:</span> <span class="pre">minicom`</span></code></p>
+<p><strong>Terminal1: minicom</strong></p>
 <div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>

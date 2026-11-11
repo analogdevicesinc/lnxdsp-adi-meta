@@ -269,7 +269,7 @@ Content on this topic
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <p>The Boot ROM is responsible for initial start up - when the board powers on,
-the cores are brought online, and the Arm core will begin executing from the
+the cores are brought online, and the ARM core will begin executing from the
 Boot ROM.</p>
 <p>The Boot ROM will then boot the system according to the Boot Mode - set by a
 rotary switch on the carrier boards, or 3 pins on the SoC more generally. Boot
@@ -389,7 +389,7 @@ Linux Kernel to the rpmsg framework.</p></li>
 </ul>
 <section id="u-boot">
 <h3>U-Boot<a class="headerlink" href="#u-boot" title="Link to this heading"></a></h3>
-<p>U-Boot does not perform any intialisation during boot - instead, the <code class="docutils literal notranslate"><span class="pre">rproc</span></code>
+<p>U-Boot does not perform any initialisation during boot - instead, the <code class="docutils literal notranslate"><span class="pre">rproc</span></code>
 command is used after booting into the U-Boot shell. When the <code class="docutils literal notranslate"><span class="pre">rproc</span> <span class="pre">init</span></code>
 command is run, U-Boot will probe any available SHARC cores and initialise
 them. They can then be brought online by loading firmware with <code class="docutils literal notranslate"><span class="pre">rproc</span> <span class="pre">load</span>

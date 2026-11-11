@@ -339,7 +339,7 @@ be re-established.</p>
 <a class="reference internal image-reference" href="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/141642367/9e08142a-147c-4aed-8c1f-48e48a80a461"><img alt="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/141642367/9e08142a-147c-4aed-8c1f-48e48a80a461" src="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/141642367/9e08142a-147c-4aed-8c1f-48e48a80a461" width="400" />
 </a>
 <p>When the Arm processor wants to communicate via the abovementioned channel, it
-populates the shared memory region associated with the channel and triggers and
+populates the shared memory region associated with the channel and triggers an
 interrupt on the SHARC core via the TRU, notifying it about the change made.
 The SHARC core can now update its values and process the new changes
 accordingly. The inverse is also true when a SHARC core wants to communicate to
@@ -358,7 +358,7 @@ processors.</p>
 <ul class="simple">
 <li><p>The processors reads the bootrom and runs some pre-requisite tasks before each boot</p></li>
 <li><p>The processor then loads the first stage bootloader(SPL) from a fixed memory address</p></li>
-<li><p>SPL then passes the control to the second stage bootloader, or the full version of uboot in this case</p></li>
+<li><p>SPL then passes the control to the second stage bootloader, or the full version of U-Boot in this case</p></li>
 </ul>
 <a class="reference internal image-reference" href="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/141642367/5343408e-6fd5-4c8c-b539-116dd58dde1b"><img alt="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/141642367/5343408e-6fd5-4c8c-b539-116dd58dde1b" src="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/141642367/5343408e-6fd5-4c8c-b539-116dd58dde1b" width="400" />
 </a>
