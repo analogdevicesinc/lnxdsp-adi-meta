@@ -276,14 +276,12 @@ ADSP-SC598 boards.</p>
 <div class="clear-left"></div></div></div></section>
 <section id="getting-started">
 <h2>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
-<p>1) On your host/build machine, install rust via <a class="icon link reference external" href="https://www.rust-lang.org/tools/install" target="_blank">rustup</a></p>
-<ol class="arabic simple" start="2">
+<ol class="arabic simple">
+<li><p>On your host/build machine, install rust via <a class="icon link reference external" href="https://www.rust-lang.org/tools/install" target="_blank">rustup</a></p></li>
 <li><p>Clone the Linux kernel tree you wish to use. In our case, we will use the
 <a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/adsp-6.18.31-y/" target="_blank">adsp-6.18.31-y</a> branch.</p></li>
-</ol>
-<p>3) Once cloned, configure the kernel using either <code class="docutils literal notranslate"><span class="pre">ARCH=arm64</span>
-<span class="pre">CROSS_COMPILE=aarch64-linux-gnu-</span> <span class="pre">make</span> <span class="pre">menuconfig/defconfig/olddefconfig</span></code></p>
-<ol class="arabic simple" start="4">
+<li><p>Once cloned, configure the kernel using either <code class="docutils literal notranslate"><span class="pre">ARCH=arm64</span>
+<span class="pre">CROSS_COMPILE=aarch64-linux-gnu-</span> <span class="pre">make</span> <span class="pre">menuconfig/defconfig/olddefconfig</span></code></p></li>
 <li><p>Set up the rust environment:</p></li>
 </ol>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>cd linux
