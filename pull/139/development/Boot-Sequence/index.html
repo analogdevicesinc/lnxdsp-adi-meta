@@ -453,7 +453,7 @@ example usage, see the “Using Linux (remoteproc)” section in the
 </ul>
 <p>After <code class="docutils literal notranslate"><span class="pre">rproc_boot</span></code>, firmware loading begins. <code class="docutils literal notranslate"><span class="pre">adi_adsp_core&lt;core</span> <span class="pre">n&gt;_fw.ldr</span></code>
 is loaded from the initramfs by
-<a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/067afc664698941a903b0b9bbe9496154a22e49e/drivers/base/firmware_loader/main.c#L949" target="_blank">request_firmware</a> (from Linux’s generic firmware loader driver), then
+<a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/067afc664698941a903b0b9bbe9496154a22e49e/drivers/base/firmware_loader/main.c#L950" target="_blank">request_firmware</a> (from Linux’s generic firmware loader driver), then
 <a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/067afc664698941a903b0b9bbe9496154a22e49e/drivers/remoteproc/remoteproc_core.c#L1267" target="_blank">rproc_start</a> is called, passing the loaded firmware. The firmware is then
 loaded onto the core over DMA, using
 <a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/067afc664698941a903b0b9bbe9496154a22e49e/drivers/remoteproc/adi_remoteproc.c#L235" target="_blank">ldr_load</a>, as well as the resource table (which was loaded during probing).

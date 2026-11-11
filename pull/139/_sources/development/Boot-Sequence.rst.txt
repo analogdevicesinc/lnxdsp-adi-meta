@@ -180,7 +180,7 @@ In More Detail
 
 After ``rproc_boot``, firmware loading begins. ``adi_adsp_core<core n>_fw.ldr``
 is loaded from the initramfs by
-:git-linux:`request_firmware <067afc664698941a903b0b9bbe9496154a22e49e:drivers/base/firmware_loader/main.c#L949>` (from Linux's generic firmware loader driver), then
+:git-linux:`request_firmware <067afc664698941a903b0b9bbe9496154a22e49e:drivers/base/firmware_loader/main.c#L950>` (from Linux's generic firmware loader driver), then
 :git-linux:`rproc_start <067afc664698941a903b0b9bbe9496154a22e49e:drivers/remoteproc/remoteproc_core.c#L1267>` is called, passing the loaded firmware. The firmware is then
 loaded onto the core over DMA, using
 :git-linux:`ldr_load <067afc664698941a903b0b9bbe9496154a22e49e:drivers/remoteproc/adi_remoteproc.c#L235>`, as well as the resource table (which was loaded during probing).

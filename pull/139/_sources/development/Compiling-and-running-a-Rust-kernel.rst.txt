@@ -1,8 +1,8 @@
 Compiling and running a Rust kernel
 ===================================
 
-Yocto 5 onward, all supported boards have now been ported to kernel 6.12. As a
-result, it is now possible to compile the linux kernel with Rust support for
+From Yocto 5 onward, all supported boards run kernel 6.12 or later. As a
+result, it is now possible to compile the Linux kernel with Rust support for
 ADSP-SC598 boards.
 
 Requirements
