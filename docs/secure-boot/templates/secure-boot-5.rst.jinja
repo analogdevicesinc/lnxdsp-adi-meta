@@ -66,10 +66,10 @@ Build System Setup
 ------------------
 
 
-*These steps can be skipped if you have previously followed one of the Getting
+These steps can be skipped if you have previously followed one of the Getting
 Started guides, such as :doc:`Getting Started with ADSP‐SC598 (Linux for
 ADSP‐SC5xx Processors {{ version }})
-<../getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-{{ version }})>`*.
+<../getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-{{ version }})>`.
 
 Fetch and install the sources:
 
@@ -270,7 +270,7 @@ Transfer and run U-Boot on RAM
 The console output from U-Boot and later on Linux will appear on the USB serial
 port configured in minicom earlier so open up minicom.
 
-```Terminal1: minicom```
+**Terminal1: minicom**
 
 
 .. shell::
@@ -281,7 +281,7 @@ port configured in minicom earlier so open up minicom.
 In a separate console launch OpenOCD and connect to the development board.
 
 
-```Terminal2: OpenOCD```
+**Terminal2: OpenOCD**
 
 
 .. shell::
@@ -289,11 +289,11 @@ In a separate console launch OpenOCD and connect to the development board.
    $sdk_usr=/opt/adi-security/{{ version }}/sysroots/x86_64-adi_glibc_sdk-linux/usr/
    $$sdk_usr/bin/openocd -f $sdk_usr/share/openocd/scripts/interface/<ICE>.cfg -f $sdk_usr/share/openocd/scripts/target/adspsc59x_a55.cfg
 
-Where ```<ICE>```` should be replaced with ````ice1000```` or ````ice2000```
+Where ``<ICE>`` should be replaced with ``ice1000`` or ``ice2000``
 depending on your hardware. When successful you should see a message similar to
 the console output below
 
-```Terminal2: OpenOCD```
+**Terminal2: OpenOCD**
 
 
 .. code-block:: text
@@ -317,12 +317,12 @@ the console output below
    Info : Listening on port 3333 for gdb connections
 
 
-In a third console window launch GDB and type ```target extended-remote
-:3333````. This will make GDB to connect to the gdbserver on the local host
-using port 3333. Then, load the U-Boot SPL into RAM by typing ````load````. Hit
-````Ctrl+C``` to interrupt thereafter.
+In a third console window launch GDB and type ``target extended-remote
+:3333``. This will make GDB to connect to the gdbserver on the local host
+using port 3333. Then, load the U-Boot SPL into RAM by typing ``load``. Hit
+``Ctrl+C`` to interrupt thereafter.
 
-```Terminal3: GDB```
+**Terminal3: GDB**
 
 
 .. code-block:: console
@@ -352,7 +352,7 @@ using port 3333. Then, load the U-Boot SPL into RAM by typing ````load````. Hit
 You will see a message on Terminal 1 running minicom, informing you that you
 can now load U-Boot Proper
 
-```Terminal1: minicom```
+**Terminal1: minicom**
 
 
 .. code-block:: text
@@ -369,7 +369,7 @@ can now load U-Boot Proper
 
 Now, press Ctrl-C to halt SPL, and load U-Boot Proper into RAM.
 
-```Terminal3: GDB```
+**Terminal3: GDB**
 
 
 .. code-block:: console
@@ -400,7 +400,7 @@ At this point U-Boot will now be running in RAM on your target board. You
 should see U-Boot booting in the minicom console (Terminal 1). Press a key to
 interrupt the boot process before the countdown terminates:
 
-```Terminal1: minicom```
+**Terminal1: minicom**
 
 
 .. code-block:: console
@@ -435,15 +435,15 @@ Flash (Unsigned) U-Boot to SPI Flash
 
 
 In the U-Boot console, set the IP address of the Linux PC that hosts the U-Boot
-loader files (```stage1-boot.ldr````, ````stage1-boot-unsigned.ldr````,
-````stage2-boot.ldr````, ````stage2-boot-unsigned.ldr```) on TFTP.
+loader files (``stage1-boot.ldr``, ``stage1-boot-unsigned.ldr``,
+``stage2-boot.ldr``, ``stage2-boot-unsigned.ldr``) on TFTP.
 
 **Note:** We are going to use **stage1-boot-unsigned.ldr** and
 **stage2-boot-unsigned.ldr** to boot the device then burn the secure boot key.
 This is needed only for the first time secure boot key burning. For the next
 flash you should use **stage1-boot.ldr** and **stage2-boot.ldr**
 
-```Terminal1: minicom```
+**Terminal1: minicom**
 
 
 .. code-block:: console
@@ -460,7 +460,7 @@ insturctions in :doc:`Getting Started with ADSP-SC598 {{ version }}
 We will use this to program the unsigned LDR files for the first boot, and for
 programming the signed firmware files later.
 
-```Terminal1: minicom```
+**Terminal1: minicom**
 
 
 .. code-block:: console
@@ -490,7 +490,7 @@ If your network **does NOT support** DHCP, run:
    => set ipaddr <ADDR>
 
 
-Where ```<ADDR>``` is the IP address you want to assign.
+Where ``<ADDR>`` is the IP address you want to assign.
 
 Next, run the U-Boot update command to copy the U-Boot loader files from the
 host PC to the target board, and write it into flash:
@@ -587,22 +587,20 @@ If your network **supports** DHCP, run:
 
    => run update_spi
 
-<details closed>
-  <summary>If your network does NOT support DHCP</summary>
+.. collapsible:: If your network does NOT support DHCP
 
-In the U-Boot console configure the board IP address and remove "run
-init*ethernet;" from the "start*update_spi" command.
+   In the U-Boot console configure the board IP address and remove ``run
+   init_ethernet;`` from the ``start_update_spi`` command.
 
-.. code-block:: console
+   .. code-block:: console
 
-   => setenv ipaddr <IPADDR>
-   => edit start_update_spi
-   => edit: <remove "run init_ethernet;" from here> sf probe ${sfdev}; sf erase 0 ${sfsize}; run update_spi_uboot; run update_spi_fit; run update_spi_rfs; sleep 3; saveenv
+      => setenv ipaddr <IPADDR>
+      => edit start_update_spi
+      => edit: <remove "run init_ethernet;" from here> sf probe ${sfdev}; sf erase 0 ${sfsize}; run update_spi_uboot; run update_spi_fit; run update_spi_rfs; sleep 3; saveenv
 
 
-After editing ```start*update*spi````, proceed to running as ````update_spi```,
-as above.
-</details>
+   After editing ``start_update_spi``, proceed to running as ``update_spi``,
+   as above.
 
 You should see output similar to the following.
 
@@ -1001,7 +999,7 @@ Program the key into the OTP flash memory
 **Note:** This is a one-time, irreversible operation - the OTP (One-Time
 Programmable) Flash cannot be erased or rewritten.
 
-```Terminal1: minicom```
+**Terminal1: minicom**
 
 
 .. shell::

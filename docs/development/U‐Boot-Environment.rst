@@ -10,7 +10,7 @@ environment.
 About the Environment
 ---------------------
 
-The U-Boot envionrment is a text-based key-value store within U-Boot,
+The U-Boot environment is a text-based key-value store within U-Boot,
 used to store information such as board-specific commands, run-time
 configuration options, network information and settings, filesystem
 settings and more.
@@ -47,7 +47,7 @@ The basic commands are:
 -  ``env print [name]`` (alias ``printenv``) - print value ``name``, or
    the whole environment if ``name`` is not present.
 
--  ``env default (-a | name ...)`` - set one of more values specified by
+-  ``env default (-a | name ...)`` - set one or more values specified by
    ``name`` to their default values, or reset the entire environment if
    ``-a`` specified.
 
