@@ -17,7 +17,7 @@ PCs) as an audio card.
 Hardware Configuration
 ----------------------
 
-Connect the USB micro-B plug cable into the USB HS/OTG Device port, as showing
+Connect the USB micro-B plug cable into the USB HS/OTG Device port, as shown
 below:
 
 .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/1c72a9cf-90e9-42eb-a5f5-ac0ffc7dc4af

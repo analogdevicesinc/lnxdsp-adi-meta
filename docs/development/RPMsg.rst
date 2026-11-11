@@ -87,7 +87,7 @@ be re-established.
    :width: 400
 
 When the Arm processor wants to communicate via the abovementioned channel, it
-populates the shared memory region associated with the channel and triggers and
+populates the shared memory region associated with the channel and triggers an
 interrupt on the SHARC core via the TRU, notifying it about the change made.
 The SHARC core can now update its values and process the new changes
 accordingly. The inverse is also true when a SHARC core wants to communicate to
@@ -109,7 +109,7 @@ When a board is powered up, the following takes place:
 
 * The processors reads the bootrom and runs some pre-requisite tasks before each boot
 * The processor then loads the first stage bootloader(SPL) from a fixed memory address
-* SPL then passes the control to the second stage bootloader, or the full version of uboot in this case
+* SPL then passes the control to the second stage bootloader, or the full version of U-Boot in this case
 
 .. image:: https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/141642367/5343408e-6fd5-4c8c-b539-116dd58dde1b
    :width: 400
