@@ -1,4 +1,4 @@
-From 854a34ca9e9b7551448d73f9b6678ad4934ea35e Mon Sep 17 00:00:00 2001
+From ec751d9f5a03d90783088ae1d08b38217ce65fb5 Mon Sep 17 00:00:00 2001
 From: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
 Date: Wed, 20 Aug 2025 17:35:38 +0100
 Subject: [PATCH] SC598 Enable SHARC ALSA demo disabling most linux
@@ -16,11 +16,11 @@ so Linux and the SHARC don't use TWI2 at the same time.
 Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
 ---
  arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi | 18 ++++++++--
- arch/arm64/boot/dts/adi/sc598-som.dtsi       | 10 +++---
+ arch/arm64/boot/dts/adi/sc598-som.dtsi       | 14 ++++----
  arch/arm64/boot/dts/adi/sc59x-64.dtsi        |  2 +-
  arch/arm64/configs/sc598-som-ezkit_defconfig |  3 ++
  drivers/soc/adi/mach-sc5xx/sec.c             | 38 +-------------------
- 5 files changed, 26 insertions(+), 45 deletions(-)
+ 5 files changed, 28 insertions(+), 47 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi
 index a07db3545c78..f735e3429b70 100644
@@ -83,7 +83,7 @@ index a07db3545c78..f735e3429b70 100644
  	sru_dai1: sru_dai1_mux {
  		route {
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index bcfa30df4694..8154a7571f02 100644
+index b338d4394a31..fdfd59514506 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
 @@ -28,10 +28,10 @@ memory@90000000 {
@@ -110,6 +110,24 @@ index bcfa30df4694..8154a7571f02 100644
  			compatible = "simple-bus";
  
  			#address-cells = <2>;
+@@ -94,7 +94,7 @@ sharc@0 {
+ 				      <0x0 0x20000000 0x00200000>;
+ 				reg-names = "l1", "l2";
+ 				core-id = <1>;
+-				firmware-name = "adi/icap_device_example_sharc_core1.ldr";
++				firmware-name = "adi/icap_sharc_alsa_core1.ldr";
+ 				interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
+ 				adi,svect = <&rcu 0x30>;
+ 				resets = <&rcu 1 0>, <&rcu 1 1>;
+@@ -111,7 +111,7 @@ sharc@1 {
+ 				      <0x1 0x20000000 0x00200000>;
+ 				reg-names = "l1", "l2";
+ 				core-id = <2>;
+-				firmware-name = "adi/rpmsg_echo_sharc_core2.ldr";
++				firmware-name = "adi/icap_sharc_alsa_core2.ldr";
+ 				interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
+ 				adi,svect = <&rcu 0x34>;
+ 				resets = <&rcu 2 0>, <&rcu 2 1>;
 diff --git a/arch/arm64/boot/dts/adi/sc59x-64.dtsi b/arch/arm64/boot/dts/adi/sc59x-64.dtsi
 index b88429d3b196..93ed9a0e59b7 100644
 --- a/arch/arm64/boot/dts/adi/sc59x-64.dtsi
