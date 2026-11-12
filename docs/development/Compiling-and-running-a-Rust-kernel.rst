@@ -130,7 +130,7 @@ Proceed to boot into the fitImage from your preferred boot method. Once in, you 
    [    1.467785] virtio_rpmsg_bus virtio1: creating channel sharc-echo-cap addr 0xa2
    [    1.475113] virtio_rpmsg_bus virtio1: rpmsg host is online
    [    1.480488] rproc-virtio rproc-virtio.1.auto: registered virtio1 (type 7)
-   [    1.487253] remoteproc remoteproc1: remote processor core2-rproc is now up
+   [    1.487253] remoteproc remoteproc1: remote processor sharc is now up
    [    1.802327] rust_minimal: Rust minimal sample (init)
    [    1.807237] rust_minimal: Am I built-in? true
    [    1.811804] NET: Registered PF_PACKET protocol family

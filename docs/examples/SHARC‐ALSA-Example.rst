@@ -36,25 +36,25 @@ Programming the SHARC
 Using Linux (remoteproc)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-An example SHARC image is present in the ``/lib/firmware`` directory on the target. The SHARC can be programmed with this image using the Linux shell. The SHARCs are running already when Linux has booted, so you can stop them, reload the example image or your own one, and start them again
+An example SHARC image is present in the ``/lib/firmware`` directory on the target. The SHARC can be programmed with this image using the Linux shell. The SHARCs are running already when Linux has booted, with remoteproc having loaded ``/lib/firmware/adi/icap_sharc_alsa_core<n>.ldr``, so you can stop them, reload the example image or your own one, and start them again
 
 .. code-block:: shell
 
    $ cd /lib/firmware
 
    $ echo stop > /sys/class/remoteproc/remoteproc0/state
-   ADI Reset Control Unit 3108b000.rcu: Timeout waiting for remote core 1 to IDLE!
-   remoteproc remoteproc0: stopped remote processor core1-rproc
+   ADI Reset Control Unit 3108c000.rcu: Timeout waiting for remote core 1 to IDLE!
+   remoteproc remoteproc0: stopped remote processor sharc
 
    $ echo icap-sharc-alsa_Core1.ldr  > /sys/class/remoteproc/remoteproc0/firmware
 
    $ echo start > /sys/class/remoteproc/remoteproc0/state
-   remoteproc remoteproc0: powering up core1-rproc
-   remoteproc remoteproc0: Booting fw image adi_adsp_core1_fw.ldr, size 132860
-   adi_remoteproc 28240000.core1-rproc: Core1 rpmsg init timeout, probably not supported.
+   remoteproc remoteproc0: powering up sharc
+   remoteproc remoteproc0: Booting fw image icap-sharc-alsa_Core1.ldr, size 132860
+   adi_remoteproc 28240000.sharc: Core1 rpmsg init timeout, probably not supported.
    virtio_rpmsg_bus virtio0: rpmsg host is online
-    remoteproc0#vdev0buffer: registered virtio0 (type 7)
-   remoteproc remoteproc0: remote processor core1-rproc is now up
+   rproc-virtio rproc-virtio.0.auto: registered virtio0 (type 7)
+   remoteproc remoteproc0: remote processor sharc is now up
 
 When executing the ``echo start`` command you will notice the LEDs on the SOMCRR-EZKIT flashing and then settle on LED7 remaining on. This indicates that the image on the SHARC is running.
 
