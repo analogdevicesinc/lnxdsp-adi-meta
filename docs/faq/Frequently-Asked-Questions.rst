@@ -178,11 +178,18 @@ Point U-Boot and Linux kernel recipes to your custom repositories by adding
    # Add to build/conf/auto.conf
    UBOOT_GIT_URI = "git://$YOUR_REPO_PATH/u-boot.git"
    UBOOT_BRANCH = "main"
+   SRCREV:pn-u-boot-adi = "${AUTOREV}"
    KERNEL_GIT_URI = "git://$YOUR_REPO_PATH/linux.git"
    KERNEL_BRANCH = "main"
+   SRCREV:pn-linux-adi = "${AUTOREV}"
 
 Replace ``$YOUR_REPO_PATH`` with your repository locations and adjust branch
 names as needed.
+
+The recipes pin ``SRCREV`` to a specific commit, so setting only the branch
+still fetches that commit. ``${AUTOREV}`` builds the latest commit on your
+branch. To build a fixed commit instead, set ``SRCREV:pn-u-boot-adi`` and
+``SRCREV:pn-linux-adi`` to that commit hash.
 
 Step 4: Build with Custom Repositories
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
