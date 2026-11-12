@@ -20,7 +20,7 @@ LINUX_VERSION = "6.18.31"
 PV = "${LINUX_VERSION}+git"
 KERNEL_BRANCH = "adsp-${LINUX_VERSION}-y"
 
-SRCREV = "067afc664698941a903b0b9bbe9496154a22e49e"
+SRCREV = "8ac23d848dfabf6a6e037667c6e3a806472edf5c"
 
 
 SRC_URI:append:adsp-sc594-som-ezkit = " file://feature/cfg/snd_ezkit.scc"
