@@ -156,7 +156,8 @@ Overview
 After the system has booted the kernel and mounted the initramfs, the
 remoteproc driver is initialised. It first probes the cores, before loading
 default firmware (located in ``/lib/firmware``, both in the initramfs and in
-the normal root filesystem), normally ``adi_adsp_core<n>_fw.ldr``.
+the normal root filesystem), set by each core's ``firmware-name`` device tree
+property. By default this is ``adi/rpmsg_echo_sharc_core<n>.ldr``.
 
 The rpmsg interface is then brought online to enable communication with the
 cores, creating a communication channel for each core.
@@ -178,7 +179,7 @@ In More Detail
     - If this succeeds, ``<device name> is available`` is printed.
     - Finally, :git-linux:`rproc_boot <c3bf4954513f70b2d780354ad3a5dbfa744f543f:drivers/remoteproc/remoteproc_core.c#L1909>` is triggered, and the core is powered up.
 
-After ``rproc_boot``, firmware loading begins. ``adi_adsp_core<core n>_fw.ldr``
+After ``rproc_boot``, firmware loading begins. ``adi/rpmsg_echo_sharc_core<core n>.ldr``
 is loaded from the initramfs by
 :git-linux:`request_firmware <c3bf4954513f70b2d780354ad3a5dbfa744f543f:drivers/base/firmware_loader/main.c#L950>` (from Linux's generic firmware loader driver), then
 :git-linux:`rproc_start <c3bf4954513f70b2d780354ad3a5dbfa744f543f:drivers/remoteproc/remoteproc_core.c#L1267>` is called, passing the loaded firmware. The firmware is then

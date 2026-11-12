@@ -34,7 +34,7 @@ Type the following into the target board:
 .. shell::
 
    $ls /dev/snd/
-    by-path  controlC0  controlC1  pcmC0D0c  pcmC0D0p  pcmC1D0c  pcmC1D0p  timer
+    by-path  controlC0  controlC1  pcmC0D0p  pcmC0D1c  pcmC1D0c  pcmC1D0p  timer
    $modprobe g_audio c_srate=48000
     g_audio gadget: Linux USB Audio Gadget, version: Feb 2, 2012
     g_audio gadget: g_audio ready
@@ -46,7 +46,7 @@ the EZ-KIT board:
 
    $arecord -l
     **** List of CAPTURE Hardware Devices ****
-    card 0: sc5xxasoccard [sc5xx-asoc-card], device 0: adau1761 adau-hifi-0 []
+    card 0: sound [sound], device 1: HSPORT-B-adau-hifi adau-hifi-1 []
       Subdevices: 1/1
       Subdevice #0: subdevice #0
     card 1: UAC2Gadget [UAC2_Gadget], device 0: UAC2 PCM [UAC2 PCM]
@@ -54,7 +54,7 @@ the EZ-KIT board:
       Subdevice #0: subdevice #0
    $aplay -l
     **** List of PLAYBACK Hardware Devices ****
-    card 0: sc5xxasoccard [sc5xx-asoc-card], device 0: adau1761 adau-hifi-0 []
+    card 0: sound [sound], device 0: HSPORT-A-adau-hifi adau-hifi-0 []
       Subdevices: 1/1
       Subdevice #0: subdevice #0
     card 1: UAC2Gadget [UAC2_Gadget], device 0: UAC2 PCM [UAC2 PCM]
@@ -63,7 +63,7 @@ the EZ-KIT board:
 
 Record audio data from the new generated UAC2 sound card (arecord ``card 1``,
 ``device 0``) and play the recorded data via normal playback device (aplay
-``card 0``, ``device 1``)
+``card 0``, ``device 0``)
 
 .. shell::
 
