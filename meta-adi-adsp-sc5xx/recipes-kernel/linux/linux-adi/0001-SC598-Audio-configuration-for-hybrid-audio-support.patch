@@ -1,4 +1,4 @@
-From e28c54482516ea2b560494ab04c0b925c6f8988c Mon Sep 17 00:00:00 2001
+From a27b6f384f0f3bf9dd82a9798ecafa50dd703804 Mon Sep 17 00:00:00 2001
 From: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
 Date: Tue, 20 May 2025 13:53:51 +0100
 Subject: [PATCH] SC598 Audio configuration for hybrid audio support
@@ -7,12 +7,12 @@ Upstream-Status: Inappropriate [embedded specific]
 
 Signed-off-by: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
 ---
- arch/arm64/boot/dts/adi/sc598-som.dtsi | 23 +++++++++++++-------
+ arch/arm64/boot/dts/adi/sc598-som.dtsi | 25 ++++++++++++++--------
  arch/arm64/boot/dts/adi/sc59x-64.dtsi  | 29 +++++++++++++++++++++++++-
- 2 files changed, 43 insertions(+), 9 deletions(-)
+ 2 files changed, 44 insertions(+), 10 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index cc3b27f7f3b1..67a46386d54b 100644
+index cc3b27f7f3b1..3d63dab9c867 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
 @@ -34,10 +34,10 @@ memory@20040000 {
@@ -50,6 +50,15 @@ index cc3b27f7f3b1..67a46386d54b 100644
  	scb {
  		remoteproc { // XXX find a better name than "remoteproc"
  			compatible = "simple-bus";
+@@ -91,7 +94,7 @@ sharc@0 {
+ 				      <0x0 0x20000000 0x00200000>;
+ 				reg-names = "l1", "l2";
+ 				core-id = <1>;
+-				firmware-name = "adi/rpmsg_echo_sharc_core1.ldr";
++				firmware-name = "adi/icap_device_example_sharc_core1.ldr";
+ 				interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
+ 				adi,svect = <&rcu 0x30>;
+ 				resets = <&rcu 1 0>, <&rcu 1 1>;
 @@ -223,6 +226,10 @@ &usb0 {
  	status = "okay";
  };

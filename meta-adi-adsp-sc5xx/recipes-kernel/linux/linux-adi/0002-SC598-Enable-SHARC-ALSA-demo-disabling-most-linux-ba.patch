@@ -1,4 +1,4 @@
-From 2e0808df027a9c6e4ed6761e2edd3bb136560b78 Mon Sep 17 00:00:00 2001
+From 0bfe276fd16fdb84fdc16a94ad0826cde9cfa694 Mon Sep 17 00:00:00 2001
 From: Arturs Artamonovs <Arturs.Artamonovs@analog.com>
 Date: Wed, 20 Aug 2025 17:35:38 +0100
 Subject: [PATCH] SC598 Enable SHARC ALSA demo disabling most linux
@@ -6,11 +6,11 @@ Subject: [PATCH] SC598 Enable SHARC ALSA demo disabling most linux
 Upstream-Status: Inappropriate [configuration]
 ---
  arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi |  5 +--
- arch/arm64/boot/dts/adi/sc598-som.dtsi       | 10 +++---
+ arch/arm64/boot/dts/adi/sc598-som.dtsi       | 14 ++++----
  arch/arm64/boot/dts/adi/sc59x-64.dtsi        |  2 +-
  arch/arm64/configs/sc598-som-ezkit_defconfig |  3 ++
  drivers/soc/adi/mach-sc5xx/sec.c             | 38 +-------------------
- 5 files changed, 13 insertions(+), 45 deletions(-)
+ 5 files changed, 15 insertions(+), 47 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi b/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtsi
 index a07db3545c78..62028ebe1525 100644
@@ -39,7 +39,7 @@ index a07db3545c78..62028ebe1525 100644
  	sru_dai1: sru_dai1_mux {
  		route {
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index 67a46386d54b..f18f6f8e92d0 100644
+index 3d63dab9c867..df29a35872aa 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
 @@ -28,10 +28,10 @@ memory@90000000 {
@@ -57,6 +57,24 @@ index 67a46386d54b..f18f6f8e92d0 100644
  
  	reserved-memory {
  		//sram1_res: sram1-reserved@20040000 {
+@@ -94,7 +94,7 @@ sharc@0 {
+ 				      <0x0 0x20000000 0x00200000>;
+ 				reg-names = "l1", "l2";
+ 				core-id = <1>;
+-				firmware-name = "adi/icap_device_example_sharc_core1.ldr";
++				firmware-name = "adi/icap_sharc_alsa_core1.ldr";
+ 				interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
+ 				adi,svect = <&rcu 0x30>;
+ 				resets = <&rcu 1 0>, <&rcu 1 1>;
+@@ -111,7 +111,7 @@ sharc@1 {
+ 				      <0x1 0x20000000 0x00200000>;
+ 				reg-names = "l1", "l2";
+ 				core-id = <2>;
+-				firmware-name = "adi/rpmsg_echo_sharc_core2.ldr";
++				firmware-name = "adi/icap_sharc_alsa_core2.ldr";
+ 				interrupts = <GIC_SPI 337 IRQ_TYPE_EDGE_RISING>; /* TRU0_SLV3 */
+ 				adi,svect = <&rcu 0x34>;
+ 				resets = <&rcu 2 0>, <&rcu 2 1>;
 @@ -202,7 +202,7 @@ &spi2 {
  };
  

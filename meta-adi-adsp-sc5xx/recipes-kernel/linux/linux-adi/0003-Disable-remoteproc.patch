@@ -1,4 +1,4 @@
-From 29dc44b527c5d0a68c7f962dd7776725b40235a9 Mon Sep 17 00:00:00 2001
+From e10d44f1da4e37659e0c529c4c2eb01c5f6c47ab Mon Sep 17 00:00:00 2001
 From: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
 Date: Thu, 13 Aug 2026 08:38:36 -0400
 Subject: [PATCH] Disable remoteproc
@@ -9,7 +9,7 @@ Upstream-Status: Inappropriate [configuration]
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/adi/sc598-som.dtsi b/arch/arm64/boot/dts/adi/sc598-som.dtsi
-index f18f6f8e92d0..b672b66003ba 100644
+index df29a35872aa..2098f92cdc26 100644
 --- a/arch/arm64/boot/dts/adi/sc598-som.dtsi
 +++ b/arch/arm64/boot/dts/adi/sc598-som.dtsi
 @@ -102,7 +102,7 @@ sharc@0 {
