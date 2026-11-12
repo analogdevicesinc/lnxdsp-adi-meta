@@ -23,11 +23,9 @@ KERNEL_BRANCH = "adsp-${LINUX_VERSION}-y"
 SRCREV = "8ac23d848dfabf6a6e037667c6e3a806472edf5c"
 
 
-SRC_URI:append:adsp-sc594-som-ezkit = " file://feature/cfg/snd_ezkit.scc"
 SRC_URI:append:adsp-sc589-ezkit = " file://feature/cfg/snd_ezkit.scc"
 SRC_URI:append:adsp-sc584-ezkit = " file://feature/cfg/snd_ezkit.scc"
 SRC_URI:append:adsp-sc573-ezlite = " file://feature/cfg/snd_ezkit.scc"
-SRC_URI:append:adsp-sc589-mini = " file://feature/cfg/snd_mini.scc"
 
 SRC_URI:append:adsp-sc598-som-ezkit = " file://feature/cfg/pkte.cfg"
 SRC_URI:append:adsp-sc598-som-ezkit = ' file://0001-SC598-fix-stmmac-dma-split-header-crash.patch'
