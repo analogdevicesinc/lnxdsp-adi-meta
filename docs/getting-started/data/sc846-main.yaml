@@ -13,7 +13,7 @@ som_revision: true
 som_revision_default: SOM Rev A with an EZkit Carrier
 sdk_machine_note: true
 has_qspi_boot: true
-has_emmc_boot: false
+has_emmc_boot: true
 has_sdcard_boot: false
 has_usb_boot: false
 s9x_usb: false

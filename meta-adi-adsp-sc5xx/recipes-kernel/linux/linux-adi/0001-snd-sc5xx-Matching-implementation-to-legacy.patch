@@ -1,4 +1,4 @@
-From 01af7af0afe3004d5eda5644dffd791c871ba1bf Mon Sep 17 00:00:00 2001
+From d7652377320ea473ac43adf13db4296cdd1d7ae9 Mon Sep 17 00:00:00 2001
 From: UtsavAgarwalADI <utsav.agarwal@analog.com>
 Date: Mon, 4 Aug 2025 12:21:34 +0100
 Subject: [PATCH] snd: sc5xx: Matching implementation to legacy
@@ -19,14 +19,14 @@ temporarily being reverted to its legacy implementation.
 
 Signed-off-by: UtsavAgarwalADI <utsav.agarwal@analog.com>
 ---
- sound/soc/adi/sc5xx-asoc-card.c | 6 +-----
- sound/soc/adi/sc5xx-sport.c     | 1 +
+ sound/soc/adi/legacy/sc5xx-asoc-card.c | 6 +-----
+ sound/soc/adi/legacy/sc5xx-sport.c     | 1 +
  2 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/adi/sc5xx-asoc-card.c b/sound/soc/adi/sc5xx-asoc-card.c
-index 40b13e296dca..520676678bf5 100644
---- a/sound/soc/adi/sc5xx-asoc-card.c
-+++ b/sound/soc/adi/sc5xx-asoc-card.c
+diff --git a/sound/soc/adi/legacy/sc5xx-asoc-card.c b/sound/soc/adi/legacy/sc5xx-asoc-card.c
+index 4f4eb25a6293..a0eea0cbe108 100644
+--- a/sound/soc/adi/legacy/sc5xx-asoc-card.c
++++ b/sound/soc/adi/legacy/sc5xx-asoc-card.c
 @@ -358,7 +358,6 @@ static int __maybe_unused sc5xx_adau1979_init(struct snd_soc_pcm_runtime *rtd)
  			ADAU1977_SYSCLK_SRC_MCLK, 24576000, SND_SOC_CLOCK_IN);
  }
@@ -67,10 +67,10 @@ index 40b13e296dca..520676678bf5 100644
  	},
  };
  #endif
-diff --git a/sound/soc/adi/sc5xx-sport.c b/sound/soc/adi/sc5xx-sport.c
+diff --git a/sound/soc/adi/legacy/sc5xx-sport.c b/sound/soc/adi/legacy/sc5xx-sport.c
 index e843b9387cc4..51c9c0d0f2ec 100644
---- a/sound/soc/adi/sc5xx-sport.c
-+++ b/sound/soc/adi/sc5xx-sport.c
+--- a/sound/soc/adi/legacy/sc5xx-sport.c
++++ b/sound/soc/adi/legacy/sc5xx-sport.c
 @@ -306,6 +306,7 @@ struct sport_device *sport_create(struct platform_device *pdev)
  	if (ret)
  		goto err_free_data;
@@ -79,3 +79,6 @@ index e843b9387cc4..51c9c0d0f2ec 100644
  	return sport;
  
  err_free_data:
+-- 
+2.34.1
+

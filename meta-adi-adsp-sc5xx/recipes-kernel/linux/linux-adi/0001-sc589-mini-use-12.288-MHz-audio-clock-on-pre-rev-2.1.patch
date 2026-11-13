@@ -1,0 +1,36 @@
+From 2688f470d3a59fda373bc359e95c9ccdbeae1ce5 Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Thu, 12 Nov 2026 13:09:52 -0500
+Subject: [PATCH] sc589-mini: use 12.288 MHz audio clock on pre-rev-2.1 boards
+
+Upstream-Status: Inappropriate [embedded specific]
+
+The sc589-mini device tree describes the 24.576 MHz ADAU1761 MCLK
+fitted from board revision 2.1 onwards. Earlier revisions are fitted
+with a 12.288 MHz MCLK, so describe that instead when building for them.
+
+Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
+---
+ arch/arm/boot/dts/adi/sc589-mini.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/boot/dts/adi/sc589-mini.dts b/arch/arm/boot/dts/adi/sc589-mini.dts
+index cbc6240c8d9f..3ee6b3a0d516 100644
+--- a/arch/arm/boot/dts/adi/sc589-mini.dts
++++ b/arch/arm/boot/dts/adi/sc589-mini.dts
+@@ -22,10 +22,10 @@ / {
+ 	aliases {
+ 	};
+ 
+-	audio_clk: clock-24576000 {
++	audio_clk: clock-12288000 {
+ 		compatible = "fixed-clock";
+ 		#clock-cells = <0>;
+-		clock-frequency = <24576000>;
++		clock-frequency = <12288000>;
+ 		clock-output-names = "audio_clk";
+ 	};
+ 
+-- 
+2.34.1
+

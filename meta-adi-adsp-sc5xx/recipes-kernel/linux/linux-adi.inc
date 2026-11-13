@@ -12,9 +12,10 @@ LNX_SOM_FILE = ""
 LNX_SOM_FILE:adsp-sc598-som-ezkit = "file://0001-sc598-som-Adding-support-for-revision-D.patch"
 LNX_SOM = "${@bb.utils.contains('SOM_REV', 'D', '${LNX_SOM_FILE}', '', d)}"
 
+# The device tree describes the MCLK fitted from sc589-mini rev 2.1 onwards
 LNX_BRD_FILE = ""
-LNX_BRD_FILE:adsp-sc589-mini = "file://0001-mclk-rev2.1-sc5xx-asoc-card.patch"
-LNX_BRD = "${@bb.utils.contains('BRD_REV', '2.1', '${LNX_BRD_FILE}', '', d)}"
+LNX_BRD_FILE:adsp-sc589-mini = "file://0001-sc589-mini-use-12.288-MHz-audio-clock-on-pre-rev-2.1.patch"
+LNX_BRD = "${@bb.utils.contains('BRD_REV', '2.1', '', '${LNX_BRD_FILE}', d)}"
 
 SRC_URI += " \
 	${KERNEL_GIT_URI};protocol=${KERNEL_GIT_PROTOCOL};branch=${KERNEL_BRANCH} \
