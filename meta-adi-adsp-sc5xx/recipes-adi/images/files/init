@@ -92,10 +92,9 @@ esac
 echo
 echo "======== Emmc Installer ========"
 
-# Check if machine supports eMMC programming (only SC598 platforms)
 MACHINE_MODEL=$(cat /proc/device-tree/model 2>/dev/null | tr -d '\0' || echo "unknown")
 case "$MACHINE_MODEL" in
-  *"SC598"*)
+  *"SC598"*|*"SC84X"*)
     echo "Install U-Boot to EMMC"
     echo
     echo "This will erase and program EMMC."
@@ -141,7 +140,7 @@ case "$MACHINE_MODEL" in
     esac
     ;;
   *)
-    echo "eMMC programming is only supported on adsp-sc598-som-ezkit and adsp-sc598-som-ezlite machines."
+    echo "eMMC programming is only supported on adsp-sc598-som-ezkit, adsp-sc598-som-ezlite and adsp-sc846-som-ezkit machines."
     echo "Current machine: $MACHINE_MODEL"
     echo "Skipping eMMC installer."
     ;;
