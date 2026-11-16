@@ -75,7 +75,7 @@ Using U-Boot (rproc)
 An example SHARC image is present within this repository. The SHARC can be
 programmed with this image via U-Boot. You need to store
 ``icap-sharc-alsa_Core1.ldr`` & ``icap-sharc-alsa_Core2.ldr`` (or your own
-image/images) in the TFTP server as demonstrated in `Setting Up Your Host PC: Configure TFTP Service <../getting-started/Setting-Up-Your-Host-PC>`. Copy
+image/images) in the TFTP server as demonstrated in `Setting Up Your Host PC: Configure TFTP Service <../getting-started/Setting-Up-Your-Host-PC>`_. Copy
 these using the following command, executed from your build folder:
 
 .. shell::
