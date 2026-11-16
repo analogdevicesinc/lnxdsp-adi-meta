@@ -3,7 +3,8 @@ Test Report (5.1.0)
 
 .. note::
 
-   This test report applies to version 5.1.x. Any regressions specific to a .x release will be explicitly noted
+   This test report applies to version 5.1.x. Any regressions specific to a .x
+   release will be explicitly noted
 
 .. list-table:: Test Results
    :header-rows: 1

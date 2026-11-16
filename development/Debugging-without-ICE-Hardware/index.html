@@ -8,8 +8,8 @@
 
     <title>Debugging without ICE Hardware &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8e8a900e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=a3ee7af8" />
-    <script async="async" src="../../_static/app.umd.js?v=048c1170"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=07ad7716" />
+    <script async="async" src="../../_static/app.umd.js?v=2fe15c61"></script>
     <link rel="icon" href="../../_static/icon.svg"/>
     <link rel="index" title="Index" href="../../genindex/" />
     <link rel="search" title="Search" href="../../search/" />
@@ -266,15 +266,19 @@ Content on this topic
 <h1>Debugging without ICE Hardware<a class="headerlink" href="#debugging-without-ice-hardware" title="Link to this heading"></a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
-<p>If a dedicated ICE debugger is not available, it is still possible to load firmware into memory using the USB Debug Agent port available on some carrier boards.</p>
+<p>If a dedicated ICE debugger is not available, it is still possible to load
+firmware into memory using the USB Debug Agent port available on some carrier
+boards.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Although possible, it is always recommended to use a dedicated ICE-1000/2000 debugger for faster and more flexible debugging.</p>
+<p>Although possible, it is always recommended to use a dedicated ICE-1000/2000
+debugger for faster and more flexible debugging.</p>
 </div>
 </section>
 <section id="limitations">
 <h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading"></a></h2>
-<p>The following regularly used OpenOCD feature set may not work as intended or have undefined behaviours when using the USB Debug Agent:</p>
+<p>The following regularly used OpenOCD feature set may not work as intended or
+have undefined behaviours when using the USB Debug Agent:</p>
 <ul class="simple">
 <li><p>Flashing QSPI</p></li>
 <li><p>Hard reset</p></li>
@@ -291,8 +295,8 @@ Content on this topic
 <h3>Step 2: Configure JTAG Interface Switches<a class="headerlink" href="#step-2-configure-jtag-interface-switches" title="Link to this heading"></a></h3>
 <p>Set all JTAG interface switches to the required configuration:</p>
 <ul class="simple">
-<li><p><strong>SOMCRR-EZKIT</strong>: SW1 (all ON) - <a class="icon link reference external" href="https://www.analog.com/media/en/technical-documentation/user-guides/ev-somcrr-ezkit-manual.pdf" target="_blank">See EV-SOMCRR-EZKIT Manual, Table 3-5</a></p></li>
-<li><p><strong>SOMCRR-EZLITE</strong>: S4 (1-6 ON, 7-8 OFF) - <a class="icon link reference external" href="https://www.analog.com/media/en/technical-documentation/user-guides/ev-somcrr-ezlite_manual.pdf" target="_blank">See EV-SOMCRR-EZLITE Manual, Table 3-3</a></p></li>
+<li><p><strong>SOMCRR-EZKIT</strong>: SW1 (all ON) - <a class="icon adi reference external" href="https://www.analog.com/media/en/technical-documentation/user-guides/ev-somcrr-ezkit-manual.pdf" target="_blank">See EV-SOMCRR-EZKIT Manual, Table 3-5</a></p></li>
+<li><p><strong>SOMCRR-EZLITE</strong>: S4 (1-6 ON, 7-8 OFF) - <a class="icon adi reference external" href="https://www.analog.com/media/en/technical-documentation/user-guides/ev-somcrr-ezlite_manual.pdf" target="_blank">See EV-SOMCRR-EZLITE Manual, Table 3-3</a></p></li>
 </ul>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -306,10 +310,16 @@ Content on this topic
 <section id="step-4-start-openocd">
 <h3>Step 4: Start OpenOCD<a class="headerlink" href="#step-4-start-openocd" title="Link to this heading"></a></h3>
 <p>Start OpenOCD with the <code class="docutils literal notranslate"><span class="pre">adi-debugagent</span></code> interface:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">$sdk_usr</span>/bin/openocd<span class="w"> </span>-f<span class="w"> </span><span class="nv">$sdk_usr</span>/share/openocd/scripts/interface/adi-dbgagent.cfg<span class="w"> </span>-f<span class="w"> </span><span class="nv">$sdk_usr</span>/share/openocd/scripts/board/ev-sc598-som.cfg<span class="w"> </span>-c<span class="w"> </span>init<span class="w"> </span>-c<span class="w"> </span>reset<span class="w"> </span>-c<span class="w"> </span>halt
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p>Where <code class="docutils literal notranslate"><span class="pre">sdk_usr</span></code> is the SDK installation’s <code class="docutils literal notranslate"><span class="pre">usr</span></code> directory, for example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">$sdk_usr</span>/bin/openocd<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-f<span class="w"> </span><span class="nv">$sdk_usr</span>/share/openocd/scripts/interface/adi-dbgagent.cfg<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-f<span class="w"> </span><span class="nv">$sdk_usr</span>/share/openocd/scripts/board/ev-sc598-som.cfg<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-c<span class="w"> </span>init<span class="w"> </span>-c<span class="w"> </span>reset<span class="w"> </span>-c<span class="w"> </span>halt
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>Where <code class="docutils literal notranslate"><span class="pre">sdk_usr</span></code> is the SDK installation’s <code class="docutils literal notranslate"><span class="pre">usr</span></code> directory, for example:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>/opt/adi-distro-glibc/5.0.1/sysroots/x86_64-adi_glibc_sdk-linux/usr/
 </pre></div>
 </div>
@@ -321,16 +331,20 @@ Content on this topic
 <section id="step-5-connect-gdb-to-openocd">
 <h3>Step 5: Connect GDB to OpenOCD<a class="headerlink" href="#step-5-connect-gdb-to-openocd" title="Link to this heading"></a></h3>
 <p>In a separate terminal, connect GDB to OpenOCD:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">$sdk_usr</span>/bin/aarch64-adi_glibc-linux/aarch64-adi_glibc-linux-gdb<span class="w"> </span>-ex<span class="w"> </span><span class="s2">"tar ext :3333"</span>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-</section>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">$sdk_usr</span>/bin/aarch64-adi_glibc-linux/aarch64-adi_glibc-linux-gdb<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>-ex<span class="w"> </span><span class="s2">"tar ext :3333"</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div></section>
 </section>
 <section id="loading-firmware">
 <h2>Loading Firmware<a class="headerlink" href="#loading-firmware" title="Link to this heading"></a></h2>
 <p>Once connected, load the firmware using GDB:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>load<span class="w"> </span>u-boot-proper-sc598-som-ezkit.elf
-<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>c
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">load u-boot-proper-sc598-som-ezkit.elf</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">c</span>
 </pre></div>
 </div>
 <p>The firmware will be loaded into memory and execution will begin.</p>
@@ -338,7 +352,7 @@ Content on this topic
 <section id="soft-reset-via-rcu">
 <h2>Soft Reset via RCU<a class="headerlink" href="#soft-reset-via-rcu" title="Link to this heading"></a></h2>
 <p>To perform a soft reset through the Reset Control Unit (RCU):</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span>*0x3108C000<span class="o">=</span>0x1
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set *0x3108C000=0x1</span>
 </pre></div>
 </div>
 <p>This command triggers a system reset without requiring physical hardware reset.</p>
@@ -346,8 +360,8 @@ Content on this topic
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><a class="icon link reference external" href="https://www.analog.com/media/en/technical-documentation/user-guides/ev-somcrr-ezkit-manual.pdf" target="_blank">EV-SOMCRR-EZKIT Manual</a> (Table 3-5: JTAG Switch Configuration)</p></li>
-<li><p><a class="icon link reference external" href="https://www.analog.com/media/en/technical-documentation/user-guides/ev-somcrr-ezlite_manual.pdf" target="_blank">EV-SOMCRR-EZLITE Manual</a> (Table 3-3: JTAG Switch Configuration)</p></li>
+<li><p><a class="icon adi reference external" href="https://www.analog.com/media/en/technical-documentation/user-guides/ev-somcrr-ezkit-manual.pdf" target="_blank">EV-SOMCRR-EZKIT Manual</a> (Table 3-5: JTAG Switch Configuration)</p></li>
+<li><p><a class="icon adi reference external" href="https://www.analog.com/media/en/technical-documentation/user-guides/ev-somcrr-ezlite_manual.pdf" target="_blank">EV-SOMCRR-EZLITE Manual</a> (Table 3-3: JTAG Switch Configuration)</p></li>
 </ul>
 </section>
 </section>

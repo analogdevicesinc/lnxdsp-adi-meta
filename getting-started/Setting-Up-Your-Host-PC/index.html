@@ -8,8 +8,8 @@
 
     <title>Setting Up Your Host PC &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8e8a900e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=a3ee7af8" />
-    <script async="async" src="../../_static/app.umd.js?v=048c1170"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=07ad7716" />
+    <script async="async" src="../../_static/app.umd.js?v=2fe15c61"></script>
     <link rel="icon" href="../../_static/icon.svg"/>
     <link rel="index" title="Index" href="../../genindex/" />
     <link rel="search" title="Search" href="../../search/" />
@@ -261,21 +261,43 @@ Content on this topic
 <p>The build system is currently supported on host PCs running Ubuntu 22.04 (LTS).</p>
 <section id="installing-required-packages">
 <h2>Installing Required Packages<a class="headerlink" href="#installing-required-packages" title="Link to this heading"></a></h2>
-<p>In order to build and deploy Linux to your ADSP-SC5xx development board you will need to install the following packages on your host PC.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
-sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>gawk<span class="w"> </span>wget<span class="w"> </span>git-core<span class="w"> </span>diffstat<span class="w"> </span>unzip<span class="w"> </span>texinfo<span class="w"> </span>gcc-multilib<span class="w"> </span>build-essential<span class="w"> </span>chrpath<span class="w"> </span>socat<span class="w"> </span>libsdl1.2-dev<span class="w"> </span>xterm<span class="w"> </span>u-boot-tools<span class="w"> </span>openssl<span class="w"> </span>curl<span class="w"> </span>tftpd-hpa<span class="w"> </span>python3<span class="w"> </span>zstd<span class="w"> </span>libcrypt-dev
+<p>In order to build and deploy Linux to your ADSP-SC5xx development board you
+will need to install the following packages on your host PC.</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-</section>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>gawk<span class="w"> </span>wget<span class="w"> </span>git-core<span class="w"> </span>diffstat<span class="w"> </span>unzip<span class="w"> </span>texinfo<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>gcc-multilib<span class="w"> </span>build-essential<span class="w"> </span>chrpath<span class="w"> </span>socat<span class="w"> </span>libsdl1.2-dev<span class="w"> </span>xterm<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>u-boot-tools<span class="w"> </span>openssl<span class="w"> </span>curl<span class="w"> </span>tftpd-hpa<span class="w"> </span>python3<span class="w"> </span>zstd<span class="w"> </span>libcrypt-dev
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div></section>
 <section id="configure-minicom">
 <h2>Configure Minicom<a class="headerlink" href="#configure-minicom" title="Link to this heading"></a></h2>
-<p>In order to communicate with the U-Boot bootloader, a UART connection must be made between the host PC and the development board. It is recommended that you use minicom to do this. Minicom must be configured to connect to U-Boot correctly.</p>
+<p>In order to communicate with the U-Boot bootloader, a UART connection must be
+made between the host PC and the development board. It is recommended that you
+use minicom to do this. Minicom must be configured to connect to U-Boot
+correctly.</p>
 <p>On the host PC open a terminal and execute the following commands:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>minicom
-sudo<span class="w"> </span>minicom<span class="w"> </span>-s
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>The minicom menu will appear as follows:
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>minicom
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>minicom<span class="w"> </span>-s
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>The minicom menu will appear as follows:
 
 +-----[configuration]------+
 | Filenames and paths      |
@@ -302,17 +324,23 @@ sudo<span class="w"> </span>minicom<span class="w"> </span>-s
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><code class="docutils literal notranslate"><span class="pre">/dev/ttyUSB0</span></code> might not correspond to the serial port of the board on every system. You can determine which <code class="docutils literal notranslate"><span class="pre">/dev</span></code> entry your board uses by running <code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">-l</span> <span class="pre">/dev/ttyUSB*</span></code> twice, once when the serial port of the board is plugged in, and once when it isn’t.</p>
+<p><code class="docutils literal notranslate"><span class="pre">/dev/ttyUSB0</span></code> might not correspond to the serial port of the board on
+every system. You can determine which <code class="docutils literal notranslate"><span class="pre">/dev</span></code> entry your board uses by
+running <code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">-l</span> <span class="pre">/dev/ttyUSB*</span></code> twice, once when the serial port of the board
+is plugged in, and once when it isn’t.</p>
 </div>
 </section>
 <section id="configure-tftp-service">
 <h2>Configure TFTP Service<a class="headerlink" href="#configure-tftp-service" title="Link to this heading"></a></h2>
 <p>A TFTP server on the host is used to transfer images to the development board.
 Install and configure.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/default/tftpd-hpa
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>#Replace the existing file with the following
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/default/tftpd-hpa
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>#Replace the existing file with the following
 TFTP_USERNAME="tftp"
 TFTP_DIRECTORY="/tftpboot"
 TFTP_ADDRESS="0.0.0.0:69"
@@ -320,38 +348,75 @@ TFTP_OPTIONS="--secure"
 #End of File
 </pre></div>
 </div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>/tftpboot
-sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">777</span><span class="w"> </span>/tftpboot
-sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>tftpd-hpa
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-</section>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>/tftpboot
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">777</span><span class="w"> </span>/tftpboot
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>tftpd-hpa
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div></section>
 <section id="configure-nfs-server">
 <h2>Configure NFS Server<a class="headerlink" href="#configure-nfs-server" title="Link to this heading"></a></h2>
-<p>For NFS boot we use the Network File System which is stored in local Ubuntu Host. This is suggested when you do application development. To setup the NFS server:</p>
+<p>For NFS boot we use the Network File System which is stored in local Ubuntu
+Host. This is suggested when you do application development. To setup the NFS
+server:</p>
 <p>First, create a directory to store the file system for the target:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>/romfs/
-sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">777</span><span class="w"> </span>/romfs/
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p>Then, install the required package:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>nfs-kernel-server
-sudo<span class="w"> </span>vi<span class="w"> </span>/etc/exports
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>/romfs/
 </pre></div>
 </div>
-<p>Add the following line:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>/romfs<span class="w"> </span>*<span class="o">(</span>rw,sync,no_root_squash,no_subtree_check<span class="o">)</span>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">777</span><span class="w"> </span>/romfs/
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>Then, install the required package:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>nfs-kernel-server
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/exports
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>Add the following line:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>/romfs *(rw,sync,no_root_squash,no_subtree_check)
 </pre></div>
 </div>
 <p>Start the NFS server:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>nfs-kernel-server
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p>We can verify that the NFS service is running by executing:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>status<span class="w"> </span>nfs-kernel-server
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>nfs-kernel-server
 </pre></div>
 </div>
-<p>The output will indicate that the server is active, i.e.</p>
+<div class="clear-left"></div></div></div><p>We can verify that the NFS service is running by executing:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>status<span class="w"> </span>nfs-kernel-server
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>The output will indicate that the server is active, i.e.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>● nfs-server.service - NFS server and services
      Loaded: loaded (/lib/systemd/system/nfs-server.service; enabled; vendor preset: enabled)
     Drop-In: /run/systemd/generator/nfs-server.service.d
@@ -401,14 +466,20 @@ U-Boot after every reset.</p>
 </table>
 </div>
 <p>First, find the name of the interface that connects to the board:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ip<span class="w"> </span>-br<span class="w"> </span>link
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p>Give that interface a static IP address. Create a netplan file for it:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/netplan/02-board-net.yaml
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ip<span class="w"> </span>-br<span class="w"> </span>link
 </pre></div>
 </div>
-<p>Add the following content. Replace <code class="docutils literal notranslate"><span class="pre">enxa0cec8e24382</span></code> with your interface
+<div class="clear-left"></div></div></div><p>Give that interface a static IP address. Create a netplan file for it:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/netplan/02-board-net.yaml
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>Add the following content. Replace <code class="docutils literal notranslate"><span class="pre">enxa0cec8e24382</span></code> with your interface
 name:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">network</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
@@ -420,29 +491,46 @@ name:</p>
 </pre></div>
 </div>
 <p>Apply the configuration:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>/etc/netplan/02-board-net.yaml
-sudo<span class="w"> </span>netplan<span class="w"> </span>apply
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p>Next, install the DHCP server:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>isc-dhcp-server
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>/etc/netplan/02-board-net.yaml
 </pre></div>
 </div>
-<p>Configure the server to listen only on the interface connected to the board:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/default/isc-dhcp-server
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>#Replace the existing file with the following
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>netplan<span class="w"> </span>apply
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>Next, install the DHCP server:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>isc-dhcp-server
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>Configure the server to listen only on the interface connected to the board:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/default/isc-dhcp-server
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>#Replace the existing file with the following
 INTERFACESv4="enxa0cec8e24382"
 INTERFACESv6=""
 #End of File
 </pre></div>
 </div>
 <p>Configure the subnet and address pool:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/dhcp/dhcpd.conf
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>#Replace the existing file with the following
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/dhcp/dhcpd.conf
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>#Replace the existing file with the following
 default-lease-time 600;
 max-lease-time 7200;
 ddns-update-style none;
@@ -458,19 +546,33 @@ subnet 192.168.1.0 netmask 255.255.255.0 {
 </pre></div>
 </div>
 <p>Enable and restart the DHCP server:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>isc-dhcp-server
-sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>isc-dhcp-server
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p>To check that the DHCP server is running, execute:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>status<span class="w"> </span>isc-dhcp-server
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>isc-dhcp-server
 </pre></div>
 </div>
-<p>The output should show that the server is <code class="docutils literal notranslate"><span class="pre">active</span> <span class="pre">(running)</span></code>.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>journalctl<span class="w"> </span>-u<span class="w"> </span>isc-dhcp-server
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p>In U-Boot, run <code class="docutils literal notranslate"><span class="pre">dhcp</span></code> to get an address from the server.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>isc-dhcp-server
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>To check that the DHCP server is running, execute:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>status<span class="w"> </span>isc-dhcp-server
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>The output should show that the server is <code class="docutils literal notranslate"><span class="pre">active</span> <span class="pre">(running)</span></code>.</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>journalctl<span class="w"> </span>-u<span class="w"> </span>isc-dhcp-server
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>In U-Boot, run <code class="docutils literal notranslate"><span class="pre">dhcp</span></code> to get an address from the server.</p>
 </section>
 <section id="configure-the-firewall">
 <h2>Configure the Firewall<a class="headerlink" href="#configure-the-firewall" title="Link to this heading"></a></h2>
@@ -521,42 +623,92 @@ following table lists the ports that each boot type needs on the host:</p>
 <p>The simplest setup trusts all traffic that arrives on the network interface
 connected to the board. This covers every boot type. Replace
 <code class="docutils literal notranslate"><span class="pre">enxa0cec8e24382</span></code> with your interface name:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">67</span><span class="w"> </span>proto<span class="w"> </span>udp
-sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>from<span class="w"> </span><span class="m">192</span>.168.1.0/24
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p>The DHCP rule is separate because a board that doesn’t have an address yet
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">67</span><span class="w"> </span>proto<span class="w"> </span>udp
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>from<span class="w"> </span><span class="m">192</span>.168.1.0/24
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>The DHCP rule is separate because a board that doesn’t have an address yet
 sends its DHCP request from <code class="docutils literal notranslate"><span class="pre">0.0.0.0</span></code>.</p>
 <p>To open only the ports listed in the table, first give <code class="docutils literal notranslate"><span class="pre">rpc.mountd</span></code> a
 fixed port. Otherwise it picks a random port each time it starts. Edit the
 NFS configuration:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/nfs.conf
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p>In the <code class="docutils literal notranslate"><span class="pre">[mountd]</span></code> section, set:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/nfs.conf
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>In the <code class="docutils literal notranslate"><span class="pre">[mountd]</span></code> section, set:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[mountd]
 port=20048
 </pre></div>
 </div>
 <p>Restart the NFS server and check that <code class="docutils literal notranslate"><span class="pre">mountd</span></code> now uses port 20048:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>nfs-kernel-server
-rpcinfo<span class="w"> </span>-p<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>mountd
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p>Then add a rule for each port:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">67</span><span class="w"> </span>proto<span class="w"> </span>udp
-sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>from<span class="w"> </span><span class="m">192</span>.168.1.0/24<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">69</span><span class="w"> </span>proto<span class="w"> </span>udp
-sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>from<span class="w"> </span><span class="m">192</span>.168.1.0/24<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">111</span><span class="w"> </span>proto<span class="w"> </span>tcp
-sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>from<span class="w"> </span><span class="m">192</span>.168.1.0/24<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">2049</span><span class="w"> </span>proto<span class="w"> </span>tcp
-sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>from<span class="w"> </span><span class="m">192</span>.168.1.0/24<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">8000</span><span class="w"> </span>proto<span class="w"> </span>tcp
-sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>from<span class="w"> </span><span class="m">192</span>.168.1.0/24<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">20048</span><span class="w"> </span>proto<span class="w"> </span>tcp
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>nfs-kernel-server
 </pre></div>
 </div>
-<p>Check the active rules:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>ufw<span class="w"> </span>status<span class="w"> </span>verbose
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<div class="admonition note">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rpcinfo<span class="w"> </span>-p<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>mountd
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>Then add a rule for each port:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">67</span><span class="w"> </span>proto<span class="w"> </span>udp
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>from<span class="w"> </span><span class="m">192</span>.168.1.0/24<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">69</span><span class="w"> </span>proto<span class="w"> </span>udp
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>from<span class="w"> </span><span class="m">192</span>.168.1.0/24<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">111</span><span class="w"> </span>proto<span class="w"> </span>tcp
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>from<span class="w"> </span><span class="m">192</span>.168.1.0/24<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">2049</span><span class="w"> </span>proto<span class="w"> </span>tcp
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>from<span class="w"> </span><span class="m">192</span>.168.1.0/24<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">8000</span><span class="w"> </span>proto<span class="w"> </span>tcp
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="k">in</span><span class="w"> </span>on<span class="w"> </span>enxa0cec8e24382<span class="w"> </span>from<span class="w"> </span><span class="m">192</span>.168.1.0/24<span class="w"> </span>to<span class="w"> </span>any<span class="w"> </span>port<span class="w"> </span><span class="m">20048</span><span class="w"> </span>proto<span class="w"> </span>tcp
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>Check the active rules:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>ufw<span class="w"> </span>status<span class="w"> </span>verbose
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If the board connects to the host over your office or corporate LAN, not a
 dedicated interface, leave out <code class="docutils literal notranslate"><span class="pre">in</span> <span class="pre">on</span> <span class="pre">enxa0cec8e24382</span></code>. Replace
@@ -566,17 +718,32 @@ address.</p>
 </section>
 <section id="configuring-usb-permissions-for-ice-debugger">
 <h2>Configuring USB permissions for ICE debugger<a class="headerlink" href="#configuring-usb-permissions-for-ice-debugger" title="Link to this heading"></a></h2>
-<p>In order to allow OpenOCD to use the ICE debugger, we need to provide the user appropriate access via udev.</p>
-<p>On the host PC create a group called <code class="docutils literal notranslate"><span class="pre">adiusb</span></code> and add the user which will be accessing the ICE debugger to it. In this case we will be adding whichever user is currently logged into the session.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>groupadd<span class="w"> </span>adiusb
-sudo<span class="w"> </span>usermod<span class="w"> </span>-a<span class="w"> </span>-G<span class="w"> </span>adiusb<span class="w"> </span><span class="nv">$USER</span>
+<p>In order to allow OpenOCD to use the ICE debugger, we need to provide the user
+appropriate access via udev.</p>
+<p>On the host PC create a group called <code class="docutils literal notranslate"><span class="pre">adiusb</span></code> and add the user which will be
+accessing the ICE debugger to it. In this case we will be adding whichever user
+is currently logged into the session.</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p>We notify udev about permissions to provide this usergroup by adding a rule to it.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/udev/rules.d/adi.rules
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>groupadd<span class="w"> </span>adiusb
 </pre></div>
 </div>
-<p>Add the following content to the file</p>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>usermod<span class="w"> </span>-a<span class="w"> </span>-G<span class="w"> </span>adiusb<span class="w"> </span><span class="nv">$USER</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>We notify udev about permissions to provide this usergroup by adding a rule to
+it.</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/udev/rules.d/adi.rules
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>Add the following content to the file</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ATTRS{idVendor}=="064b", GROUP="adiusb"
 ATTRS{idVendor}=="0d28", ATTRS{idProduct}=="0204", GROUP="adiusb"
 ATTRS{idVendor}=="03eb", ATTRS{idProduct}=="6124", GROUP="adiusb"

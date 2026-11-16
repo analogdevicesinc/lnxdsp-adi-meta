@@ -8,8 +8,8 @@
 
     <title>Running Tests &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8e8a900e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=a3ee7af8" />
-    <script async="async" src="../../_static/app.umd.js?v=048c1170"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=07ad7716" />
+    <script async="async" src="../../_static/app.umd.js?v=2fe15c61"></script>
     <link rel="icon" href="../../_static/icon.svg"/>
     <link rel="index" title="Index" href="../../genindex/" />
     <link rel="search" title="Search" href="../../search/" />
@@ -276,11 +276,12 @@ Content on this topic
 <h1>Running Tests<a class="headerlink" href="#running-tests" title="Link to this heading"></a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-test</span></code> image adds a set of test suites and tools that run directly on the
-board. This page shows how to build the image and how to run each suite, along with the most
-useful options. See <a class="reference internal" href="../Image-Types/"><span class="doc">Image Types</span></a> for the full package list.</p>
-<p>The test image uses the same kernel configuration as the other images, so it can be used to
-check a stock build without any changes.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-test</span></code> image adds a set of test suites and tools that run
+directly on the board. This page shows how to build the image and how to run
+each suite, along with the most useful options. See <a class="reference internal" href="../Image-Types/"><span class="doc">Image Types</span></a> for the
+full package list.</p>
+<p>The test image uses the same kernel configuration as the other images, so it
+can be used to check a stock build without any changes.</p>
 <div class="table-wrapper colwidths-given docutils container">
 <table class="docutils align-default">
 <colgroup>
@@ -345,33 +346,52 @@ check a stock build without any changes.</p>
 </section>
 <section id="building-the-test-image">
 <h2>Building the Test Image<a class="headerlink" href="#building-the-test-image" title="Link to this heading"></a></h2>
-<p>The test suites are packaged with Yocto’s <code class="docutils literal notranslate"><span class="pre">ptest</span></code> feature, which is enabled by default in
-the ADI distros. Build the image the same way as any other image:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">KAS_MACHINE</span><span class="o">=</span>adsp-sc598-som-ezkit<span class="w"> </span>kas<span class="w"> </span>shell<span class="w"> </span>config/kas/adsp-sc5xx.yml
-bitbake<span class="w"> </span>adsp-sc5xx-test
+<p>The test suites are packaged with Yocto’s <code class="docutils literal notranslate"><span class="pre">ptest</span></code> feature, which is enabled
+by default in the ADI distros. Build the image the same way as any other image:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p>To include the OP-TEE, Mbed TLS and TEE smoke tests, build with the <code class="docutils literal notranslate"><span class="pre">adi-security</span></code> distro
-(ADSP-SC598 only). See <a class="reference internal" href="../../secure-boot/Secure-Boot-Support/"><span class="doc">Secure Boot Support</span></a> for the required signing
-keys:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">KAS_MACHINE</span><span class="o">=</span>adsp-sc598-som-ezkit<span class="w"> </span><span class="nv">KAS_DISTRO</span><span class="o">=</span>adi-security<span class="w"> </span>kas<span class="w"> </span>shell<span class="w"> </span>config/kas/adsp-sc5xx.yml
-bitbake<span class="w"> </span>adsp-sc5xx-test
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">KAS_MACHINE</span><span class="o">=</span>adsp-sc598-som-ezkit<span class="w"> </span>kas<span class="w"> </span>shell<span class="w"> </span>config/kas/adsp-sc5xx.yml
 </pre></div>
 </div>
-<p>Deploy the resulting <code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-test</span></code> rootfs in the same way as the full image.</p>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bitbake<span class="w"> </span>adsp-sc5xx-test
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>To include the OP-TEE, Mbed TLS and TEE smoke tests, build with the
+<code class="docutils literal notranslate"><span class="pre">adi-security</span></code> distro (ADSP-SC598 only). See
+<a class="reference internal" href="../../secure-boot/Secure-Boot-Support/"><span class="doc">Secure Boot Support</span></a> for the required signing keys:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">KAS_MACHINE</span><span class="o">=</span>adsp-sc598-som-ezkit<span class="w"> </span><span class="nv">KAS_DISTRO</span><span class="o">=</span>adi-security<span class="w"> </span>kas<span class="w"> </span>shell<span class="w"> </span>config/kas/adsp-sc5xx.yml
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bitbake<span class="w"> </span>adsp-sc5xx-test
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>Deploy the resulting <code class="docutils literal notranslate"><span class="pre">adsp-sc5xx-test</span></code> rootfs in the same way as the full
+image.</p>
 <section id="test-data-and-cleanup">
 <h3>Test Data and Cleanup<a class="headerlink" href="#test-data-and-cleanup" title="Link to this heading"></a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">openssh</span></code>, <code class="docutils literal notranslate"><span class="pre">libseccomp</span></code>, <code class="docutils literal notranslate"><span class="pre">rt-tests</span></code> and <code class="docutils literal notranslate"><span class="pre">util-linux</span></code> suites write logs, keys and
-extracted test data into their <code class="docutils literal notranslate"><span class="pre">/usr/lib/&lt;suite&gt;/ptest</span></code> directories. The ADI layer wraps
-each of these suites’ <code class="docutils literal notranslate"><span class="pre">run-ptest</span></code> so that anything not shipped in the package is deleted
-before and after every run, whether the suite passes, fails or is interrupted (for example
-by pressing Ctrl+C in <code class="docutils literal notranslate"><span class="pre">ptest-runner</span></code>). A suite that <code class="docutils literal notranslate"><span class="pre">ptest-runner</span></code> stops for a timeout is
-killed with <code class="docutils literal notranslate"><span class="pre">SIGKILL</span></code> before it can clean up, so its files, and anything it left mounted in
-the ptest directory, are removed at the start of the next run instead. The list of shipped
-files is recorded at build time in <code class="docutils literal notranslate"><span class="pre">/usr/lib/&lt;suite&gt;/ptest/.ptest-pristine</span></code>; files in
-<code class="docutils literal notranslate"><span class="pre">.debug</span></code> directories, which belong to the <code class="docutils literal notranslate"><span class="pre">-dbg</span></code> packages, are never removed.</p>
-<p>To add the same cleanup to another ptest package, inherit the class from a <code class="docutils literal notranslate"><span class="pre">.bbappend</span></code>
-in your layer:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">openssh</span></code>, <code class="docutils literal notranslate"><span class="pre">libseccomp</span></code>, <code class="docutils literal notranslate"><span class="pre">rt-tests</span></code> and <code class="docutils literal notranslate"><span class="pre">util-linux</span></code> suites write
+logs, keys and extracted test data into their <code class="docutils literal notranslate"><span class="pre">/usr/lib/&lt;suite&gt;/ptest</span></code>
+directories. The ADI layer wraps each of these suites’ <code class="docutils literal notranslate"><span class="pre">run-ptest</span></code> so that
+anything not shipped in the package is deleted before and after every run,
+whether the suite passes, fails or is interrupted (for example by pressing
+Ctrl+C in <code class="docutils literal notranslate"><span class="pre">ptest-runner</span></code>). A suite that <code class="docutils literal notranslate"><span class="pre">ptest-runner</span></code> stops for a timeout
+is killed with <code class="docutils literal notranslate"><span class="pre">SIGKILL</span></code> before it can clean up, so its files, and anything
+it left mounted in the ptest directory, are removed at the start of the next
+run instead. The list of shipped files is recorded at build time in
+<code class="docutils literal notranslate"><span class="pre">/usr/lib/&lt;suite&gt;/ptest/.ptest-pristine</span></code>; files in <code class="docutils literal notranslate"><span class="pre">.debug</span></code> directories,
+which belong to the <code class="docutils literal notranslate"><span class="pre">-dbg</span></code> packages, are never removed.</p>
+<p>To add the same cleanup to another ptest package, inherit the class from a
+<code class="docutils literal notranslate"><span class="pre">.bbappend</span></code> in your layer:</p>
 <div class="highlight-bitbake notranslate"><div class="highlight"><pre><span></span><span class="kn">inherit</span><span class="w"> </span><span class="s">adsp-ptest-cleanup</span>
 </pre></div>
 </div>
@@ -379,28 +399,64 @@ in your layer:</p>
 </section>
 <section id="ptest-runner">
 <h2>ptest-runner<a class="headerlink" href="#ptest-runner" title="Link to this heading"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">ptest-runner</span></code> finds every installed <code class="docutils literal notranslate"><span class="pre">run-ptest</span></code> script under <code class="docutils literal notranslate"><span class="pre">/usr/lib/*/ptest/</span></code> and
-runs it, collecting the <code class="docutils literal notranslate"><span class="pre">PASS:</span></code>, <code class="docutils literal notranslate"><span class="pre">FAIL:</span></code> and <code class="docutils literal notranslate"><span class="pre">SKIP:</span></code> lines that each suite prints.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># List the installed suites</span>
-ptest-runner<span class="w"> </span>-l
-
-<span class="c1"># Run every installed suite</span>
-ptest-runner
-
-<span class="c1"># Run only the named suites</span>
-ptest-runner<span class="w"> </span>rt-tests
-
-<span class="c1"># Run everything except one suite</span>
-ptest-runner<span class="w"> </span>-e<span class="w"> </span>rt-tests
-
-<span class="c1"># Allow each suite up to 15 minutes without output before it is stopped</span>
-ptest-runner<span class="w"> </span>-t<span class="w"> </span><span class="m">900</span><span class="w"> </span>rt-tests
-
-<span class="c1"># Write a JUnit-style XML report for CI</span>
-ptest-runner<span class="w"> </span>-x<span class="w"> </span>/tmp/ptest-results.xml
+<p><code class="docutils literal notranslate"><span class="pre">ptest-runner</span></code> finds every installed <code class="docutils literal notranslate"><span class="pre">run-ptest</span></code> script under
+<code class="docutils literal notranslate"><span class="pre">/usr/lib/*/ptest/</span></code> and runs it, collecting the <code class="docutils literal notranslate"><span class="pre">PASS:</span></code>, <code class="docutils literal notranslate"><span class="pre">FAIL:</span></code> and
+<code class="docutils literal notranslate"><span class="pre">SKIP:</span></code> lines that each suite prints.</p>
+<div class="code-shell"><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># List the installed suites</span>
 </pre></div>
 </div>
-<div class="table-wrapper colwidths-given docutils container">
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ptest-runner<span class="w"> </span>-l
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run every installed suite</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ptest-runner
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run only the named suites</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ptest-runner<span class="w"> </span>rt-tests
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run everything except one suite</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ptest-runner<span class="w"> </span>-e<span class="w"> </span>rt-tests
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Allow each suite up to 15 minutes without output before it is stopped</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ptest-runner<span class="w"> </span>-t<span class="w"> </span><span class="m">900</span><span class="w"> </span>rt-tests
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Write a JUnit-style XML report for CI</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ptest-runner<span class="w"> </span>-x<span class="w"> </span>/tmp/ptest-results.xml
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><div class="table-wrapper colwidths-given docutils container">
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 25.0%" />
@@ -430,16 +486,25 @@ ptest-runner<span class="w"> </span>-x<span class="w"> </span>/tmp/ptest-results
 </tbody>
 </table>
 </div>
-<p>Each suite’s results are wrapped in <code class="docutils literal notranslate"><span class="pre">BEGIN:</span></code> / <code class="docutils literal notranslate"><span class="pre">END:</span></code> markers with a <code class="docutils literal notranslate"><span class="pre">DURATION:</span></code> line.
-The final <code class="docutils literal notranslate"><span class="pre">TOTAL:</span> <span class="pre">&lt;n&gt;</span> <span class="pre">FAIL:</span> <span class="pre">&lt;m&gt;</span></code> line counts suites that exited with a non-zero status,
-were killed by a signal or timed out. A suite can exit with status <code class="docutils literal notranslate"><span class="pre">0</span></code> even when some of
-its test cases fail, and the XML report only records one entry per suite, so check for
-individual <code class="docutils literal notranslate"><span class="pre">FAIL:</span></code> lines to find failing test cases:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ptest-runner<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>/tmp/ptest.log
-grep<span class="w"> </span><span class="s1">'^FAIL:'</span><span class="w"> </span>/tmp/ptest.log
+<p>Each suite’s results are wrapped in <code class="docutils literal notranslate"><span class="pre">BEGIN:</span></code> / <code class="docutils literal notranslate"><span class="pre">END:</span></code> markers with a
+<code class="docutils literal notranslate"><span class="pre">DURATION:</span></code> line. The final <code class="docutils literal notranslate"><span class="pre">TOTAL:</span> <span class="pre">&lt;n&gt;</span> <span class="pre">FAIL:</span> <span class="pre">&lt;m&gt;</span></code> line counts suites that
+exited with a non-zero status, were killed by a signal or timed out. A suite
+can exit with status <code class="docutils literal notranslate"><span class="pre">0</span></code> even when some of its test cases fail, and the XML
+report only records one entry per suite, so check for individual <code class="docutils literal notranslate"><span class="pre">FAIL:</span></code>
+lines to find failing test cases:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<section id="included-ptest-suites">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ptest-runner<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>/tmp/ptest.log
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>grep<span class="w"> </span><span class="s1">'^FAIL:'</span><span class="w"> </span>/tmp/ptest.log
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><section id="included-ptest-suites">
 <h3>Included ptest Suites<a class="headerlink" href="#included-ptest-suites" title="Link to this heading"></a></h3>
 <div class="table-wrapper colwidths-given docutils container">
 <table class="docutils align-default">
@@ -478,57 +543,84 @@ tools, see <a class="reference internal" href="#util-linux-ptest">util-linux pte
 </tbody>
 </table>
 </div>
-<p>Other ptest packages can be added to the image with <code class="docutils literal notranslate"><span class="pre">IMAGE_INSTALL</span></code>, for example
-<code class="docutils literal notranslate"><span class="pre">IMAGE_INSTALL:append</span> <span class="pre">=</span> <span class="pre">&quot;</span> <span class="pre">xz-ptest&quot;</span></code>.</p>
+<p>Other ptest packages can be added to the image with <code class="docutils literal notranslate"><span class="pre">IMAGE_INSTALL</span></code>, for
+example <code class="docutils literal notranslate"><span class="pre">IMAGE_INSTALL:append</span> <span class="pre">=</span> <span class="pre">&quot;</span> <span class="pre">xz-ptest&quot;</span></code>.</p>
 </section>
 <section id="util-linux-ptest">
 <h3>util-linux ptest<a class="headerlink" href="#util-linux-ptest" title="Link to this heading"></a></h3>
-<p>The ADI layer removes from <code class="docutils literal notranslate"><span class="pre">util-linux-ptest</span></code> the tests that cannot pass on the ADSP-SC5xx
-boards, mostly because they need kernel options the ADI configurations do not enable, or
-hardware such as an RTC. The list of tests is held in <code class="docutils literal notranslate"><span class="pre">UTIL_LINUX_PTEST_EXCLUDE</span></code> and can be
-overridden, for example in <code class="docutils literal notranslate"><span class="pre">local.conf</span></code>:</p>
+<p>The ADI layer removes from <code class="docutils literal notranslate"><span class="pre">util-linux-ptest</span></code> the tests that cannot pass on
+the ADSP-SC5xx boards, mostly because they need kernel options the ADI
+configurations do not enable, or hardware such as an RTC. The list of tests is
+held in <code class="docutils literal notranslate"><span class="pre">UTIL_LINUX_PTEST_EXCLUDE</span></code> and can be overridden, for example in
+<code class="docutils literal notranslate"><span class="pre">local.conf</span></code>:</p>
 <div class="highlight-bitbake notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run the hwclock tests on a board with an RTC driver enabled</span>
 <span class="nv">UTIL_LINUX_PTEST_EXCLUDE</span><span class="nd">:remove:pn-util-linux</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"hwclock/show"</span>
 </pre></div>
 </div>
-<p>Excluded tests are not installed. To run selected util-linux components, call the test
-script directly:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/usr/lib/util-linux/ptest
-./tests/run.sh<span class="w"> </span>--use-system-commands<span class="w"> </span>--parsable<span class="w"> </span>lsblk<span class="w"> </span>fdisk
+<p>Excluded tests are not installed. To run selected util-linux components, call
+the test script directly:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p>On boards that reserve DDR for the SHARC cores the full suite runs in about 200 MB of
-memory; avoid running other memory-heavy workloads at the same time.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/usr/lib/util-linux/ptest
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>/usr/lib/util-linux/ptest$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./tests/run.sh<span class="w"> </span>--use-system-commands<span class="w"> </span>--parsable<span class="w"> </span>lsblk<span class="w"> </span>fdisk
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>On boards that reserve DDR for the SHARC cores the full suite runs in about 200
+MB of memory; avoid running other memory-heavy workloads at the same time.</p>
 </section>
 <section id="openssh-ptest">
 <h3>openssh ptest<a class="headerlink" href="#openssh-ptest" title="Link to this heading"></a></h3>
-<p>Runs the OpenSSH regression tests against a local <code class="docutils literal notranslate"><span class="pre">sshd</span></code> started by the suite. The ADI
-layer skips the <code class="docutils literal notranslate"><span class="pre">dynamic-forward</span></code> test (SOCKS dynamic port forwarding, <code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-D</span></code>), which
-fails on the ADSP-SC598. Skipped tests are reported as <code class="docutils literal notranslate"><span class="pre">skip</span> <span class="pre">test</span> <span class="pre">&lt;name&gt;.sh</span></code> in the log
-rather than as <code class="docutils literal notranslate"><span class="pre">SKIP:</span></code> lines. The list is held in <code class="docutils literal notranslate"><span class="pre">OPENSSH_PTEST_SKIP</span></code> (test names
-without <code class="docutils literal notranslate"><span class="pre">.sh</span></code>) and can be changed in <code class="docutils literal notranslate"><span class="pre">local.conf</span></code>:</p>
+<p>Runs the OpenSSH regression tests against a local <code class="docutils literal notranslate"><span class="pre">sshd</span></code> started by the
+suite. The ADI layer skips the <code class="docutils literal notranslate"><span class="pre">dynamic-forward</span></code> test (SOCKS dynamic port
+forwarding, <code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-D</span></code>), which fails on the ADSP-SC598. Skipped tests are
+reported as <code class="docutils literal notranslate"><span class="pre">skip</span> <span class="pre">test</span> <span class="pre">&lt;name&gt;.sh</span></code> in the log rather than as <code class="docutils literal notranslate"><span class="pre">SKIP:</span></code> lines.
+The list is held in <code class="docutils literal notranslate"><span class="pre">OPENSSH_PTEST_SKIP</span></code> (test names without <code class="docutils literal notranslate"><span class="pre">.sh</span></code>) and can
+be changed in <code class="docutils literal notranslate"><span class="pre">local.conf</span></code>:</p>
 <div class="highlight-bitbake notranslate"><div class="highlight"><pre><span></span><span class="c1"># Also skip the static port forwarding test</span>
 <span class="nv">OPENSSH_PTEST_SKIP</span><span class="nd">:append:pn-openssh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">" forwarding"</span>
 </pre></div>
 </div>
 <p>To run selected tests directly, use the regress <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> with <code class="docutils literal notranslate"><span class="pre">LTESTS</span></code>:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/usr/lib/openssh/ptest/regress
-<span class="nb">export</span><span class="w"> </span><span class="nv">TEST_SSH_SSH</span><span class="o">=</span>ssh<span class="w"> </span><span class="nv">TEST_SHELL</span><span class="o">=</span>sh<span class="w"> </span><span class="nv">SKIP_UNIT</span><span class="o">=</span><span class="m">1</span>
-make<span class="w"> </span><span class="nv">BUILDDIR</span><span class="o">=</span><span class="nv">$PWD</span>/..<span class="w"> </span>.OBJDIR<span class="o">=</span><span class="nv">$PWD</span><span class="w"> </span>.CURDIR<span class="o">=</span><span class="nv">$PWD</span><span class="w"> </span><span class="nv">SUDO</span><span class="o">=</span><span class="s2">""</span><span class="w"> </span><span class="nv">LTESTS</span><span class="o">=</span><span class="s2">"connect keyscan"</span><span class="w"> </span>t-exec
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-</section>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/usr/lib/openssh/ptest/regress
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>/usr/lib/openssh/ptest/regress$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">TEST_SSH_SSH</span><span class="o">=</span>ssh<span class="w"> </span><span class="nv">TEST_SHELL</span><span class="o">=</span>sh<span class="w"> </span><span class="nv">SKIP_UNIT</span><span class="o">=</span><span class="m">1</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>/usr/lib/openssh/ptest/regress$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span><span class="nv">BUILDDIR</span><span class="o">=</span><span class="nv">$PWD</span>/..<span class="w"> </span>.OBJDIR<span class="o">=</span><span class="nv">$PWD</span><span class="w"> </span>.CURDIR<span class="o">=</span><span class="nv">$PWD</span><span class="w"> </span><span class="nv">SUDO</span><span class="o">=</span><span class="s2">""</span><span class="w"> </span><span class="nv">LTESTS</span><span class="o">=</span><span class="s2">"connect keyscan"</span><span class="w"> </span>t-exec
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div></section>
 <section id="rt-tests-ptest">
 <h3>rt-tests ptest<a class="headerlink" href="#rt-tests-ptest" title="Link to this heading"></a></h3>
-<p>Runs <code class="docutils literal notranslate"><span class="pre">cyclictest</span></code> six times: with no load and then with <code class="docutils literal notranslate"><span class="pre">stress-ng</span></code> CPU, disk, I/O,
-virtual-memory and combined loads. Each run prints the minimum, average and maximum wakeup
-latency in microseconds. A <code class="docutils literal notranslate"><span class="pre">PASS</span></code> means the measurement completed; the suite does not
-apply a latency limit, so compare the reported maximum against your own requirement. The
-suite takes about 10 minutes on the ADSP-SC598.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ptest-runner<span class="w"> </span>-t<span class="w"> </span><span class="m">900</span><span class="w"> </span>rt-tests
+<p>Runs <code class="docutils literal notranslate"><span class="pre">cyclictest</span></code> six times: with no load and then with <code class="docutils literal notranslate"><span class="pre">stress-ng</span></code> CPU,
+disk, I/O, virtual-memory and combined loads. Each run prints the minimum,
+average and maximum wakeup latency in microseconds. A <code class="docutils literal notranslate"><span class="pre">PASS</span></code> means the
+measurement completed; the suite does not apply a latency limit, so compare the
+reported maximum against your own requirement. The suite takes about 10 minutes
+on the ADSP-SC598.</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p>Example output for one load case:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ptest-runner<span class="w"> </span>-t<span class="w"> </span><span class="m">900</span><span class="w"> </span>rt-tests
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>Example output for one load case:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>#   Test case (6/6): rt_bmark.intlat.full
 ...
 # Min: 3 us
@@ -540,11 +632,16 @@ PASS: rt_bmark.intlat.full
 </pre></div>
 </div>
 <p>To run <code class="docutils literal notranslate"><span class="pre">cyclictest</span></code> directly with your own settings:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># 10 minutes, SCHED_FIFO priority 95, 1 ms interval, latency histogram up to 400 us</span>
-cyclictest<span class="w"> </span>-m<span class="w"> </span>-S<span class="w"> </span>-p<span class="w"> </span><span class="m">95</span><span class="w"> </span>-i<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-D<span class="w"> </span>10m<span class="w"> </span>-h<span class="w"> </span><span class="m">400</span><span class="w"> </span>-q
+<div class="code-shell"><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 10 minutes, SCHED_FIFO priority 95, 1 ms interval, latency histogram up to 400 us</span>
 </pre></div>
 </div>
-<div class="table-wrapper colwidths-given docutils container">
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cyclictest<span class="w"> </span>-m<span class="w"> </span>-S<span class="w"> </span>-p<span class="w"> </span><span class="m">95</span><span class="w"> </span>-i<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-D<span class="w"> </span>10m<span class="w"> </span>-h<span class="w"> </span><span class="m">400</span><span class="w"> </span>-q
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><div class="table-wrapper colwidths-given docutils container">
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 25.0%" />
@@ -586,33 +683,54 @@ cyclictest<span class="w"> </span>-m<span class="w"> </span>-S<span class="w"> <
 </section>
 <section id="adi-crypto-ptests">
 <h3>ADI Crypto ptests<a class="headerlink" href="#adi-crypto-ptests" title="Link to this heading"></a></h3>
-<p>The test image installs <code class="docutils literal notranslate"><span class="pre">crc-tests-ptest</span></code> on every board, and on the ADSP-SC598 SOM
-EZ-KIT it also installs <code class="docutils literal notranslate"><span class="pre">crypto-tests-ptest</span></code>. They test the ADI CRC hardware and the ADI
-security packet engine (PKTE) through <code class="docutils literal notranslate"><span class="pre">cryptodev</span></code> (<code class="docutils literal notranslate"><span class="pre">/dev/crypto</span></code>) and OpenSSL’s
-<code class="docutils literal notranslate"><span class="pre">devcrypto</span></code> engine.</p>
+<p>The test image installs <code class="docutils literal notranslate"><span class="pre">crc-tests-ptest</span></code> on every board, and on the
+ADSP-SC598 SOM EZ-KIT it also installs <code class="docutils literal notranslate"><span class="pre">crypto-tests-ptest</span></code>. They test the
+ADI CRC hardware and the ADI security packet engine (PKTE) through
+<code class="docutils literal notranslate"><span class="pre">cryptodev</span></code> (<code class="docutils literal notranslate"><span class="pre">/dev/crypto</span></code>) and OpenSSL’s <code class="docutils literal notranslate"><span class="pre">devcrypto</span></code> engine.</p>
 <p><code class="docutils literal notranslate"><span class="pre">crypto-tests</span></code> checks that:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">sha256</span></code>, <code class="docutils literal notranslate"><span class="pre">sha224</span></code>, <code class="docutils literal notranslate"><span class="pre">sha1</span></code>, <code class="docutils literal notranslate"><span class="pre">md5</span></code>, <code class="docutils literal notranslate"><span class="pre">cbc(aes)</span></code>, <code class="docutils literal notranslate"><span class="pre">cbc(des)</span></code>, <code class="docutils literal notranslate"><span class="pre">cbc(des3_ede)</span></code>
-and <code class="docutils literal notranslate"><span class="pre">ecb(aes)</span></code> are registered by the <code class="docutils literal notranslate"><span class="pre">adi</span></code> driver in <code class="docutils literal notranslate"><span class="pre">/proc/crypto</span></code>.</p></li>
-<li><p>The SHA-256, SHA-224, SHA-1 and MD5 hash and HMAC known-answer tests give the right
-results through <code class="docutils literal notranslate"><span class="pre">/dev/crypto</span></code>, and each session is served by the <code class="docutils literal notranslate"><span class="pre">adi</span></code> driver
-(<code class="docutils literal notranslate"><span class="pre">[cryptodev]</span></code> results).</p></li>
-<li><p>OpenSSL’s <code class="docutils literal notranslate"><span class="pre">devcrypto</span></code> engine loads, and AES-256-CBC, DES-CBC, 3DES and AES-256-ECB
-encryption and decryption of 1 KB to 8 MB inputs through the engine match OpenSSL’s
-software results (<code class="docutils literal notranslate"><span class="pre">[OpenSSL]</span></code> results).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sha256</span></code>, <code class="docutils literal notranslate"><span class="pre">sha224</span></code>, <code class="docutils literal notranslate"><span class="pre">sha1</span></code>, <code class="docutils literal notranslate"><span class="pre">md5</span></code>, <code class="docutils literal notranslate"><span class="pre">cbc(aes)</span></code>, <code class="docutils literal notranslate"><span class="pre">cbc(des)</span></code>,
+<code class="docutils literal notranslate"><span class="pre">cbc(des3_ede)</span></code> and <code class="docutils literal notranslate"><span class="pre">ecb(aes)</span></code> are registered by the <code class="docutils literal notranslate"><span class="pre">adi</span></code> driver in
+<code class="docutils literal notranslate"><span class="pre">/proc/crypto</span></code>.</p></li>
+<li><p>The SHA-256, SHA-224, SHA-1 and MD5 hash and HMAC known-answer tests give the
+right results through <code class="docutils literal notranslate"><span class="pre">/dev/crypto</span></code>, and each session is served by the
+<code class="docutils literal notranslate"><span class="pre">adi</span></code> driver (<code class="docutils literal notranslate"><span class="pre">[cryptodev]</span></code> results).</p></li>
+<li><p>OpenSSL’s <code class="docutils literal notranslate"><span class="pre">devcrypto</span></code> engine loads, and AES-256-CBC, DES-CBC, 3DES and
+AES-256-ECB encryption and decryption of 1 KB to 8 MB inputs through the
+engine match OpenSSL’s software results (<code class="docutils literal notranslate"><span class="pre">[OpenSSL]</span></code> results).</p></li>
 </ul>
-<p><code class="docutils literal notranslate"><span class="pre">crc-tests</span></code> checks that <code class="docutils literal notranslate"><span class="pre">hmac(crc32)</span></code> is registered by the <code class="docutils literal notranslate"><span class="pre">adi</span></code> driver in
-<code class="docutils literal notranslate"><span class="pre">/proc/crypto</span></code>, and runs CRC-32 known-answer tests on the ADI CRC hardware through
-<code class="docutils literal notranslate"><span class="pre">/dev/crypto</span></code>, checking that each session is served by the <code class="docutils literal notranslate"><span class="pre">adi</span></code> driver.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ptest-runner<span class="w"> </span>crypto-tests<span class="w"> </span>crc-tests
-
-<span class="c1"># Or run the scripts directly; test data is kept in a temporary directory</span>
-sh<span class="w"> </span>/crypto/adi-hash.sh
-sh<span class="w"> </span>/crypto/adi-skcipher.sh
-sh<span class="w"> </span>/crypto/adi-crc.sh
+<p><code class="docutils literal notranslate"><span class="pre">crc-tests</span></code> checks that <code class="docutils literal notranslate"><span class="pre">hmac(crc32)</span></code> is registered by the <code class="docutils literal notranslate"><span class="pre">adi</span></code> driver
+in <code class="docutils literal notranslate"><span class="pre">/proc/crypto</span></code>, and runs CRC-32 known-answer tests on the ADI CRC hardware
+through <code class="docutils literal notranslate"><span class="pre">/dev/crypto</span></code>, checking that each session is served by the <code class="docutils literal notranslate"><span class="pre">adi</span></code>
+driver.</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p>Example output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ptest-runner<span class="w"> </span>crypto-tests<span class="w"> </span>crc-tests
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Or run the scripts directly; test data is kept in a temporary directory</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sh<span class="w"> </span>/crypto/adi-hash.sh
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sh<span class="w"> </span>/crypto/adi-skcipher.sh
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sh<span class="w"> </span>/crypto/adi-crc.sh
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>Example output:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PASS: sha256 [adi] registered
 PASS: SHA256 HMAC [cryptodev] (4 bytes, key 4 bytes)
 PASS: devcrypto engine [OpenSSL]
@@ -620,29 +738,47 @@ PASS: aes-256-cbc [OpenSSL] (encrypt, 1M)
 PASS: CRC32B [cryptodev] (8192 bytes)
 </pre></div>
 </div>
-<p>The suites need the ADI crypto drivers. <code class="docutils literal notranslate"><span class="pre">CONFIG_CRYPTO_DEV_ADI_CRC</span></code> is enabled by the
-<code class="docutils literal notranslate"><span class="pre">crypto.cfg</span></code> kernel fragment, and <code class="docutils literal notranslate"><span class="pre">CONFIG_CRYPTO_DEV_ADI_PKTE</span></code> by the <code class="docutils literal notranslate"><span class="pre">pkte.cfg</span></code>
-fragment, which is only applied for the <code class="docutils literal notranslate"><span class="pre">adsp-sc598-som-ezkit</span></code> machine.</p>
-<p>With the <code class="docutils literal notranslate"><span class="pre">adi-security</span></code> distro, OP-TEE makes the packet engine secure-only. The security
-layer disables the PKTE in the Linux device tree and does not install
-<code class="docutils literal notranslate"><span class="pre">crypto-tests-ptest</span></code>; <code class="docutils literal notranslate"><span class="pre">crc-tests-ptest</span></code> is still installed.</p>
+<p>The suites need the ADI crypto drivers. <code class="docutils literal notranslate"><span class="pre">CONFIG_CRYPTO_DEV_ADI_CRC</span></code> is
+enabled by the <code class="docutils literal notranslate"><span class="pre">crypto.cfg</span></code> kernel fragment, and
+<code class="docutils literal notranslate"><span class="pre">CONFIG_CRYPTO_DEV_ADI_PKTE</span></code> by the <code class="docutils literal notranslate"><span class="pre">pkte.cfg</span></code> fragment, which is only
+applied for the <code class="docutils literal notranslate"><span class="pre">adsp-sc598-som-ezkit</span></code> machine.</p>
+<p>With the <code class="docutils literal notranslate"><span class="pre">adi-security</span></code> distro, OP-TEE makes the packet engine secure-only.
+The security layer disables the PKTE in the Linux device tree and does not
+install <code class="docutils literal notranslate"><span class="pre">crypto-tests-ptest</span></code>; <code class="docutils literal notranslate"><span class="pre">crc-tests-ptest</span></code> is still installed.</p>
 </section>
 </section>
 <section id="stress-ng">
 <h2>stress-ng<a class="headerlink" href="#stress-ng" title="Link to this heading"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">stress-ng</span></code> loads the CPU, memory and I/O subsystems. With <code class="docutils literal notranslate"><span class="pre">--verify</span></code> each stressor
-checks its own results, so a non-zero exit status indicates a failure.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># CPU and memory stress for 60 s, verifying results</span>
-stress-ng<span class="w"> </span>--cpu<span class="w"> </span><span class="m">1</span><span class="w"> </span>--vm<span class="w"> </span><span class="m">1</span><span class="w"> </span>--vm-bytes<span class="w"> </span>64M<span class="w"> </span>--verify<span class="w"> </span>--timeout<span class="w"> </span>60s<span class="w"> </span>--metrics-brief
-
-<span class="c1"># Run every CPU stressor method in turn</span>
-stress-ng<span class="w"> </span>--cpu<span class="w"> </span><span class="m">1</span><span class="w"> </span>--cpu-method<span class="w"> </span>all<span class="w"> </span>--verify<span class="w"> </span>--timeout<span class="w"> </span>60s
-
-<span class="c1"># Context-switch and timer stress</span>
-stress-ng<span class="w"> </span>--switch<span class="w"> </span><span class="m">1</span><span class="w"> </span>--timer<span class="w"> </span><span class="m">1</span><span class="w"> </span>--timeout<span class="w"> </span>60s<span class="w"> </span>--metrics-brief
+<p><code class="docutils literal notranslate"><span class="pre">stress-ng</span></code> loads the CPU, memory and I/O subsystems. With <code class="docutils literal notranslate"><span class="pre">--verify</span></code> each
+stressor checks its own results, so a non-zero exit status indicates a failure.</p>
+<div class="code-shell"><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># CPU and memory stress for 60 s, verifying results</span>
 </pre></div>
 </div>
-<div class="table-wrapper colwidths-given docutils container">
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>stress-ng<span class="w"> </span>--cpu<span class="w"> </span><span class="m">1</span><span class="w"> </span>--vm<span class="w"> </span><span class="m">1</span><span class="w"> </span>--vm-bytes<span class="w"> </span>64M<span class="w"> </span>--verify<span class="w"> </span>--timeout<span class="w"> </span>60s<span class="w"> </span>--metrics-brief
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run every CPU stressor method in turn</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>stress-ng<span class="w"> </span>--cpu<span class="w"> </span><span class="m">1</span><span class="w"> </span>--cpu-method<span class="w"> </span>all<span class="w"> </span>--verify<span class="w"> </span>--timeout<span class="w"> </span>60s
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Context-switch and timer stress</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>stress-ng<span class="w"> </span>--switch<span class="w"> </span><span class="m">1</span><span class="w"> </span>--timer<span class="w"> </span><span class="m">1</span><span class="w"> </span>--timeout<span class="w"> </span>60s<span class="w"> </span>--metrics-brief
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><div class="table-wrapper colwidths-given docutils container">
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 30.0%" />
@@ -680,42 +816,69 @@ stress-ng<span class="w"> </span>--switch<span class="w"> </span><span class="m"
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Keep <code class="docutils literal notranslate"><span class="pre">--vm-bytes</span></code> well below the free memory reported by <code class="docutils literal notranslate"><span class="pre">free</span> <span class="pre">-m</span></code>. Memory reserved
-for the SHARC cores is not available to Linux.</p>
+<p>Keep <code class="docutils literal notranslate"><span class="pre">--vm-bytes</span></code> well below the free memory reported by <code class="docutils literal notranslate"><span class="pre">free</span> <span class="pre">-m</span></code>.
+Memory reserved for the SHARC cores is not available to Linux.</p>
 </div>
 </section>
 <section id="memtester">
 <h2>memtester<a class="headerlink" href="#memtester" title="Link to this heading"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">memtester</span></code> allocates and locks a block of memory and runs a series of pattern tests on
-it. The exit status is <code class="docutils literal notranslate"><span class="pre">0</span></code> when all patterns pass.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test 64 MB of memory, one pass</span>
-memtester<span class="w"> </span>64M<span class="w"> </span><span class="m">1</span>
-
-<span class="c1"># Test 32 MB of memory, three passes</span>
-memtester<span class="w"> </span>32M<span class="w"> </span><span class="m">3</span>
+<p><code class="docutils literal notranslate"><span class="pre">memtester</span></code> allocates and locks a block of memory and runs a series of
+pattern tests on it. The exit status is <code class="docutils literal notranslate"><span class="pre">0</span></code> when all patterns pass.</p>
+<div class="code-shell"><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test 64 MB of memory, one pass</span>
 </pre></div>
 </div>
-<p>The first argument is the amount of memory to test (<code class="docutils literal notranslate"><span class="pre">B</span></code>, <code class="docutils literal notranslate"><span class="pre">K</span></code>, <code class="docutils literal notranslate"><span class="pre">M</span></code> or <code class="docutils literal notranslate"><span class="pre">G</span></code> suffix) and
-the optional second argument is the number of loops. Use <code class="docutils literal notranslate"><span class="pre">free</span> <span class="pre">-m</span></code> to see how much memory
-is available, and leave headroom for the rest of the system.</p>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>memtester<span class="w"> </span>64M<span class="w"> </span><span class="m">1</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test 32 MB of memory, three passes</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>memtester<span class="w"> </span>32M<span class="w"> </span><span class="m">3</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>The first argument is the amount of memory to test (<code class="docutils literal notranslate"><span class="pre">B</span></code>, <code class="docutils literal notranslate"><span class="pre">K</span></code>, <code class="docutils literal notranslate"><span class="pre">M</span></code> or
+<code class="docutils literal notranslate"><span class="pre">G</span></code> suffix) and the optional second argument is the number of loops. Use
+<code class="docutils literal notranslate"><span class="pre">free</span> <span class="pre">-m</span></code> to see how much memory is available, and leave headroom for the
+rest of the system.</p>
 </section>
 <section id="fio">
 <h2>fio<a class="headerlink" href="#fio" title="Link to this heading"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">fio</span></code> measures storage performance and can verify data integrity. Point <code class="docutils literal notranslate"><span class="pre">--filename</span></code> at
-a file on the storage under test. Each job reports <code class="docutils literal notranslate"><span class="pre">err=</span> <span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">fio</span></code> exits with status
-<code class="docutils literal notranslate"><span class="pre">0</span></code> when all I/O and verification succeed.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sequential write then read with CRC32C verification</span>
-fio<span class="w"> </span>--name<span class="o">=</span>verify<span class="w"> </span>--filename<span class="o">=</span>/root/fio.dat<span class="w"> </span>--size<span class="o">=</span>64M<span class="w"> </span>--rw<span class="o">=</span>write<span class="w"> </span>--bs<span class="o">=</span>128k<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--direct<span class="o">=</span><span class="m">1</span><span class="w"> </span>--verify<span class="o">=</span>crc32c<span class="w"> </span>--do_verify<span class="o">=</span><span class="m">1</span>
-
-<span class="c1"># 4k random read/write for 60 s</span>
-fio<span class="w"> </span>--name<span class="o">=</span>randrw<span class="w"> </span>--filename<span class="o">=</span>/root/fio.dat<span class="w"> </span>--size<span class="o">=</span>64M<span class="w"> </span>--rw<span class="o">=</span>randrw<span class="w"> </span>--bs<span class="o">=</span>4k<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--direct<span class="o">=</span><span class="m">1</span><span class="w"> </span>--runtime<span class="o">=</span><span class="m">60</span><span class="w"> </span>--time_based<span class="w"> </span>--group_reporting
-
-rm<span class="w"> </span>/root/fio.dat
+<p><code class="docutils literal notranslate"><span class="pre">fio</span></code> measures storage performance and can verify data integrity. Point
+<code class="docutils literal notranslate"><span class="pre">--filename</span></code> at a file on the storage under test. Each job reports <code class="docutils literal notranslate"><span class="pre">err=</span> <span class="pre">0</span></code>
+and <code class="docutils literal notranslate"><span class="pre">fio</span></code> exits with status <code class="docutils literal notranslate"><span class="pre">0</span></code> when all I/O and verification succeed.</p>
+<div class="code-shell"><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sequential write then read with CRC32C verification</span>
 </pre></div>
 </div>
-<div class="table-wrapper colwidths-given docutils container">
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>fio<span class="w"> </span>--name<span class="o">=</span>verify<span class="w"> </span>--filename<span class="o">=</span>/root/fio.dat<span class="w"> </span>--size<span class="o">=</span>64M<span class="w"> </span>--rw<span class="o">=</span>write<span class="w"> </span>--bs<span class="o">=</span>128k<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--direct<span class="o">=</span><span class="m">1</span><span class="w"> </span>--verify<span class="o">=</span>crc32c<span class="w"> </span>--do_verify<span class="o">=</span><span class="m">1</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 4k random read/write for 60 s</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>fio<span class="w"> </span>--name<span class="o">=</span>randrw<span class="w"> </span>--filename<span class="o">=</span>/root/fio.dat<span class="w"> </span>--size<span class="o">=</span>64M<span class="w"> </span>--rw<span class="o">=</span>randrw<span class="w"> </span>--bs<span class="o">=</span>4k<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>--direct<span class="o">=</span><span class="m">1</span><span class="w"> </span>--runtime<span class="o">=</span><span class="m">60</span><span class="w"> </span>--time_based<span class="w"> </span>--group_reporting
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rm<span class="w"> </span>/root/fio.dat
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><div class="table-wrapper colwidths-given docutils container">
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 30.0%" />
@@ -753,25 +916,42 @@ rm<span class="w"> </span>/root/fio.dat
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Passing a block device such as <code class="docutils literal notranslate"><span class="pre">/dev/mmcblk0</span></code> to <code class="docutils literal notranslate"><span class="pre">--filename</span></code> overwrites its
-contents. Use a file on a mounted filesystem unless the device is a scratch device.</p>
+<p>Passing a block device such as <code class="docutils literal notranslate"><span class="pre">/dev/mmcblk0</span></code> to <code class="docutils literal notranslate"><span class="pre">--filename</span></code> overwrites
+its contents. Use a file on a mounted filesystem unless the device is a
+scratch device.</p>
 </div>
 </section>
 <section id="rngtest">
 <h2>rngtest<a class="headerlink" href="#rngtest" title="Link to this heading"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">rngtest</span></code> runs the FIPS 140-2 statistical tests on data read from standard input. It exits
-with status <code class="docutils literal notranslate"><span class="pre">0</span></code> if no blocks fail.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test 100 blocks (20000 bits each) from the kernel random number generator</span>
-rngtest<span class="w"> </span>-c<span class="w"> </span><span class="m">100</span><span class="w"> </span>&lt;<span class="w"> </span>/dev/random
-
-<span class="c1"># Test a hardware RNG, if one is registered</span>
-cat<span class="w"> </span>/sys/class/misc/hw_random/rng_current
-rngtest<span class="w"> </span>-c<span class="w"> </span><span class="m">100</span><span class="w"> </span>&lt;<span class="w"> </span>/dev/hwrng
+<p><code class="docutils literal notranslate"><span class="pre">rngtest</span></code> runs the FIPS 140-2 statistical tests on data read from standard
+input. It exits with status <code class="docutils literal notranslate"><span class="pre">0</span></code> if no blocks fail.</p>
+<div class="code-shell"><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test 100 blocks (20000 bits each) from the kernel random number generator</span>
 </pre></div>
 </div>
-<p>If <code class="docutils literal notranslate"><span class="pre">rng_current</span></code> shows <code class="docutils literal notranslate"><span class="pre">none</span></code>, no hardware RNG driver is registered and reading
-<code class="docutils literal notranslate"><span class="pre">/dev/hwrng</span></code> fails with <code class="docutils literal notranslate"><span class="pre">No</span> <span class="pre">such</span> <span class="pre">device</span></code>. On the <code class="docutils literal notranslate"><span class="pre">adi-security</span></code> distro the OP-TEE RNG
-is registered as <code class="docutils literal notranslate"><span class="pre">optee-rng</span></code>.</p>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rngtest<span class="w"> </span>-c<span class="w"> </span><span class="m">100</span><span class="w"> </span>&lt;<span class="w"> </span>/dev/random
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test a hardware RNG, if one is registered</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span>/sys/class/misc/hw_random/rng_current
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rngtest<span class="w"> </span>-c<span class="w"> </span><span class="m">100</span><span class="w"> </span>&lt;<span class="w"> </span>/dev/hwrng
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>If <code class="docutils literal notranslate"><span class="pre">rng_current</span></code> shows <code class="docutils literal notranslate"><span class="pre">none</span></code>, no hardware RNG driver is registered and
+reading <code class="docutils literal notranslate"><span class="pre">/dev/hwrng</span></code> fails with <code class="docutils literal notranslate"><span class="pre">No</span> <span class="pre">such</span> <span class="pre">device</span></code>. On the <code class="docutils literal notranslate"><span class="pre">adi-security</span></code>
+distro the OP-TEE RNG is registered as <code class="docutils literal notranslate"><span class="pre">optee-rng</span></code>.</p>
 <div class="table-wrapper colwidths-given docutils container">
 <table class="docutils align-default">
 <colgroup>
@@ -802,56 +982,125 @@ is registered as <code class="docutils literal notranslate"><span class="pre">op
 </section>
 <section id="security-test-suites-adi-security">
 <h2>Security Test Suites (<code class="docutils literal notranslate"><span class="pre">adi-security</span></code>)<a class="headerlink" href="#security-test-suites-adi-security" title="Link to this heading"></a></h2>
-<p>The following suites are only installed when the image is built with the <code class="docutils literal notranslate"><span class="pre">adi-security</span></code>
-distro for the ADSP-SC598. They require the <code class="docutils literal notranslate"><span class="pre">tee-supplicant</span></code> service, which is started at
-boot:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>systemctl<span class="w"> </span>status<span class="w"> </span>tee-supplicant
+<p>The following suites are only installed when the image is built with the
+<code class="docutils literal notranslate"><span class="pre">adi-security</span></code> distro for the ADSP-SC598. They require the <code class="docutils literal notranslate"><span class="pre">tee-supplicant</span></code>
+service, which is started at boot:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<section id="tee-smoke-test">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl<span class="w"> </span>status<span class="w"> </span>tee-supplicant
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><section id="tee-smoke-test">
 <h3>TEE Smoke Test<a class="headerlink" href="#tee-smoke-test" title="Link to this heading"></a></h3>
-<p>Checks, from Linux, that TF-A and OP-TEE are running and reachable: the PSCI and SMC Calling
-Convention probe messages, the OP-TEE driver and <code class="docutils literal notranslate"><span class="pre">/dev/tee*</span></code> devices, a running
-<code class="docutils literal notranslate"><span class="pre">tee-supplicant</span></code>, the OP-TEE random number generator and the OP-TEE “hello world”
-example. The probe message checks are reported as <code class="docutils literal notranslate"><span class="pre">SKIP</span></code> if the start of the boot log
-has already been overwritten in the kernel ring buffer.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ptest-runner<span class="w"> </span>tee-smoke
+<p>Checks, from Linux, that TF-A and OP-TEE are running and reachable: the PSCI
+and SMC Calling Convention probe messages, the OP-TEE driver and <code class="docutils literal notranslate"><span class="pre">/dev/tee*</span></code>
+devices, a running <code class="docutils literal notranslate"><span class="pre">tee-supplicant</span></code>, the OP-TEE random number generator and
+the OP-TEE “hello world” example. The probe message checks are reported as
+<code class="docutils literal notranslate"><span class="pre">SKIP</span></code> if the start of the boot log has already been overwritten in the
+kernel ring buffer.</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-</section>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ptest-runner<span class="w"> </span>tee-smoke
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div></section>
 <section id="op-tee-xtest">
 <h3>OP-TEE xtest<a class="headerlink" href="#op-tee-xtest" title="Link to this heading"></a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">xtest</span></code> exercises the OP-TEE client API, the test trusted applications, secure storage and
-the cryptographic services. Clear any secure-storage objects left by a previous run first.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>xtest<span class="w"> </span>--clear-storage
-
-<span class="c1"># Default suites (regression and, if enabled, pkcs11)</span>
-xtest
-
-<span class="c1"># Run specific suites</span>
-xtest<span class="w"> </span>-t<span class="w"> </span>regression
-xtest<span class="w"> </span>-t<span class="w"> </span>regression+pkcs11
-xtest<span class="w"> </span>-t<span class="w"> </span>benchmark
-
-<span class="c1"># Run or exclude specific tests (substring match on the test ID)</span>
-xtest<span class="w"> </span>-t<span class="w"> </span>regression<span class="w"> </span><span class="m">4001</span><span class="w"> </span><span class="m">4003</span>
-xtest<span class="w"> </span>-t<span class="w"> </span>regression<span class="w"> </span>-x<span class="w"> </span><span class="m">1033</span>
-
-<span class="c1"># Include optional tests</span>
-xtest<span class="w"> </span>-l<span class="w"> </span><span class="m">15</span>
-
-<span class="c1"># Performance applets</span>
-xtest<span class="w"> </span>--aes-perf
-xtest<span class="w"> </span>--hash-perf
-xtest<span class="w"> </span>--asym-perf
+<p><code class="docutils literal notranslate"><span class="pre">xtest</span></code> exercises the OP-TEE client API, the test trusted applications,
+secure storage and the cryptographic services. Clear any secure-storage objects
+left by a previous run first.</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p>The same tests can be run through <code class="docutils literal notranslate"><span class="pre">ptest-runner</span></code>, which converts the output to
-<code class="docutils literal notranslate"><span class="pre">PASS:</span></code> / <code class="docutils literal notranslate"><span class="pre">FAIL:</span></code> lines.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ptest-runner<span class="w"> </span>-t<span class="w"> </span><span class="m">1800</span><span class="w"> </span>optee-test
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xtest<span class="w"> </span>--clear-storage
 </pre></div>
 </div>
-<div class="table-wrapper colwidths-given docutils container">
+<div class="clear-left"></div></div><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Default suites (regression and, if enabled, pkcs11)</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xtest
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run specific suites</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xtest<span class="w"> </span>-t<span class="w"> </span>regression
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xtest<span class="w"> </span>-t<span class="w"> </span>regression+pkcs11
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xtest<span class="w"> </span>-t<span class="w"> </span>benchmark
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run or exclude specific tests (substring match on the test ID)</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xtest<span class="w"> </span>-t<span class="w"> </span>regression<span class="w"> </span><span class="m">4001</span><span class="w"> </span><span class="m">4003</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xtest<span class="w"> </span>-t<span class="w"> </span>regression<span class="w"> </span>-x<span class="w"> </span><span class="m">1033</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Include optional tests</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xtest<span class="w"> </span>-l<span class="w"> </span><span class="m">15</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Performance applets</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xtest<span class="w"> </span>--aes-perf
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xtest<span class="w"> </span>--hash-perf
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xtest<span class="w"> </span>--asym-perf
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>The same tests can be run through <code class="docutils literal notranslate"><span class="pre">ptest-runner</span></code>, which converts the output
+to <code class="docutils literal notranslate"><span class="pre">PASS:</span></code> / <code class="docutils literal notranslate"><span class="pre">FAIL:</span></code> lines.</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ptest-runner<span class="w"> </span>-t<span class="w"> </span><span class="m">1800</span><span class="w"> </span>optee-test
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><div class="table-wrapper colwidths-given docutils container">
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 30.0%" />
@@ -885,14 +1134,28 @@ xtest<span class="w"> </span>--asym-perf
 <section id="mbed-tls-ptest">
 <h3>Mbed TLS ptest<a class="headerlink" href="#mbed-tls-ptest" title="Link to this heading"></a></h3>
 <p>Runs the Mbed TLS <code class="docutils literal notranslate"><span class="pre">test_suite_*</span></code> programs against the installed library.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ptest-runner<span class="w"> </span>mbedtls
-
-<span class="c1"># Run a single suite directly</span>
-<span class="nb">cd</span><span class="w"> </span>/usr/lib/mbedtls/ptest/tests
-./test_suite_aes.ecb<span class="w"> </span>-v
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-</section>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ptest-runner<span class="w"> </span>mbedtls
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run a single suite directly</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/usr/lib/mbedtls/ptest/tests
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>/usr/lib/mbedtls/ptest/tests$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./test_suite_aes.ecb<span class="w"> </span>-v
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div></section>
 </section>
 </section>
 

@@ -6,24 +6,30 @@ The build system is currently supported on host PCs running Ubuntu 22.04 (LTS).
 Installing Required Packages
 ----------------------------
 
-In order to build and deploy Linux to your ADSP-SC5xx development board you will need to install the following packages on your host PC.
+In order to build and deploy Linux to your ADSP-SC5xx development board you
+will need to install the following packages on your host PC.
 
-.. code-block:: shell
+.. shell::
 
-   sudo apt-get update
-   sudo apt-get install -y gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat libsdl1.2-dev xterm u-boot-tools openssl curl tftpd-hpa python3 zstd libcrypt-dev
+   $sudo apt-get update
+   $sudo apt-get install -y gawk wget git-core diffstat unzip texinfo \
+   $   gcc-multilib build-essential chrpath socat libsdl1.2-dev xterm \
+   $   u-boot-tools openssl curl tftpd-hpa python3 zstd libcrypt-dev
 
 Configure Minicom
 -----------------
 
-In order to communicate with the U-Boot bootloader, a UART connection must be made between the host PC and the development board. It is recommended that you use minicom to do this. Minicom must be configured to connect to U-Boot correctly.
+In order to communicate with the U-Boot bootloader, a UART connection must be
+made between the host PC and the development board. It is recommended that you
+use minicom to do this. Minicom must be configured to connect to U-Boot
+correctly.
 
 On the host PC open a terminal and execute the following commands:
 
-.. code-block:: shell
+.. shell::
 
-   sudo apt-get install -y minicom
-   sudo minicom -s
+   $sudo apt-get install -y minicom
+   $sudo minicom -s
 
 .. code-block:: text
 
@@ -53,7 +59,10 @@ On the host PC open a terminal and execute the following commands:
 
 .. note::
 
-   ``/dev/ttyUSB0`` might not correspond to the serial port of the board on every system. You can determine which ``/dev`` entry your board uses by running ``ls -l /dev/ttyUSB*`` twice, once when the serial port of the board is plugged in, and once when it isn't.
+   ``/dev/ttyUSB0`` might not correspond to the serial port of the board on
+   every system. You can determine which ``/dev`` entry your board uses by
+   running ``ls -l /dev/ttyUSB*`` twice, once when the serial port of the board
+   is plugged in, and once when it isn't.
 
 Configure TFTP Service
 ----------------------
@@ -61,9 +70,9 @@ Configure TFTP Service
 A TFTP server on the host is used to transfer images to the development board.
 Install and configure.
 
-.. code-block:: shell
+.. shell::
 
-   sudo vi /etc/default/tftpd-hpa
+   $sudo vi /etc/default/tftpd-hpa
 
 .. code-block:: text
 
@@ -74,48 +83,50 @@ Install and configure.
    TFTP_OPTIONS="--secure"
    #End of File
 
-.. code-block:: shell
+.. shell::
 
-   sudo mkdir /tftpboot
-   sudo chmod 777 /tftpboot
-   sudo systemctl restart tftpd-hpa
+   $sudo mkdir /tftpboot
+   $sudo chmod 777 /tftpboot
+   $sudo systemctl restart tftpd-hpa
 
 Configure NFS Server
 --------------------
 
-For NFS boot we use the Network File System which is stored in local Ubuntu Host. This is suggested when you do application development. To setup the NFS server:
+For NFS boot we use the Network File System which is stored in local Ubuntu
+Host. This is suggested when you do application development. To setup the NFS
+server:
 
 First, create a directory to store the file system for the target:
 
-.. code-block:: shell
+.. shell::
 
-   sudo mkdir /romfs/
-   sudo chmod 777 /romfs/
+   $sudo mkdir /romfs/
+   $sudo chmod 777 /romfs/
 
 Then, install the required package:
 
-.. code-block:: shell
+.. shell::
 
-   sudo apt-get install nfs-kernel-server
-   sudo vi /etc/exports
+   $sudo apt-get install nfs-kernel-server
+   $sudo vi /etc/exports
 
 Add the following line:
 
-.. code-block:: shell
+.. code-block:: text
 
    /romfs *(rw,sync,no_root_squash,no_subtree_check)
 
 Start the NFS server:
 
-.. code-block:: shell
+.. shell::
 
-   sudo systemctl start nfs-kernel-server
+   $sudo systemctl start nfs-kernel-server
 
 We can verify that the NFS service is running by executing:
 
-.. code-block:: shell
+.. shell::
 
-   sudo systemctl status nfs-kernel-server
+   $sudo systemctl status nfs-kernel-server
 
 The output will indicate that the server is active, i.e.
 
@@ -157,15 +168,15 @@ TFTP server (next-server)   ``192.168.1.30``
 
 First, find the name of the interface that connects to the board:
 
-.. code-block:: shell
+.. shell::
 
-   ip -br link
+   $ip -br link
 
 Give that interface a static IP address. Create a netplan file for it:
 
-.. code-block:: shell
+.. shell::
 
-   sudo vi /etc/netplan/02-board-net.yaml
+   $sudo vi /etc/netplan/02-board-net.yaml
 
 Add the following content. Replace ``enxa0cec8e24382`` with your interface
 name:
@@ -182,22 +193,22 @@ name:
 
 Apply the configuration:
 
-.. code-block:: shell
+.. shell::
 
-   sudo chmod 600 /etc/netplan/02-board-net.yaml
-   sudo netplan apply
+   $sudo chmod 600 /etc/netplan/02-board-net.yaml
+   $sudo netplan apply
 
 Next, install the DHCP server:
 
-.. code-block:: shell
+.. shell::
 
-   sudo apt-get install -y isc-dhcp-server
+   $sudo apt-get install -y isc-dhcp-server
 
 Configure the server to listen only on the interface connected to the board:
 
-.. code-block:: shell
+.. shell::
 
-   sudo vi /etc/default/isc-dhcp-server
+   $sudo vi /etc/default/isc-dhcp-server
 
 .. code-block:: text
 
@@ -208,9 +219,9 @@ Configure the server to listen only on the interface connected to the board:
 
 Configure the subnet and address pool:
 
-.. code-block:: shell
+.. shell::
 
-   sudo vi /etc/dhcp/dhcpd.conf
+   $sudo vi /etc/dhcp/dhcpd.conf
 
 .. code-block:: text
 
@@ -230,22 +241,22 @@ Configure the subnet and address pool:
 
 Enable and restart the DHCP server:
 
-.. code-block:: shell
+.. shell::
 
-   sudo systemctl enable isc-dhcp-server
-   sudo systemctl restart isc-dhcp-server
+   $sudo systemctl enable isc-dhcp-server
+   $sudo systemctl restart isc-dhcp-server
 
 To check that the DHCP server is running, execute:
 
-.. code-block:: shell
+.. shell::
 
-   sudo systemctl status isc-dhcp-server
+   $sudo systemctl status isc-dhcp-server
 
 The output should show that the server is ``active (running)``.
 
-.. code-block:: shell
+.. shell::
 
-   sudo journalctl -u isc-dhcp-server
+   $sudo journalctl -u isc-dhcp-server
 
 In U-Boot, run ``dhcp`` to get an address from the server. 
 
@@ -287,10 +298,10 @@ The simplest setup trusts all traffic that arrives on the network interface
 connected to the board. This covers every boot type. Replace
 ``enxa0cec8e24382`` with your interface name:
 
-.. code-block:: shell
+.. shell::
 
-   sudo ufw allow in on enxa0cec8e24382 to any port 67 proto udp
-   sudo ufw allow in on enxa0cec8e24382 from 192.168.1.0/24
+   $sudo ufw allow in on enxa0cec8e24382 to any port 67 proto udp
+   $sudo ufw allow in on enxa0cec8e24382 from 192.168.1.0/24
 
 The DHCP rule is separate because a board that doesn't have an address yet
 sends its DHCP request from ``0.0.0.0``.
@@ -299,9 +310,9 @@ To open only the ports listed in the table, first give ``rpc.mountd`` a
 fixed port. Otherwise it picks a random port each time it starts. Edit the
 NFS configuration:
 
-.. code-block:: shell
+.. shell::
 
-   sudo vi /etc/nfs.conf
+   $sudo vi /etc/nfs.conf
 
 In the ``[mountd]`` section, set:
 
@@ -312,27 +323,27 @@ In the ``[mountd]`` section, set:
 
 Restart the NFS server and check that ``mountd`` now uses port 20048:
 
-.. code-block:: shell
+.. shell::
 
-   sudo systemctl restart nfs-kernel-server
-   rpcinfo -p | grep mountd
+   $sudo systemctl restart nfs-kernel-server
+   $rpcinfo -p | grep mountd
 
 Then add a rule for each port:
 
-.. code-block:: shell
+.. shell::
 
-   sudo ufw allow in on enxa0cec8e24382 to any port 67 proto udp
-   sudo ufw allow in on enxa0cec8e24382 from 192.168.1.0/24 to any port 69 proto udp
-   sudo ufw allow in on enxa0cec8e24382 from 192.168.1.0/24 to any port 111 proto tcp
-   sudo ufw allow in on enxa0cec8e24382 from 192.168.1.0/24 to any port 2049 proto tcp
-   sudo ufw allow in on enxa0cec8e24382 from 192.168.1.0/24 to any port 8000 proto tcp
-   sudo ufw allow in on enxa0cec8e24382 from 192.168.1.0/24 to any port 20048 proto tcp
+   $sudo ufw allow in on enxa0cec8e24382 to any port 67 proto udp
+   $sudo ufw allow in on enxa0cec8e24382 from 192.168.1.0/24 to any port 69 proto udp
+   $sudo ufw allow in on enxa0cec8e24382 from 192.168.1.0/24 to any port 111 proto tcp
+   $sudo ufw allow in on enxa0cec8e24382 from 192.168.1.0/24 to any port 2049 proto tcp
+   $sudo ufw allow in on enxa0cec8e24382 from 192.168.1.0/24 to any port 8000 proto tcp
+   $sudo ufw allow in on enxa0cec8e24382 from 192.168.1.0/24 to any port 20048 proto tcp
 
 Check the active rules:
 
-.. code-block:: shell
+.. shell::
 
-   sudo ufw status verbose
+   $sudo ufw status verbose
 
 .. note::
 
@@ -344,20 +355,24 @@ Check the active rules:
 Configuring USB permissions for ICE debugger
 --------------------------------------------
 
-In order to allow OpenOCD to use the ICE debugger, we need to provide the user appropriate access via udev.
+In order to allow OpenOCD to use the ICE debugger, we need to provide the user
+appropriate access via udev.
 
-On the host PC create a group called ``adiusb`` and add the user which will be accessing the ICE debugger to it. In this case we will be adding whichever user is currently logged into the session.
+On the host PC create a group called ``adiusb`` and add the user which will be
+accessing the ICE debugger to it. In this case we will be adding whichever user
+is currently logged into the session.
 
-.. code-block:: shell
+.. shell::
 
-   sudo groupadd adiusb
-   sudo usermod -a -G adiusb $USER
+   $sudo groupadd adiusb
+   $sudo usermod -a -G adiusb $USER
 
-We notify udev about permissions to provide this usergroup by adding a rule to it.
+We notify udev about permissions to provide this usergroup by adding a rule to
+it.
 
-.. code-block:: shell
+.. shell::
 
-   sudo vi /etc/udev/rules.d/adi.rules
+   $sudo vi /etc/udev/rules.d/adi.rules
 
 Add the following content to the file
 

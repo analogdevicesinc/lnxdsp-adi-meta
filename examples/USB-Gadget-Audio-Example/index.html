@@ -8,8 +8,8 @@
 
     <title>USB Gadget Audio Example &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8e8a900e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=a3ee7af8" />
-    <script async="async" src="../../_static/app.umd.js?v=048c1170"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=07ad7716" />
+    <script async="async" src="../../_static/app.umd.js?v=2fe15c61"></script>
     <link rel="icon" href="../../_static/icon.svg"/>
     <link rel="index" title="Index" href="../../genindex/" />
     <link rel="search" title="Search" href="../../search/" />
@@ -260,15 +260,21 @@ Content on this topic
 <h1>USB Gadget Audio Example<a class="headerlink" href="#usb-gadget-audio-example" title="Link to this heading"></a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
-<p>This page provides a guide on how to use the USB Gadget Audio on ADSP-SC5XX boards. It provides the capability for the board to be used (and appear to Host PCs) as an audio card.</p>
+<p>This page provides a guide on how to use the USB Gadget Audio on ADSP-SC5XX
+boards. It provides the capability for the board to be used (and appear to Host
+PCs) as an audio card.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The USB Gadget Audio feature can be enabled when following the Getting Started Guides (version 3.0.0 or later). You need to append the following line to the <code class="docutils literal notranslate"><span class="pre">conf/local.conf</span></code> file - <code class="docutils literal notranslate"><span class="pre">DISTRO_FEATURES:append</span> <span class="pre">=</span> <span class="pre">&quot;</span> <span class="pre">adi_usb_gadget_audio&quot;</span></code> - before building the image.</p>
+<p>The USB Gadget Audio feature can be enabled when following the Getting
+Started Guides (version 3.0.0 or later). You need to append the following
+line to the <code class="docutils literal notranslate"><span class="pre">conf/local.conf</span></code> file - <code class="docutils literal notranslate"><span class="pre">DISTRO_FEATURES:append</span> <span class="pre">=</span> <span class="pre">&quot;</span>
+<span class="pre">adi_usb_gadget_audio&quot;</span></code> - before building the image.</p>
 </div>
 </section>
 <section id="hardware-configuration">
 <h2>Hardware Configuration<a class="headerlink" href="#hardware-configuration" title="Link to this heading"></a></h2>
-<p>Connect the USB micro-B plug cable into the USB HS/OTG Device port, as showing below:</p>
+<p>Connect the USB micro-B plug cable into the USB HS/OTG Device port, as shown
+below:</p>
 <a class="reference internal image-reference" href="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/1c72a9cf-90e9-42eb-a5f5-ac0ffc7dc4af"><img alt="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/1c72a9cf-90e9-42eb-a5f5-ac0ffc7dc4af" src="https://github.com/analogdevicesinc/lnxdsp-adi-meta/assets/110021710/1c72a9cf-90e9-42eb-a5f5-ac0ffc7dc4af" width="400" />
 </a>
 </section>
@@ -277,84 +283,146 @@ Content on this topic
 <section id="capture-and-play-on-board">
 <h3>Capture and Play on-board<a class="headerlink" href="#capture-and-play-on-board" title="Link to this heading"></a></h3>
 <p>Type the following into the target board:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>root@adsp-sc589-mini:~#<span class="w"> </span>ls<span class="w"> </span>/dev/snd/
-by-path<span class="w">  </span>controlC0<span class="w">  </span>controlC1<span class="w">  </span>pcmC0D0c<span class="w">  </span>pcmC0D0p<span class="w">  </span>pcmC1D0c<span class="w">  </span>pcmC1D0p<span class="w">  </span>timer
-root@adsp-sc589-mini:~#<span class="w"> </span>modprobe<span class="w"> </span>g_audio<span class="w"> </span><span class="nv">c_srate</span><span class="o">=</span><span class="m">48000</span>
-g_audio<span class="w"> </span>gadget:<span class="w"> </span>Linux<span class="w"> </span>USB<span class="w"> </span>Audio<span class="w"> </span>Gadget,<span class="w"> </span>version:<span class="w"> </span>Feb<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2012</span>
-g_audio<span class="w"> </span>gadget:<span class="w"> </span>g_audio<span class="w"> </span>ready
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p>A new sound card <code class="docutils literal notranslate"><span class="pre">UAC2Gadget</span></code> is generated both for playback and capture on the EZ-KIT board:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>root@adsp-sc589-mini:~#<span class="w"> </span>arecord<span class="w"> </span>-l
-****<span class="w"> </span>List<span class="w"> </span>of<span class="w"> </span>CAPTURE<span class="w"> </span>Hardware<span class="w"> </span>Devices<span class="w"> </span>****
-card<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>sc5xxasoccard<span class="w"> </span><span class="o">[</span>sc5xx-asoc-card<span class="o">]</span>,<span class="w"> </span>device<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>adau1761<span class="w"> </span>adau-hifi-0<span class="w"> </span><span class="o">[]</span>
-<span class="w">  </span>Subdevices:<span class="w"> </span><span class="m">1</span>/1
-<span class="w">  </span>Subdevice<span class="w"> </span><span class="c1">#0: subdevice #0</span>
-card<span class="w"> </span><span class="m">1</span>:<span class="w"> </span>UAC2Gadget<span class="w"> </span><span class="o">[</span>UAC2_Gadget<span class="o">]</span>,<span class="w"> </span>device<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>UAC2<span class="w"> </span>PCM<span class="w"> </span><span class="o">[</span>UAC2<span class="w"> </span>PCM<span class="o">]</span>
-<span class="w">  </span>Subdevices:<span class="w"> </span><span class="m">1</span>/1
-<span class="w">  </span>Subdevice<span class="w"> </span><span class="c1">#0: subdevice #0</span>
-root@adsp-sc589-mini:~#<span class="w"> </span>aplay<span class="w"> </span>-l
-****<span class="w"> </span>List<span class="w"> </span>of<span class="w"> </span>PLAYBACK<span class="w"> </span>Hardware<span class="w"> </span>Devices<span class="w"> </span>****
-card<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>sc5xxasoccard<span class="w"> </span><span class="o">[</span>sc5xx-asoc-card<span class="o">]</span>,<span class="w"> </span>device<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>adau1761<span class="w"> </span>adau-hifi-0<span class="w"> </span><span class="o">[]</span>
-<span class="w">  </span>Subdevices:<span class="w"> </span><span class="m">1</span>/1
-<span class="w">  </span>Subdevice<span class="w"> </span><span class="c1">#0: subdevice #0</span>
-card<span class="w"> </span><span class="m">1</span>:<span class="w"> </span>UAC2Gadget<span class="w"> </span><span class="o">[</span>UAC2_Gadget<span class="o">]</span>,<span class="w"> </span>device<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>UAC2<span class="w"> </span>PCM<span class="w"> </span><span class="o">[</span>UAC2<span class="w"> </span>PCM<span class="o">]</span>
-<span class="w">  </span>Subdevices:<span class="w"> </span><span class="m">1</span>/1
-<span class="w">  </span>Subdevice<span class="w"> </span><span class="c1">#0: subdevice #0</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>/dev/snd/
 </pre></div>
 </div>
-<p>Record audio data from the new generated UAC2 sound card (arecord <code class="docutils literal notranslate"><span class="pre">card</span> <span class="pre">1</span></code>, <code class="docutils literal notranslate"><span class="pre">device</span> <span class="pre">0</span></code>) and play the recorded data via normal playback device (aplay <code class="docutils literal notranslate"><span class="pre">card</span> <span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">device</span> <span class="pre">1</span></code>)</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>root@adsp-sc589-mini:~#<span class="w"> </span>arecord<span class="w"> </span>-f<span class="w"> </span>dat<span class="w"> </span>-t<span class="w"> </span>wav<span class="w"> </span>-D<span class="w"> </span>hw:1,0<span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span>-r<span class="w"> </span><span class="m">48000</span><span class="w"> </span>-f<span class="w"> </span>S16_LE<span class="w"> </span><span class="p">|</span>aplay<span class="w"> </span>-D<span class="w"> </span>hw:0,0
-Recording<span class="w"> </span>WAVE<span class="w"> </span><span class="s1">'stdin'</span><span class="w"> </span>:<span class="w"> </span>Signed<span class="w"> </span><span class="m">16</span><span class="w"> </span>bit<span class="w"> </span>Little<span class="w"> </span>Endian,<span class="w"> </span>Rate<span class="w"> </span><span class="m">48000</span><span class="w"> </span>Hz,<span class="w"> </span>Stereo
-Playing<span class="w"> </span>WAVE<span class="w"> </span><span class="s1">'stdin'</span><span class="w"> </span>:<span class="w"> </span>Signed<span class="w"> </span><span class="m">16</span><span class="w"> </span>bit<span class="w"> </span>Little<span class="w"> </span>Endian,<span class="w"> </span>Rate<span class="w"> </span><span class="m">48000</span><span class="w"> </span>Hz,<span class="w"> </span>Stereo
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>by-path  controlC0  controlC1  pcmC0D0c  pcmC0D0p  pcmC1D0c  pcmC1D0p  timer
 </pre></div>
 </div>
-</section>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>modprobe<span class="w"> </span>g_audio<span class="w"> </span><span class="nv">c_srate</span><span class="o">=</span><span class="m">48000</span>
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>g_audio gadget: Linux USB Audio Gadget, version: Feb 2, 2012
+g_audio gadget: g_audio ready
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>A new sound card <code class="docutils literal notranslate"><span class="pre">UAC2Gadget</span></code> is generated both for playback and capture on
+the EZ-KIT board:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arecord<span class="w"> </span>-l
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>**** List of CAPTURE Hardware Devices ****
+card 0: sc5xxasoccard [sc5xx-asoc-card], device 0: adau1761 adau-hifi-0 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: UAC2Gadget [UAC2_Gadget], device 0: UAC2 PCM [UAC2 PCM]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>aplay<span class="w"> </span>-l
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>**** List of PLAYBACK Hardware Devices ****
+card 0: sc5xxasoccard [sc5xx-asoc-card], device 0: adau1761 adau-hifi-0 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: UAC2Gadget [UAC2_Gadget], device 0: UAC2 PCM [UAC2 PCM]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>Record audio data from the new generated UAC2 sound card (arecord <code class="docutils literal notranslate"><span class="pre">card</span> <span class="pre">1</span></code>,
+<code class="docutils literal notranslate"><span class="pre">device</span> <span class="pre">0</span></code>) and play the recorded data via normal playback device (aplay
+<code class="docutils literal notranslate"><span class="pre">card</span> <span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">device</span> <span class="pre">1</span></code>)</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arecord<span class="w"> </span>-f<span class="w"> </span>dat<span class="w"> </span>-t<span class="w"> </span>wav<span class="w"> </span>-D<span class="w"> </span>hw:1,0<span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span>-r<span class="w"> </span><span class="m">48000</span><span class="w"> </span>-f<span class="w"> </span>S16_LE<span class="w"> </span><span class="p">|</span><span class="w"> </span>aplay<span class="w"> </span>-D<span class="w"> </span>hw:0,0
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Recording WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
+Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div></section>
 <section id="play-audio-over-usb-on-host">
 <h3>Play audio over USB on Host<a class="headerlink" href="#play-audio-over-usb-on-host" title="Link to this heading"></a></h3>
-<p>With following command you should be able to see the USB Gadget Audio device is there on your host PC:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>test@madara:~$<span class="w"> </span>lsusb
-Bus<span class="w"> </span><span class="m">002</span><span class="w"> </span>Device<span class="w"> </span><span class="m">033</span>:<span class="w"> </span>ID<span class="w"> </span>1d6b:0101<span class="w"> </span>Linux<span class="w"> </span>Foundation<span class="w"> </span>Audio<span class="w"> </span>Gadget
+<p>With following command you should be able to see the USB Gadget Audio device is
+there on your host PC:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p>Then, list the available sound card on host PC, to decide which sound card is associated with the EZ-KIT board</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>test@madara:~$<span class="w"> </span>cat<span class="w"> </span>/proc/asound/cards
-<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">[</span>PCH<span class="w">            </span><span class="o">]</span>:<span class="w"> </span>HDA-Intel<span class="w"> </span>-<span class="w"> </span>HDA<span class="w"> </span>Intel<span class="w"> </span>PCH
-<span class="w">                      </span>HDA<span class="w"> </span>Intel<span class="w"> </span>PCH<span class="w"> </span>at<span class="w"> </span>0xf7d00000<span class="w"> </span>irq<span class="w"> </span><span class="m">28</span>
-<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">[</span>Gadget<span class="w">         </span><span class="o">]</span>:<span class="w"> </span>USB-Audio<span class="w"> </span>-<span class="w"> </span>Linux<span class="w"> </span>USB<span class="w"> </span>Audio<span class="w"> </span>Gadget
-<span class="w">                      </span>Linux<span class="w"> </span><span class="m">4</span>.19.0-yocto-standard<span class="w"> </span>with<span class="w"> </span>musb-hdrc<span class="w"> </span>Linux<span class="w"> </span>USB<span class="w"> </span>Audio<span class="w"> </span>Gadget<span class="w"> </span>at<span class="w"> </span>usb-0000:0
-
-test@madara:~$<span class="w"> </span>aplay<span class="w"> </span>-l
-****<span class="w"> </span>List<span class="w"> </span>of<span class="w"> </span>PLAYBACK<span class="w"> </span>Hardware<span class="w"> </span>Devices<span class="w"> </span>****
-card<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>PCH<span class="w"> </span><span class="o">[</span>HDA<span class="w"> </span>Intel<span class="w"> </span>PCH<span class="o">]</span>,<span class="w"> </span>device<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>CX20641<span class="w"> </span>Analog<span class="w"> </span><span class="o">[</span>CX20641<span class="w"> </span>Analog<span class="o">]</span>
-<span class="w">  </span>Subdevices:<span class="w"> </span><span class="m">1</span>/1
-<span class="w">  </span>Subdevice<span class="w"> </span><span class="c1">#0: subdevice #0</span>
-card<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>PCH<span class="w"> </span><span class="o">[</span>HDA<span class="w"> </span>Intel<span class="w"> </span>PCH<span class="o">]</span>,<span class="w"> </span>device<span class="w"> </span><span class="m">3</span>:<span class="w"> </span>HDMI<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">[</span>HDMI<span class="w"> </span><span class="m">0</span><span class="o">]</span>
-<span class="w">  </span>Subdevices:<span class="w"> </span><span class="m">1</span>/1
-<span class="w">  </span>Subdevice<span class="w"> </span><span class="c1">#0: subdevice #0</span>
-card<span class="w"> </span><span class="m">1</span>:<span class="w"> </span>Gadget<span class="w"> </span><span class="o">[</span>Linux<span class="w"> </span>USB<span class="w"> </span>Audio<span class="w"> </span>Gadget<span class="o">]</span>,<span class="w"> </span>device<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>USB<span class="w"> </span>Audio<span class="w"> </span><span class="o">[</span>USB<span class="w"> </span>Audio<span class="o">]</span>
-<span class="w">  </span>Subdevices:<span class="w"> </span><span class="m">1</span>/1
-<span class="w">  </span>Subdevice<span class="w"> </span><span class="c1">#0: subdevice #0</span>
-test@madara:~$<span class="w"> </span>arecord<span class="w"> </span>-l
-****<span class="w"> </span>List<span class="w"> </span>of<span class="w"> </span>CAPTURE<span class="w"> </span>Hardware<span class="w"> </span>Devices<span class="w"> </span>****
-card<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>PCH<span class="w"> </span><span class="o">[</span>HDA<span class="w"> </span>Intel<span class="w"> </span>PCH<span class="o">]</span>,<span class="w"> </span>device<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>CX20641<span class="w"> </span>Analog<span class="w"> </span><span class="o">[</span>CX20641<span class="w"> </span>Analog<span class="o">]</span>
-<span class="w">  </span>Subdevices:<span class="w"> </span><span class="m">1</span>/1
-<span class="w">  </span>Subdevice<span class="w"> </span><span class="c1">#0: subdevice #0</span>
-card<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>PCH<span class="w"> </span><span class="o">[</span>HDA<span class="w"> </span>Intel<span class="w"> </span>PCH<span class="o">]</span>,<span class="w"> </span>device<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>CX20641<span class="w"> </span>Alt<span class="w"> </span>Analog<span class="w"> </span><span class="o">[</span>CX20641<span class="w"> </span>Alt<span class="w"> </span>Analog<span class="o">]</span>
-<span class="w">  </span>Subdevices:<span class="w"> </span><span class="m">1</span>/1
-<span class="w">  </span>Subdevice<span class="w"> </span><span class="c1">#0: subdevice #0</span>
-card<span class="w"> </span><span class="m">1</span>:<span class="w"> </span>Gadget<span class="w"> </span><span class="o">[</span>Linux<span class="w"> </span>USB<span class="w"> </span>Audio<span class="w"> </span>Gadget<span class="o">]</span>,<span class="w"> </span>device<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>USB<span class="w"> </span>Audio<span class="w"> </span><span class="o">[</span>USB<span class="w"> </span>Audio<span class="o">]</span>
-<span class="w">  </span>Subdevices:<span class="w"> </span><span class="m">1</span>/1
-<span class="w">  </span>Subdevice<span class="w"> </span><span class="c1">#0: subdevice #0</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lsusb
 </pre></div>
 </div>
-<p>USB Audio Gadget is the sound card 1 (aplay <code class="docutils literal notranslate"><span class="pre">card</span> <span class="pre">1</span></code>, <code class="docutils literal notranslate"><span class="pre">device</span> <span class="pre">0</span></code>).</p>
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Bus 002 Device 033: ID 1d6b:0101 Linux Foundation Audio Gadget
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>Then, list the available sound card on host PC, to decide which sound card is
+associated with the EZ-KIT board:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span>/proc/asound/cards
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>0 [PCH            ]: HDA-Intel - HDA Intel PCH
+                     HDA Intel PCH at 0xf7d00000 irq 28
+1 [Gadget         ]: USB-Audio - Linux USB Audio Gadget
+                     Linux 4.19.0-yocto-standard with musb-hdrc Linux USB Audio Gadget at usb-0000:0
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>aplay<span class="w"> </span>-l
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>**** List of PLAYBACK Hardware Devices ****
+card 0: PCH [HDA Intel PCH], device 0: CX20641 Analog [CX20641 Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: PCH [HDA Intel PCH], device 3: HDMI 0 [HDMI 0]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: Gadget [Linux USB Audio Gadget], device 0: USB Audio [USB Audio]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arecord<span class="w"> </span>-l
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>**** List of CAPTURE Hardware Devices ****
+card 0: PCH [HDA Intel PCH], device 0: CX20641 Analog [CX20641 Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: PCH [HDA Intel PCH], device 2: CX20641 Alt Analog [CX20641 Alt Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: Gadget [Linux USB Audio Gadget], device 0: USB Audio [USB Audio]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>USB Audio Gadget is the sound card 1 (aplay <code class="docutils literal notranslate"><span class="pre">card</span> <span class="pre">1</span></code>, <code class="docutils literal notranslate"><span class="pre">device</span> <span class="pre">0</span></code>).</p>
 <p>We can play an audio file:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>test@madara:~$<span class="w"> </span>aplay<span class="w"> </span>-D<span class="w"> </span>hw:1,0<span class="w"> </span>sample_s16_le.wav
-Playing<span class="w"> </span>WAVE<span class="w"> </span><span class="s1">'sample_s16_le.wav'</span><span class="w"> </span>:<span class="w"> </span>Signed<span class="w"> </span><span class="m">16</span><span class="w"> </span>bit<span class="w"> </span>Little<span class="w"> </span>Endian,<span class="w"> </span>Rate<span class="w"> </span><span class="m">48000</span><span class="w"> </span>Hz,<span class="w"> </span>Stereo
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p>and hear the music playing out from the headset.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>aplay<span class="w"> </span>-D<span class="w"> </span>hw:1,0<span class="w"> </span>sample_s16_le.wav
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Playing WAVE 'sample_s16_le.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>and hear the music playing out from the headset.</p>
 </section>
 </section>
 </section>

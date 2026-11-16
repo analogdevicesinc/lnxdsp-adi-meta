@@ -1,7 +1,8 @@
 Development
 ===========
 
-This section provides guides and resources for developing applications and customizing Linux for ADSP-SC5xx processors.
+This section provides guides and resources for developing applications and
+customizing Linux for ADSP-SC5xx processors.
 
 * :doc:`Boot Sequence <Boot-Sequence>`: Understand the boot sequence of ADSP-SC5xx platforms, including boot ROM, boot modes, and SHARC core initialization
 * :doc:`U-Boot Environment <U‐Boot-Environment>`: U-Boot environment variables, configuration, and setting boot methods

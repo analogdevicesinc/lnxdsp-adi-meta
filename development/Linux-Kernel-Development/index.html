@@ -8,8 +8,8 @@
 
     <title>Linux Kernel Development &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8e8a900e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=a3ee7af8" />
-    <script async="async" src="../../_static/app.umd.js?v=048c1170"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=07ad7716" />
+    <script async="async" src="../../_static/app.umd.js?v=2fe15c61"></script>
     <link rel="icon" href="../../_static/icon.svg"/>
     <link rel="index" title="Index" href="../../genindex/" />
     <link rel="search" title="Search" href="../../search/" />
@@ -267,8 +267,14 @@ Content on this topic
 <h1>Linux Kernel Development<a class="headerlink" href="#linux-kernel-development" title="Link to this heading"></a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
-<p>This guide helps you develop and customise the Linux kernel for ADSP-SC5xx processors. Whether you’re debugging driver issues, adding new hardware support, or optimizing performance, this page walks you through compiling and rebuilding the kernel outside of the full Yocto build system.</p>
-<p>While Yocto automates the entire build process, direct kernel development allows for faster iteration during development. You can quickly compile changes, test them on your hardware, and integrate them back into your Yocto layer once they’re stable.</p>
+<p>This guide helps you develop and customise the Linux kernel for ADSP-SC5xx
+processors. Whether you’re debugging driver issues, adding new hardware
+support, or optimizing performance, this page walks you through compiling and
+rebuilding the kernel outside of the full Yocto build system.</p>
+<p>While Yocto automates the entire build process, direct kernel development
+allows for faster iteration during development. You can quickly compile
+changes, test them on your hardware, and integrate them back into your Yocto
+layer once they’re stable.</p>
 <p><strong>What you’ll learn:</strong></p>
 <ul class="simple">
 <li><p>How to obtain and compile the ADSP Linux kernel source</p></li>
@@ -295,50 +301,104 @@ Content on this topic
 <section id="obtaining-the-kernel-source">
 <h2>Obtaining the Kernel Source<a class="headerlink" href="#obtaining-the-kernel-source" title="Link to this heading"></a></h2>
 <p>Clone the ADSP Linux kernel repository:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/analogdevicesinc/lnxdsp-linux.git
-<span class="nb">cd</span><span class="w"> </span>lnxdsp-linux
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-</section>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>-b<span class="w"> </span>adsp-6.18.31-y<span class="w"> </span>https://github.com/analogdevicesinc/linux.git
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>linux
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div></section>
 <section id="building-the-kernel">
 <h2>Building the Kernel<a class="headerlink" href="#building-the-kernel" title="Link to this heading"></a></h2>
 <section id="configure-for-your-board">
 <h3>Configure for Your Board<a class="headerlink" href="#configure-for-your-board" title="Link to this heading"></a></h3>
 <p>Load the default configuration for your target board.</p>
 <p><strong>For ADSP-SC598 (ARM64):</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">ARCH</span><span class="o">=</span>arm64<span class="w"> </span><span class="nv">CROSS_COMPILE</span><span class="o">=</span>aarch64-linux-gnu-<span class="w"> </span>make<span class="w"> </span>sc598-som-ezkit_defconfig
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p><strong>For ADSP-SC589-MINI (ARM):</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">ARCH</span><span class="o">=</span>arm<span class="w"> </span><span class="nv">CROSS_COMPILE</span><span class="o">=</span>arm-linux-gnueabi-<span class="w"> </span>make<span class="w"> </span>sc589-mini_defconfig
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ARCH</span><span class="o">=</span>arm64<span class="w"> </span><span class="nv">CROSS_COMPILE</span><span class="o">=</span>aarch64-linux-gnu-<span class="w"> </span>make<span class="w"> </span>sc598-som-ezkit_defconfig
 </pre></div>
 </div>
-</section>
+<div class="clear-left"></div></div></div><p><strong>For ADSP-SC589-MINI (ARM):</strong></p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ARCH</span><span class="o">=</span>arm<span class="w"> </span><span class="nv">CROSS_COMPILE</span><span class="o">=</span>arm-linux-gnueabi-<span class="w"> </span>make<span class="w"> </span>sc589-mini_defconfig
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div></section>
 <section id="compile-kernel-modules-and-device-trees">
 <h3>Compile Kernel, Modules, and Device Trees<a class="headerlink" href="#compile-kernel-modules-and-device-trees" title="Link to this heading"></a></h3>
 <p><strong>For ADSP-SC598 (ARM64):</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">ARCH</span><span class="o">=</span>arm64<span class="w"> </span><span class="nv">CROSS_COMPILE</span><span class="o">=</span>aarch64-linux-gnu-<span class="w"> </span>make<span class="w"> </span>-j<span class="sb">`</span>nproc<span class="sb">`</span><span class="w"> </span>Image.gz<span class="w"> </span>modules<span class="w"> </span>dtbs
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p><strong>For ADSP-SC589 (ARM):</strong></p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">ARCH</span><span class="o">=</span>arm<span class="w"> </span><span class="nv">CROSS_COMPILE</span><span class="o">=</span>arm-linux-gnueabi-<span class="w"> </span>make<span class="w"> </span>-j<span class="sb">`</span>nproc<span class="sb">`</span><span class="w"> </span>zImage<span class="w"> </span>modules<span class="w"> </span>dtbs
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ARCH</span><span class="o">=</span>arm64<span class="w"> </span><span class="nv">CROSS_COMPILE</span><span class="o">=</span>aarch64-linux-gnu-<span class="w"> </span>make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span><span class="w"> </span>Image.gz<span class="w"> </span>modules<span class="w"> </span>dtbs
 </pre></div>
 </div>
-</section>
+<div class="clear-left"></div></div></div><p><strong>For ADSP-SC589 (ARM):</strong></p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ARCH</span><span class="o">=</span>arm<span class="w"> </span><span class="nv">CROSS_COMPILE</span><span class="o">=</span>arm-linux-gnueabi-<span class="w"> </span>make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span><span class="w"> </span>zImage<span class="w"> </span>modules<span class="w"> </span>dtbs
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div></section>
 </section>
 <section id="creating-a-fitimage">
 <h2>Creating a fitImage<a class="headerlink" href="#creating-a-fitimage" title="Link to this heading"></a></h2>
-<p>The default boot format used is fitImage. Here’s how to rebuild a fitImage with your newly compiled kernel:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>new_fit_image
-<span class="nb">cd</span><span class="w"> </span>new_fit_image
-cp<span class="w"> </span>&lt;builddir&gt;/tmp/deploy/images/adsp-sc598-som-ezkit/fit-image.its<span class="w"> </span>./
-cp<span class="w"> </span>&lt;builddir&gt;/tmp/deploy/images/adsp-sc598-som-ezkit/adsp-sc5xx-ramdisk-adsp-sc598-som-ezkit.cpio.gz<span class="w"> </span>./
-cp<span class="w"> </span>&lt;kernel_builddir&gt;/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtb<span class="w"> </span>./
-cp<span class="w"> </span>&lt;kernel_builddir&gt;/arch/arm64/boot/Image.gz<span class="w"> </span>./
-mkimage<span class="w"> </span>-f<span class="w"> </span>fit-image.its<span class="w"> </span>fitImage
+<p>The default boot format used is fitImage. Here’s how to rebuild a fitImage with
+your newly compiled kernel:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p>Boot the fitImage using your preferred boot method.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>new_fit_image
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>new_fit_image
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~/new_fit_image$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>&lt;builddir&gt;/tmp/deploy/images/adsp-sc598-som-ezkit/fit-image.its<span class="w"> </span>./
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~/new_fit_image$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>&lt;builddir&gt;/tmp/deploy/images/adsp-sc598-som-ezkit/adsp-sc5xx-ramdisk-adsp-sc598-som-ezkit.cpio.gz<span class="w"> </span>./
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~/new_fit_image$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>&lt;kernel_builddir&gt;/arch/arm64/boot/dts/adi/sc598-som-ezkit.dtb<span class="w"> </span>./
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~/new_fit_image$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>&lt;kernel_builddir&gt;/arch/arm64/boot/Image.gz<span class="w"> </span>./
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~/new_fit_image$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkimage<span class="w"> </span>-f<span class="w"> </span>fit-image.its<span class="w"> </span>fitImage
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>Boot the fitImage using your preferred boot method.</p>
 </section>
 <section id="integrating-changes">
 <h2>Integrating Changes<a class="headerlink" href="#integrating-changes" title="Link to this heading"></a></h2>
@@ -361,7 +421,8 @@ mkimage<span class="w"> </span>-f<span class="w"> </span>fit-image.its<span clas
 </ol>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>For persistent changes across builds, integrate your modifications into your Yocto layer rather than maintaining manual builds.</p>
+<p>For persistent changes across builds, integrate your modifications into your
+Yocto layer rather than maintaining manual builds.</p>
 </div>
 </section>
 </section>

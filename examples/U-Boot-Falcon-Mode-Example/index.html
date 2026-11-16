@@ -8,8 +8,8 @@
 
     <title>U-Boot Falcon Mode Example &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8e8a900e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=a3ee7af8" />
-    <script async="async" src="../../_static/app.umd.js?v=048c1170"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=07ad7716" />
+    <script async="async" src="../../_static/app.umd.js?v=2fe15c61"></script>
     <link rel="icon" href="../../_static/icon.svg"/>
     <link rel="index" title="Index" href="../../genindex/" />
     <link rel="search" title="Search" href="../../search/" />
@@ -277,10 +277,12 @@ Content on this topic
 <h1>U-Boot Falcon Mode Example<a class="headerlink" href="#u-boot-falcon-mode-example" title="Link to this heading"></a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
-<p>This page provides instructions for using U-Boot Falcon Mode and ADI Fastboot on ADSP-SC59x boards.</p>
+<p>This page provides instructions for using U-Boot Falcon Mode and ADI Fastboot
+on ADSP-SC59x boards.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The Falcon Mode feature is supported on Linux for ADSP-SC5xx Processors version 3.0.0 and later, and on SC59x platforms.</p>
+<p>The Falcon Mode feature is supported on Linux for ADSP-SC5xx Processors
+version 3.0.0 and later, and on SC59x platforms.</p>
 </div>
 <section id="what-is-falcon-mode">
 <h3>What is Falcon Mode?<a class="headerlink" href="#what-is-falcon-mode" title="Link to this heading"></a></h3>
@@ -298,31 +300,43 @@ Content on this topic
 <h2>Building U-Boot with Falcon Mode<a class="headerlink" href="#building-u-boot-with-falcon-mode" title="Link to this heading"></a></h2>
 <section id="step-1-configure-build-system">
 <h3>Step 1: Configure Build System<a class="headerlink" href="#step-1-configure-build-system" title="Link to this heading"></a></h3>
-<p>After fetching the sources as described in the Getting Started guides, open a kas shell:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>.<span class="w"> </span>.venv/bin/activate
-<span class="nv">KAS_MACHINE</span><span class="o">=</span>adsp-sc598-som-ezkit<span class="w"> </span>kas<span class="w"> </span>shell<span class="w"> </span>config/kas/adsp-sc5xx.yml
+<p>After fetching the sources as described in the Getting Started guides, open a
+kas shell:</p>
+<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<p>The shell starts in the <code class="docutils literal notranslate"><span class="pre">build</span></code> directory with BitBake configured.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>.<span class="w"> </span>.venv/bin/activate
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">KAS_MACHINE</span><span class="o">=</span>adsp-sc598-som-ezkit<span class="w"> </span>kas<span class="w"> </span>shell<span class="w"> </span>config/kas/adsp-sc5xx.yml
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>The shell starts in the <code class="docutils literal notranslate"><span class="pre">build</span></code> directory with BitBake configured.</p>
 </section>
 <section id="step-2-enable-falcon-mode">
 <h3>Step 2: Enable Falcon Mode<a class="headerlink" href="#step-2-enable-falcon-mode" title="Link to this heading"></a></h3>
 <p>Add the following lines to <code class="docutils literal notranslate"><span class="pre">conf/auto.conf</span></code> so kas preserves them:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>MACHINE_FEATURES:remove<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">" spl"</span>
-MACHINE_FEATURES:append<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">" falcon"</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MACHINE_FEATURES</span><span class="p">:</span><span class="n">remove</span> <span class="o">=</span> <span class="s2">" spl"</span>
+<span class="n">MACHINE_FEATURES</span><span class="p">:</span><span class="n">append</span> <span class="o">=</span> <span class="s2">" falcon"</span>
 </pre></div>
 </div>
 </section>
 <section id="step-3-build-and-flash">
 <h3>Step 3: Build and Flash<a class="headerlink" href="#step-3-build-and-flash" title="Link to this heading"></a></h3>
-<p>Proceed with building and flashing the image as described in the Getting Started guides.</p>
+<p>Proceed with building and flashing the image as described in the Getting
+Started guides.</p>
 </section>
 </section>
 <section id="booting-with-falcon-mode">
 <h2>Booting with Falcon Mode<a class="headerlink" href="#booting-with-falcon-mode" title="Link to this heading"></a></h2>
 <section id="default-falcon-mode-behavior">
 <h3>Default Falcon Mode Behavior<a class="headerlink" href="#default-falcon-mode-behavior" title="Link to this heading"></a></h3>
-<p>When U-Boot with Falcon Mode support is flashed onto the board, the default behavior is to boot directly from SPL using the configured boot method (typically SPI boot):</p>
+<p>When U-Boot with Falcon Mode support is flashed onto the board, the default
+behavior is to boot directly from SPL using the configured boot method
+(typically SPI boot):</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>U-Boot SPL 2020.10 (Apr 12 2023 - 18:48:14 +0000)
 ADI Boot Mode: 0x1 (QSPI Master)
 Trying to boot from SPI
@@ -356,7 +370,8 @@ Verifying Hash Integrity ... sha1+ sha1,rsa2048:dev- OK
 </section>
 <section id="fallback-to-u-boot-proper">
 <h3>Fallback to U-Boot Proper<a class="headerlink" href="#fallback-to-u-boot-proper" title="Link to this heading"></a></h3>
-<p>You can bypass Falcon Mode and fall back to full U-Boot by holding down the push button <code class="docutils literal notranslate"><span class="pre">PB1</span></code> on the carrier board during reset/boot:</p>
+<p>You can bypass Falcon Mode and fall back to full U-Boot by holding down the
+push button <code class="docutils literal notranslate"><span class="pre">PB1</span></code> on the carrier board during reset/boot:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>U-Boot SPL 2020.10 (Apr 12 2023 - 18:48:14 +0000)
 Pushbutton helding during boot -- entering U-Boot ProperADI Boot Mode: 0x1 (QSPI Master)
 Trying to boot from BOOTROM
@@ -384,7 +399,9 @@ Hit any key to stop autoboot:  0
 <h2>ADI Fastboot<a class="headerlink" href="#adi-fastboot" title="Link to this heading"></a></h2>
 <section id="overview">
 <h3>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h3>
-<p>Yocto release 5.0.0 introduces ADI Fastboot, which combines U-Boot Falcon Mode with kernel modifications to achieve the fastest possible boot times, enabling hardware initialization and userspace application execution with minimal delay.</p>
+<p>Yocto release 5.0.0 introduces ADI Fastboot, which combines U-Boot Falcon Mode
+with kernel modifications to achieve the fastest possible boot times, enabling
+hardware initialization and userspace application execution with minimal delay.</p>
 <p><strong>Currently supported boards:</strong></p>
 <ul class="simple">
 <li><p>ADSP-SC598-SOM-EZKIT</p></li>
@@ -392,17 +409,22 @@ Hit any key to stop autoboot:  0
 </section>
 <section id="u-boot-configuration">
 <h3>U-Boot Configuration<a class="headerlink" href="#u-boot-configuration" title="Link to this heading"></a></h3>
-<p>SOMs with the EZKIT carrier default to using OSPI flash (device 0 on bus 0) for booting, instead of the standard QSPI configuration present on the SOM. This is coupled with DMA and maximum clock frequencies to achieve extremely fast transactions.</p>
-<p>Flash the OSPI on the EZKIT carrier via U-Boot. Once U-Boot is loaded via GDB, execute:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">=</span>&gt;<span class="w"> </span>run<span class="w"> </span><span class="nv">update_spi_uboot_only</span>
-<span class="o">=</span>&gt;<span class="w"> </span>setenv<span class="w"> </span>sfdev<span class="w"> </span><span class="m">0</span>:0<span class="p">;</span><span class="w"> </span>run<span class="w"> </span>update_spi_fit
+<p>SOMs with the EZKIT carrier default to using OSPI flash (device 0 on bus 0) for
+booting, instead of the standard QSPI configuration present on the SOM. This is
+coupled with DMA and maximum clock frequencies to achieve extremely fast
+transactions.</p>
+<p>Flash the OSPI on the EZKIT carrier via U-Boot. Once U-Boot is loaded via GDB,
+execute:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">=&gt; run update_spi_uboot_only</span>
+<span class="go">=&gt; setenv sfdev 0:0; run update_spi_fit</span>
 </pre></div>
 </div>
 <p>This will flash U-Boot to QSPI and the fitImage to OSPI.</p>
 </section>
 <section id="kernel-configuration">
 <h3>Kernel Configuration<a class="headerlink" href="#kernel-configuration" title="Link to this heading"></a></h3>
-<p>The Linux kernel has been trimmed to achieve minimal boot time. The following drivers and devices are disabled:</p>
+<p>The Linux kernel has been trimmed to achieve minimal boot time. The following
+drivers and devices are disabled:</p>
 <ul class="simple">
 <li><p>Crypto (CRC and PKTE)</p></li>
 <li><p>SHARC (both cores and remoteproc)</p></li>
@@ -620,7 +642,8 @@ Hit any key to stop autoboot:  0
 [2025-08-08 12:17:07.929] adsp-sc598-som-ezkit login:
 </pre></div>
 </div>
-<p><strong>Expected boot time:</strong> Approximately 3-4 seconds after powering on or resetting the board.</p>
+<p><strong>Expected boot time:</strong> Approximately 3-4 seconds after powering on or
+resetting the board.</p>
 </section>
 </section>
 <section id="references">
