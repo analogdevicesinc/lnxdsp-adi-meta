@@ -191,6 +191,11 @@ still fetches that commit. ``${AUTOREV}`` builds the latest commit on your
 branch. To build a fixed commit instead, set ``SRCREV:pn-u-boot-adi`` and
 ``SRCREV:pn-linux-adi`` to that commit hash.
 
+The kernel build checks that the source matches ``LINUX_VERSION`` from the
+``linux-adi`` recipe. If your branch is based on a different kernel version,
+also set ``LINUX_VERSION:pn-linux-adi`` to that version (for example
+``"6.12.0"``), otherwise ``do_kernel_version_sanity_check`` fails.
+
 Step 4: Build with Custom Repositories
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

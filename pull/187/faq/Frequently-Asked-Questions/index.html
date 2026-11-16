@@ -8,8 +8,8 @@
 
     <title>Frequently Asked Questions &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8e8a900e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=a3ee7af8" />
-    <script async="async" src="../../_static/app.umd.js?v=048c1170"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=07ad7716" />
+    <script async="async" src="../../_static/app.umd.js?v=2fe15c61"></script>
     <link rel="icon" href="../../_static/icon.svg"/>
     <link rel="index" title="Index" href="../../genindex/" />
     <link rel="search" title="Search" href="../../search/" />
@@ -492,6 +492,10 @@ names as needed.</p>
 still fetches that commit. <code class="docutils literal notranslate"><span class="pre">${AUTOREV}</span></code> builds the latest commit on your
 branch. To build a fixed commit instead, set <code class="docutils literal notranslate"><span class="pre">SRCREV:pn-u-boot-adi</span></code> and
 <code class="docutils literal notranslate"><span class="pre">SRCREV:pn-linux-adi</span></code> to that commit hash.</p>
+<p>The kernel build checks that the source matches <code class="docutils literal notranslate"><span class="pre">LINUX_VERSION</span></code> from the
+<code class="docutils literal notranslate"><span class="pre">linux-adi</span></code> recipe. If your branch is based on a different kernel version,
+also set <code class="docutils literal notranslate"><span class="pre">LINUX_VERSION:pn-linux-adi</span></code> to that version (for example
+<code class="docutils literal notranslate"><span class="pre">&quot;6.12.0&quot;</span></code>), otherwise <code class="docutils literal notranslate"><span class="pre">do_kernel_version_sanity_check</span></code> fails.</p>
 </section>
 <section id="step-4-build-with-custom-repositories">
 <h3>Step 4: Build with Custom Repositories<a class="headerlink" href="#step-4-build-with-custom-repositories" title="Link to this heading"></a></h3>
