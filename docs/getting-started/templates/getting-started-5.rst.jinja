@@ -14,7 +14,7 @@ Setting Up Your Host PC
 
 The build system is currently supported on host PCs running Ubuntu
 {{ ubuntu_version }} 64-bit. For setting up your host PC, please see the
-:doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>` page.
+:doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC-(Linux-for-ADSP‐SC5xx-Processors-5.x.x)>` page.
 
 Building in a container (optional)
 ----------------------------------
@@ -306,7 +306,7 @@ Populate the NFS file system with the files for booting:
 
 .. note::
    The directory for this extraction is `/romfs` if you followed the directions
-   in :doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>`. The
+   in :doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC-(Linux-for-ADSP‐SC5xx-Processors-5.x.x)>`. The
    adsp-sc5xx-minimal image can also be used, but will not include some of the
    debugging tools that the full image will have if there are problems.
 
@@ -533,7 +533,7 @@ Network Booting
 ---------------
 
 In order to boot Linux via the network, the TFTP server should be setup as
-indicated in the :doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC>` page,
+indicated in the :doc:`Setting Up Your Host PC <Setting-Up-Your-Host-PC-(Linux-for-ADSP‐SC5xx-Processors-5.x.x)>` page,
 and a copy of the fitImage should be copied into the ``/tftpboot`` directory.
 
 .. shell::
@@ -652,7 +652,7 @@ NFS Boot
 
 In order to boot Linux via NFS, the NFS server should be setup as indicated in
 `Setting Up Your Host PC: Configure NFS Server
-<Setting-Up-Your-Host-PC.html#configure-nfs-server>`_.
+<Setting-Up-Your-Host-PC-(Linux-for-ADSP‐SC5xx-Processors-5.x.x).html#configure-nfs-server>`_.
 
 The root filesystem should then be copied to ``/romfs``.
 

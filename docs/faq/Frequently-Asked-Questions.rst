@@ -137,7 +137,7 @@ repositories, allowing you to work with your own forks or private repositories.
 Prerequisites
 ~~~~~~~~~~~~~
 
-Ensure your host PC is properly configured: :doc:`Setting Up Your Host PC <../getting-started/Setting-Up-Your-Host-PC>`.
+Ensure your host PC is properly configured: :doc:`Setting Up Your Host PC <../getting-started/Setting-Up-Your-Host-PC-(Linux-for-ADSP‐SC5xx-Processors-main)>`.
 
 Step 1: Download Source Code
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
