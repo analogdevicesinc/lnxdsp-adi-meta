@@ -70,7 +70,7 @@ Quick Start
 
 **Getting Started in 4 Steps**
 
-1. :doc:`Setup your host PC <getting-started/Setting-Up-Your-Host-PC>` - Install tools and configure environment
+1. :doc:`Setup your host PC <getting-started/Setting-Up-Your-Host-PC-(Linux-for-ADSP‐SC5xx-Processors-main)>` - Install tools and configure environment
 2. **Choose your board** - Select from the processor guides above (SC598, SC594, SC589, or SC573)
 3. :doc:`Build and customize <development/Development>` - Use Yocto to create your custom image and develop applications
 4. :doc:`Run examples <examples/Examples>` - Try SHARC-ALSA, USB Audio, and more
@@ -86,7 +86,7 @@ Quick Links
 
 **Essential Documentation**
 
-* **Setup**: :doc:`Setting Up Your Host PC <getting-started/Setting-Up-Your-Host-PC>` | :doc:`Boot Sequence <development/Boot-Sequence>`
+* **Setup**: :doc:`Setting Up Your Host PC <getting-started/Setting-Up-Your-Host-PC-(Linux-for-ADSP‐SC5xx-Processors-main)>` | :doc:`Boot Sequence <development/Boot-Sequence>`
 * **Development**: :doc:`Development Guide <development/Development>` | :doc:`Kernel Development <development/Linux-Kernel-Development>` | :doc:`RPMsg Communication <development/RPMsg>`
 * **Examples**: :doc:`SHARC-ALSA Audio <examples/SHARC‐ALSA-Example>` | :doc:`USB Audio Gadget <examples/USB-Gadget-Audio-Example>`
 * **Support**: :doc:`FAQ <faq/Frequently-Asked-Questions>` | :ez:`Forum <linux-software-drivers>` | `Issues <https://github.com/analogdevicesinc/lnxdsp-adi-meta/issues>`_

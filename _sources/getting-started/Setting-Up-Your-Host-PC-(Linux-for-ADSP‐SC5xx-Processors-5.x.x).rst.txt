@@ -1,20 +1,37 @@
-Setting Up Your Host PC
-=======================
+Setting Up Your Host PC (5.x.x)
+===============================
 
 The build system is currently supported on host PCs running Ubuntu 22.04 (LTS).
 
 Installing Required Packages
 ----------------------------
 
-In order to build and deploy Linux to your ADSP-SC5xx development board you
-will need to install the following packages on your host PC.
+Linux for ADSP-SC5xx 5.0.0, 5.0.1 and 5.1.0 are built with the Yocto Project
+5.0 (Scarthgap) release. To build them you need the packages listed for Ubuntu
+and Debian in the official `Yocto Project 5.0 (Scarthgap) System Requirements
+<https://docs.yoctoproject.org/scarthgap/ref-manual/system-requirements.html>`_.
+Refer to that page for the full list of supported distributions and the
+packages needed on other distributions.
+
+To deploy and boot Linux on the development board you will also need the
+following packages:
 
 .. shell::
 
-   $sudo apt-get update
-   $sudo apt-get install -y gawk wget git-core diffstat unzip texinfo \
-   $   gcc-multilib build-essential chrpath socat libsdl1.2-dev xterm \
-   $   u-boot-tools openssl curl tftpd-hpa python3 zstd libcrypt-dev
+   $sudo apt-get install -y u-boot-tools openssl curl tftpd-hpa
+
+Configure Git
+-------------
+
+The build uses ``git`` to fetch sources and apply patches, and ``git`` refuses
+to create commits without an identity. If you skip this step the build fails
+with ``Author identity unknown`` / ``*** Please tell me who you are``. Set
+any name and email (they are only used locally):
+
+.. shell::
+
+   $ git config --global user.name "Your Name"
+   $ git config --global user.email "you@example.com"
 
 Configure Minicom
 -----------------
