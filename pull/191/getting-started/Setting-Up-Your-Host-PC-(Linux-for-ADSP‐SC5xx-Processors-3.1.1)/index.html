@@ -4,17 +4,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta content="The build system is currently supported on host PCs running Ubuntu 22.04 (LTS)." name="description" />
+<meta content="The build system is currently supported on host PCs running Ubuntu 20.04 (LTS)." name="description" />
 
-    <title>Setting Up Your Host PC &#8212; ADSP Processors  documentation</title>
+    <title>Setting Up Your Host PC (3.1.1) &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8e8a900e" />
     <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=07ad7716" />
     <script async="async" src="../../_static/app.umd.js?v=2fe15c61"></script>
     <link rel="icon" href="../../_static/icon.svg"/>
     <link rel="index" title="Index" href="../../genindex/" />
     <link rel="search" title="Search" href="../../search/" />
-    <link rel="next" title="Debugging without ICE Hardware" href="../../development/Debugging-without-ICE-Hardware/" />
-    <link rel="prev" title="Development" href="../../development/Development/" />
+    <link rel="next" title="Getting Started with ADSP-SC598 (3.1.1)" href="../Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-3.1.1)/" />
+    <link rel="prev" title="Linux for ADSP-SC5xx Processors 3.1.1" href="../../Linux-for-ADSP‐SC5xx-3.1.1-Landing-Page/" />
    
   
   
@@ -95,7 +95,7 @@
         </div>
         <nav>
           <ul>
-<li><a class="reference internal" href="#">Setting Up Your Host PC</a><ul>
+<li><a class="reference internal" href="#">Setting Up Your Host PC (3.1.1)</a><ul>
 <li><a class="reference internal" href="#installing-required-packages">Installing Required Packages</a></li>
 <li><a class="reference internal" href="#configure-git">Configure Git</a></li>
 <li><a class="reference internal" href="#configure-minicom">Configure Minicom</a></li>
@@ -133,6 +133,7 @@ Content on this topic
 <div class="toc-tree">
   <ul class="current">
 <li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-1" id="toctree-collapse-1"/><div class="collapse"><a class="reference internal" href="../../Linux-for-ADSP‐SC5xx-5.1.0-Landing-Page/">Linux for ADSP SC5xx 5.1.0</a><label for="toctree-collapse-1"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Setting-Up-Your-Host-PC-(Linux-for-ADSP‐SC5xx-Processors-5.x.x)/">Setting Up Your Host PC (5.x.x)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)/">Getting Started with ADSP-SC598 (5.1.0)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC846-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)/">Getting Started with ADSP-SC846 (5.1.0)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)/">Getting Started with ADSP-SC594 (5.1.0)</a></li>
@@ -141,6 +142,7 @@ Content on this topic
 </ul>
 </li>
 <li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-2" id="toctree-collapse-2"/><div class="collapse"><a class="reference internal" href="../../Linux-for-ADSP‐SC5xx-main-Landing-Page/">Linux for ADSP SC5xx main</a><label for="toctree-collapse-2"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Setting-Up-Your-Host-PC-(Linux-for-ADSP‐SC5xx-Processors-main)/">Setting Up Your Host PC (main)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-main)/">Getting Started with ADSP-SC598 (main)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC846-(Linux-for-ADSP‐SC5xx-Processors-main)/">Getting Started with ADSP-SC846 (main)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-main)/">Getting Started with ADSP-SC594 (main)</a></li>
@@ -148,8 +150,9 @@ Content on this topic
 <li class="toctree-l2"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-main)/">Getting Started with ADSP-SC573 (main)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3" id="toctree-collapse-3"/><div class="collapse"><a class="reference internal" href="../../Older-Releases/">Older Releases</a><label for="toctree-collapse-3"><div class="icon"></div></label></div><ul>
+<li class="toctree-l1 current"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3" id="toctree-collapse-3" checked=""/><div class="collapse"><a class="reference internal" href="../../Older-Releases/">Older Releases</a><label for="toctree-collapse-3"><div class="icon"></div></label></div><ul class="current">
 <li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-1" id="toctree-collapse-3-1"/><div class="collapse"><a class="reference internal" href="../../Linux-for-ADSP‐SC5xx-5.1.0-Landing-Page/">Linux for ADSP-SC5xx Processors 5.1.0</a><label for="toctree-collapse-3-1"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Setting-Up-Your-Host-PC-(Linux-for-ADSP‐SC5xx-Processors-5.x.x)/">Setting Up Your Host PC (5.x.x)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)/">Getting Started with ADSP-SC598 (5.1.0)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC846-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)/">Getting Started with ADSP-SC846 (5.1.0)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)/">Getting Started with ADSP-SC594 (5.1.0)</a></li>
@@ -158,6 +161,7 @@ Content on this topic
 </ul>
 </li>
 <li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-2" id="toctree-collapse-3-2"/><div class="collapse"><a class="reference internal" href="../../Linux-for-ADSP‐SC5xx-5.0.1-Landing-Page/">Linux for ADSP-SC5xx Processors 5.0.1</a><label for="toctree-collapse-3-2"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Setting-Up-Your-Host-PC-(Linux-for-ADSP‐SC5xx-Processors-5.x.x)/">Setting Up Your Host PC (5.x.x)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)/">Getting Started with ADSP-SC598 (5.0.1)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)/">Getting Started with ADSP-SC594 (5.0.1)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC589‐MINI-(Linux-for-ADSP‐SC5xx-Processors-5.0.1)/">Getting Started with ADSP-SC589-MINI (5.0.1)</a></li>
@@ -165,6 +169,7 @@ Content on this topic
 </ul>
 </li>
 <li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-3" id="toctree-collapse-3-3"/><div class="collapse"><a class="reference internal" href="../../Linux-for-ADSP‐SC5xx-5.0.0-Landing-Page/">Linux for ADSP-SC5xx Processors 5.0.0</a><label for="toctree-collapse-3-3"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Setting-Up-Your-Host-PC-(Linux-for-ADSP‐SC5xx-Processors-5.x.x)/">Setting Up Your Host PC (5.x.x)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-5.0.0)/">Getting Started with ADSP-SC598 (5.0.0)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-5.0.0)/">Getting Started with ADSP-SC594 (5.0.0)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC589‐MINI-(Linux-for-ADSP‐SC5xx-Processors-5.0.0)/">Getting Started with ADSP-SC589-MINI (5.0.0)</a></li>
@@ -172,13 +177,15 @@ Content on this topic
 </ul>
 </li>
 <li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-4" id="toctree-collapse-3-4"/><div class="collapse"><a class="reference internal" href="../../Linux-for-ADSP‐SC5xx-3.1.2-Landing-Page/">Linux for ADSP-SC5xx Processors 3.1.2</a><label for="toctree-collapse-3-4"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Setting-Up-Your-Host-PC-(Linux-for-ADSP‐SC5xx-Processors-3.1.2)/">Setting Up Your Host PC (3.1.2)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-3.1.2)/">Getting Started with ADSP-SC598 (3.1.2)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-3.1.2)/">Getting Started with ADSP-SC594 (3.1.2)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC589‐MINI-(Linux-for-ADSP‐SC5xx-Processors-3.1.2)/">Getting Started with ADSP-SC589-MINI (3.1.2)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC573-(Linux-for-ADSP‐SC5xx-Processors-3.1.2)/">Getting Started with ADSP-SC573 (3.1.2)</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-5" id="toctree-collapse-3-5"/><div class="collapse"><a class="reference internal" href="../../Linux-for-ADSP‐SC5xx-3.1.1-Landing-Page/">Linux for ADSP-SC5xx Processors 3.1.1</a><label for="toctree-collapse-3-5"><div class="icon"></div></label></div><ul>
+<li class="toctree-l2 current"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-5" id="toctree-collapse-3-5" checked=""/><div class="collapse"><a class="reference internal" href="../../Linux-for-ADSP‐SC5xx-3.1.1-Landing-Page/">Linux for ADSP-SC5xx Processors 3.1.1</a><label for="toctree-collapse-3-5"><div class="icon"></div></label></div><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Setting Up Your Host PC (3.1.1)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-3.1.1)/">Getting Started with ADSP-SC598 (3.1.1)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-3.1.1)/">Getting Started with ADSP-SC594 (3.1.1)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC589‐MINI-(Linux-for-ADSP‐SC5xx-Processors-3.1.1)/">Getting Started with ADSP-SC589-MINI (3.1.1)</a></li>
@@ -188,6 +195,7 @@ Content on this topic
 </ul>
 </li>
 <li class="toctree-l2"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-3-6" id="toctree-collapse-3-6"/><div class="collapse"><a class="reference internal" href="../../Linux-for-ADSP‐SC5xx-3.1.0-Landing-Page/">Linux for ADSP-SC5xx Processors 3.1.0</a><label for="toctree-collapse-3-6"><div class="icon"></div></label></div><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Setting-Up-Your-Host-PC-(Linux-for-ADSP‐SC5xx-Processors-3.1.0)/">Setting Up Your Host PC (3.1.0)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-3.1.0)/">Getting Started with ADSP-SC598 (3.1.0)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-3.1.0)/">Getting Started with ADSP-SC594 (3.1.0)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Getting-Started-with-ADSP‐SC589‐MINI-(Linux-for-ADSP‐SC5xx-Processors-3.1.0)/">Getting Started with ADSP-SC589-MINI (3.1.0)</a></li>
@@ -205,8 +213,7 @@ Content on this topic
 <li class="toctree-l2"><a class="reference internal" href="../../examples/U-Boot-Falcon-Mode-Example/">U-Boot Falcon Mode Example</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-5" id="toctree-collapse-5" checked=""/><div class="collapse"><a class="reference internal" href="../../development/Development/">Development</a><label for="toctree-collapse-5"><div class="icon"></div></label></div><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Setting Up Your Host PC</a></li>
+<li class="toctree-l1"><input class="toctree-collapse" type="checkbox" name="toctree-collapse-5" id="toctree-collapse-5"/><div class="collapse"><a class="reference internal" href="../../development/Development/">Development</a><label for="toctree-collapse-5"><div class="icon"></div></label></div><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../development/Debugging-without-ICE-Hardware/">Debugging without ICE Hardware</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../development/Boot-Sequence/">Boot Sequence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../development/U‐Boot-Environment/">U-Boot Environment</a></li>
@@ -253,21 +260,20 @@ Content on this topic
       <div class="documentwrapper">
         <div class="bodywrapper" id="top-anchor">
           <div class="body-header">
-  <nav class="breadcrumb"><ol><li><a href="../../development/Development/">Development</a></li></ol></nav>
+  <nav class="breadcrumb"><ol><li><a href="../../Older-Releases/">Older Releases</a></li><li><a href="../../Linux-for-ADSP‐SC5xx-3.1.1-Landing-Page/">Linux for ADSP-SC5xx Processors 3.1.1</a></li></ol></nav>
 </div>
           <div class="body" role="main">
             
-  <section id="setting-up-your-host-pc">
-<h1>Setting Up Your Host PC<a class="headerlink" href="#setting-up-your-host-pc" title="Link to this heading"></a></h1>
-<p>The build system is currently supported on host PCs running Ubuntu 22.04 (LTS).</p>
+  <section id="setting-up-your-host-pc-3-1-1">
+<h1>Setting Up Your Host PC (3.1.1)<a class="headerlink" href="#setting-up-your-host-pc-3-1-1" title="Link to this heading"></a></h1>
+<p>The build system is currently supported on host PCs running Ubuntu 20.04 (LTS).</p>
 <section id="installing-required-packages">
 <h2>Installing Required Packages<a class="headerlink" href="#installing-required-packages" title="Link to this heading"></a></h2>
-<p>In order to build Linux for your ADSP-SC5xx development board you will need to
-install the packages required by the Yocto Project on your host PC. The list
-below is taken from the official
-<a class="icon link reference external" href="https://docs.yoctoproject.org/wrynose/ref-manual/system-requirements.html" target="_blank">Yocto Project System Requirements</a>
-for Ubuntu and Debian. Refer to that page for the full list of supported
-distributions and the packages needed on other distributions.</p>
+<p>Linux for ADSP-SC5xx 3.1.1 is built with the Yocto Project 4.0 (Kirkstone)
+release. To build it you need the packages listed for Ubuntu and Debian in the
+official <a class="icon link reference external" href="https://docs.yoctoproject.org/kirkstone/ref-manual/system-requirements.html" target="_blank">Yocto Project 4.0 (Kirkstone) System Requirements</a>.
+Refer to that page for the full list of supported distributions and the
+packages needed on other distributions.</p>
 <div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
@@ -278,7 +284,7 @@ distributions and the packages needed on other distributions.</p>
 </pre></div>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>build-essential<span class="w"> </span>chrpath<span class="w"> </span>cpio<span class="w"> </span>debianutils<span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>diffstat<span class="w"> </span>file<span class="w"> </span>gawk<span class="w"> </span>gcc<span class="w"> </span>git<span class="w"> </span>iputils-ping<span class="w"> </span>libacl1<span class="w"> </span>libcrypt-dev<span class="w"> </span>locales<span class="w"> </span><span class="se">\</span>
+<span class="w">   </span>diffstat<span class="w"> </span>file<span class="w"> </span>gawk<span class="w"> </span>gcc<span class="w"> </span>git<span class="w"> </span>iputils-ping<span class="w"> </span>libacl1<span class="w"> </span>liblz4-tool<span class="w"> </span>locales<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>python3<span class="w"> </span>python3-git<span class="w"> </span>python3-jinja2<span class="w"> </span>python3-pexpect<span class="w"> </span>python3-pip<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>python3-subunit<span class="w"> </span>socat<span class="w"> </span>texinfo<span class="w"> </span>unzip<span class="w"> </span>wget<span class="w"> </span>xz-utils<span class="w"> </span>zstd
 </pre></div>
@@ -790,8 +796,8 @@ ATTRS{idVendor}=="03eb", ATTRS{idProduct}=="6124", GROUP="adiusb"
           </div>
               <div class="related">
                 &nbsp;
-    <a href="../../development/Development/" title="Previous document (Alt+Shift+LeftArrow)" class="prev">Development</a>
-    <a href="../../development/Debugging-without-ICE-Hardware/" title="Next document (Alt+Shift+RightArrow)" class="next">Debugging without ICE Hardware</a>
+    <a href="../../Linux-for-ADSP‐SC5xx-3.1.1-Landing-Page/" title="Previous document (Alt+Shift+LeftArrow)" class="prev">Linux for ADSP-SC5xx Processors 3.1.1</a>
+    <a href="../Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-3.1.1)/" title="Next document (Alt+Shift+RightArrow)" class="next">Getting Started with ADSP-SC598 (3.1.1)</a>
               </div>
           
         </div>
