@@ -103,7 +103,7 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#preparing-the-buildtool">Preparing the buildtool</a></li>
-<li><a class="reference internal" href="#check-and-select-the-appropriate-revision">Check and select the appropriate revision</a></li>
+<li><a class="reference internal" href="#check-the-board-revision">Check the board revision</a></li>
 <li><a class="reference internal" href="#building-the-example">Building the example</a></li>
 <li><a class="reference internal" href="#building-the-sdk">Building the SDK</a></li>
 <li><a class="reference internal" href="#installing-the-sdk">Installing the SDK</a><ul>
@@ -415,14 +415,9 @@ another terminal, repeat the commands above.</p>
 <code class="docutils literal notranslate"><span class="pre">conf/auto.conf</span></code> within the build directory instead.</p>
 </div>
 </section>
-<section id="check-and-select-the-appropriate-revision">
-<h2>Check and select the appropriate revision<a class="headerlink" href="#check-and-select-the-appropriate-revision" title="Link to this heading"></a></h2>
-<p>Add the following to <code class="docutils literal notranslate"><span class="pre">conf/auto.conf</span></code> within the build directory:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SOM_REV</span> <span class="o">=</span> <span class="s2">"&lt;SOM revision&gt;"</span>
-<span class="n">CRR_REV</span> <span class="o">=</span> <span class="s2">"&lt;Carrier Revision&gt;"</span>
-</pre></div>
-</div>
-<p>The default configuration is valid for SOM Rev A with an EZkit Carrier. <a class="reference external" href="../faq/Frequently-Asked-Questions.html#how-do-i-identify-my-som-and-carrier-board-revisions">Guide to
+<section id="check-the-board-revision">
+<h2>Check the board revision<a class="headerlink" href="#check-the-board-revision" title="Link to this heading"></a></h2>
+<p>The configuration is valid for SOM Rev A/B with an EZkit Carrier. <a class="reference external" href="../faq/Frequently-Asked-Questions.html#how-do-i-identify-my-som-and-carrier-board-revisions">Guide to
 identify SOM and EZKit Carrier revision numbers</a></p>
 </section>
 <section id="building-the-example">
