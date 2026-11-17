@@ -1,25 +1,17 @@
-Setting Up Your Host PC
-=======================
+Setting Up Your Host PC (5.x.x)
+===============================
 
 The build system is currently supported on host PCs running Ubuntu 22.04 (LTS).
 
 Installing Required Packages
 ----------------------------
 
-In order to build Linux for your ADSP-SC5xx development board you will need to
-install the packages required by the Yocto Project on your host PC. The list
-below is taken from the official
-`Yocto Project System Requirements <https://docs.yoctoproject.org/wrynose/ref-manual/system-requirements.html>`_
-for Ubuntu and Debian. Refer to that page for the full list of supported
-distributions and the packages needed on other distributions.
-
-.. shell::
-
-   $sudo apt-get update
-   $sudo apt-get install -y build-essential chrpath cpio debianutils \
-   $   diffstat file gawk gcc git iputils-ping libacl1 libcrypt-dev locales \
-   $   python3 python3-git python3-jinja2 python3-pexpect python3-pip \
-   $   python3-subunit socat texinfo unzip wget xz-utils zstd
+Linux for ADSP-SC5xx 5.0.0, 5.0.1 and 5.1.0 are built with the Yocto Project
+5.0 (Scarthgap) release. To build them you need the packages listed for Ubuntu
+and Debian in the official `Yocto Project 5.0 (Scarthgap) System Requirements
+<https://docs.yoctoproject.org/scarthgap/ref-manual/system-requirements.html>`_.
+Refer to that page for the full list of supported distributions and the
+packages needed on other distributions.
 
 To deploy and boot Linux on the development board you will also need the
 following packages:

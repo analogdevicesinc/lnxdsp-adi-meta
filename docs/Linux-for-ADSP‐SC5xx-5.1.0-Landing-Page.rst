@@ -60,6 +60,7 @@ Guides
    :hidden:
    :titlesonly:
 
+   getting-started/Setting-Up-Your-Host-PC-(Linux-for-ADSP‐SC5xx-Processors-5.x.x)
    getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)
    getting-started/Getting-Started-with-ADSP‐SC846-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)
    getting-started/Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-5.1.0)

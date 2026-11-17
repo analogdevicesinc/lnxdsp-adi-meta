@@ -21,7 +21,6 @@ customizing Linux for ADSP-SC5xx processors.
    :hidden:
    :titlesonly:
 
-   ../getting-started/Setting-Up-Your-Host-PC
    Debugging-without-ICE-Hardware
    Boot-Sequence
    U‐Boot-Environment

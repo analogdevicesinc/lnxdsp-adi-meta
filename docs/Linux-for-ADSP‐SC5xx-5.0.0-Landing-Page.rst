@@ -48,6 +48,7 @@ The test report for this page can be found :doc:`here <test-reports/Test-Report-
    :hidden:
    :titlesonly:
 
+   getting-started/Setting-Up-Your-Host-PC-(Linux-for-ADSP‐SC5xx-Processors-5.x.x)
    getting-started/Getting-Started-with-ADSP‐SC598-(Linux-for-ADSP‐SC5xx-Processors-5.0.0)
    getting-started/Getting-Started-with-ADSP‐SC594-(Linux-for-ADSP‐SC5xx-Processors-5.0.0)
    getting-started/Getting-Started-with-ADSP‐SC589‐MINI-(Linux-for-ADSP‐SC5xx-Processors-5.0.0)
