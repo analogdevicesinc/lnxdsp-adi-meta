@@ -5,6 +5,7 @@ init script from an NFS-booted Linux.
 Required YAML parameters: see data/*-5.*.yaml.
 -#}
 {% set tftp_flow = version in ['5.0.0', '5.0.1'] -%}
+{% set crr_rev_select = version in ['5.0.0', '5.0.1'] -%}
 Getting Started with {{ board_name }} ({{ version }})
 =====================================================
 
@@ -117,6 +118,7 @@ further details.
    to the files in the ``conf`` folder
 
 {% if som_revision %}
+{% if som_rev_select or crr_rev_select %}
 
 Check and select the appropriate revision
 ------------------------------------------
@@ -126,12 +128,22 @@ Change the following in your configuration file within the build directory
 
 .. code-block::
 
-   SOM_REV = "<SOM revision>"
-   CRR_REV = "<Carrier Revision>"
+{% if som_rev_select %}   SOM_REV = "<SOM revision>"
+{% endif %}{% if crr_rev_select %}   CRR_REV = "<Carrier Revision>"
+{% endif %}
 
 The default configuration is valid for {{ som_revision_default }}. `Guide to
 identify SOM and EZKit Carrier revision numbers
 <../faq/Frequently-Asked-Questions.html#how-do-i-identify-my-som-and-carrier-board-revisions>`_
+{% else %}
+
+Check the board revision
+------------------------
+
+The configuration is valid for {{ som_revision_default }}. `Guide to
+identify SOM and EZKit Carrier revision numbers
+<../faq/Frequently-Asked-Questions.html#how-do-i-identify-my-som-and-carrier-board-revisions>`_
+{% endif %}
 {% endif %}
 
 Building the example

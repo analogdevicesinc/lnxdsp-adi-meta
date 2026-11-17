@@ -10,7 +10,8 @@ gdb_prefix: aarch64-adi_glibc-linux
 openocd_target: adspsc59x_a55
 ethernet_connector: J13
 som_revision: true
-som_revision_default: SOM Rev A/B/C/D with an EZkit Carrier rev D
+som_revision_default: 'SOM Rev E with an EZkit Carrier rev D. For SOM Rev A/B/C/D, set ``SOM_REV = "D"``'
+som_rev_select: true
 sdk_machine_note: true
 has_emmc_boot: true
 has_qspi_boot: true

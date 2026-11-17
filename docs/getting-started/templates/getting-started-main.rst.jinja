@@ -108,6 +108,7 @@ another terminal, repeat the commands above.
    ``conf/auto.conf`` within the build directory instead.
 
 {% if som_revision %}
+{% if som_rev_select %}
 
 Check and select the appropriate revision
 ------------------------------------------
@@ -117,11 +118,19 @@ Add the following to ``conf/auto.conf`` within the build directory:
 .. code-block::
 
    SOM_REV = "<SOM revision>"
-   CRR_REV = "<Carrier Revision>"
 
 The default configuration is valid for {{ som_revision_default }}. `Guide to
 identify SOM and EZKit Carrier revision numbers
 <../faq/Frequently-Asked-Questions.html#how-do-i-identify-my-som-and-carrier-board-revisions>`_
+{% else %}
+
+Check the board revision
+------------------------
+
+The configuration is valid for {{ som_revision_default }}. `Guide to
+identify SOM and EZKit Carrier revision numbers
+<../faq/Frequently-Asked-Questions.html#how-do-i-identify-my-som-and-carrier-board-revisions>`_
+{% endif %}
 {% endif %}
 
 Building the example

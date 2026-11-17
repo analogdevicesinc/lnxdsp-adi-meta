@@ -9,7 +9,7 @@ gdb_prefix: aarch64-adi_glibc-linux
 openocd_target: adspsc84x
 ethernet_connector: J13
 som_revision: true
-som_revision_default: SOM Rev A with an EZkit Carrier
+som_revision_default: SOM Rev A/B with an EZkit Carrier
 sdk_machine_note: true
 has_qspi_boot: true
 has_emmc_boot: false
