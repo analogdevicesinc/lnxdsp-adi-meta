@@ -10,7 +10,7 @@ environment.
 About the Environment
 ---------------------
 
-The U-Boot envionrment is a text-based key-value store within U-Boot,
+The U-Boot environment is a text-based key-value store within U-Boot,
 used to store information such as board-specific commands, run-time
 configuration options, network information and settings, filesystem
 settings and more.
@@ -47,7 +47,7 @@ The basic commands are:
 -  ``env print [name]`` (alias ``printenv``) - print value ``name``, or
    the whole environment if ``name`` is not present.
 
--  ``env default (-a | name ...)`` - set one of more values specified by
+-  ``env default (-a | name ...)`` - set one or more values specified by
    ``name`` to their default values, or reset the entire environment if
    ``-a`` specified.
 
@@ -112,14 +112,15 @@ The Default Environment
 
 As previously described, when U-Boot is unable to load a valid
 environment from the persistent storage, it will load the default
-environment. This is defined by a number of configuration options,
-within the ``include/configs`` directory in U-Boot’s source.
+environment. This is defined by plain-text environment files in U-Boot’s
+source.
 
-Some common values are defined under ``CFG_EXTRA_ENV_SETTINGS`` in
-`sc_adi_common.h <https://github.com/analogdevicesinc/lnxdsp-u-boot/blob/main/include/configs/sc_adi_common.h#L201>`__,
-with board specific options being defined with ``ADI_ENV_SETTINGS`` in
-the relevant board file - for example, for SC598, in
-`sc598-som.h <https://github.com/analogdevicesinc/lnxdsp-u-boot/blob/main/include/configs/sc598-som.h#L141>`__.
+Values common to all ADSP boards, such as the boot commands, are defined in
+:git-u-boot:`adi_boot.env <adi-u-boot-2025.10.y:include/env/adi/adi_boot.env>`.
+Each board has its own environment file under ``board/adi/`` that sets the
+board specific options, selects the supported boot methods and includes
+``adi_boot.env`` - for example, for SC598, in
+:git-u-boot:`sc598-som-ezkit.env <adi-u-boot-2025.10.y:board/adi/sc598-som-ezkit/sc598-som-ezkit.env>`.
 
 The default environment can also be manually loaded using the
 ``env default`` command, described in the `env command <#env-command>`__
@@ -128,9 +129,11 @@ section.
 Setting Default Boot Method
 ----------------------------
 
-In order to change the default boot method (i.e., boot used by autoboot or executed after issuing ``boot`` within U-Boot shell), run the following within U-Boot:
+In order to change the default boot method (i.e., boot used by autoboot or
+executed after issuing ``boot`` within U-Boot shell), run the following within
+U-Boot:
 
-.. code-block:: shell
+.. code-block:: console
 
    => setenv bootcmd <boot method>
    => saveenv
