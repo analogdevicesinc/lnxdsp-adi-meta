@@ -11,6 +11,18 @@ BITP_RCU_STAT_BMODE=8
 BITM_RCU_STAT_BMODE=0x00000F00
 SPI_BMODE=1 #SPI Master Boot
 
+# Boot flash partitions, linked by udev. The musl tiny image runs no device
+# manager, so create the same links there.
+MTD=/dev/mtd/by-name
+if [ ! -d $MTD ]; then
+  mkdir -p $MTD
+  for dev in /sys/class/mtd/mtd*; do
+    case "$dev" in *ro) continue ;; esac
+    [ -e "$dev/name" ] || continue
+    ln -sf "../../${dev##*/}" "$MTD/$(tr ' ' _ < "$dev/name")"
+  done
+fi
+
 echo
 echo "======== SPI Flash Installer ========"
 echo "Install U-Boot to SPI Flash"
@@ -25,39 +37,39 @@ case "$ans" in
     echo "Interactive SPI flash programming..."
     echo
 
-    # U-Boot SPL (mtd0)
-    printf "Install U-Boot SPL to mtd0? [y/N]: "
+    # U-Boot SPL
+    printf "Install U-Boot SPL to the u-boot-spl partition? [y/N]: "
     read -r spl_ans
     if [ "$spl_ans" = "y" ] || [ "$spl_ans" = "Y" ]; then
       echo "Installing U-boot SPL..."
-      flash_erase /dev/mtd0 0 0
-      flashcp /usr/firmware/u-boot-spl.ldr /dev/mtd0
+      flash_erase $MTD/u-boot-spl 0 0
+      flashcp /usr/firmware/u-boot-spl.ldr $MTD/u-boot-spl
     fi
 
-    # U-Boot (mtd1)
-    printf "Install U-Boot to mtd1? [y/N]: "
+    # U-Boot
+    printf "Install U-Boot to the u-boot partition? [y/N]: "
     read -r uboot_ans
     if [ "$uboot_ans" = "y" ] || [ "$uboot_ans" = "Y" ]; then
       echo "Installing U-boot..."
-      flash_erase /dev/mtd1 0 0
-      flashcp /usr/firmware/u-boot.ldr /dev/mtd1
+      flash_erase $MTD/u-boot 0 0
+      flashcp /usr/firmware/u-boot.ldr $MTD/u-boot
     fi
 
-    # Linux kernel (mtd2)
-    printf "Install Linux kernel (fitImage) to mtd2? [y/N]: "
+    # Linux kernel
+    printf "Install Linux kernel (fitImage) to the kernel partition? [y/N]: "
     read -r kernel_ans
     if [ "$kernel_ans" = "y" ] || [ "$kernel_ans" = "Y" ]; then
       echo "Installing Linux kernel..."
-      flash_erase /dev/mtd2 0 0
-      flashcp /usr/firmware/fitImage /dev/mtd2
+      flash_erase $MTD/kernel 0 0
+      flashcp /usr/firmware/fitImage $MTD/kernel
     fi
 
-    # Rootfs (mtd3)
-    printf "Install rootfs to mtd3? [y/N]: "
+    # Rootfs
+    printf "Install rootfs to the rootfs partition? [y/N]: "
     read -r rootfs_ans
     if [ "$rootfs_ans" = "y" ] || [ "$rootfs_ans" = "Y" ]; then
-      echo "Writing rootfs UBI image to mtd3..."
-      ubiformat /dev/mtd3 -f /usr/firmware/rootfs.ubi -y > /dev/null
+      echo "Writing rootfs UBI image to the rootfs partition..."
+      ubiformat $MTD/rootfs -f /usr/firmware/rootfs.ubi -y > /dev/null
     fi
 
     sync
@@ -67,19 +79,19 @@ case "$ans" in
     echo "Installing to SPI flash..."
 
     echo "Installing U-boot SPL..."
-    flash_erase /dev/mtd0 0 0
-    flashcp /usr/firmware/u-boot-spl.ldr /dev/mtd0
+    flash_erase $MTD/u-boot-spl 0 0
+    flashcp /usr/firmware/u-boot-spl.ldr $MTD/u-boot-spl
 
     echo "Installing U-boot..."
-    flash_erase /dev/mtd1 0 0
-    flashcp /usr/firmware/u-boot.ldr /dev/mtd1
+    flash_erase $MTD/u-boot 0 0
+    flashcp /usr/firmware/u-boot.ldr $MTD/u-boot
 
     echo "Installing Linux kernel"
-    flash_erase /dev/mtd2 0 0
-    flashcp /usr/firmware/fitImage /dev/mtd2
+    flash_erase $MTD/kernel 0 0
+    flashcp /usr/firmware/fitImage $MTD/kernel
 
-    echo "Writing rootfs UBI image to mtd3..."
-    ubiformat /dev/mtd3 -f /usr/firmware/rootfs.ubi -y > /dev/null
+    echo "Writing rootfs UBI image to the rootfs partition..."
+    ubiformat $MTD/rootfs -f /usr/firmware/rootfs.ubi -y > /dev/null
 
     sync
     echo "SPI install complete"
