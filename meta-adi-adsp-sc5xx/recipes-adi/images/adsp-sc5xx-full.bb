@@ -3,10 +3,6 @@ inherit adsp-sc5xx
 SUMMARY = "Full image for Analog Devices ADSP-SC5xx boards"
 LICENSE = "MIT"
 
-do_image_wic[depends] += " \
-        ${IMAGE_BASENAME}:do_image_ext4 \
-"
-
 IMAGE_FSTYPES:remove = "ubi"
 
 FILE_SYSTEM_TOOLS = "\

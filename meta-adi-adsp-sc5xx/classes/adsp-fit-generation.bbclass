@@ -123,11 +123,6 @@ do_assemble_fitimage[vardeps] += " \
     KERNEL_IMAGETYPE \
 "
 
-do_image_wic[depends] += "\
-     ${PN}:do_assemble_fitimage \
-     adsp-sc5xx-ramdisk:do_image_complete \
-"
-
 do_image_ext4[depends] += "\
      ${PN}:do_assemble_fitimage \
      adsp-sc5xx-ramdisk:do_image_complete \
