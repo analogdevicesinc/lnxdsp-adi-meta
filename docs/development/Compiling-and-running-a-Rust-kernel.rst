@@ -27,7 +27,7 @@ Getting started
    <https://www.rust-lang.org/tools/install>`_
 
 2) Clone the Linux kernel tree you wish to use. In our case, we will use the
-   :git-linux:`adsp-6.18.31-y <adsp-6.18.31-y:>` branch.
+   :git-linux:`adsp-6.18.y/staging/sc846-mtd-names <adsp-6.18.y/staging/sc846-mtd-names:>` branch.
 
 3) Once cloned, configure the kernel using either ``ARCH=arm64
    CROSS_COMPILE=aarch64-linux-gnu- make menuconfig/defconfig/olddefconfig``
