@@ -3,7 +3,7 @@ inherit adsp-sc5xx
 SUMMARY = "Full image for Analog Devices ADSP-SC5xx boards"
 LICENSE = "MIT"
 
-IMAGE_FSTYPES:remove = "ubi"
+IMAGE_FSTYPES:remove = "erofs-lz4hc.ubi flash nand"
 
 FILE_SYSTEM_TOOLS = "\
 	e2fsprogs \

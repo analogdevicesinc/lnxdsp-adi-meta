@@ -14,11 +14,16 @@ shared behaviour is provided by the image classes in
 
 * ``adsp-sc5xx.bbclass`` — Common base image (packages, users, filesystem
   types, programming-image generation).
-* ``adsp-sc5xx-minimal.bbclass`` — Minimal image that connects the ext4 image
-  to WIC image generation.
+* ``adsp-sc5xx-minimal.bbclass`` — Minimal image base, inherited by the
+  minimal image recipe.
 * ``adsp-sc5xx-ramdisk.bbclass`` — Self-contained initramfs image.
 * ``adsp-sc5xx-compatible.bbclass`` — Defines ``COMPATIBLE_MACHINE`` for all
   supported SoCs (SC57x, SC58x, SC594, SC598, SC846).
+* ``adsp-image-flash.bbclass``, ``adsp-image-emmc.bbclass`` and
+  ``adsp-image-nand.bbclass`` — The ``flash``, ``emmc`` and ``nand`` image
+  types, which lay out the boot flash, the eMMC and the SPI NAND with genimage
+  (see `Programming Images`_).
+* ``adsp-genimage.bbclass`` — The genimage helper shared by those image types.
 
 Available Images
 ----------------
@@ -34,23 +39,28 @@ Available Images
    * - **Full**
      - ``adsp-sc5xx-full``
      - Development image with audio, networking and profiling tools
-     - ``tar.xz``, ``ext4``, ``wic``
+     - ``tar.xz``, ``ext4``, ``emmc.gz``
    * - **Test**
      - ``adsp-sc5xx-test``
      - Full image plus on-target test suites (ptest, stress and benchmark tools)
-     - ``tar.xz``, ``ext4``, ``wic``
+     - ``tar.xz``, ``ext4``, ``emmc.gz``
    * - **Minimal**
      - ``adsp-sc5xx-minimal``
      - Slimmed-down production rootfs
-     - ``tar.xz``, ``ubi``, ``ext4``, ``wic``
+     - ``tar.xz``, ``erofs-lz4hc.ubi``, ``ext4``, ``flash``, ``emmc.gz``,
+       ``nand``
    * - **Tiny**
      - ``adsp-sc5xx-tiny``
      - Smallest image for boards with small SPI flashes, like the 16MB flash on the sc573
-     - ``ubi``
+     - ``tar.xz``, ``erofs-lz4hc.ubi``, ``ext4``, ``flash``
    * - **Ramdisk**
      - ``adsp-sc5xx-ramdisk``
      - Initramfs used as the boot ramdisk
      - ``cpio.xz``, ``cpio.gz``
+
+``emmc.gz`` is only built on machines with the ``emmc`` machine feature (the
+ADSP-SC598 and ADSP-SC846), and ``nand`` on machines with the ``nand`` machine
+feature (the ADSP-SC846).
 
 Base Image (``adsp-sc5xx``)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -130,8 +140,8 @@ Tiny Image
 
 ``adsp-sc5xx-tiny`` is a standalone image built directly from ``core-image``
 for boards with limited SPI flash space. It installs minimal packages, produces
-a single ``ubi`` filesystem, and aggressively strips the rootfs to keep the
-file system size down. It is the smallest bootable image the layer produces.
+a read-only EROFS filesystem for the SPI flash, and aggressively strips the
+rootfs to keep the file system size down. It is the smallest bootable image the layer produces.
 This image is only intended for small SPI flashes; larger boot media should use
 the minimal or full images.
 
@@ -142,6 +152,56 @@ Ramdisk Image
 rootfs. It uses ``nopackages`` and installs the selected SHARC audio binaries.
 The base image references it through ``INITRD_NAME`` so it is used as the boot
 ramdisk.
+
+Programming Images
+~~~~~~~~~~~~~~~~~~
+
+Each image copies the files that program a board into
+``programming-images/<image>/`` in the deploy directory:
+
+.. list-table::
+   :widths: 20 80
+   :header-rows: 1
+
+   * - File
+     - Contents
+   * - ``u-boot-spl.ldr``, ``u-boot.ldr``
+     - U-Boot SPL and U-Boot, for the ``u-boot-spl`` and ``u-boot`` partitions
+       of the boot flash
+   * - ``fitImage``
+     - FIT image with the kernel, the device tree and the ramdisk, for the
+       ``kernel`` partition of the boot flash
+   * - ``rootfs.ubi``
+     - Read-only, LZ4HC-compressed EROFS root filesystem in a static UBI
+       volume named ``rootfs``, for the ``rootfs`` partition of the boot flash.
+       Write it with ``ubiformat``. U-Boot's ``spiboot`` attaches UBI to the
+       partition by name (``ubi.mtd=rootfs``) and mounts the volume read-only
+       from its ``ubiblock`` device, so the root doesn't depend on the MTD
+       numbers.
+   * - ``rootfs.ext4``
+     - ext4 root filesystem for the eMMC, SD card and USB
+   * - ``flash.img``
+     - The whole boot flash: ``u-boot-spl.ldr``, ``u-boot.ldr``, ``fitImage``
+       and ``rootfs.ubi`` at the offsets of the boot flash partitions in the
+       machine's device tree, laid out by ``files/genimage/flash.cfg``
+   * - ``emmc.img.gz``
+     - ADSP-SC598 and ADSP-SC846 only: the eMMC, with ``u-boot-spl.ldr`` and
+       ``u-boot.ldr`` at 17K and 256K, ``fitImage`` on the ext4 partition 1
+       (``mmcboot``) and ``rootfs.ext4`` as partition 2 (``mmcargs``), laid out
+       by ``files/genimage/emmc.cfg``
+   * - ``nand.img``
+     - ADSP-SC846 only: a UBI image for the SPI NAND, with static volumes for
+       ``u-boot-spl.ldr``, ``u-boot.ldr``, ``fitImage`` and the EROFS root
+       filesystem, and writable UBIFS ``overlay`` and ``data`` volumes, laid
+       out by ``files/genimage/nand.cfg``. Write it with ``ubiformat``.
+       U-Boot's ``nandboot`` attaches UBI to the ``xspi1-data`` partition by
+       name and mounts the ``rootfs`` volume from its ``ubiblock`` device.
+
+The boot flash partition sizes come from the ``ADSP_SPI_*`` variables in the
+machine configuration, which follow the partitions in the device tree. The full
+and test images, and the images on the ADSP-SC573 other than the tiny image,
+are too large for the boot flash ``rootfs`` partition, so they don't build
+``rootfs.ubi``, ``flash.img`` or ``nand.img``.
 
 Building an Image
 -----------------
@@ -201,8 +261,8 @@ Customise the image with the standard Yocto variables:
 
 * ``IMAGE_INSTALL`` — Add packages to the rootfs (use ``+=`` to extend an
   inherited list).
-* ``IMAGE_FSTYPES`` — Select output filesystem types (e.g. ``ext4``, ``ubi``,
-  ``wic``, ``cpio.gz``).
+* ``IMAGE_FSTYPES`` — Select output filesystem types (e.g. ``ext4``,
+  ``erofs-lz4hc.ubi``, ``cpio.gz``).
 * ``IMAGE_FEATURES`` — Enable Yocto image features such as ``debug-tweaks`` or
   ``tools-debug``.
 
