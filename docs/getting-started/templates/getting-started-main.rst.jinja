@@ -445,7 +445,10 @@ prompt asking approval to program the SPI flash.
 
 Select y to program everything, or i to enter interactive mode (to selectively
 program certain partitions on the SPI flash). The default for this and all
-programming prompts is N for no.
+programming prompts is N for no. The installer writes ``u-boot-spl.ldr``,
+``u-boot.ldr``, ``fitImage`` and ``rootfs.ubi`` to the ``u-boot-spl``,
+``u-boot``, ``kernel`` and ``rootfs`` partitions of the SPI flash. It skips the
+SPI flash when the root filesystem is mounted from it.
 
 {% endif %}
 
@@ -461,7 +464,31 @@ The init script will then move on to the mmc programming
    This will erase and program EMMC.                                                                                                                                                                   
    Continue? [y/N]:
 
-Select y to program the eMMC, or N to skip programming.
+Select y to program the eMMC, or N to skip programming. The installer writes
+``emmc.img`` to the eMMC: U-Boot SPL and U-Boot, partition 1 with the
+``fitImage``, and partition 2 with the ext4 root filesystem. It skips the eMMC
+when the root filesystem is mounted from it.
+
+{% endif %}
+
+{% if has_nand %}
+
+The init script will then move on to the SPI NAND programming, when the board
+has a SPI NAND on xSPI1
+
+.. code-block:: text
+
+   ======== NAND Installer ========
+   Install nand.img to the xspi1-data NAND
+
+   This will erase and program the NAND.
+   Continue? [y/N]:
+
+Select y to program the NAND, or N to skip programming. The installer writes
+``nand.img`` with ``ubiformat``: a UBI image with volumes for U-Boot SPL,
+U-Boot, the ``fitImage``, the EROFS root filesystem, and the writable
+``overlay`` and ``data`` UBIFS volumes. On boards with a SPI NOR on xSPI1,
+the installer skips the NAND.
 
 {% endif %}
 
@@ -505,6 +532,10 @@ Booting the minimal image from QSPI
 The default boot method for the {{ machine }} is SPI boot. Turn the bootmode
 selector to 1, and reset the board. The board should now automatically boot to
 the Linux login.
+
+.. note::
+   The root filesystem in the SPI flash is a read-only EROFS image. Boot from
+   the eMMC, SD card, USB or NFS for a writable root filesystem.
 
 {% endif %}
 

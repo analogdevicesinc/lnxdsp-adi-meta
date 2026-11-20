@@ -1,4 +1,4 @@
-inherit core-image extrausers adsp-sc5xx-compatible adsp-fit-generation
+inherit core-image extrausers adsp-sc5xx-compatible adsp-fit-generation adsp-image-flash adsp-image-emmc adsp-image-nand
 
 SUMMARY = "Minimal image for Analog Devices ADSP-SC5xx boards"
 LICENSE = "MIT"
@@ -52,11 +52,17 @@ EXTRA_USERS_PARAMS = "usermod -p '${PASSWD_ROOT}' root;"
 TOOLCHAIN_HOST_TASK:append = " nativesdk-openocd-adi"
 TOOLCHAIN_HOST_TASK:append = " nativesdk-ldr-adi"
 
-IMAGE_FSTYPES:append = " tar.xz ubi ext4"
+IMAGE_FSTYPES:append = " tar.xz erofs-lz4hc.ubi ext4"
 
-# sc573-ezlite has limited SPI flash; the minimal image is too large for a UBI
-# volume, so UBI is only produced for the tiny image on that machine.
-IMAGE_FSTYPES:remove:adsp-sc573-ezlite = "ubi"
+# The images of the machine's boot media (ADSP_GENIMAGE_TYPES, see
+# adsp-genimage.bbclass)
+IMAGE_FSTYPES:append = "${@bb.utils.contains('ADSP_GENIMAGE_TYPES', 'flash', ' flash', '', d)}"
+IMAGE_FSTYPES:append = "${@bb.utils.contains('ADSP_GENIMAGE_TYPES', 'emmc', ' emmc', '', d)}"
+IMAGE_FSTYPES:append = "${@bb.utils.contains('ADSP_GENIMAGE_TYPES', 'nand', ' nand', '', d)}"
+
+# sc573-ezlite has limited SPI flash; the minimal image is too large for its
+# rootfs partition, so EROFS is only produced for the tiny image on that machine.
+IMAGE_FSTYPES:remove:adsp-sc573-ezlite = "erofs-lz4hc.ubi flash"
 
 # Keep the freedesktop MIME database out of the rootfs. Nothing here consumes
 # MIME types, but wrynose pulls the database in along two independent weak
@@ -79,9 +85,6 @@ BAD_RECOMMENDATIONS += "systemd-mime shared-mime-info"
 # unless something RDEPENDS on it.
 BAD_RECOMMENDATIONS += "openssl-ossl-module-legacy"
 
-UBI_VOLNAME = "rootfs"
-UBINIZE_ARGS = "-m 1 -p 65536 -s 1"
-
 ADSP_SC5XX_INIT_SCRIPT := "${THISDIR}/files/init"
 
 install_init_script(){
@@ -91,10 +94,11 @@ install_init_script(){
 }
 
 ROOTFS_POSTPROCESS_COMMAND += "install_init_script"
+do_rootfs[file-checksums] += "${ADSP_SC5XX_INIT_SCRIPT}:True"
 
 do_create_programming_images(){
-    # Create programming-images directory
     PROG_DIR="${DEPLOY_DIR_IMAGE}/programming-images/${IMAGE_BASENAME}"
+    rm -rf ${PROG_DIR}
     install -d ${PROG_DIR}
 
     # Copy U-boot ldr images
@@ -111,12 +115,27 @@ do_create_programming_images(){
     fi
 
     # Copy rootfs.ubi
-    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubi ]; then
-        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubi ${PROG_DIR}/rootfs.ubi
+    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.erofs-lz4hc.ubi ]; then
+        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.erofs-lz4hc.ubi ${PROG_DIR}/rootfs.ubi
     fi
 
     if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ext4 ]; then
         cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ext4 ${PROG_DIR}/rootfs.ext4
+    fi
+
+    # Copy the whole eMMC image
+    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.emmc ]; then
+        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.emmc ${PROG_DIR}/emmc.img
+    fi
+
+    # Copy the SPI NAND image
+    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.nand ]; then
+        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.nand ${PROG_DIR}/nand.img
+    fi
+
+    # Copy the whole SPI flash image
+    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.flash ]; then
+        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.flash ${PROG_DIR}/flash.img
     fi
 
     echo "Programming images created in: ${PROG_DIR}"

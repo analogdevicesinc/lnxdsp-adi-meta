@@ -13,21 +13,20 @@ SRC_URI:append = "\
 	file://feature/cfg/nfs.cfg \
 	file://feature/cfg/crypto.cfg \
 	file://feature/cfg/tracepoints.cfg \
+	file://feature/cfg/erofs.cfg \
 "
 SRC_URI:remove:adsp-sc846-som-ezkit = "file://feature/cfg/tracepoints.cfg"
 
 LINUX_VERSION = "6.18.31"
 PV = "${LINUX_VERSION}+git"
-KERNEL_BRANCH ?= "adsp-${LINUX_VERSION}-y"
+KERNEL_BRANCH ?= "adsp-6.18.y/staging/sc846-mtd-names"
 
-SRCREV = "067afc664698941a903b0b9bbe9496154a22e49e"
+SRCREV = "${AUTOREV}"
 
 
-SRC_URI:append:adsp-sc594-som-ezkit = " file://feature/cfg/snd_ezkit.scc"
 SRC_URI:append:adsp-sc589-ezkit = " file://feature/cfg/snd_ezkit.scc"
 SRC_URI:append:adsp-sc584-ezkit = " file://feature/cfg/snd_ezkit.scc"
 SRC_URI:append:adsp-sc573-ezlite = " file://feature/cfg/snd_ezkit.scc"
-SRC_URI:append:adsp-sc589-mini = " file://feature/cfg/snd_mini.scc"
 
 SRC_URI:append:adsp-sc598-som-ezkit = " file://feature/cfg/pkte.cfg"
 SRC_URI:append:adsp-sc598-som-ezkit = ' file://0001-SC598-fix-stmmac-dma-split-header-crash.patch'
