@@ -114,34 +114,22 @@ case "$MACHINE_MODEL" in
 
     read -r ans
 
+    case "$ROOT_DEV" in
+      /dev/mmcblk0*)
+        echo "The root filesystem is mounted from the eMMC."
+        echo "Boot from NFS or the SPI flash to program the eMMC."
+        ans=n
+        ;;
+    esac
+
     case "$ans" in
       y|Y)
         echo "Installing to EMMC..."
 
-        echo "Partitioning eMMC..."
-        # Create DOS MBR partition table with two primary partitions
-        # Partition 1: 32MB for fitImage (should be more than enough)
-        # Partition 2: Remainder for rootfs
-        echo -e 'o\nn\np\n1\n\n+32M\nn\np\n2\n\n\nw' | fdisk /dev/mmcblk0 > /dev/null
-
-        # Wait for partition table to be re-read
-        sleep 2
-        partprobe /dev/mmcblk0 || true > /dev/null
-        sleep 1
-
-        echo "Formatting eMMC partition 1 as ext4..."
-        mke2fs -F -t ext4 -L "BOOT" /dev/mmcblk0p1 > /dev/null
-
-        echo "Writing fitImage to eMMC partition 1..."
-        mkdir -p /tmp/boot_mount > /dev/null
-        mount /dev/mmcblk0p1 /tmp/boot_mount > /dev/null
-        cp /usr/firmware/fitImage /tmp/boot_mount/ > /dev/null
-        sync
-        umount /tmp/boot_mount > /dev/null
-        rmdir /tmp/boot_mount > /dev/null
-
-        echo "Writing rootfs image to eMMC partition 2..."
-        dd if=/usr/firmware/rootfs.ext4 of=/dev/mmcblk0p2 bs=512 > /dev/null
+        # emmc.img holds U-Boot SPL and U-Boot, partition 1 with the
+        # fitImage and partition 2 with the rootfs
+        echo "Writing emmc.img to the eMMC..."
+        dd if=/usr/firmware/emmc.img of=/dev/mmcblk0 bs=64K conv=fsync
 
         sync
         echo "EMMC install complete"
@@ -158,49 +146,70 @@ case "$MACHINE_MODEL" in
     ;;
 esac
 
-echo "======== USB Installer ========"
-echo
-echo "This will erase and program the USB."
-printf "Continue? [y/N]: "
+if [ -f /usr/firmware/nand.img ]; then
+  echo
+  echo "======== NAND Installer ========"
 
-read -r ans
+  # The carrier xSPI1 flash is a NOR or a NAND, depending on the board
+  NAND_TYPE=
+  if [ -e $MTD/xspi1-data ]; then
+    NAND_MTD=$(readlink $MTD/xspi1-data)
+    NAND_TYPE=$(cat "/sys/class/mtd/${NAND_MTD##*/}/type")
+  fi
 
-case "$ans" in
-  y|Y)
-    echo "Installing to USB..."
+  case "$NAND_TYPE" in
+    *nand)
+      echo "Install nand.img to the xspi1-data NAND"
+      echo
+      echo "This will erase and program the NAND."
+      printf "Continue? [y/N]: "
 
-    echo "Partitioning USB..."
-    # Create DOS MBR partition table with two primary partitions
-    # Partition 1: 32MB for fitImage (should be more than enough)
-    # Partition 2: Remainder for rootfs
-    echo -e 'o\nn\np\n1\n\n+32M\nn\np\n2\n\n\nw' | fdisk /dev/sda > /dev/null
+      read -r ans
 
-    # Wait for partition table to be re-read
-    sleep 2
-    partprobe /dev/sda || true > /dev/null
-    sleep 1
+      case "$ans" in
+        y|Y)
+          echo "Writing nand.img to the NAND..."
+          ubiformat $MTD/xspi1-data -f /usr/firmware/nand.img -y > /dev/null
+          sync
+          echo "NAND install complete"
+          ;;
+        *)
+          echo "Skipping NAND install"
+          ;;
+      esac
+      ;;
+    *)
+      echo "The xspi1-data flash isn't a NAND, skipping the NAND installer."
+      ;;
+  esac
+fi
 
-    echo "Formatting USB partition 1 as ext4..."
-    mke2fs -F -t ext4 -L "BOOT" /dev/sda1 > /dev/null
+if [ -f /usr/firmware/usb.img ]; then
+  echo
+  echo "======== USB Installer ========"
+  echo
+  echo "This will erase and program the USB."
+  printf "Continue? [y/N]: "
 
-    echo "Writing fitImage to USB partition 1..."
-    mkdir -p /tmp/boot_mount > /dev/null
-    mount /dev/sda1 /tmp/boot_mount > /dev/null
-    cp /usr/firmware/fitImage /tmp/boot_mount/ > /dev/null
-    sync
-    umount /tmp/boot_mount > /dev/null
-    rmdir /tmp/boot_mount > /dev/null
+  read -r ans
 
-    echo "Writing rootfs image to USB partition 2..."
-    dd if=/usr/firmware/rootfs.ext4 of=/dev/sda2 bs=512 > /dev/null
+  case "$ans" in
+    y|Y)
+      echo "Installing to USB..."
 
-    sync
-    echo "USB install complete"
-    ;;
-  *)
-    echo "Skipping USB install"
-    ;;
-esac
+      # usb.img holds partition 1 with the fitImage and partition 2 with
+      # the rootfs
+      echo "Writing usb.img to the USB..."
+      dd if=/usr/firmware/usb.img of=/dev/sda bs=64K conv=fsync
+
+      sync
+      echo "USB install complete"
+      ;;
+    *)
+      echo "Skipping USB install"
+      ;;
+  esac
+fi
 
 echo
 echo "Set the switch S1 to position 1 (SPI boot)."

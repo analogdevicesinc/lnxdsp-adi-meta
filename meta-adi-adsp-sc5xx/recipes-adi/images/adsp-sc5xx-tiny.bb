@@ -1,4 +1,4 @@
-inherit core-image extrausers adsp-sc5xx-compatible adsp-fit-generation
+inherit core-image extrausers adsp-sc5xx-compatible adsp-fit-generation adsp-image-flash
 
 SUMMARY = "Tiny image for Analog Devices ADSP-SC5xx boards with 16MB SPI"
 LICENSE = "MIT"
@@ -15,17 +15,19 @@ IMAGE_INSTALL = " \
 PASSWD_ROOT = "\$5\$j9T8zDE13LXUGyc6\$utDvGwFWR.kt/AKwwbHnXC14HJBqbcWwvLoDDLMQrc8"
 EXTRA_USERS_PARAMS = "usermod -p '${PASSWD_ROOT}' root;"
 
-IMAGE_FSTYPES = " tar.xz ubi ext4"
+IMAGE_FSTYPES = " tar.xz erofs-lz4hc.ubi ext4"
+IMAGE_FSTYPES:append = "${@bb.utils.contains('ADSP_GENIMAGE_TYPES', 'flash', ' flash', '', d)}"
 
-UBI_VOLNAME = "rootfs"
-UBINIZE_ARGS = "-m 1 -p 65536 -s 1"
-MKUBIFS_ARGS:append = " -x zlib"
+# usbutils, from packagegroup-base-usbhost, RRECOMMENDS udev-hwdb, which
+# eudev-hwdb provides and which brings in eudev and its hardware database: 17M
+# of the rootfs, more than the rootfs partition of a 16M SPI flash holds. The
+# image uses busybox mdev, not udev. opkg only ignores the recommendation by the
+# name of the package that provides it.
+BAD_RECOMMENDATIONS += "eudev-hwdb"
 
 #We do not need these files in the rootfs -- remove them to reduce the minimal rootfs size
 rootfs_cleanup(){
 	rm -rf ${IMAGE_ROOTFS}/boot
-	rm -rf ${IMAGE_ROOTFS}/lib/udev/hwdb.bin
-	rm -rf ${IMAGE_ROOTFS}/lib/udev/hwdb.d
 	rm -rf ${IMAGE_ROOTFS}/usr/lib/opkg
 	rm -rf ${IMAGE_ROOTFS}/usr/lib/locale
 	rm -rf ${IMAGE_ROOTFS}/etc/X11
@@ -58,10 +60,11 @@ install_init_script(){
 }
 
 ROOTFS_POSTPROCESS_COMMAND += "install_init_script"
+do_rootfs[file-checksums] += "${ADSP_SC5XX_INIT_SCRIPT}:True"
 
 do_create_programming_images(){
-    # Create programming-images directory
     PROG_DIR="${DEPLOY_DIR_IMAGE}/programming-images/${IMAGE_BASENAME}"
+    rm -rf ${PROG_DIR}
     install -d ${PROG_DIR}
 
     # Copy U-boot ldr images
@@ -82,12 +85,18 @@ do_create_programming_images(){
         cp ${DEPLOY_DIR_IMAGE}/fitImage ${PROG_DIR}/
     fi
 
-    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubi ]; then
-        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ubi ${PROG_DIR}/rootfs.ubi
+    # Copy rootfs.ubi
+    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.erofs-lz4hc.ubi ]; then
+        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.erofs-lz4hc.ubi ${PROG_DIR}/rootfs.ubi
     fi
 
     if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ext4 ]; then
         cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.ext4 ${PROG_DIR}/rootfs.ext4
+    fi
+
+    # Copy the whole SPI flash image
+    if [ -f ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.flash ]; then
+        cp ${DEPLOY_DIR_IMAGE}/${IMAGE_BASENAME}-${MACHINE}.rootfs.flash ${PROG_DIR}/flash.img
     fi
 
     echo "Programming images created in: ${PROG_DIR}"

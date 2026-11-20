@@ -13,6 +13,7 @@ SRC_URI:append = "\
 	file://feature/cfg/nfs.cfg \
 	file://feature/cfg/crypto.cfg \
 	file://feature/cfg/tracepoints.cfg \
+	file://feature/cfg/erofs.cfg \
 "
 SRC_URI:remove:adsp-sc846-som-ezkit = "file://feature/cfg/tracepoints.cfg"
 
