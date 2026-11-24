@@ -20,6 +20,17 @@ on:
       - 'meta-adi-adsp-sc5xx/recipes-bsp/u-boot/u-boot-adi*'
 
 jobs:
+  check-pinned-refs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+    - uses: analogdevicesinc/doctools/checkout@action
+
+    - name: Check pinned kernel and U-Boot references
+      run: .github/scripts/check-pinned-refs.sh
+
   build-doc:
     runs-on: ubuntu-latest
     permissions:
@@ -37,9 +48,6 @@ jobs:
           echo "base_path=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
         fi
     - uses: analogdevicesinc/doctools/checkout@action
-
-    - name: Check pinned kernel and U-Boot references
-      run: .github/scripts/check-pinned-refs.sh
 
     - name: Install pip packages
       run: |
