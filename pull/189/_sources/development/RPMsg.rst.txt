@@ -158,12 +158,15 @@ abovementioned repositories.
 RPMsg with yocto
 ~~~~~~~~~~~~~~~~
 
-1. In your local.conf file, append the following: ``INSTALL_IMAGE:append = " rpmsg-utils "``
+1. In the ``conf/auto.conf`` file within the build directory, append the
+   following: ``IMAGE_INSTALL:append = " rpmsg-utils "``. kas regenerates
+   ``conf/local.conf``, so changes made there are lost.
 
 .. note::
 
-   Make sure ``DISTRO_FEATURES:append = " linux_only_audio "`` is present in
-   your local.conf
+   Make sure the build uses the ``linux_only_audio`` audio mode. It is enabled
+   by default by ``kas/adsp-sc5xx.yml``; if you selected another audio mode in
+   ``conf/auto.conf``, remove it.
 
 2. Booting into Linux, the following messages should be visible in the kernel boot log:
 

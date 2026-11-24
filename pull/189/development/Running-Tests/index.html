@@ -8,7 +8,7 @@
 
     <title>Running Tests &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8e8a900e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=07ad7716" />
+    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=6cfc7fee" />
     <script async="async" src="../../_static/app.umd.js?v=2fe15c61"></script>
     <link rel="icon" href="../../_static/icon.svg"/>
     <link rel="index" title="Index" href="../../genindex/" />
@@ -559,7 +559,7 @@ example <code class="docutils literal notranslate"><span class="pre">IMAGE_INSTA
 the ADSP-SC5xx boards, mostly because they need kernel options the ADI
 configurations do not enable, or hardware such as an RTC. The list of tests is
 held in <code class="docutils literal notranslate"><span class="pre">UTIL_LINUX_PTEST_EXCLUDE</span></code> and can be overridden, for example in
-<code class="docutils literal notranslate"><span class="pre">local.conf</span></code>:</p>
+<code class="docutils literal notranslate"><span class="pre">conf/auto.conf</span></code> within the build directory:</p>
 <div class="highlight-bitbake notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run the hwclock tests on a board with an RTC driver enabled</span>
 <span class="nv">UTIL_LINUX_PTEST_EXCLUDE</span><span class="nd">:remove:pn-util-linux</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"hwclock/show"</span>
 </pre></div>
@@ -588,7 +588,7 @@ suite. The ADI layer skips the <code class="docutils literal notranslate"><span 
 forwarding, <code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-D</span></code>), which fails on the ADSP-SC598. Skipped tests are
 reported as <code class="docutils literal notranslate"><span class="pre">skip</span> <span class="pre">test</span> <span class="pre">&lt;name&gt;.sh</span></code> in the log rather than as <code class="docutils literal notranslate"><span class="pre">SKIP:</span></code> lines.
 The list is held in <code class="docutils literal notranslate"><span class="pre">OPENSSH_PTEST_SKIP</span></code> (test names without <code class="docutils literal notranslate"><span class="pre">.sh</span></code>) and can
-be changed in <code class="docutils literal notranslate"><span class="pre">local.conf</span></code>:</p>
+be changed in <code class="docutils literal notranslate"><span class="pre">conf/auto.conf</span></code>:</p>
 <div class="highlight-bitbake notranslate"><div class="highlight"><pre><span></span><span class="c1"># Also skip the static port forwarding test</span>
 <span class="nv">OPENSSH_PTEST_SKIP</span><span class="nd">:append:pn-openssh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">" forwarding"</span>
 </pre></div>

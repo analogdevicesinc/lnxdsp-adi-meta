@@ -8,7 +8,7 @@
 
     <title>USB Gadget Audio Example &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8e8a900e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=07ad7716" />
+    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=6cfc7fee" />
     <script async="async" src="../../_static/app.umd.js?v=2fe15c61"></script>
     <link rel="icon" href="../../_static/icon.svg"/>
     <link rel="index" title="Index" href="../../genindex/" />
@@ -274,8 +274,9 @@ PCs) as an audio card.</p>
 <p class="admonition-title">Note</p>
 <p>The USB Gadget Audio feature can be enabled when following the Getting
 Started Guides (version 3.0.0 or later). You need to append the following
-line to the <code class="docutils literal notranslate"><span class="pre">conf/local.conf</span></code> file - <code class="docutils literal notranslate"><span class="pre">DISTRO_FEATURES:append</span> <span class="pre">=</span> <span class="pre">&quot;</span>
-<span class="pre">adi_usb_gadget_audio&quot;</span></code> - before building the image.</p>
+line to the <code class="docutils literal notranslate"><span class="pre">conf/auto.conf</span></code> file within the build directory -
+<code class="docutils literal notranslate"><span class="pre">DISTRO_FEATURES:append</span> <span class="pre">=</span> <span class="pre">&quot;</span> <span class="pre">adi_usb_gadget_audio&quot;</span></code> - before building the
+image. kas regenerates <code class="docutils literal notranslate"><span class="pre">conf/local.conf</span></code>, so changes made there are lost.</p>
 </div>
 </section>
 <section id="hardware-configuration">

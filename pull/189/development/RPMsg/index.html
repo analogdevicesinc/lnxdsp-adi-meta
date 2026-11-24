@@ -8,7 +8,7 @@
 
     <title>RPMsg &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8e8a900e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=07ad7716" />
+    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=6cfc7fee" />
     <script async="async" src="../../_static/app.umd.js?v=2fe15c61"></script>
     <link rel="icon" href="../../_static/icon.svg"/>
     <link rel="index" title="Index" href="../../genindex/" />
@@ -410,12 +410,15 @@ abovementioned repositories.</p>
 <section id="rpmsg-with-yocto">
 <h3>RPMsg with yocto<a class="headerlink" href="#rpmsg-with-yocto" title="Link to this heading"></a></h3>
 <ol class="arabic simple">
-<li><p>In your local.conf file, append the following: <code class="docutils literal notranslate"><span class="pre">INSTALL_IMAGE:append</span> <span class="pre">=</span> <span class="pre">&quot;</span> <span class="pre">rpmsg-utils</span> <span class="pre">&quot;</span></code></p></li>
+<li><p>In the <code class="docutils literal notranslate"><span class="pre">conf/auto.conf</span></code> file within the build directory, append the
+following: <code class="docutils literal notranslate"><span class="pre">IMAGE_INSTALL:append</span> <span class="pre">=</span> <span class="pre">&quot;</span> <span class="pre">rpmsg-utils</span> <span class="pre">&quot;</span></code>. kas regenerates
+<code class="docutils literal notranslate"><span class="pre">conf/local.conf</span></code>, so changes made there are lost.</p></li>
 </ol>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Make sure <code class="docutils literal notranslate"><span class="pre">DISTRO_FEATURES:append</span> <span class="pre">=</span> <span class="pre">&quot;</span> <span class="pre">linux_only_audio</span> <span class="pre">&quot;</span></code> is present in
-your local.conf</p>
+<p>Make sure the build uses the <code class="docutils literal notranslate"><span class="pre">linux_only_audio</span></code> audio mode. It is enabled
+by default by <code class="docutils literal notranslate"><span class="pre">kas/adsp-sc5xx.yml</span></code>; if you selected another audio mode in
+<code class="docutils literal notranslate"><span class="pre">conf/auto.conf</span></code>, remove it.</p>
 </div>
 <ol class="arabic simple" start="2">
 <li><p>Booting into Linux, the following messages should be visible in the kernel boot log:</p></li>

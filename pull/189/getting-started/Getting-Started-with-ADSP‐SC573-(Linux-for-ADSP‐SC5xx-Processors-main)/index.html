@@ -8,7 +8,7 @@
 
     <title>Getting Started with ADSP-SC573 (main) &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8e8a900e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=07ad7716" />
+    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=6cfc7fee" />
     <script async="async" src="../../_static/app.umd.js?v=2fe15c61"></script>
     <link rel="icon" href="../../_static/icon.svg"/>
     <link rel="index" title="Index" href="../../genindex/" />
@@ -131,8 +131,7 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#booting-linux-from-usb-mass-storage">Booting Linux from USB Mass Storage</a><ul>
-<li><a class="reference internal" href="#formatting-the-usb-storage-device">Formatting the USB storage device</a></li>
-<li><a class="reference internal" href="#copying-to-the-usb-storage-device">Copying to the USB storage device</a></li>
+<li><a class="reference internal" href="#programming-the-usb-storage-device">Programming the USB storage device</a></li>
 <li><a class="reference internal" href="#booting-from-the-usb-storage-device">Booting from the USB storage device</a></li>
 </ul>
 </li>
@@ -696,13 +695,15 @@ command from the shell or console.</p>
 <div class="clear-left"></div></div></div><p>This will call the programming script which will walk you through programming
 the boot media on the board</p>
 <p>The init script will then move on to the USB programming</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Install U-Boot to USB
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>======== USB Installer ========
 
 This will erase and program the USB.
 Continue? [y/N]:
 </pre></div>
 </div>
-<p>Select y to program the USB, or N to skip programming.</p>
+<p>Select y to program the USB, or N to skip programming. The installer writes
+<code class="docutils literal notranslate"><span class="pre">usb.img</span></code> to the USB storage device: partition 1 with the <code class="docutils literal notranslate"><span class="pre">fitImage</span></code>, and
+partition 2 with the ext4 root filesystem.</p>
 </section>
 </section>
 <section id="booting-linux-after-programming">
@@ -890,16 +891,15 @@ following command</p>
 </section>
 <section id="booting-linux-from-usb-mass-storage">
 <h2>Booting Linux from USB Mass Storage<a class="headerlink" href="#booting-linux-from-usb-mass-storage" title="Link to this heading"></a></h2>
-<section id="formatting-the-usb-storage-device">
-<h3>Formatting the USB storage device<a class="headerlink" href="#formatting-the-usb-storage-device" title="Link to this heading"></a></h3>
+<section id="programming-the-usb-storage-device">
+<h3>Programming the USB storage device<a class="headerlink" href="#programming-the-usb-storage-device" title="Link to this heading"></a></h3>
 <p>The USB can be programmed by the init script from the instructions mentioned
-above if plugged into the board. However, the USB can also be formatted by the
-host PC before plugging into the board as well, following the instructions
-below.</p>
-<p>The first step is to format the USB stick to a format that U-Boot supports.</p>
-<p>To do this, follow the commands below. The example code in this section assumes
-that the USB device is reported to be <code class="docutils literal notranslate"><span class="pre">/dev/sda</span></code>. Ensure that you change
-these commands to use your device.</p>
+above if plugged into the board. However, the USB can also be programmed by the
+host PC before plugging into the board, by writing <code class="docutils literal notranslate"><span class="pre">usb.img</span></code> from the
+programming images to it.</p>
+<p>The example code in this section assumes that the USB device is reported to be
+<code class="docutils literal notranslate"><span class="pre">/dev/sda</span></code>. Ensure that you change these commands to use your device, as
+everything on it is erased.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You can use <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">fdisk</span> <span class="pre">-l</span></code> to list the available devices and partitions,
@@ -908,120 +908,7 @@ in order to locate the USB device.</p>
 <div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>fdisk<span class="w"> </span>/dev/sda
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Welcome to fdisk (util-linux 2.39.3).
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Changes will remain in memory only, until you decide to write them.
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Be careful before using the write command.
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Command (m for help): n
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Partition type
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>   p   primary (0 primary, 0 extended, 4 free)
-   e   extended (container for logical partitions)
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Select (default p): p
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Partition number (1-4, default 1): 1
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>First sector (2048-15269887, default 2048):
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Last sector, +/-sectors or +/-size{K,M,G,T,P} (2048-15269887, default 15269887): +32M
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Created a new partition 1 of type 'Linux' and of size 32 MiB.
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Partition #1 contains a ext4 signature.
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Command (m for help): n
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Partition type
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>   p   primary (1 primary, 0 extended, 3 free)
-   e   extended (container for logical partitions)
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Select (default p): p
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Partition number (2-4, default 2): 2
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>First sector (67584-15269887, default 67584):
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Last sector, +/-sectors or +/-size{K,M,G,T,P} (67584-15269887, default 15269887):
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Created a new partition 2 of type 'Linux' and of size 7.2 GiB.
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Partition #2 contains a ext4 signature.
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Command (m for help): w
-</pre></div>
-</div>
-<div class="clear-left"></div></div></div></section>
-<section id="copying-to-the-usb-storage-device">
-<h3>Copying to the USB storage device<a class="headerlink" href="#copying-to-the-usb-storage-device" title="Link to this heading"></a></h3>
-<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mke2fs<span class="w"> </span>-F<span class="w"> </span>-t<span class="w"> </span>ext4<span class="w"> </span>-L<span class="w"> </span><span class="s2">"BOOT"</span><span class="w"> </span>/dev/sda1
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>/tmp/boot_mount
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mount<span class="w"> </span>/dev/sda1<span class="w"> </span>/tmp/boot_mount
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>fitImage<span class="w"> </span>/tmp/boot_mount
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sync
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>umount<span class="w"> </span>/tmp/boot_mount
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dd<span class="w"> </span><span class="k">if</span><span class="o">=</span>rootfs.ext4<span class="w"> </span><span class="nv">of</span><span class="o">=</span>/dev/sda2<span class="w"> </span><span class="nv">bs</span><span class="o">=</span><span class="m">512</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>dd<span class="w"> </span><span class="k">if</span><span class="o">=</span>usb.img<span class="w"> </span><span class="nv">of</span><span class="o">=</span>/dev/sda<span class="w"> </span><span class="nv">bs</span><span class="o">=</span>4M<span class="w"> </span><span class="nv">conv</span><span class="o">=</span>fsync
 </pre></div>
 </div>
 <div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
@@ -1039,7 +926,7 @@ following command</p>
 </pre></div>
 </div>
 <p>Now the rootfs is set to be your USB storage device, and the amount of space is
-the size of the partition created earlier on the device.</p>
+the size of <code class="docutils literal notranslate"><span class="pre">rootfs.ext4</span></code>, partition 2 of <code class="docutils literal notranslate"><span class="pre">usb.img</span></code>.</p>
 </section>
 </section>
 </section>

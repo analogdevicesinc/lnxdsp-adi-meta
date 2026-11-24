@@ -8,7 +8,7 @@
 
     <title>SHARC-ALSA Example &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8e8a900e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=07ad7716" />
+    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=6cfc7fee" />
     <script async="async" src="../../_static/app.umd.js?v=2fe15c61"></script>
     <link rel="icon" href="../../_static/icon.svg"/>
     <link rel="index" title="Index" href="../../genindex/" />
@@ -104,7 +104,7 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#playing-audio">Playing Audio</a><ul>
-<li><a class="reference internal" href="#adding-a-tone-to-a-channel">Adding a Tone to a Channel</a></li>
+<li><a class="reference internal" href="#recording-audio">Recording Audio</a></li>
 </ul>
 </li>
 </ul>
@@ -280,13 +280,19 @@ Content on this topic
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>SHARC-ALSA is not enabled by default when following the Getting Started
-guides within the release pages (3.0.0 or higher). You need to change the
-final line in the <code class="docutils literal notranslate"><span class="pre">conf/local.conf</span></code> file from <code class="docutils literal notranslate"><span class="pre">DISTRO_FEATURES:append</span> <span class="pre">=</span> <span class="pre">&quot;</span>
-<span class="pre">linux_only_audio&quot;</span></code> to <code class="docutils literal notranslate"><span class="pre">DISTRO_FEATURES:append</span> <span class="pre">=</span> <span class="pre">&quot;</span> <span class="pre">adi_sharc_alsa_audio&quot;</span></code>
-before building the image.</p>
-<p>It is also neccessary to uncomment <code class="docutils literal notranslate"><span class="pre">IMAGE_INSTALL:append</span> <span class="pre">=</span> <span class="pre">&quot;</span>
-<span class="pre">linux-firmware-sharc-alsa</span> <span class="pre">alsa-utils</span> <span class="pre">alsa-lib&quot;</span></code> - this ensures the
-necessary SHARC firmware is copied to the new root file system.</p>
+guides within the release pages (3.0.0 or higher). The default build enables
+<code class="docutils literal notranslate"><span class="pre">linux_only_audio</span></code>, and only one audio mode can be selected. Before
+building the image, add the following lines to <code class="docutils literal notranslate"><span class="pre">conf/auto.conf</span></code> within the
+build directory. kas regenerates <code class="docutils literal notranslate"><span class="pre">conf/local.conf</span></code>, so changes made there
+are lost.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DISTRO_FEATURES</span><span class="p">:</span><span class="n">remove</span> <span class="o">=</span> <span class="s2">"linux_only_audio"</span>
+<span class="n">DISTRO_FEATURES</span><span class="p">:</span><span class="n">append</span> <span class="o">=</span> <span class="s2">" adi_sharc_alsa_audio"</span>
+<span class="n">IMAGE_INSTALL</span><span class="p">:</span><span class="n">append</span> <span class="o">=</span> <span class="s2">" linux-firmware-sharc-alsa alsa-utils alsa-lib"</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">IMAGE_INSTALL</span></code> line installs ALSA and the test audio file used
+below. <code class="docutils literal notranslate"><span class="pre">adi_sharc_alsa_audio</span></code> installs the SHARC firmware, in
+<code class="docutils literal notranslate"><span class="pre">/lib/firmware/adi</span></code>.</p>
 </div>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
@@ -295,8 +301,10 @@ necessary SHARC firmware is copied to the new root file system.</p>
 <section id="sharc-alsa-modes">
 <h2>SHARC-ALSA modes<a class="headerlink" href="#sharc-alsa-modes" title="Link to this heading"></a></h2>
 <p>There are 2 modes for SHARC-ALSA, and they differ in how the SHARCs are
-programmed. The mode is set in the <code class="docutils literal notranslate"><span class="pre">conf/local.conf</span></code> file, when building the
-Linux image. E.g. : <code class="docutils literal notranslate"><span class="pre">DISTRO_FEATURES:append</span> <span class="pre">=</span> <span class="pre">&quot;</span> <span class="pre">adi_sharc_alsa_audio&quot;</span></code></p>
+programmed. The mode is set in the <code class="docutils literal notranslate"><span class="pre">conf/auto.conf</span></code> file, when building the
+Linux image, in place of the default <code class="docutils literal notranslate"><span class="pre">linux_only_audio</span></code>. E.g. :
+<code class="docutils literal notranslate"><span class="pre">DISTRO_FEATURES:remove</span> <span class="pre">=</span> <span class="pre">&quot;linux_only_audio&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">DISTRO_FEATURES:append</span> <span class="pre">=</span>
+<span class="pre">&quot;</span> <span class="pre">adi_sharc_alsa_audio&quot;</span></code></p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">adi_sharc_alsa_audio</span></code></p>
 <p>Audio playback handled through SHARC firmware, no codec control (volume, etc)
@@ -311,43 +319,40 @@ from Linux. remoteproc is used to load the SHARC LDR firmware files.</p>
 <h2>Programming the SHARC<a class="headerlink" href="#programming-the-sharc" title="Link to this heading"></a></h2>
 <section id="using-linux-remoteproc">
 <h3>Using Linux (remoteproc)<a class="headerlink" href="#using-linux-remoteproc" title="Link to this heading"></a></h3>
-<p>An example SHARC image is present in the <code class="docutils literal notranslate"><span class="pre">/lib/firmware</span></code> directory on the
-target. The SHARC can be programmed with this image using the Linux shell. The
-SHARCs are running already when Linux has booted, with remoteproc having loaded
-<code class="docutils literal notranslate"><span class="pre">/lib/firmware/adi/icap_sharc_alsa_core&lt;n&gt;.ldr</span></code>, so you can stop them, reload
-the example image or your own one, and start them again</p>
+<p>The example SHARC images are in the <code class="docutils literal notranslate"><span class="pre">/lib/firmware/adi</span></code> directory on the
+target, <code class="docutils literal notranslate"><span class="pre">icap_sharc_alsa_core1.ldr</span></code> for SHARC core 1 (<code class="docutils literal notranslate"><span class="pre">remoteproc0</span></code>) and
+<code class="docutils literal notranslate"><span class="pre">icap_sharc_alsa_core2.ldr</span></code> for SHARC core 2 (<code class="docutils literal notranslate"><span class="pre">remoteproc1</span></code>). The SHARCs
+are running already when Linux has booted, with remoteproc having loaded these
+images, so you can stop them, reload the example image or your own one, and
+start them again. Firmware names are relative to <code class="docutils literal notranslate"><span class="pre">/lib/firmware</span></code>.</p>
 <div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/lib/firmware
-</pre></div>
-</div>
-<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>/lib/firmware$
 </pre></div>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span>stop<span class="w"> </span>&gt;<span class="w"> </span>/sys/class/remoteproc/remoteproc0/state
 </pre></div>
 </div>
-<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>ADI Reset Control Unit 3108c000.rcu: Timeout waiting for remote core 1 to IDLE!
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>snd_soc_sharc_alsa_asoc_card virtio0.sharc-alsa.-1.21: sharc-alsa card removed for rpmsg endpoint addr: 0x015
+ADI Reset Control Unit 3108c000.rcu: Timeout waiting for remote core 1 to IDLE!
 remoteproc remoteproc0: stopped remote processor sharc
 </pre></div>
 </div>
-<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>/lib/firmware$
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span>icap-sharc-alsa_Core1.ldr<span class="w"> </span>&gt;<span class="w"> </span>/sys/class/remoteproc/remoteproc0/firmware
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span>adi/icap_sharc_alsa_core1.ldr<span class="w"> </span>&gt;<span class="w"> </span>/sys/class/remoteproc/remoteproc0/firmware
 </pre></div>
 </div>
-<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>/lib/firmware$
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span>start<span class="w"> </span>&gt;<span class="w"> </span>/sys/class/remoteproc/remoteproc0/state
 </pre></div>
 </div>
 <div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>remoteproc remoteproc0: powering up sharc
-remoteproc remoteproc0: Booting fw image icap-sharc-alsa_Core1.ldr, size 132860
-adi_remoteproc 28240000.sharc: Core1 rpmsg init timeout, probably not supported.
+remoteproc remoteproc0: Booting fw image adi/icap_sharc_alsa_core1.ldr, size 132860
 virtio_rpmsg_bus virtio0: rpmsg host is online
+virtio_rpmsg_bus virtio0: creating channel sharc-alsa addr 0x15
+snd_soc_sharc_alsa_asoc_card virtio0.sharc-alsa.-1.21: sharc-alsa card probed for rpmsg endpoint addr: 0x015
 rproc-virtio rproc-virtio.0.auto: registered virtio0 (type 7)
 remoteproc remoteproc0: remote processor sharc is now up
 </pre></div>
@@ -405,45 +410,52 @@ J17 also labelled as DAC1/2.</p>
 </div>
 <div class="clear-left"></div></div></div><p>You will hear a 440Hz tone on the left channel and a 200Hz tone on the right
 channel being played for 6 seconds.</p>
-<section id="adding-a-tone-to-a-channel">
-<h3>Adding a Tone to a Channel<a class="headerlink" href="#adding-a-tone-to-a-channel" title="Link to this heading"></a></h3>
-<p>The SHARC can be instructed to add a tone to the audio played using <code class="docutils literal notranslate"><span class="pre">aplay</span></code>.
-This is done through a command interface which also uses RPMsg for passing on
-the instructions to the SHARC Core. A helper tool for simplifying this is
-installed on the target. The tool creates a character device which will accept
-a channel number and a frequency to be added to the audio as strings allowing
-for simple interaction from the command line.</p>
+<section id="recording-audio">
+<h3>Recording Audio<a class="headerlink" href="#recording-audio" title="Link to this heading"></a></h3>
+<p>The example SHARC images have no command interface for adding a tone to the
+audio. Each SHARC registers one <code class="docutils literal notranslate"><span class="pre">sharc-alsa</span></code> RPMsg channel, which the
+<code class="docutils literal notranslate"><span class="pre">sharc-alsa</span></code> ASoC driver turns into a sound card:</p>
 <div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rpmsg-bind-chardev<span class="w"> </span>-d<span class="w"> </span>virtio0.sharc-audioweaver.-1.201<span class="w"> </span>-a<span class="w"> </span><span class="m">60</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>/sys/bus/rpmsg/devices/
 </pre></div>
 </div>
-<div class="clear-left"></div></div></div><p>Once the binding has been created a character device <code class="docutils literal notranslate"><span class="pre">/dev/rpmsg0</span></code> is
-available and will accept commands with the syntax: <code class="docutils literal notranslate"><span class="pre">&lt;channel&gt;</span> <span class="pre">&lt;frequency&gt;</span></code>.
-To add a 800Hz tone to channel 0 (Left), enter the following at the command
-line:</p>
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>virtio0.rpmsg_ctrl.0.0    virtio0.rpmsg_ns.53.53    virtio0.sharc-alsa.-1.21
+virtio1.rpmsg_ctrl.0.0    virtio1.rpmsg_ns.53.53    virtio1.sharc-alsa.-1.22
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>aplay<span class="w"> </span>-l
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>**** List of PLAYBACK Hardware Devices ****
+card 0: sharcalsacard21 [sharc-alsa-card_21], device 0: sharc-alsa-playback-336 sharc-alsa-codec-dai_336-0 []
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arecord<span class="w"> </span>-l
+</pre></div>
+</div>
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>**** List of CAPTURE Hardware Devices ****
+card 1: sharcalsacard22 [sharc-alsa-card_22], device 0: sharc-alsa-capture-352 sharc-alsa-codec-dai_352-0 []
+</pre></div>
+</div>
+<div class="clear-left"></div></div></div><p>SHARC core 1 provides the playback card, card 0, and SHARC core 2 the capture
+card, card 1, which records from the ADC. Both cards take 32-bit, 2 channel,
+48 kHz audio; the <code class="docutils literal notranslate"><span class="pre">plughw</span></code> device converts other formats. To record 5
+seconds of audio:</p>
 <div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">800</span>.0<span class="w"> </span>&gt;<span class="w"> </span>/dev/rpmsg0
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arecord<span class="w"> </span>-D<span class="w"> </span>plughw:1,0<span class="w"> </span>-d<span class="w"> </span><span class="m">5</span><span class="w"> </span>-f<span class="w"> </span>S16_LE<span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span>-r<span class="w"> </span><span class="m">48000</span><span class="w"> </span>/tmp/capture.wav
 </pre></div>
 </div>
-<div class="clear-left"></div></div></div><p>Similarly, to add a 500Hz tone to channel 1 (Right), enter the following
-command:</p>
-<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">500</span>.0<span class="w"> </span>&gt;<span class="w"> </span>/dev/rpmsg0
-</pre></div>
-</div>
-<div class="clear-left"></div></div></div><p>When running <code class="docutils literal notranslate"><span class="pre">aplay</span></code> again, you will hear a dual tone frequency on both
-channels. The left channel will contain 440Hz + 800Hz whereas the right channel
-will contain 200Hz + 500Hz.</p>
-<div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>aplay<span class="w"> </span>/usr/share/sounds/alsa/2Ch_L440_R200_48kHz_16bit_6s.wav
+<div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>Recording WAVE '/tmp/capture.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
 </pre></div>
 </div>
 <div class="clear-left"></div></div></div></section>

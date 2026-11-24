@@ -8,7 +8,7 @@
 
     <title>Getting Started with ADSP-SC846 (main) &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8e8a900e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=07ad7716" />
+    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=6cfc7fee" />
     <script async="async" src="../../_static/app.umd.js?v=2fe15c61"></script>
     <link rel="icon" href="../../_static/icon.svg"/>
     <link rel="index" title="Index" href="../../genindex/" />
@@ -725,7 +725,10 @@ Continue? [y/i/N]:
 </div>
 <p>Select y to program everything, or i to enter interactive mode (to selectively
 program certain partitions on the SPI flash). The default for this and all
-programming prompts is N for no.</p>
+programming prompts is N for no. The installer writes <code class="docutils literal notranslate"><span class="pre">u-boot-spl.ldr</span></code>,
+<code class="docutils literal notranslate"><span class="pre">u-boot.ldr</span></code>, <code class="docutils literal notranslate"><span class="pre">fitImage</span></code> and <code class="docutils literal notranslate"><span class="pre">rootfs.ubi</span></code> to the <code class="docutils literal notranslate"><span class="pre">u-boot-spl</span></code>,
+<code class="docutils literal notranslate"><span class="pre">u-boot</span></code>, <code class="docutils literal notranslate"><span class="pre">kernel</span></code> and <code class="docutils literal notranslate"><span class="pre">rootfs</span></code> partitions of the SPI flash. It skips the
+SPI flash when the root filesystem is mounted from it.</p>
 <p>The init script will then move on to the mmc programming</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>======== Emmc Installer ========
 Install U-Boot to EMMC
@@ -734,7 +737,24 @@ This will erase and program EMMC.
 Continue? [y/N]:
 </pre></div>
 </div>
-<p>Select y to program the eMMC, or N to skip programming.</p>
+<p>Select y to program the eMMC, or N to skip programming. The installer writes
+<code class="docutils literal notranslate"><span class="pre">emmc.img</span></code> to the eMMC: U-Boot SPL and U-Boot, partition 1 with the
+<code class="docutils literal notranslate"><span class="pre">fitImage</span></code>, and partition 2 with the ext4 root filesystem. It skips the eMMC
+when the root filesystem is mounted from it.</p>
+<p>The init script will then move on to the SPI NAND programming, when the board
+has a SPI NAND on xSPI1</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>======== NAND Installer ========
+Install nand.img to the xspi1-data NAND
+
+This will erase and program the NAND.
+Continue? [y/N]:
+</pre></div>
+</div>
+<p>Select y to program the NAND, or N to skip programming. The installer writes
+<code class="docutils literal notranslate"><span class="pre">nand.img</span></code> with <code class="docutils literal notranslate"><span class="pre">ubiformat</span></code>: a UBI image with volumes for U-Boot SPL,
+U-Boot, the <code class="docutils literal notranslate"><span class="pre">fitImage</span></code>, the EROFS root filesystem, and the writable
+<code class="docutils literal notranslate"><span class="pre">overlay</span></code> and <code class="docutils literal notranslate"><span class="pre">data</span></code> UBIFS volumes. On boards with a SPI NOR on xSPI1,
+the installer skips the NAND.</p>
 </section>
 </section>
 <section id="booting-linux-after-programming">
@@ -757,6 +777,11 @@ Password: adi
 <p>The default boot method for the adsp-sc846-som-ezkit is SPI boot. Turn the bootmode
 selector to 1, and reset the board. The board should now automatically boot to
 the Linux login.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The root filesystem in the SPI flash is a read-only EROFS image. Boot from
+the eMMC, SD card, USB or NFS for a writable root filesystem.</p>
+</div>
 </section>
 </section>
 <section id="network-booting">

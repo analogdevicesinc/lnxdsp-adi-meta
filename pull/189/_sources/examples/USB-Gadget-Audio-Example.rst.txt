@@ -11,8 +11,9 @@ PCs) as an audio card.
 .. note::
    The USB Gadget Audio feature can be enabled when following the Getting
    Started Guides (version 3.0.0 or later). You need to append the following
-   line to the ``conf/local.conf`` file - ``DISTRO_FEATURES:append = "
-   adi_usb_gadget_audio"`` - before building the image.
+   line to the ``conf/auto.conf`` file within the build directory -
+   ``DISTRO_FEATURES:append = " adi_usb_gadget_audio"`` - before building the
+   image. kas regenerates ``conf/local.conf``, so changes made there are lost.
 
 Hardware Configuration
 ----------------------

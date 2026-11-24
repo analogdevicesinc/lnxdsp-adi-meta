@@ -8,7 +8,7 @@
 
     <title>Compiling and running a Rust kernel &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8e8a900e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=07ad7716" />
+    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=6cfc7fee" />
     <script async="async" src="../../_static/app.umd.js?v=2fe15c61"></script>
     <link rel="icon" href="../../_static/icon.svg"/>
     <link rel="index" title="Index" href="../../genindex/" />
@@ -286,7 +286,7 @@ ADSP-SC598 boards.</p>
 <ol class="arabic simple">
 <li><p>On your host/build machine, install rust via <a class="icon link reference external" href="https://www.rust-lang.org/tools/install" target="_blank">rustup</a></p></li>
 <li><p>Clone the Linux kernel tree you wish to use. In our case, we will use the
-<a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/adsp-6.18.31-y/" target="_blank">adsp-6.18.31-y</a> branch.</p></li>
+<a class="icon git reference external" href="https://github.com/analogdevicesinc/linux/tree/adsp-6.18.y/staging/sc846-mtd-names/" target="_blank">adsp-6.18.y/staging/sc846-mtd-names</a> branch.</p></li>
 <li><p>Once cloned, configure the kernel using either <code class="docutils literal notranslate"><span class="pre">ARCH=arm64</span>
 <span class="pre">CROSS_COMPILE=aarch64-linux-gnu-</span> <span class="pre">make</span> <span class="pre">menuconfig/defconfig/olddefconfig</span></code></p></li>
 <li><p>Set up the rust environment:</p></li>

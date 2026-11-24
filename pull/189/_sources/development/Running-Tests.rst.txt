@@ -184,7 +184,7 @@ The ADI layer removes from ``util-linux-ptest`` the tests that cannot pass on
 the ADSP-SC5xx boards, mostly because they need kernel options the ADI
 configurations do not enable, or hardware such as an RTC. The list of tests is
 held in ``UTIL_LINUX_PTEST_EXCLUDE`` and can be overridden, for example in
-``local.conf``:
+``conf/auto.conf`` within the build directory:
 
 .. code-block:: bitbake
 
@@ -210,7 +210,7 @@ suite. The ADI layer skips the ``dynamic-forward`` test (SOCKS dynamic port
 forwarding, ``ssh -D``), which fails on the ADSP-SC598. Skipped tests are
 reported as ``skip test <name>.sh`` in the log rather than as ``SKIP:`` lines.
 The list is held in ``OPENSSH_PTEST_SKIP`` (test names without ``.sh``) and can
-be changed in ``local.conf``:
+be changed in ``conf/auto.conf``:
 
 .. code-block:: bitbake
 
