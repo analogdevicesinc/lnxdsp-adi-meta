@@ -9,14 +9,21 @@ SHARC-ALSA Example
 
 .. note::
    SHARC-ALSA is not enabled by default when following the Getting Started
-   guides within the release pages (3.0.0 or higher). You need to change the
-   final line in the ``conf/local.conf`` file from ``DISTRO_FEATURES:append = "
-   linux_only_audio"`` to ``DISTRO_FEATURES:append = " adi_sharc_alsa_audio"``
-   before building the image.
+   guides within the release pages (3.0.0 or higher). The default build enables
+   ``linux_only_audio``, and only one audio mode can be selected. Before
+   building the image, add the following lines to ``conf/auto.conf`` within the
+   build directory. kas regenerates ``conf/local.conf``, so changes made there
+   are lost.
 
-   It is also neccessary to uncomment ``IMAGE_INSTALL:append = "
-   linux-firmware-sharc-alsa alsa-utils alsa-lib"`` - this ensures the
-   necessary SHARC firmware is copied to the new root file system.
+   .. code-block::
+
+      DISTRO_FEATURES:remove = "linux_only_audio"
+      DISTRO_FEATURES:append = " adi_sharc_alsa_audio"
+      IMAGE_INSTALL:append = " linux-firmware-sharc-alsa alsa-utils alsa-lib"
+
+   The ``IMAGE_INSTALL`` line installs ALSA and the test audio file used
+   below. ``adi_sharc_alsa_audio`` installs the SHARC firmware, in
+   ``/lib/firmware/adi``.
 
 Introduction
 ------------
@@ -27,8 +34,10 @@ SHARC-ALSA modes
 ----------------
 
 There are 2 modes for SHARC-ALSA, and they differ in how the SHARCs are
-programmed. The mode is set in the ``conf/local.conf`` file, when building the
-Linux image. E.g. : ``DISTRO_FEATURES:append = " adi_sharc_alsa_audio"``
+programmed. The mode is set in the ``conf/auto.conf`` file, when building the
+Linux image, in place of the default ``linux_only_audio``. E.g. :
+``DISTRO_FEATURES:remove = "linux_only_audio"`` and ``DISTRO_FEATURES:append =
+" adi_sharc_alsa_audio"``
 
 * ``adi_sharc_alsa_audio``
 
@@ -45,29 +54,37 @@ Programming the SHARC
 Using Linux (remoteproc)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-An example SHARC image is present in the ``/lib/firmware`` directory on the
-target. The SHARC can be programmed with this image using the Linux shell. The
-SHARCs are running already when Linux has booted, so you can stop them, reload
-the example image or your own one, and start them again
+The example SHARC images are in the ``/lib/firmware/adi`` directory on the
+target, ``icap_sharc_alsa_core1.ldr`` for SHARC core 1 (``remoteproc0``) and
+``icap_sharc_alsa_core2.ldr`` for SHARC core 2 (``remoteproc1``). The SHARCs
+are running already when Linux has booted, with remoteproc having loaded these
+images, so you can stop them, reload the example image or your own one, and
+start them again. Firmware names are relative to ``/lib/firmware``.
 
 .. shell::
 
-   /lib/firmware
    $echo stop > /sys/class/remoteproc/remoteproc0/state
-    ADI Reset Control Unit 3108b000.rcu: Timeout waiting for remote core 1 to IDLE!
-    remoteproc remoteproc0: stopped remote processor core1-rproc
-   $echo icap-sharc-alsa_Core1.ldr > /sys/class/remoteproc/remoteproc0/firmware
+    snd_soc_sharc_alsa_asoc_card virtio0.sharc-alsa.-1.21: sharc-alsa card removed for rpmsg endpoint addr: 0x015
+    ADI Reset Control Unit 3108c000.rcu: Timeout waiting for remote core 1 to IDLE!
+    remoteproc remoteproc0: stopped remote processor sharc
+   $echo adi/icap_sharc_alsa_core1.ldr > /sys/class/remoteproc/remoteproc0/firmware
    $echo start > /sys/class/remoteproc/remoteproc0/state
-    remoteproc remoteproc0: powering up core1-rproc
-    remoteproc remoteproc0: Booting fw image adi_adsp_core1_fw.ldr, size 132860
-    adi_remoteproc 28240000.core1-rproc: Core1 rpmsg init timeout, probably not supported.
+    remoteproc remoteproc0: powering up sharc
+    remoteproc remoteproc0: Booting fw image adi/icap_sharc_alsa_core1.ldr, size 133504
     virtio_rpmsg_bus virtio0: rpmsg host is online
-    remoteproc0#vdev0buffer: registered virtio0 (type 7)
-    remoteproc remoteproc0: remote processor core1-rproc is now up
+    virtio_rpmsg_bus virtio0: creating channel sharc-alsa addr 0x15
+    snd_soc_sharc_alsa_asoc_card virtio0.sharc-alsa.-1.21: sharc-alsa card probed for rpmsg endpoint addr: 0x015
+    rproc-virtio rproc-virtio.0.auto: registered virtio0 (type 7)
+    remoteproc remoteproc0: remote processor sharc is now up
 
 When executing the ``echo start`` command you will notice the LEDs on the
 SOMCRR-EZKIT flashing and then settle on LED7 remaining on. This indicates that
 the image on the SHARC is running.
+
+Reloading SHARC core 1 leaves the capture card of SHARC core 2 unable to start
+a recording; ``arecord`` fails with ``Unable to install hw params``. Before
+recording again, reload SHARC core 2 the same way, through ``remoteproc1`` with
+``adi/icap_sharc_alsa_core2.ldr``.
 
 Using U-Boot (rproc)
 ~~~~~~~~~~~~~~~~~~~~
@@ -80,7 +97,7 @@ these using the following command, executed from your build folder:
 
 .. shell::
 
-   $cp ../sources/meta-adi/meta-adi-adsp-sc5xx/recipes-icc/sharc-audio/files/icap-sharc-alsa_Core{1,2}.ldr \
+   $cp ../config/meta-adi-adsp-sc5xx/recipes-icc/sharc-audio/files/icap-sharc-alsa_Core{1,2}.ldr \
    $   /tftpboot/
 
 With these stored in the TFTP server, you need to input the following at the
@@ -91,10 +108,10 @@ U-Boot prompt:
    => rproc init
    => tftp ${loadaddr} icap-sharc-alsa_Core1.ldr
    => rproc load 0 ${loadaddr} ${filesize}
-   Load Remote Processor 0 with data@addr=0x96000000 132860 bytes: Success!
+   Load Remote Processor 0 with data@addr=0x90000000 133504 bytes: Success!
    => tftp ${loadaddr} icap-sharc-alsa_Core2.ldr
    => rproc load 1 ${loadaddr} ${filesize}
-   Load Remote Processor 1 with data@addr=0x96000000 79892 bytes: Success!
+   Load Remote Processor 1 with data@addr=0x90000000 79992 bytes: Success!
    => rproc start 1
    => rproc start 0
 
@@ -120,40 +137,31 @@ Play back the audio sample file stored in ``/usr/share/sounds/alsa/``
 You will hear a 440Hz tone on the left channel and a 200Hz tone on the right
 channel being played for 6 seconds.
 
-Adding a Tone to a Channel
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Recording Audio
+~~~~~~~~~~~~~~~
 
-The SHARC can be instructed to add a tone to the audio played using ``aplay``.
-This is done through a command interface which also uses RPMsg for passing on
-the instructions to the SHARC Core. A helper tool for simplifying this is
-installed on the target. The tool creates a character device which will accept
-a channel number and a frequency to be added to the audio as strings allowing
-for simple interaction from the command line.
+The example SHARC images have no command interface for adding a tone to the
+audio. Each SHARC registers one ``sharc-alsa`` RPMsg channel, which the
+``sharc-alsa`` ASoC driver turns into a sound card:
 
 .. shell::
 
-   $rpmsg-bind-chardev -d virtio0.sharc-audioweaver.-1.201 -a 60
+   $ls /sys/bus/rpmsg/devices/
+    virtio0.rpmsg_ctrl.0.0    virtio0.rpmsg_ns.53.53    virtio0.sharc-alsa.-1.21
+    virtio1.rpmsg_ctrl.0.0    virtio1.rpmsg_ns.53.53    virtio1.sharc-alsa.-1.22
+   $aplay -l
+    **** List of PLAYBACK Hardware Devices ****
+    card 0: sharcalsacard21 [sharc-alsa-card_21], device 0: sharc-alsa-playback-336 sharc-alsa-codec-dai_336-0 []
+   $arecord -l
+    **** List of CAPTURE Hardware Devices ****
+    card 1: sharcalsacard22 [sharc-alsa-card_22], device 0: sharc-alsa-capture-352 sharc-alsa-codec-dai_352-0 []
 
-Once the binding has been created a character device ``/dev/rpmsg0`` is
-available and will accept commands with the syntax: ``<channel> <frequency>``.
-To add a 800Hz tone to channel 0 (Left), enter the following at the command
-line:
-
-.. shell::
-
-   $echo 0 800.0 > /dev/rpmsg0
-
-Similarly, to add a 500Hz tone to channel 1 (Right), enter the following
-command:
-
-.. shell::
-
-   $echo 1 500.0 > /dev/rpmsg0
-
-When running ``aplay`` again, you will hear a dual tone frequency on both
-channels. The left channel will contain 440Hz + 800Hz whereas the right channel
-will contain 200Hz + 500Hz.
+SHARC core 1 provides the playback card, card 0, and SHARC core 2 the capture
+card, card 1, which records from the ADC. Both cards take 32-bit, 2 channel,
+48 kHz audio; the ``plughw`` device converts other formats. To record 5
+seconds of audio:
 
 .. shell::
 
-   $aplay /usr/share/sounds/alsa/2Ch_L440_R200_48kHz_16bit_6s.wav
+   $arecord -D plughw:1,0 -d 5 -f S16_LE -c 2 -r 48000 /tmp/capture.wav
+    Recording WAVE '/tmp/capture.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo

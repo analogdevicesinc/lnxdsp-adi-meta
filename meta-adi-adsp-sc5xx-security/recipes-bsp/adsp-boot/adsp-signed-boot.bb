@@ -6,7 +6,7 @@ inherit deploy deploy-dep
 
 DDEPENDS = "u-boot-adi adsp-boot"
 
-# overwrite with another signature type in local.conf if you prefer
+# overwrite with another signature type in conf/auto.conf if you prefer
 # valid options are:
 # BLp - plaintext with authentication
 # BLw - encrypted in wrapped key format
@@ -22,11 +22,11 @@ UNSIGNED_SRC = "u-boot-spl-unsigned.ldr u-boot-unsigned.ldr"
 
 do_configure() {
 	if [ -z "${ADI_SIGNTOOL_KEY}" ]; then
-		bbfatal "Signing key not specified, please set ADI_SIGNTOOL_KEY in local.conf"
+		bbfatal "Signing key not specified, please set ADI_SIGNTOOL_KEY in conf/auto.conf"
 	fi
 
 	if [ ! -f "${ADI_SIGNTOOL_PATH}" ]; then
-		bbfatal "Must specify a path to the adi_signtool binary as ADI_SIGNTOOL_PATH in local.conf"
+		bbfatal "Must specify a path to the adi_signtool binary as ADI_SIGNTOOL_PATH in conf/auto.conf"
 	fi
 
 	if [ ! -f "${ADI_SIGNTOOL_KEY}" ]; then

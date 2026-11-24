@@ -158,28 +158,29 @@ abovementioned repositories.
 RPMsg with yocto
 ~~~~~~~~~~~~~~~~
 
-1. In your local.conf file, append the following: ``INSTALL_IMAGE:append = " rpmsg-utils "``
+1. In the ``conf/auto.conf`` file within the build directory, append the
+   following: ``IMAGE_INSTALL:append = " rpmsg-utils "``. kas regenerates
+   ``conf/local.conf``, so changes made there are lost.
 
 .. note::
 
-   Make sure ``DISTRO_FEATURES:append = " linux_only_audio "`` is present in
-   your local.conf
+   Make sure the build uses the ``linux_only_audio`` audio mode. It is enabled
+   by default by ``kas/adsp-sc5xx.yml``; if you selected another audio mode in
+   ``conf/auto.conf``, remove it.
 
 2. Booting into Linux, the following messages should be visible in the kernel boot log:
 
 .. code-block:: text
 
-   [    2.153877] adi_remoteproc 28240000.core1-rproc: Resource table set, enable rpmsg
-   [    2.161710] adi_remoteproc 28240000.core1-rproc: Load verification enabled
+   [    2.153877] adi_remoteproc 28240000.sharc: Resource table set, enable rpmsg
    [    2.168504] mmc0: SDHCI controller on 310c7000.mmc [310c7000.mmc] using ADMA
-   [    2.175711] remoteproc remoteproc0: core1-rproc is available
-   [    2.182065] adi_remoteproc 28a40000.core2-rproc: Resource table set, enable rpmsg
-   [    2.189794] remoteproc remoteproc0: powering up core1-rproc
-   [    2.195336] remoteproc remoteproc0: Booting fw image adi_adsp_core1_fw.ldr, size 32228
-   [    2.203461] adi_remoteproc 28a40000.core2-rproc: Load verification enabled
-   [    2.212513] remoteproc remoteproc1: core2-rproc is available
-   [    2.220244] remoteproc remoteproc1: powering up core2-rproc
-   [    2.228828] remoteproc remoteproc1: Booting fw image adi_adsp_core2_fw.ldr, size 3222
+   [    2.175711] remoteproc remoteproc0: sharc is available
+   [    2.182065] adi_remoteproc 28a40000.sharc: Resource table set, enable rpmsg
+   [    2.189794] remoteproc remoteproc0: powering up sharc
+   [    2.195336] remoteproc remoteproc0: Booting fw image adi/rpmsg_echo_sharc_core1.ldr, size 32228
+   [    2.212513] remoteproc remoteproc1: sharc is available
+   [    2.220244] remoteproc remoteproc1: powering up sharc
+   [    2.228828] remoteproc remoteproc1: Booting fw image adi/rpmsg_echo_sharc_core2.ldr, size 3222
 
 .. note::
 
@@ -192,13 +193,13 @@ RPMsg with yocto
    [    2.246718] virtio_rpmsg_bus virtio0: creating channel sharc-echo addr 0x97
    [    2.253692] virtio_rpmsg_bus virtio0: creating channel sharc-echo-cap addr 0xa1
    [    2.261025] virtio_rpmsg_bus virtio0: rpmsg host is online
-   [    2.266446]  remoteproc0#vdev0buffer: registered virtio0 (type 7)
+   [    2.266446] rproc-virtio rproc-virtio.0.auto: registered virtio0 (type 7)
    [    2.272483] virtio_rpmsg_bus virtio1: rpmsg host is online
    [    2.272524] virtio_rpmsg_bus virtio1: creating channel sharc-echo addr 0x98
    [    2.284931] virtio_rpmsg_bus virtio1: creating channel sharc-echo-cap addr 0xa2
-   [    2.292355]  remoteproc1#vdev0buffer: registered virtio1 (type 7)
-   [    2.298370] remoteproc remoteproc0: remote processor core1-rproc is now up
-   [    2.305218] remoteproc remoteproc1: remote processor core2-rproc is now up
+   [    2.292355] rproc-virtio rproc-virtio.1.auto: registered virtio1 (type 7)
+   [    2.298370] remoteproc remoteproc0: remote processor sharc is now up
+   [    2.305218] remoteproc remoteproc1: remote processor sharc is now up
 
 .. note::
 

@@ -1,18 +1,3 @@
-def get_image_fstype_tasks (d):
-    # Take a type in the form of foo.bar.car and split it into the items
-    # needed for the image deps "foo", and the conversion deps ["bar", "car"]
-    def split_types(typestring):
-        types = typestring.split(".")
-        return types[0], types[1:]
-
-    # Add do_generate_update_script deps on all image types
-    fstypes = set((d.getVar('IMAGE_FSTYPES') or "").split())
-    image_fstype_tasks = ""
-    for typestring in fstypes:
-        basetype, resttypes = split_types(typestring)
-        image_fstype_tasks += " do_image_" + basetype
-    return image_fstype_tasks
-
 emit_its() {
 	cat << EOF > fit-image.its
 /dts-v1/;
@@ -100,7 +85,8 @@ do_assemble_fitimage() {
 	uboot-mkimage -D "${UBOOT_MKIMAGE_DTCOPTS}" -f fit-image.its fitImage
 }
 
-addtask assemble_fitimage before "${@get_image_fstype_tasks(d)}" after do_rootfs do_image_cpio do_deploy_cpio
+# Before do_image, which all the do_image_<type> tasks run after
+addtask assemble_fitimage after do_rootfs before do_image
 
 do_assemble_fitimage[depends] += "\
     adsp-sc5xx-ramdisk:do_image_complete \
@@ -121,11 +107,6 @@ do_assemble_fitimage[vardeps] += " \
     KERNEL_COMPRESSION \
     KERNEL_DEVICETREE \
     KERNEL_IMAGETYPE \
-"
-
-do_image_wic[depends] += "\
-     ${PN}:do_assemble_fitimage \
-     adsp-sc5xx-ramdisk:do_image_complete \
 "
 
 do_image_ext4[depends] += "\

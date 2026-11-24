@@ -27,7 +27,7 @@ Getting started
    <https://www.rust-lang.org/tools/install>`_
 
 2) Clone the Linux kernel tree you wish to use. In our case, we will use the
-   :git-linux:`adsp-6.18.31-y <adsp-6.18.31-y:>` branch.
+   :git-linux:`adsp-6.18.y/staging/sc846-mtd-names <adsp-6.18.y/staging/sc846-mtd-names:>` branch.
 
 3) Once cloned, configure the kernel using either ``ARCH=arm64
    CROSS_COMPILE=aarch64-linux-gnu- make menuconfig/defconfig/olddefconfig``
@@ -140,7 +140,7 @@ should be able to spot the following in the kernel logs:
    [    1.467785] virtio_rpmsg_bus virtio1: creating channel sharc-echo-cap addr 0xa2
    [    1.475113] virtio_rpmsg_bus virtio1: rpmsg host is online
    [    1.480488] rproc-virtio rproc-virtio.1.auto: registered virtio1 (type 7)
-   [    1.487253] remoteproc remoteproc1: remote processor core2-rproc is now up
+   [    1.487253] remoteproc remoteproc1: remote processor sharc is now up
    [    1.802327] rust_minimal: Rust minimal sample (init)
    [    1.807237] rust_minimal: Am I built-in? true
    [    1.811804] NET: Registered PF_PACKET protocol family

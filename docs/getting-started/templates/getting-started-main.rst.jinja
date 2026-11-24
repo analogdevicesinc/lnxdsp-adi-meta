@@ -445,7 +445,10 @@ prompt asking approval to program the SPI flash.
 
 Select y to program everything, or i to enter interactive mode (to selectively
 program certain partitions on the SPI flash). The default for this and all
-programming prompts is N for no.
+programming prompts is N for no. The installer writes ``u-boot-spl.ldr``,
+``u-boot.ldr``, ``fitImage`` and ``rootfs.ubi`` to the ``u-boot-spl``,
+``u-boot``, ``kernel`` and ``rootfs`` partitions of the SPI flash. It skips the
+SPI flash when the root filesystem is mounted from it.
 
 {% endif %}
 
@@ -461,7 +464,31 @@ The init script will then move on to the mmc programming
    This will erase and program EMMC.                                                                                                                                                                   
    Continue? [y/N]:
 
-Select y to program the eMMC, or N to skip programming.
+Select y to program the eMMC, or N to skip programming. The installer writes
+``emmc.img`` to the eMMC: U-Boot SPL and U-Boot, partition 1 with the
+``fitImage``, and partition 2 with the ext4 root filesystem. It skips the eMMC
+when the root filesystem is mounted from it.
+
+{% endif %}
+
+{% if has_nand %}
+
+The init script will then move on to the SPI NAND programming, when the board
+has a SPI NAND on xSPI1
+
+.. code-block:: text
+
+   ======== NAND Installer ========
+   Install nand.img to the xspi1-data NAND
+
+   This will erase and program the NAND.
+   Continue? [y/N]:
+
+Select y to program the NAND, or N to skip programming. The installer writes
+``nand.img`` with ``ubiformat``: a UBI image with volumes for U-Boot SPL,
+U-Boot, the ``fitImage``, the EROFS root filesystem, and the writable
+``overlay`` and ``data`` UBIFS volumes. On boards with a SPI NOR on xSPI1,
+the installer skips the NAND.
 
 {% endif %}
 
@@ -471,12 +498,14 @@ The init script will then move on to the USB programming
 
 .. code-block:: text
 
-   Install U-Boot to USB                                                                                                                                                                               
-                                                                                                                                                                                                    
-   This will erase and program the USB.                                                                                                                                                                
+   ======== USB Installer ========
+
+   This will erase and program the USB.
    Continue? [y/N]:
 
-Select y to program the USB, or N to skip programming.
+Select y to program the USB, or N to skip programming. The installer writes
+``usb.img`` to the USB storage device: partition 1 with the ``fitImage``, and
+partition 2 with the ext4 root filesystem.
 
 {% endif %}
 
@@ -505,6 +534,10 @@ Booting the minimal image from QSPI
 The default boot method for the {{ machine }} is SPI boot. Turn the bootmode
 selector to 1, and reset the board. The board should now automatically boot to
 the Linux login.
+
+.. note::
+   The root filesystem in the SPI flash is a read-only EROFS image. Boot from
+   the eMMC, SD card, USB or NFS for a writable root filesystem.
 
 {% endif %}
 
@@ -641,9 +674,9 @@ following command
 Booting Linux from USB Mass Storage
 -----------------------------------
 
----------------------------------
-Formatting the USB storage device
----------------------------------
+----------------------------------
+Programming the USB storage device
+----------------------------------
 {% if s9x_usb %}
 
 .. note::
@@ -653,15 +686,13 @@ Formatting the USB storage device
 {% endif %}
 
 The USB can be programmed by the init script from the instructions mentioned
-above if plugged into the board. However, the USB can also be formatted by the
-host PC before plugging into the board as well, following the instructions
-below.
+above if plugged into the board. However, the USB can also be programmed by the
+host PC before plugging into the board, by writing ``usb.img`` from the
+programming images to it.
 
-The first step is to format the USB stick to a format that U-Boot supports.
-
-To do this, follow the commands below. The example code in this section assumes
-that the USB device is reported to be ``/dev/sda``. Ensure that you change
-these commands to use your device.
+The example code in this section assumes that the USB device is reported to be
+``/dev/sda``. Ensure that you change these commands to use your device, as
+everything on it is erased.
 
 .. note::
 
@@ -670,45 +701,7 @@ these commands to use your device.
 
 .. shell::
 
-   $sudo fdisk /dev/sda
-   Welcome to fdisk (util-linux 2.39.3).
-   Changes will remain in memory only, until you decide to write them.
-   Be careful before using the write command.
-   Command (m for help): n
-   Partition type
-       p   primary (0 primary, 0 extended, 4 free)
-       e   extended (container for logical partitions)
-   Select (default p): p
-   Partition number (1-4, default 1): 1
-   First sector (2048-15269887, default 2048):
-   Last sector, +/-sectors or +/-size{K,M,G,T,P} (2048-15269887, default 15269887): +32M
-   Created a new partition 1 of type 'Linux' and of size 32 MiB.
-   Partition #1 contains a ext4 signature.
-   Command (m for help): n
-   Partition type
-       p   primary (1 primary, 0 extended, 3 free)
-       e   extended (container for logical partitions)
-   Select (default p): p
-   Partition number (2-4, default 2): 2
-   First sector (67584-15269887, default 67584):
-   Last sector, +/-sectors or +/-size{K,M,G,T,P} (67584-15269887, default 15269887):
-   Created a new partition 2 of type 'Linux' and of size 7.2 GiB.
-   Partition #2 contains a ext4 signature.
-   Command (m for help): w
-
------------------------------------
-Copying to the USB storage device
------------------------------------
-
-.. shell::
-
-   $mke2fs -F -t ext4 -L "BOOT" /dev/sda1
-   $mkdir -p /tmp/boot_mount
-   $mount /dev/sda1 /tmp/boot_mount
-   $cp fitImage /tmp/boot_mount
-   $sync
-   $umount /tmp/boot_mount
-   $dd if=rootfs.ext4 of=/dev/sda2 bs=512
+   $sudo dd if=usb.img of=/dev/sda bs=4M conv=fsync
    $sync
 
 -----------------------------------
@@ -723,6 +716,6 @@ following command
    => run usbboot
 
 Now the rootfs is set to be your USB storage device, and the amount of space is
-the size of the partition created earlier on the device.
+the size of ``rootfs.ext4``, partition 2 of ``usb.img``.
 
 {% endif %}

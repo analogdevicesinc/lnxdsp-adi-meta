@@ -1,0 +1,115 @@
+From 54a7f8df3b25f85de1d6fcb4ddf9b5a35200dad9 Mon Sep 17 00:00:00 2001
+From: Caleb Ethridge <caleb.ethridge@analog.com>
+Date: Mon, 23 Nov 2026 11:19:33 -0500
+Subject: [PATCH] ubi: block: Fix reads into highmem pages
+
+Upstream-Status: Pending
+
+ubi_eba_read_leb_sg() passes sg_virt() of each scatterlist entry to
+ubi_eba_read_leb(). sg_virt() is only valid for pages in the kernel's
+linear mapping, so on a CONFIG_HIGHMEM kernel it returns NULL (plus the
+offset) when the block layer hands ubiblock a page cache page that lives
+in highmem. ubi_io_read() then dereferences it and the kernel oopses:
+
+  Unable to handle kernel NULL pointer dereference at virtual address 00000000 when read
+  PC is at ubi_io_read+0xbc/0x270
+  ...
+   ubi_io_read from ubi_eba_read_leb+0x240/0x310
+   ubi_eba_read_leb from ubi_eba_read_leb_sg+0xa4/0xf8
+   ubi_eba_read_leb_sg from ubi_leb_read_sg+0x60/0xb0
+   ubi_leb_read_sg from ubiblock_queue_rq+0x120/0x1f0
+
+The block layer used to hide this by bouncing highmem pages, but blk-mq
+stopped doing that by default and bounce buffering has since been removed
+entirely, so ubiblock has to handle highmem itself. This is hit on the
+ADSP-SC594, which selects HIGHMEM and boots with vmalloc=512M, as soon as
+the rootfs is an EROFS image on a UBI block device: the first exec from
+the new root faults in a page cache page from highmem.
+
+Map each destination page with kmap_local_page() and read at most up to
+the end of that page per ubi_eba_read_leb() call. kmap_local_page()
+mappings stay valid across sleeps, so the MTD read can still be done
+directly into the page without a bounce buffer, as suggested upstream.
+On kernels without highmem kmap_local_page() is just page_address().
+
+Fixes: 9ff08979e174 ("UBI: Add initial support for scatter gather")
+Link: https://lore.kernel.org/linux-mtd/20230810160019.16977-1-richard@nod.at/
+Signed-off-by: Caleb Ethridge <caleb.ethridge@analog.com>
+---
+ drivers/mtd/ubi/eba.c | 41 ++++++++++++++++++++++++-----------------
+ 1 file changed, 24 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+index c7ba7a15c9f7..45e339ec8d39 100644
+--- a/drivers/mtd/ubi/eba.c
++++ b/drivers/mtd/ubi/eba.c
+@@ -31,6 +31,7 @@
+ #include <linux/slab.h>
+ #include <linux/crc32.h>
+ #include <linux/err.h>
++#include <linux/highmem.h>
+ #include "ubi.h"
+ 
+ /**
+@@ -745,38 +746,44 @@ int ubi_eba_read_leb_sg(struct ubi_device *ubi, struct ubi_volume *vol,
+ 			struct ubi_sgl *sgl, int lnum, int offset, int len,
+ 			int check)
+ {
++	unsigned int pg_off;
++	struct scatterlist *sg;
++	struct page *page;
+ 	int to_read;
++	void *buf;
+ 	int ret;
+-	struct scatterlist *sg;
+ 
+ 	for (;;) {
+ 		ubi_assert(sgl->list_pos < UBI_MAX_SG_COUNT);
+ 		sg = &sgl->sg[sgl->list_pos];
+-		if (len < sg->length - sgl->page_pos)
+-			to_read = len;
+-		else
+-			to_read = sg->length - sgl->page_pos;
+ 
+-		ret = ubi_eba_read_leb(ubi, vol, lnum,
+-				       sg_virt(sg) + sgl->page_pos, offset,
++		/*
++		 * The pages backing @sg may be in highmem, where sg_virt() does
++		 * not work, so map and fill them one page at a time.
++		 */
++		pg_off = sg->offset + sgl->page_pos;
++		page = sg_page(sg) + (pg_off >> PAGE_SHIFT);
++		pg_off = offset_in_page(pg_off);
++		to_read = min_t(int, len, sg->length - sgl->page_pos);
++		to_read = min_t(int, to_read, PAGE_SIZE - pg_off);
++
++		buf = kmap_local_page(page);
++		ret = ubi_eba_read_leb(ubi, vol, lnum, buf + pg_off, offset,
+ 				       to_read, check);
++		kunmap_local(buf);
+ 		if (ret < 0)
+ 			return ret;
+ 
+ 		offset += to_read;
+ 		len -= to_read;
+-		if (!len) {
+-			sgl->page_pos += to_read;
+-			if (sgl->page_pos == sg->length) {
+-				sgl->list_pos++;
+-				sgl->page_pos = 0;
+-			}
+-
+-			break;
++		sgl->page_pos += to_read;
++		if (sgl->page_pos == sg->length) {
++			sgl->list_pos++;
++			sgl->page_pos = 0;
+ 		}
+ 
+-		sgl->list_pos++;
+-		sgl->page_pos = 0;
++		if (!len)
++			break;
+ 	}
+ 
+ 	return ret;
