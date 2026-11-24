@@ -8,7 +8,7 @@
 
     <title>SHARC-ALSA Example &#8212; ADSP Processors  documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8e8a900e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=6cfc7fee" />
+    <link rel="stylesheet" type="text/css" href="../../_static/app.min.css?v=7db40558" />
     <script async="async" src="../../_static/app.umd.js?v=2fe15c61"></script>
     <link rel="icon" href="../../_static/icon.svg"/>
     <link rel="index" title="Index" href="../../genindex/" />
@@ -349,7 +349,7 @@ remoteproc remoteproc0: stopped remote processor sharc
 </pre></div>
 </div>
 <div class="clear-left"></div></div><div><div class="no-select highlight-text notranslate"><div class="highlight"><pre><span></span>remoteproc remoteproc0: powering up sharc
-remoteproc remoteproc0: Booting fw image adi/icap_sharc_alsa_core1.ldr, size 132860
+remoteproc remoteproc0: Booting fw image adi/icap_sharc_alsa_core1.ldr, size 133504
 virtio_rpmsg_bus virtio0: rpmsg host is online
 virtio_rpmsg_bus virtio0: creating channel sharc-alsa addr 0x15
 snd_soc_sharc_alsa_asoc_card virtio0.sharc-alsa.-1.21: sharc-alsa card probed for rpmsg endpoint addr: 0x015
@@ -360,6 +360,10 @@ remoteproc remoteproc0: remote processor sharc is now up
 <div class="clear-left"></div></div></div><p>When executing the <code class="docutils literal notranslate"><span class="pre">echo</span> <span class="pre">start</span></code> command you will notice the LEDs on the
 SOMCRR-EZKIT flashing and then settle on LED7 remaining on. This indicates that
 the image on the SHARC is running.</p>
+<p>Reloading SHARC core 1 leaves the capture card of SHARC core 2 unable to start
+a recording; <code class="docutils literal notranslate"><span class="pre">arecord</span></code> fails with <code class="docutils literal notranslate"><span class="pre">Unable</span> <span class="pre">to</span> <span class="pre">install</span> <span class="pre">hw</span> <span class="pre">params</span></code>. Before
+recording again, reload SHARC core 2 the same way, through <code class="docutils literal notranslate"><span class="pre">remoteproc1</span></code> with
+<code class="docutils literal notranslate"><span class="pre">adi/icap_sharc_alsa_core2.ldr</span></code>.</p>
 </section>
 <section id="using-u-boot-rproc">
 <h3>Using U-Boot (rproc)<a class="headerlink" href="#using-u-boot-rproc" title="Link to this heading"></a></h3>
@@ -371,7 +375,7 @@ these using the following command, executed from your build folder:</p>
 <div class="code-shell"><div><div class="no-select float-left highlight-default notranslate"><div class="highlight"><pre><span></span>~$
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>../sources/meta-adi/meta-adi-adsp-sc5xx/recipes-icc/sharc-audio/files/icap-sharc-alsa_Core<span class="o">{</span><span class="m">1</span>,2<span class="o">}</span>.ldr<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>../config/meta-adi-adsp-sc5xx/recipes-icc/sharc-audio/files/icap-sharc-alsa_Core<span class="o">{</span><span class="m">1</span>,2<span class="o">}</span>.ldr<span class="w"> </span><span class="se">\</span>
 <span class="w">   </span>/tftpboot/
 </pre></div>
 </div>
@@ -380,10 +384,10 @@ U-Boot prompt:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">=&gt; rproc init</span>
 <span class="go">=&gt; tftp ${loadaddr} icap-sharc-alsa_Core1.ldr</span>
 <span class="go">=&gt; rproc load 0 ${loadaddr} ${filesize}</span>
-<span class="go">Load Remote Processor 0 with data@addr=0x96000000 132860 bytes: Success!</span>
+<span class="go">Load Remote Processor 0 with data@addr=0x90000000 133504 bytes: Success!</span>
 <span class="go">=&gt; tftp ${loadaddr} icap-sharc-alsa_Core2.ldr</span>
 <span class="go">=&gt; rproc load 1 ${loadaddr} ${filesize}</span>
-<span class="go">Load Remote Processor 1 with data@addr=0x96000000 79892 bytes: Success!</span>
+<span class="go">Load Remote Processor 1 with data@addr=0x90000000 79992 bytes: Success!</span>
 <span class="go">=&gt; rproc start 1</span>
 <span class="go">=&gt; rproc start 0</span>
 </pre></div>

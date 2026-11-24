@@ -70,7 +70,7 @@ start them again. Firmware names are relative to ``/lib/firmware``.
    $echo adi/icap_sharc_alsa_core1.ldr > /sys/class/remoteproc/remoteproc0/firmware
    $echo start > /sys/class/remoteproc/remoteproc0/state
     remoteproc remoteproc0: powering up sharc
-    remoteproc remoteproc0: Booting fw image adi/icap_sharc_alsa_core1.ldr, size 132860
+    remoteproc remoteproc0: Booting fw image adi/icap_sharc_alsa_core1.ldr, size 133504
     virtio_rpmsg_bus virtio0: rpmsg host is online
     virtio_rpmsg_bus virtio0: creating channel sharc-alsa addr 0x15
     snd_soc_sharc_alsa_asoc_card virtio0.sharc-alsa.-1.21: sharc-alsa card probed for rpmsg endpoint addr: 0x015
@@ -80,6 +80,11 @@ start them again. Firmware names are relative to ``/lib/firmware``.
 When executing the ``echo start`` command you will notice the LEDs on the
 SOMCRR-EZKIT flashing and then settle on LED7 remaining on. This indicates that
 the image on the SHARC is running.
+
+Reloading SHARC core 1 leaves the capture card of SHARC core 2 unable to start
+a recording; ``arecord`` fails with ``Unable to install hw params``. Before
+recording again, reload SHARC core 2 the same way, through ``remoteproc1`` with
+``adi/icap_sharc_alsa_core2.ldr``.
 
 Using U-Boot (rproc)
 ~~~~~~~~~~~~~~~~~~~~
@@ -92,7 +97,7 @@ these using the following command, executed from your build folder:
 
 .. shell::
 
-   $cp ../sources/meta-adi/meta-adi-adsp-sc5xx/recipes-icc/sharc-audio/files/icap-sharc-alsa_Core{1,2}.ldr \
+   $cp ../config/meta-adi-adsp-sc5xx/recipes-icc/sharc-audio/files/icap-sharc-alsa_Core{1,2}.ldr \
    $   /tftpboot/
 
 With these stored in the TFTP server, you need to input the following at the
@@ -103,10 +108,10 @@ U-Boot prompt:
    => rproc init
    => tftp ${loadaddr} icap-sharc-alsa_Core1.ldr
    => rproc load 0 ${loadaddr} ${filesize}
-   Load Remote Processor 0 with data@addr=0x96000000 132860 bytes: Success!
+   Load Remote Processor 0 with data@addr=0x90000000 133504 bytes: Success!
    => tftp ${loadaddr} icap-sharc-alsa_Core2.ldr
    => rproc load 1 ${loadaddr} ${filesize}
-   Load Remote Processor 1 with data@addr=0x96000000 79892 bytes: Success!
+   Load Remote Processor 1 with data@addr=0x90000000 79992 bytes: Success!
    => rproc start 1
    => rproc start 0
 
